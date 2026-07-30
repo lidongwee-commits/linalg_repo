@@ -67,14 +67,14 @@
 <!-- ============ 第四章 线性方程组（重写版） ============ -->
 <div class="kicker">Chapter Four</div>
 <h1 class="title">线性方程组<span class="en">Systems of Linear Equations</span></h1>
-<p class="lede">线性方程组是线性代数最古老也最实用的核心问题之一。早在《九章算术·方程》章，古人便以算筹分行布列系数阵列、按行相消来求解联立方程，其“直除”之法与今日高斯消元一脉相承，比西方同类记载早逾千年，刘徽注中更明示了“举率以相减”的消元思想。本章以矩阵为统一语言，用初等行变换处理齐次与非齐次方程组：先给出有解、唯一解、无穷多解的秩判别，再揭示解的集合结构——齐次解构成向量空间、非齐次通解=特解+齐次通解，最后延伸到矩阵方程与人工智能、电气工程、高铁运营、现代产业链中的应用，并为考研中高频出现的含参讨论打下基础。</p>
+<p class="lede">线性方程组是线性代数最古老也最实用的核心问题之一．早在《九章算术·方程》章，古人便以算筹分行布列系数阵列、按行相消来求解联立方程，其“直除”之法与今日高斯消元一脉相承，比西方同类记载早逾千年，刘徽注中更明示了“举率以相减”的消元思想．本章以矩阵为统一语言，用初等行变换处理齐次与非齐次方程组：先给出有解、唯一解、无穷多解的秩判别，再揭示解的集合结构——齐次解构成向量空间、非齐次通解=特解+齐次通解，最后延伸到矩阵方程与人工智能、电气工程、高铁运营、现代产业链中的应用，并为考研中高频出现的含参讨论打下基础．</p>
 
 <!-- ============ §4.1 ============ -->
 <h2 id="s41"><span class="num">§4.1</span>齐次线性方程组</h2>
 
 <h3>一、引例：直流电阻网络的节点电压分析</h3>
 <div class="ex"><div class="lab">引例　新能源微电网的节点电压（基尔霍夫电流定律）</div>
-  <p class="stmt">在电气工程里，求电路中各节点的对地电压是最基础的问题之一。如图 4-1 所示的三节点直流电阻网络：节点①、②经电阻与参考地（0 V）相连，并有电流源向节点①注入电流 \(I=3\,\mathrm{A}\)。设节点①、②对地电压分别为 \(v_1,v_2\)（单位 V）。由<b>基尔霍夫电流定律（KCL，流入 = 流出）</b>，对每个节点列写电流平衡方程：</p>
+  <p class="stmt">在电气工程里，求电路中各节点的对地电压是最基础的问题之一．如图 4-1 所示的三节点直流电阻网络：节点①、②经电阻与参考地（0 V）相连，并有电流源向节点①注入电流 \(I=3\,\mathrm{A}\)．设节点①、②对地电压分别为 \(v_1,v_2\)（单位 V）．由<b>基尔霍夫电流定律（KCL，流入 = 流出）</b>，对每个节点列写电流平衡方程：</p>
   <figure class="px">
     <svg viewBox="0 0 360 200" width="320" role="img" aria-label="三节点直流电阻网络示意">
       <line x1="90" y1="150" x2="270" y2="150" stroke="#6b7c8f" stroke-width="2"/>
@@ -99,15 +99,15 @@
       <rect x="232" y="100" width="16" height="9" fill="#fff" stroke="#444"/>
       <text x="262" y="108" font-size="12" fill="#444">1 Ω</text>
     </svg>
-    <div class="px-cap">图 4-1　三节点直流电阻网络：节点①、②经电阻接地，电流源向节点①注入 3 A。</div>
+    <div class="px-cap">图 4-1　三节点直流电阻网络：节点①、②经电阻接地，电流源向节点①注入 3 A．</div>
   </figure>
-  <div class="sol"><span class="mk">列</span>节点①：\(\dfrac{v_1}{2}+\dfrac{v_1-v_2}{1}=3\)，节点②：\(\dfrac{v_2}{1}+\dfrac{v_2-v_1}{1}=0\)。化简得二元一次方程组
+  <div class="sol"><span class="mk">列</span>节点①：\(\dfrac{v_1}{2}+\dfrac{v_1-v_2}{1}=3\)，节点②：\(\dfrac{v_2}{1}+\dfrac{v_2-v_1}{1}=0\)．化简得二元一次方程组
   \[\begin{cases}1.5v_1-v_2=3,\\ -v_1+2v_2=0.\end{cases}\]
   用消元法解得
   \[v_1=3\ \mathrm{V},\quad v_2=1.5\ \mathrm{V}.\]
   若电路中不含任何独立电源（把右端常数项全部置为 \(0\)），方程退化为
   \[\begin{cases}1.5v_1-v_2=0,\\ -v_1+2v_2=0,\end{cases}\]
-  这就是本节的研究对象——常数项全为 \(0\) 的<b>齐次线性方程组</b>：它必有零解 \(v_1=v_2=0\)，而是否有非零解取决于系数矩阵的秩。从《九章算术》以算筹分行布列系数、按行相消，到今天用完全相同的线性代数分析电网与芯片供电，方法一脉相承。</p>
+  这就是本节的研究对象——常数项全为 \(0\) 的<b>齐次线性方程组</b>：它必有零解 \(v_1=v_2=0\)，而是否有非零解取决于系数矩阵的秩．从《九章算术》以算筹分行布列系数、按行相消，到今天用完全相同的线性代数分析电网与芯片供电，方法一脉相承．</p>
 </div></div>
 
 <h3>二、齐次线性方程组的表示形式</h3>
@@ -120,51 +120,51 @@
   \[Ax=0.\]
   将 \(A\) 按列分块为 \(A=(\alpha_1,\alpha_2,\dots,\alpha_n)\)，则原方程组等价于向量方程
   \[x_1\alpha_1+x_2\alpha_2+\cdots+x_n\alpha_n=0.\]
-  若 \(x_1=c_1,\dots,x_n=c_n\) 为其解，则称 \(x=(c_1,\dots,c_n)^T\) 为解向量（简称解）。</p></div>
+  若 \(x_1=c_1,\dots,x_n=c_n\) 为其解，则称 \(x=(c_1,\dots,c_n)^T\) 为解向量（简称解）．</p></div>
 
-<div class="note">齐次线性方程组 <b>总有零解</b> \(x=0\)（称为零解）。我们更关心的是：它<b>何时有非零解</b>，以及所有解构成怎样的集合。</div>
+<div class="note">齐次线性方程组 <b>总有零解</b> \(x=0\)（称为零解）．我们更关心的是：它<b>何时有非零解</b>，以及所有解构成怎样的集合．</div>
 
 <h3>三、解的判定</h3>
 <div class="def"><div class="lab"><span class="n">定理 4.1</span>齐次有非零解的充要条件</div>
-<p>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解的充分必要条件是 \(R(A)\lt n\)。</p>
+<p>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解的充分必要条件是 \(R(A)\lt n\)．</p>
 <details><summary>证明</summary><div class="body"><p>由向量方程形式 \(x_1\alpha_1+\cdots+x_n\alpha_n=0\) 可知，\(Ax=0\) 有非零解 \(\iff\) 存在不全为零的数 \(x_1,\dots,x_n\) 使该式成立 \(\iff\) 列向量组 \(\alpha_1,\dots,\alpha_n\) 线性相关 \(\iff\) 该向量组的秩小于向量个数，即
   \[R(A)=R(\alpha_1,\dots,\alpha_n)\lt n.\]
-  证毕。</p></div></details></div>
+  证毕．</p></div></details></div>
 
 <div class="def"><div class="lab"><span class="n">定理 4.2</span>齐次只有零解的充要条件</div>
-<p>\(n\) 元齐次线性方程组 \(Ax=0\) 只有零解的充分必要条件是 \(R(A)=n\)。</p></div>
-<p class="muted">此即定理 4.1 的逆否命题，因为“有非零解”与“只有零解”互为否定。</p>
+<p>\(n\) 元齐次线性方程组 \(Ax=0\) 只有零解的充分必要条件是 \(R(A)=n\)．</p></div>
+<p class="muted">此即定理 4.1 的逆否命题，因为“有非零解”与“只有零解”互为否定．</p>
 
 <div class="def"><div class="lab"><span class="n">推论 4.1</span></div>
-<p>当方程个数小于未知数个数，即 \(m\lt n\) 时，必有 \(R(A)\le m\lt n\)，故 \(Ax=0\) <b>一定有非零解</b>。</p></div>
+<p>当方程个数小于未知数个数，即 \(m\lt n\) 时，必有 \(R(A)\le m\lt n\)，故 \(Ax=0\) <b>一定有非零解</b>．</p></div>
 
 <div class="def"><div class="lab"><span class="n">推论 4.2</span></div>
-<p>若 \(A\) 为 \(n\) 阶方阵，则 \(Ax=0\) 有非零解 \(\iff |A|=0\)；只有零解 \(\iff |A|\neq0\)。</p></div>
-<p class="muted">因为 \(A\) 为方阵时 \(R(A)\lt n\iff |A|=0\)（方阵满秩等价于行列式非零）。</p>
+<p>若 \(A\) 为 \(n\) 阶方阵，则 \(Ax=0\) 有非零解 \(\iff |A|=0\)；只有零解 \(\iff |A|\neq0\)．</p></div>
+<p class="muted">因为 \(A\) 为方阵时 \(R(A)\lt n\iff |A|=0\)（方阵满秩等价于行列式非零）．</p>
 
 <details><summary>几何直观</summary><div class="body"><p>在三维几何空间中，齐次方程组的每个方程 \(a_{i1}x+a_{i2}y+a_{i3}z=0\) 表示一个以 \(\alpha_i=(a_{i1},a_{i2},a_{i3})^T\) 为法向量且过原点的平面，解向量是与所有法向量 \(\alpha_i\) 都垂直的向量：</p>
   <p>（1）若 \(\alpha_1,\alpha_2,\alpha_3\) 不共面，即 \(R(A)=3\)，则不存在与三者都垂直的非零向量，方程组<b>只有零解</b>；</p>
   <p>（2）若 \(\alpha_1,\alpha_2,\alpha_3\) 共面但不共线，即 \(R(A)=2\)，则垂直于此平面的方向唯一（一条过原点的直线），解空间是<b>一维</b>的；</p>
-  <p>（3）若 \(\alpha_1,\alpha_2,\alpha_3\) 共线，即 \(R(A)=1\)，则所有与该直线垂直的向量都是解，解空间是一张过原点的<b>平面</b>（二维）。</p>
-  <p>一般地，\(Ax=0\) 的解空间维数恰为 \(n-R(A)\)。</p></div></details>
+  <p>（3）若 \(\alpha_1,\alpha_2,\alpha_3\) 共线，即 \(R(A)=1\)，则所有与该直线垂直的向量都是解，解空间是一张过原点的<b>平面</b>（二维）．</p>
+  <p>一般地，\(Ax=0\) 的解空间维数恰为 \(n-R(A)\)．</p></div></details>
 
 <h3>四、解的性质</h3>
 <div class="def"><div class="lab"><span class="n">性质 4.1</span></div>
-<p>若 \(\xi_1,\xi_2\) 都是 \(Ax=0\) 的解，则 \(\xi_1+\xi_2\) 也是 \(Ax=0\) 的解。</p></div>
-<p class="muted">验证：\(A(\xi_1+\xi_2)=A\xi_1+A\xi_2=0+0=0\)。</p>
+<p>若 \(\xi_1,\xi_2\) 都是 \(Ax=0\) 的解，则 \(\xi_1+\xi_2\) 也是 \(Ax=0\) 的解．</p></div>
+<p class="muted">验证：\(A(\xi_1+\xi_2)=A\xi_1+A\xi_2=0+0=0\)．</p>
 <div class="def"><div class="lab"><span class="n">性质 4.2</span></div>
-<p>若 \(\xi\) 是 \(Ax=0\) 的解，\(k\) 为任意常数，则 \(k\xi\) 也是 \(Ax=0\) 的解。</p></div>
-<p class="muted">验证：\(A(k\xi)=k(A\xi)=k\cdot0=0\)。由此推知：若齐次方程组有非零解，则它<b>必有无穷多解</b>。</p>
+<p>若 \(\xi\) 是 \(Ax=0\) 的解，\(k\) 为任意常数，则 \(k\xi\) 也是 \(Ax=0\) 的解．</p></div>
+<p class="muted">验证：\(A(k\xi)=k(A\xi)=k\cdot0=0\)．由此推知：若齐次方程组有非零解，则它<b>必有无穷多解</b>．</p>
 
 <h3>五、解空间与基础解系</h3>
 <div class="def"><div class="lab"><span class="n">定义 4.2</span>解空间</div>
-<p>记 \(S=\{x\mid Ax=0\}\)，即齐次方程组全体解向量组成的集合。由性质 4.1、4.2 知，对加法与数乘封闭，故 \(S\) 是一个向量空间，称为齐次线性方程组的<b>解空间</b>。</p></div>
+<p>记 \(S=\{x\mid Ax=0\}\)，即齐次方程组全体解向量组成的集合．由性质 4.1、4.2 知，对加法与数乘封闭，故 \(S\) 是一个向量空间，称为齐次线性方程组的<b>解空间</b>．</p></div>
 <div class="def"><div class="lab"><span class="n">定义 4.3</span>基础解系</div>
-<p>当 \(R(A)=r\lt n\) 时，解空间 \(S\) 的基称为齐次线性方程组 \(Ax=0\) 的<b>基础解系</b>。即：基础解系是 \(Ax=0\) 的一组线性无关的解向量 \(\xi_1,\dots,\xi_{n-r}\)，使得任一解都可唯一表示为它们的线性组合。</p></div>
+<p>当 \(R(A)=r\lt n\) 时，解空间 \(S\) 的基称为齐次线性方程组 \(Ax=0\) 的<b>基础解系</b>．即：基础解系是 \(Ax=0\) 的一组线性无关的解向量 \(\xi_1,\dots,\xi_{n-r}\)，使得任一解都可唯一表示为它们的线性组合．</p></div>
 
 <div class="def"><div class="lab"><span class="n">定理 4.3</span>基础解系的存在性与构造</div>
-<p>当 \(R(A)=r\lt n\) 时，\(Ax=0\) 必存在基础解系，且所含解向量个数恰为 \(n-r\)。</p>
-<details><summary>证明（构造性）</summary><div class="body"><p>设 \(R(A)=r\lt n\)。对系数矩阵 \(A\) 作初等行变换化为行最简形
+<p>当 \(R(A)=r\lt n\) 时，\(Ax=0\) 必存在基础解系，且所含解向量个数恰为 \(n-r\)．</p>
+<details><summary>证明（构造性）</summary><div class="body"><p>设 \(R(A)=r\lt n\)．对系数矩阵 \(A\) 作初等行变换化为行最简形
   \[\begin{pmatrix}1&0&\cdots&0&c_{1,r+1}&\cdots&c_{1n}\\ 0&1&\cdots&0&c_{2,r+1}&\cdots&c_{2n}\\ \vdots&\vdots&&\vdots&\vdots&&\vdots\\ 0&0&\cdots&1&c_{r,r+1}&\cdots&c_{rn}\\ 0&0&\cdots&0&0&\cdots&0\\ \vdots&\vdots&&\vdots&\vdots&&\vdots\\ 0&0&\cdots&0&0&\cdots&0\end{pmatrix}.\]
   与原方程组同解的为
   \[\begin{cases}x_1=-c_{1,r+1}x_{r+1}-\cdots-c_{1n}x_n,\\ \qquad\vdots\\ x_r=-c_{r,r+1}x_{r+1}-\cdots-c_{rn}x_n.\end{cases}\]
@@ -172,24 +172,24 @@
   \[\begin{pmatrix}x_{r+1}\\ \vdots\\ x_n\end{pmatrix}=\begin{pmatrix}1\\0\\ \vdots\\ 0\end{pmatrix},\ \begin{pmatrix}0\\1\\ \vdots\\ 0\end{pmatrix},\ \dots,\ \begin{pmatrix}0\\0\\ \vdots\\ 1\end{pmatrix},\]
   代入即得 \(n-r\) 个解向量
   \[\xi_1=\begin{pmatrix}-c_{1,r+1}\\ \vdots\\ -c_{r,r+1}\\ 1\\ 0\\ \vdots\\ 0\end{pmatrix},\ \xi_2=\begin{pmatrix}-c_{1,r+2}\\ \vdots\\ -c_{r,r+2}\\ 0\\ 1\\ \vdots\\ 0\end{pmatrix},\ \dots,\ \xi_{n-r}=\begin{pmatrix}-c_{1n}\\ \vdots\\ -c_{rn}\\ 0\\ 0\\ \vdots\\ 1\end{pmatrix}.\]
-  这 \(n-r\) 个向量的后 \(n-r\) 个分量构成 \(n-r\) 阶单位阵，故线性无关（相当于定理 3.3：阶梯矩阵主元列对应单位向量构造）。</p>
-  <p>再证<b>任一解都可表出</b>。设 \(x=(x_1,\dots,x_r,x_{r+1},\dots,x_n)^T\) 为任一解，由同解方程组有
+  这 \(n-r\) 个向量的后 \(n-r\) 个分量构成 \(n-r\) 阶单位阵，故线性无关（相当于定理 3.3：阶梯矩阵主元列对应单位向量构造）．</p>
+  <p>再证<b>任一解都可表出</b>．设 \(x=(x_1,\dots,x_r,x_{r+1},\dots,x_n)^T\) 为任一解，由同解方程组有
   \[x_1=-c_{1,r+1}x_{r+1}-\cdots-c_{1n}x_n,\ \dots,\ x_r=-c_{r,r+1}x_{r+1}-\cdots-c_{rn}x_n.\]
   而
   \[x_{r+1}\xi_1+x_{r+2}\xi_2+\cdots+x_n\xi_{n-r}=\begin{pmatrix}-c_{1,r+1}x_{r+1}-\cdots-c_{1n}x_n\\ \vdots\\ -c_{r,r+1}x_{r+1}-\cdots-c_{rn}x_n\\ x_{r+1}\\ \vdots\\ x_n\end{pmatrix}=x.\]
-  故任一解均可由 \(\xi_1,\dots,\xi_{n-r}\) 线性表示。综上，\(\xi_1,\dots,\xi_{n-r}\) 是 \(Ax=0\) 的一个基础解系，所含向量个数为自由未知量个数 \(n-r\)。</p>
-  <p>由于自由未知量的选取与取值都不唯一，基础解系不唯一；但任意 \(n-r\) 个线性无关的解都可作为基础解系。</p></div></details></div>
+  故任一解均可由 \(\xi_1,\dots,\xi_{n-r}\) 线性表示．综上，\(\xi_1,\dots,\xi_{n-r}\) 是 \(Ax=0\) 的一个基础解系，所含向量个数为自由未知量个数 \(n-r\)．</p>
+  <p>由于自由未知量的选取与取值都不唯一，基础解系不唯一；但任意 \(n-r\) 个线性无关的解都可作为基础解系．</p></div></details></div>
 
 <div class="def"><div class="lab"><span class="n">定理 4.4</span>齐次通解公式</div>
 <p>当 \(R(A)=r\lt n\) 时，若 \(\xi_1,\dots,\xi_{n-r}\) 是 \(Ax=0\) 的一个基础解系，则其通解为
   \[x=k_1\xi_1+k_2\xi_2+\cdots+k_{n-r}\xi_{n-r},\]
-  其中 \(k_1,\dots,k_{n-r}\) 为任意常数。</p></div>
+  其中 \(k_1,\dots,k_{n-r}\) 为任意常数．</p></div>
 
 <h3>六、例题</h3>
 <div class="ex"><div class="lab">例 4.1</div>
   <div class="stmt">求齐次线性方程组
   \[\begin{cases}x_1+x_2-x_3-x_4=0,\\ 2x_1-5x_2+3x_3+2x_4=0,\\ 7x_1-7x_2+3x_3+x_4=0\end{cases}\]
-  的基础解系与通解。</div>
+  的基础解系与通解．</div>
   <div class="sol"><span class="mk">解</span>对系数矩阵 \(A\) 作初等行变换化为行最简形：
   \[A=\begin{pmatrix}1&1&-1&-1\\ 2&-5&3&2\\ 7&-7&3&1\end{pmatrix}
   \xrightarrow{r_2-2r_1,\ r_3-7r_1}
@@ -200,34 +200,34 @@
   \begin{pmatrix}1&1&-1&-1\\ 0&1&-\frac57&-\frac47\\ 0&0&0&0\end{pmatrix}
   \xrightarrow{r_1-r_2}
   \begin{pmatrix}1&0&-\frac27&-\frac37\\ 0&1&-\frac57&-\frac47\\ 0&0&0&0\end{pmatrix}.\]
-  \(R(A)=2\lt 4\)，故 \(n-R(A)=2\)，基础解系含 \(2\) 个解向量。同解方程组为
+  \(R(A)=2\lt 4\)，故 \(n-R(A)=2\)，基础解系含 \(2\) 个解向量．同解方程组为
   \[\begin{cases}x_1=\frac27x_3+\frac37x_4,\\[2pt] x_2=\frac57x_3+\frac47x_4.\end{cases}\]
   取 \(x_3,x_4\) 为自由未知量，分别令 \((x_3,x_4)^T=(1,0)^T,\ (0,1)^T\)，得基础解系
   \[\xi_1=\begin{pmatrix}\frac27\\[2pt]\frac57\\[2pt]1\\[2pt]0\end{pmatrix},\qquad \xi_2=\begin{pmatrix}\frac37\\[2pt]\frac47\\[2pt]0\\[2pt]1\end{pmatrix}.\]
-  通解为 \(x=k_1\xi_1+k_2\xi_2\)，\(k_1,k_2\) 为任意常数。（代回验证：\(A\xi_1=0,\ A\xi_2=0\) 均成立。）</div>
+  通解为 \(x=k_1\xi_1+k_2\xi_2\)，\(k_1,k_2\) 为任意常数．（代回验证：\(A\xi_1=0,\ A\xi_2=0\) 均成立．）</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.2（考研真题）</div>
-  <div class="stmt">设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)。</div>
-  <div class="sol"><span class="mk">证</span>将 \(B\) 按列分块为 \(B=(\beta_1,\beta_2,\dots,\beta_s)\)。由 \(AB=O\) 得
+  <div class="stmt">设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)．</div>
+  <div class="sol"><span class="mk">证</span>将 \(B\) 按列分块为 \(B=(\beta_1,\beta_2,\dots,\beta_s)\)．由 \(AB=O\) 得
   \[A\beta_j=0\quad (j=1,2,\dots,s),\]
-  即 \(B\) 的每个列向量都是齐次方程组 \(Ax=0\) 的解向量。</div>
-  <p class="sol">若 \(B=O\)，则显然 \(R(A)+R(B)=R(A)\le n\)。若 \(B\neq O\)，则 \(Ax=0\) 有非零解，解空间维数为 \(n-R(A)\)。又
+  即 \(B\) 的每个列向量都是齐次方程组 \(Ax=0\) 的解向量．</div>
+  <p class="sol">若 \(B=O\)，则显然 \(R(A)+R(B)=R(A)\le n\)．若 \(B\neq O\)，则 \(Ax=0\) 有非零解，解空间维数为 \(n-R(A)\)．又
   \[R(B)=R(\beta_1,\dots,\beta_s)\le n-R(A),\]
-  故 \(R(A)+R(B)\le n\)。</p>
+  故 \(R(A)+R(B)\le n\)．</p>
 </div>
 
 <div class="ex"><div class="lab">例 4.3（含参数）</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}1&2&-2\\ 4&\lambda&3\\ 3&-1&1\end{pmatrix}\)，\(B\) 为 \(3\) 阶非零矩阵，且 \(AB=O\)，求 \(\lambda\)。</div>
-  <div class="sol"><span class="mk">解</span>由 \(AB=O\) 且 \(B\neq O\)，知齐次方程组 \(Ax=0\) 有非零解。\(A\) 为 \(3\) 阶方阵，由推论 4.2，有非零解 \(\iff |A|=0\)。计算
+  <div class="stmt">设 \(A=\begin{pmatrix}1&2&-2\\ 4&\lambda&3\\ 3&-1&1\end{pmatrix}\)，\(B\) 为 \(3\) 阶非零矩阵，且 \(AB=O\)，求 \(\lambda\)．</div>
+  <div class="sol"><span class="mk">解</span>由 \(AB=O\) 且 \(B\neq O\)，知齐次方程组 \(Ax=0\) 有非零解．\(A\) 为 \(3\) 阶方阵，由推论 4.2，有非零解 \(\iff |A|=0\)．计算
   \[|A|=\begin{vmatrix}1&2&-2\\ 4&\lambda&3\\ 3&-1&1\end{vmatrix}=7\lambda+21.\]
-  令 \(7\lambda+21=0\)，得 \(\lambda=-3\)。</div>
+  令 \(7\lambda+21=0\)，得 \(\lambda=-3\)．</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.4（期末真题）</div>
   <div class="stmt">求齐次线性方程组
   \[\begin{cases}x_1-2x_2+4x_3-7x_4=0,\\ 2x_1+x_2-2x_3+x_4=0,\\ 3x_1-x_2+2x_3-4x_4=0\end{cases}\]
-  的基础解系与通解。</div>
+  的基础解系与通解．</div>
   <div class="sol"><span class="mk">解</span>
   \[A=\begin{pmatrix}1&-2&4&-7\\ 2&1&-2&1\\ 3&-1&2&-4\end{pmatrix}
   \xrightarrow{r_2-2r_1,\ r_3-3r_1}
@@ -240,21 +240,21 @@
   \begin{pmatrix}1&-2&4&0\\ 0&1&-2&0\\ 0&0&0&1\end{pmatrix}
   \xrightarrow{r_1+2r_2}
   \begin{pmatrix}1&0&0&0\\ 0&1&-2&0\\ 0&0&0&1\end{pmatrix}.\]
-  \(R(A)=3\lt 4\)，\(n-R(A)=1\)。同解方程组为 \(x_1=0,\ x_2=2x_3,\ x_4=0\)。取自由未知量 \(x_3=1\)，得基础解系
+  \(R(A)=3\lt 4\)，\(n-R(A)=1\)．同解方程组为 \(x_1=0,\ x_2=2x_3,\ x_4=0\)．取自由未知量 \(x_3=1\)，得基础解系
   \[\xi=\begin{pmatrix}0\\2\\1\\0\end{pmatrix}.\]
-  通解为 \(x=k\xi\)（\(k\) 为任意常数）。</div>
+  通解为 \(x=k\xi\)（\(k\) 为任意常数）．</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.5</div>
-  <div class="stmt">设 \(A\) 为 \(m\times n\) 矩阵，证明 \(R(A^TA)=R(A)\)。</div>
+  <div class="stmt">设 \(A\) 为 \(m\times n\) 矩阵，证明 \(R(A^TA)=R(A)\)．</div>
   <div class="sol"><span class="mk">证</span>考察齐次方程组 \(Ax=0\) 与 \(A^TAx=0\) 同解：</div>
-  <p class="sol">若 \(Ax=0\)，则 \(A^TAx=A^T\cdot0=0\)。若 \(A^TAx=0\)，两边左乘 \(x^T\) 得
+  <p class="sol">若 \(Ax=0\)，则 \(A^TAx=A^T\cdot0=0\)．若 \(A^TAx=0\)，两边左乘 \(x^T\) 得
   \[x^TA^TAx=0\ \Longrightarrow\ (Ax)^T(Ax)=0\ \Longrightarrow\ Ax=0.\]
-  故两方程组同解，从而系数矩阵的秩相等，即 \(R(A^TA)=R(A)\)。</p>
+  故两方程组同解，从而系数矩阵的秩相等，即 \(R(A^TA)=R(A)\)．</p>
 </div>
 
 <div class="hist"><div class="lab">数学家与消元法小史</div>
-  <p>高斯（Carl Friedrich Gauss，1777—1855）在天体计算与大地测量中系统使用了今天所称的“高斯消元法”，用以消去变量求解线性联立方程；后经约当（Wilhelm Jordan）补充完善为高斯—约当消元（求行最简形）。而早在《九章算术·方程》章，古人已用“直除法”（以一行直减另一行）消元，刘徽注进一步阐明了“举率以相减”的算法精神；史密斯（Henry Smith）于 19 世纪引入增广矩阵概念，道奇森（C. L. Dodgson）则证明了方程组相容的充要条件是系数矩阵与增广矩阵秩相等——正是本章的核心定理 4.4。现代数值线性代数中，消元法与迭代法、QR 分解、奇异值分解等共同构成了求解大规模线性方程组的基石，悄无声息地支撑着工程仿真、气象预报与人工智能。</p>
+  <p>高斯（Carl Friedrich Gauss，1777—1855）在天体计算与大地测量中系统使用了今天所称的“高斯消元法”，用以消去变量求解线性联立方程；后经约当（Wilhelm Jordan）补充完善为高斯—约当消元（求行最简形）．而早在《九章算术·方程》章，古人已用“直除法”（以一行直减另一行）消元，刘徽注进一步阐明了“举率以相减”的算法精神；史密斯（Henry Smith）于 19 世纪引入增广矩阵概念，道奇森（C. L. Dodgson）则证明了方程组相容的充要条件是系数矩阵与增广矩阵秩相等——正是本章的核心定理 4.4．现代数值线性代数中，消元法与迭代法、QR 分解、奇异值分解等共同构成了求解大规模线性方程组的基石，悄无声息地支撑着工程仿真、气象预报与人工智能．</p>
 </div>
 
 <!-- ============ §4.2 ============ -->
@@ -264,95 +264,95 @@
 
 <h3>一、引例：交通流量守恒</h3>
 <div class="ex"><div class="lab">引例　智慧交通与无人驾驶车流：哪个路口会堵</div>
-  <p class="stmt">某街区有两个相邻路口，车辆流入流出（单位：辆/小时）满足“进=出”的守恒律。设四条路段上的流量为 \(x_1,x_2,x_3,x_4\)，得到联立方程
+  <p class="stmt">某街区有两个相邻路口，车辆流入流出（单位：辆/小时）满足“进=出”的守恒律．设四条路段上的流量为 \(x_1,x_2,x_3,x_4\)，得到联立方程
   \[\begin{cases}x_1-x_2-x_3=-400,\\ x_2+x_3-x_4=500.\end{cases}\]
-  这是<b>非齐次</b>方程组（常数项不全为 \(0\)）。它一般有解吗？解是否唯一？这正是本节要回答的问题。经消元可得同解方程组
+  这是<b>非齐次</b>方程组（常数项不全为 \(0\)）．它一般有解吗？解是否唯一？这正是本节要回答的问题．经消元可得同解方程组
   \[\begin{cases}x_1=100+x_4,\\ x_2=500-x_3+x_4,\end{cases}\]
-  取 \(x_3=s,\ x_4=t\) 得无穷多组解——说明网络流量存在自由调配空间。</p>
+  取 \(x_3=s,\ x_4=t\) 得无穷多组解——说明网络流量存在自由调配空间．</p>
 </div>
 
 <h3>二、表示形式与增广矩阵</h3>
 <div class="def"><div class="lab"><span class="n">定义 4.4</span>非齐次线性方程组、增广矩阵</div>
 <p>含有 \(n\) 个未知数、\(m\) 个方程且常数项不全为零的线性方程组
   \[\begin{cases}a_{11}x_1+\cdots+a_{1n}x_n=b_1,\\ \qquad\vdots\\ a_{m1}x_1+\cdots+a_{mn}x_n=b_m\end{cases}\]
-  可写成 \(Ax=b\)，其中 \(b=(b_1,\dots,b_m)^T\) 为常数项向量。矩阵
+  可写成 \(Ax=b\)，其中 \(b=(b_1,\dots,b_m)^T\) 为常数项向量．矩阵
   \[(A,b)=\begin{pmatrix}a_{11}&\cdots&a_{1n}&b_1\\ \vdots&&\vdots&\vdots\\ a_{m1}&\cdots&a_{mn}&b_m\end{pmatrix}\]
-  称为方程组的<b>增广矩阵</b>。按列分块 \(A=(\alpha_1,\dots,\alpha_n)\)，则等价于向量方程
+  称为方程组的<b>增广矩阵</b>．按列分块 \(A=(\alpha_1,\dots,\alpha_n)\)，则等价于向量方程
   \[x_1\alpha_1+\cdots+x_n\alpha_n=b,\]
-  即 \(b\) 能否由列向量组 \(\alpha_1,\dots,\alpha_n\) 线性表示。</p></div>
+  即 \(b\) 能否由列向量组 \(\alpha_1,\dots,\alpha_n\) 线性表示．</p></div>
 
 <h3>三、解的判定</h3>
 <div class="def"><div class="lab"><span class="n">定理 4.5</span>有解的充要条件</div>
-<p>\(n\) 元非齐次线性方程组 \(Ax=b\) 有解的充分必要条件是 \(R(A)=R(A,b)\)。</p>
+<p>\(n\) 元非齐次线性方程组 \(Ax=b\) 有解的充分必要条件是 \(R(A)=R(A,b)\)．</p>
 <details><summary>证明</summary><div class="body"><p><b>必要性：</b>若 \(Ax=b\) 有解，则 \(b\) 可由 \(\alpha_1,\dots,\alpha_n\) 线性表示，故向量组 \(\{\alpha_1,\dots,\alpha_n\}\) 与 \(\{\alpha_1,\dots,\alpha_n,b\}\) 等价，从而
   \[R(\alpha_1,\dots,\alpha_n)=R(\alpha_1,\dots,\alpha_n,b),\]
-  即 \(R(A)=R(A,b)\)。</p>
-  <p><b>充分性：</b>若 \(R(A)=R(A,b)\)，即 \(R(\alpha_1,\dots,\alpha_n)=R(\alpha_1,\dots,\alpha_n,b)\)。又 \(\{\alpha_1,\dots,\alpha_n\}\subset\{\alpha_1,\dots,\alpha_n,b\}\)，故前者的极大无关组也是后者的极大无关组，因此 \(b\) 可由 \(\alpha_1,\dots,\alpha_n\) 线性表示，即 \(Ax=b\) 有解。</p></div></details></div>
+  即 \(R(A)=R(A,b)\)．</p>
+  <p><b>充分性：</b>若 \(R(A)=R(A,b)\)，即 \(R(\alpha_1,\dots,\alpha_n)=R(\alpha_1,\dots,\alpha_n,b)\)．又 \(\{\alpha_1,\dots,\alpha_n\}\subset\{\alpha_1,\dots,\alpha_n,b\}\)，故前者的极大无关组也是后者的极大无关组，因此 \(b\) 可由 \(\alpha_1,\dots,\alpha_n\) 线性表示，即 \(Ax=b\) 有解．</p></div></details></div>
 
 <div class="def"><div class="lab"><span class="n">推论 4.3</span>唯一解的充要条件</div>
-<p>\(Ax=b\) 有<b>唯一解</b> \(\iff R(A)=R(A,b)=n\)。</p>
-<details><summary>证明</summary><div class="body"><p><b>必要性：</b>设唯一解为 \(x=(d_1,\dots,d_n)^T\)，则 \(b=d_1\alpha_1+\cdots+d_n\alpha_n\)。若 \(R(A)\lt n\)，则 \(\alpha_1,\dots,\alpha_n\) 线性相关，存在不全为零的 \(k_1,\dots,k_n\) 使 \(\sum k_j\alpha_j=0\)，于是
+<p>\(Ax=b\) 有<b>唯一解</b> \(\iff R(A)=R(A,b)=n\)．</p>
+<details><summary>证明</summary><div class="body"><p><b>必要性：</b>设唯一解为 \(x=(d_1,\dots,d_n)^T\)，则 \(b=d_1\alpha_1+\cdots+d_n\alpha_n\)．若 \(R(A)\lt n\)，则 \(\alpha_1,\dots,\alpha_n\) 线性相关，存在不全为零的 \(k_1,\dots,k_n\) 使 \(\sum k_j\alpha_j=0\)，于是
   \[b=\sum(d_j+k_j)\alpha_j\]
-  也成立，得到另一个不同解，与唯一解矛盾，故 \(R(A)=n\)；再由定理 4.5 得 \(R(A)=R(A,b)=n\)。</p>
-  <p><b>充分性：</b>当 \(R(A)=R(A,b)=n\) 时，\(\alpha_1,\dots,\alpha_n\) 线性无关、\(\alpha_1,\dots,\alpha_n,b\) 线性相关，故 \(b\) 可由 \(\alpha_1,\dots,\alpha_n\) <b>唯一</b>线性表示，方程组有唯一解。</p></div></details></div>
+  也成立，得到另一个不同解，与唯一解矛盾，故 \(R(A)=n\)；再由定理 4.5 得 \(R(A)=R(A,b)=n\)．</p>
+  <p><b>充分性：</b>当 \(R(A)=R(A,b)=n\) 时，\(\alpha_1,\dots,\alpha_n\) 线性无关、\(\alpha_1,\dots,\alpha_n,b\) 线性相关，故 \(b\) 可由 \(\alpha_1,\dots,\alpha_n\) <b>唯一</b>线性表示，方程组有唯一解．</p></div></details></div>
 
 <div class="def"><div class="lab"><span class="n">推论 4.4</span>无穷多解的充要条件</div>
-<p>\(Ax=b\) 有<b>无穷多解</b> \(\iff R(A)=R(A,b)\lt n\)。</p></div>
-<p class="muted">由定理 4.5 及推论 4.3 即得：有解且秩小于未知数个数时，对应齐次方程组有非零解，故非齐次也有无穷多解。</p>
+<p>\(Ax=b\) 有<b>无穷多解</b> \(\iff R(A)=R(A,b)\lt n\)．</p></div>
+<p class="muted">由定理 4.5 及推论 4.3 即得：有解且秩小于未知数个数时，对应齐次方程组有非零解，故非齐次也有无穷多解．</p>
 
 <div class="def"><div class="lab"><span class="n">推论 4.5</span></div>
-<p>当 \(R(A)=m\)（即 \(A\) 的行向量组线性无关，行满秩）时，\(Ax=b\) <b>必有解</b>（此时 \(R(A,b)=m=R(A)\)）。</p></div>
+<p>当 \(R(A)=m\)（即 \(A\) 的行向量组线性无关，行满秩）时，\(Ax=b\) <b>必有解</b>（此时 \(R(A,b)=m=R(A)\)）．</p></div>
 
 <div class="def"><div class="lab"><span class="n">推论 4.6</span>方阵情形的克莱姆法则</div>
 <p>当 \(A\) 为 \(n\) 阶方阵时，\(Ax=b\) 有唯一解 \(\iff |A|\neq0\)，且
   \[x_j=\frac{D_j}{D}\quad (j=1,2,\dots,n),\]
-  其中 \(D=|A|\)，\(D_j\) 是把 \(D\) 的第 \(j\) 列换成 \(b\) 所得的行列式。</p>
-<details><summary>证明</summary><div class="body"><p>由 \(|A|\neq0\) 知 \(A^{-1}\) 存在，于是 \(x=A^{-1}b=\frac{1}{|A|}A^*b\)。因 \(A^*b\) 的第 \(j\) 个分量恰为按行列式展开得到的 \(D_j\)，故 \(x_j=D_j/D\)。这正是第一章的克莱姆法则，此处用矩阵运算给出了另一种证明。</p></div></details></div>
+  其中 \(D=|A|\)，\(D_j\) 是把 \(D\) 的第 \(j\) 列换成 \(b\) 所得的行列式．</p>
+<details><summary>证明</summary><div class="body"><p>由 \(|A|\neq0\) 知 \(A^{-1}\) 存在，于是 \(x=A^{-1}b=\frac{1}{|A|}A^*b\)．因 \(A^*b\) 的第 \(j\) 个分量恰为按行列式展开得到的 \(D_j\)，故 \(x_j=D_j/D\)．这正是第一章的克莱姆法则，此处用矩阵运算给出了另一种证明．</p></div></details></div>
 
 <div class="def"><div class="lab"><span class="n">定理 4.6</span>无解的充要条件</div>
-<p>\(Ax=b\) <b>无解</b> 的充分必要条件是 \(R(A)\neq R(A,b)\)。</p></div>
-<p class="muted">此即定理 4.5 的逆否命题。</p>
+<p>\(Ax=b\) <b>无解</b> 的充分必要条件是 \(R(A)\neq R(A,b)\)．</p></div>
+<p class="muted">此即定理 4.5 的逆否命题．</p>
 
 <details><summary>几何直观</summary><div class="body"><p>二元一次方程组的每个方程表示平面上一条直线：</p>
   <p>（1）两直线相交于一点 \(\iff\) 有<b>唯一解</b>；</p>
   <p>（2）两直线平行 \(\iff\) <b>无解</b>；</p>
-  <p>（3）两直线重合 \(\iff\) <b>无穷多解</b>。</p>
-  <p>三元情形对应三个平面：三平面交于一点 \(\iff\) 唯一解；三平面交于一条直线 \(\iff\) 无穷多解；三平面无公共交点（如交于三条平行直线、或两两相交成三棱柱）\(\iff\) 无解；三平面重合 \(\iff\) 无穷多解。</p></div></details>
+  <p>（3）两直线重合 \(\iff\) <b>无穷多解</b>．</p>
+  <p>三元情形对应三个平面：三平面交于一点 \(\iff\) 唯一解；三平面交于一条直线 \(\iff\) 无穷多解；三平面无公共交点（如交于三条平行直线、或两两相交成三棱柱）\(\iff\) 无解；三平面重合 \(\iff\) 无穷多解．</p></div></details>
 
 <h3>四、解的性质</h3>
 <div class="def"><div class="lab"><span class="n">性质 4.3</span></div>
-<p>若 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是对应齐次方程组 \(Ax=0\) 的解。</p></div>
-<p class="muted">验证：\(A(\eta_1-\eta_2)=A\eta_1-A\eta_2=b-b=0\)。</p>
+<p>若 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是对应齐次方程组 \(Ax=0\) 的解．</p></div>
+<p class="muted">验证：\(A(\eta_1-\eta_2)=A\eta_1-A\eta_2=b-b=0\)．</p>
 <div class="def"><div class="lab"><span class="n">性质 4.4</span></div>
-<p>若 \(\eta\) 是 \(Ax=b\) 的解，\(\xi\) 是 \(Ax=0\) 的解，则 \(\eta+\xi\) 也是 \(Ax=b\) 的解。</p></div>
-<p class="muted">验证：\(A(\eta+\xi)=A\eta+A\xi=b+0=b\)。注意 \(\eta_1+\eta_2\) 一般不再是解（\(A(\eta_1+\eta_2)=2b\)），因此非齐次方程组的全体解向量<b>不构成向量空间</b>。</p>
+<p>若 \(\eta\) 是 \(Ax=b\) 的解，\(\xi\) 是 \(Ax=0\) 的解，则 \(\eta+\xi\) 也是 \(Ax=b\) 的解．</p></div>
+<p class="muted">验证：\(A(\eta+\xi)=A\eta+A\xi=b+0=b\)．注意 \(\eta_1+\eta_2\) 一般不再是解（\(A(\eta_1+\eta_2)=2b\)），因此非齐次方程组的全体解向量<b>不构成向量空间</b>．</p>
 
 <h3>五、通解公式</h3>
 <div class="def"><div class="lab"><span class="n">定理 4.7</span>非齐次通解结构</div>
 <p>当 \(R(A)=R(A,b)=r\lt n\) 时，\(Ax=b\) 的通解为
   \[x=\eta^*+k_1\xi_1+\cdots+k_{n-r}\xi_{n-r},\]
-  其中 \(\eta^*\) 是 \(Ax=b\) 的一个特解，\(\xi_1,\dots,\xi_{n-r}\) 是对应齐次方程组 \(Ax=0\) 的基础解系，\(k_1,\dots,k_{n-r}\) 为任意常数。</p>
+  其中 \(\eta^*\) 是 \(Ax=b\) 的一个特解，\(\xi_1,\dots,\xi_{n-r}\) 是对应齐次方程组 \(Ax=0\) 的基础解系，\(k_1,\dots,k_{n-r}\) 为任意常数．</p>
 <details><summary>证明</summary><div class="body"><p><b>一方面：</b>设 \(x\) 为 \(Ax=b\) 的任一解，由性质 4.3 知 \(x-\eta^*\) 是 \(Ax=0\) 的解，故可表为
   \[x-\eta^*=k_1\xi_1+\cdots+k_{n-r}\xi_{n-r},\]
-  即 \(x=\eta^*+k_1\xi_1+\cdots+k_{n-r}\xi_{n-r}\)。</p>
+  即 \(x=\eta^*+k_1\xi_1+\cdots+k_{n-r}\xi_{n-r}\)．</p>
   <p><b>另一方面：</b>由性质 4.4，对任意常数 \(k_1,\dots,k_{n-r}\)，
   \[A(\eta^*+k_1\xi_1+\cdots+k_{n-r}\xi_{n-r})=b+0=b,\]
-  故确为 \(Ax=b\) 的解。证毕。</p></div></details></div>
+  故确为 \(Ax=b\) 的解．证毕．</p></div></details></div>
 
 <h3>六、例题</h3>
 <div class="ex"><div class="lab">例 4.6（抽象题）</div>
-  <div class="stmt">已知非齐次方程组 \(Ax=b\) 有三个特解 \(\eta_1=(1,0,2)^T,\ \eta_2=(-1,2,-1)^T,\ \eta_3=(1,0,0)^T\)，且 \(R(A)=1\)。求 \(Ax=b\) 的通解。</div>
-  <div class="sol"><span class="mk">解</span>由 \(R(A)=1\) 知对应齐次方程组 \(Ax=0\) 的基础解系含 \(n-R(A)=3-1=2\) 个线性无关的解。取
+  <div class="stmt">已知非齐次方程组 \(Ax=b\) 有三个特解 \(\eta_1=(1,0,2)^T,\ \eta_2=(-1,2,-1)^T,\ \eta_3=(1,0,0)^T\)，且 \(R(A)=1\)．求 \(Ax=b\) 的通解．</div>
+  <div class="sol"><span class="mk">解</span>由 \(R(A)=1\) 知对应齐次方程组 \(Ax=0\) 的基础解系含 \(n-R(A)=3-1=2\) 个线性无关的解．取
   \[\xi_1=\eta_1-\eta_3=(0,0,2)^T,\qquad \xi_2=\eta_2-\eta_3=(-2,2,-1)^T,\]
-  由性质 4.3，\(\xi_1,\xi_2\) 均是 \(Ax=0\) 的解；它们显然线性无关，故可作为基础解系。于是通解为
+  由性质 4.3，\(\xi_1,\xi_2\) 均是 \(Ax=0\) 的解；它们显然线性无关，故可作为基础解系．于是通解为
   \[x=\eta_3+k_1\xi_1+k_2\xi_2=\begin{pmatrix}1\\0\\0\end{pmatrix}+k_1\begin{pmatrix}0\\0\\2\end{pmatrix}+k_2\begin{pmatrix}-2\\2\\-1\end{pmatrix}.\]
-  （验证：\(\eta_3\) 与 \(\eta_1=\eta_3+\xi_1\)、\(\eta_2=\eta_3+\xi_2\) 均为已知特解，自洽。）</div>
+  （验证：\(\eta_3\) 与 \(\eta_1=\eta_3+\xi_1\)、\(\eta_2=\eta_3+\xi_2\) 均为已知特解，自洽．）</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.7</div>
   <div class="stmt">求非齐次线性方程组
   \[\begin{cases}x_1-x_2-x_3+x_4=0,\\ x_1-x_2+x_3-3x_4=1,\\ x_1-x_2-2x_3+3x_4=-\frac12\end{cases}\]
-  的通解。</div>
+  的通解．</div>
   <div class="sol"><span class="mk">解</span>对增广矩阵作初等行变换化为行最简形：
   \[\left(\begin{array}{cccc|c}1&-1&-1&1&0\\ 1&-1&1&-3&1\\ 1&-1&-2&3&-\frac12\end{array}\right)
   \xrightarrow{r_2-r_1,\ r_3-r_1}
@@ -361,19 +361,19 @@
   \left(\begin{array}{cccc|c}1&-1&-1&1&0\\ 0&0&0&0&0\\ 0&0&-1&2&-\frac12\end{array}\right)
   \xrightarrow{-r_3,\ \text{换行}}
   \left(\begin{array}{cccc|c}1&-1&0&-1&\frac12\\ 0&0&1&-2&\frac12\\ 0&0&0&0&0\end{array}\right).\]
-  \(R(A)=R(A,b)=2\lt 4\)，故有无穷多解。同解方程组为
+  \(R(A)=R(A,b)=2\lt 4\)，故有无穷多解．同解方程组为
   \[\begin{cases}x_1=x_2+x_4+\frac12,\\[2pt] x_3=2x_4+\frac12.\end{cases}\]
-  取自由未知量 \(x_2=0,\ x_4=0\)，得一个特解 \(\eta^*=\left(\frac12,0,\frac12,0\right)^T\)。对应齐次方程组的基础解系可取
+  取自由未知量 \(x_2=0,\ x_4=0\)，得一个特解 \(\eta^*=\left(\frac12,0,\frac12,0\right)^T\)．对应齐次方程组的基础解系可取
   \[\xi_1=\begin{pmatrix}1\\1\\0\\0\end{pmatrix},\qquad \xi_2=\begin{pmatrix}1\\0\\2\\1\end{pmatrix}\]
-  （分别令 \((x_2,x_4)^T=(1,0)^T,\ (0,1)^T\) 得到）。故通解为
+  （分别令 \((x_2,x_4)^T=(1,0)^T,\ (0,1)^T\) 得到）．故通解为
   \[x=\eta^*+k_1\xi_1+k_2\xi_2,\quad k_1,k_2\in\mathbb{R}.\]
-  （代回验证：\(A\eta^*=b,\ A\xi_1=0,\ A\xi_2=0\) 均成立。）</div>
+  （代回验证：\(A\eta^*=b,\ A\xi_1=0,\ A\xi_2=0\) 均成立．）</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.8（含参数）</div>
   <div class="stmt">问 \(a\) 取何值时，非齐次方程组
   \[\begin{cases}ax_1+x_2+x_3=a-3,\\ x_1+ax_2+x_3=-2,\\ x_1+x_2+ax_3=-2\end{cases}\]
-  有唯一解？无解？有无穷多解？并在有无穷多解时求其通解。</div>
+  有唯一解？无解？有无穷多解？并在有无穷多解时求其通解．</div>
   <div class="sol"><span class="mk">解一</span>（增广矩阵消元）对增广矩阵作行变换：
   \[\left(\begin{array}{ccc|c}a&1&1&a-3\\ 1&a&1&-2\\ 1&1&a&-2\end{array}\right)
   \xrightarrow{r_1\leftrightarrow r_2}
@@ -390,28 +390,28 @@
   \(R(A)=2\neq R(A,b)=3\)，方程组<b>无解</b>；</p>
   <p class="sol">（3）当 \(a=1\) 时，
   \[\left(\begin{array}{ccc|c}1&1&1&-2\\ 1&1&1&-2\\ 1&1&1&-2\end{array}\right)\xrightarrow{}\left(\begin{array}{ccc|c}1&1&1&-2\\ 0&0&0&0\\ 0&0&0&0\end{array}\right),\]
-  \(R(A)=R(A,b)=1\lt 3\)，方程组<b>无穷多解</b>。同解方程组为 \(x_1+x_2+x_3=-2\)，取特解 \(\eta^*=(-2,0,0)^T\)，对应齐次基础解系 \(\xi_1=(-1,1,0)^T,\ \xi_2=(-1,0,1)^T\)，通解为
+  \(R(A)=R(A,b)=1\lt 3\)，方程组<b>无穷多解</b>．同解方程组为 \(x_1+x_2+x_3=-2\)，取特解 \(\eta^*=(-2,0,0)^T\)，对应齐次基础解系 \(\xi_1=(-1,1,0)^T,\ \xi_2=(-1,0,1)^T\)，通解为
   \[x=\eta^*+k_1\xi_1+k_2\xi_2,\quad k_1,k_2\in\mathbb{R}.\]</p>
 </div>
 
 <div class="ex"><div class="lab">例 4.9（期末真题）</div>
-  <div class="stmt">设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)。已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值。</div>
-  <div class="sol"><span class="mk">解</span>\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，等价于向量方程 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\beta\)（即 \(Ax=b\)）无解，即 \(R(\alpha_1,\alpha_2,\alpha_3)\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)\)。对矩阵 \((\alpha_1,\alpha_2,\alpha_3,\beta)\) 作行变换：
+  <div class="stmt">设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)．已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值．</div>
+  <div class="sol"><span class="mk">解</span>\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，等价于向量方程 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\beta\)（即 \(Ax=b\)）无解，即 \(R(\alpha_1,\alpha_2,\alpha_3)\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)\)．对矩阵 \((\alpha_1,\alpha_2,\alpha_3,\beta)\) 作行变换：
   \[\begin{pmatrix}1&2&3&4\\ 0&-1&1&-1\\ -1&-2&t&-5\\ 2&6&4&10\end{pmatrix}
   \xrightarrow{\substack{r_3+r_1\\ r_4-2r_1}}
   \begin{pmatrix}1&2&3&4\\ 0&-1&1&-1\\ 0&0&t+3&-1\\ 0&2&-2&2\end{pmatrix}
   \xrightarrow{r_4+2r_2}
   \begin{pmatrix}1&2&3&4\\ 0&-1&1&-1\\ 0&0&t+3&-1\\ 0&0&0&0\end{pmatrix}.\]
-  当 \(t=-3\) 时，\(R(\alpha_1,\alpha_2,\alpha_3)=2\) 而 \(R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，两者不等，\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，故 \(t=-3\)。</div>
+  当 \(t=-3\) 时，\(R(\alpha_1,\alpha_2,\alpha_3)=2\) 而 \(R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，两者不等，\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，故 \(t=-3\)．</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.10（考研真题）</div>
-  <div class="stmt">设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1+\alpha_2+\alpha_3+\alpha_4\)。求 \(Ax=\beta\) 的通解。</div>
-  <div class="sol"><span class="mk">解</span>由 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关且 \(\alpha_1=2\alpha_2-\alpha_3\)，知 \(R(A)=3\)，故 \(Ax=0\) 的基础解系含 \(4-3=1\) 个向量。因
+  <div class="stmt">设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1+\alpha_2+\alpha_3+\alpha_4\)．求 \(Ax=\beta\) 的通解．</div>
+  <div class="sol"><span class="mk">解</span>由 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关且 \(\alpha_1=2\alpha_2-\alpha_3\)，知 \(R(A)=3\)，故 \(Ax=0\) 的基础解系含 \(4-3=1\) 个向量．因
   \[\alpha_1-2\alpha_2+\alpha_3+0\alpha_4=0,\]
-  故 \(\xi=(1,-2,1,0)^T\) 是 \(Ax=0\) 的一个基础解系。又
+  故 \(\xi=(1,-2,1,0)^T\) 是 \(Ax=0\) 的一个基础解系．又
   \[A\begin{pmatrix}1\\1\\1\\1\end{pmatrix}=\alpha_1+\alpha_2+\alpha_3+\alpha_4=\beta,\]
-  故 \(\eta^*=(1,1,1,1)^T\) 是 \(Ax=\beta\) 的一个特解。于是通解为
+  故 \(\eta^*=(1,1,1,1)^T\) 是 \(Ax=\beta\) 的一个特解．于是通解为
   \[x=\eta^*+k\xi=\begin{pmatrix}1\\1\\1\\1\end{pmatrix}+k\begin{pmatrix}1\\-2\\1\\0\end{pmatrix},\quad k\in\mathbb{R}.\]</div>
 </div>
 
@@ -422,37 +422,37 @@
 
 <h3>一、引例：投入产出模型</h3>
 <div class="ex"><div class="lab">引例　国产新能源汽车产业链（列昂惕夫模型）</div>
-  <p class="stmt">设经济中有两个生产部门，直接消耗系数矩阵 \(A\) 表示各部门单位产出对其他部门的消耗。若外部最终需求为 \(d\)，则总产出 \(x\) 满足 \((E-A)x=d\)，即一个矩阵方程。这正是矩阵方程 \(AX=B\) 的典型背景：把多个右端项并成矩阵 \(B\)，一次性求解。</p>
+  <p class="stmt">设经济中有两个生产部门，直接消耗系数矩阵 \(A\) 表示各部门单位产出对其他部门的消耗．若外部最终需求为 \(d\)，则总产出 \(x\) 满足 \((E-A)x=d\)，即一个矩阵方程．这正是矩阵方程 \(AX=B\) 的典型背景：把多个右端项并成矩阵 \(B\)，一次性求解．</p>
 </div>
 
 <h3>二、矩阵方程 \(AX=B\) 的解</h3>
 <div class="def"><div class="lab"><span class="n">定理 4.8</span>矩阵方程有解的充要条件</div>
-<p>设 \(A\) 为 \(n\times m\) 矩阵，\(B\) 为 \(n\times l\) 矩阵，则矩阵方程 \(AX=B\) 有解的充分必要条件是 \(R(A)=R(A,B)\)。</p>
-<details><summary>证明</summary><div class="body"><p>设 \(A=(\alpha_1,\dots,\alpha_m)\)，\(B=(\beta_1,\dots,\beta_l)\)，\(X=(x_{ij})_{m\times l}\)。矩阵方程 \(AX=B\) 等价于 \(l\) 个向量方程组
+<p>设 \(A\) 为 \(n\times m\) 矩阵，\(B\) 为 \(n\times l\) 矩阵，则矩阵方程 \(AX=B\) 有解的充分必要条件是 \(R(A)=R(A,B)\)．</p>
+<details><summary>证明</summary><div class="body"><p>设 \(A=(\alpha_1,\dots,\alpha_m)\)，\(B=(\beta_1,\dots,\beta_l)\)，\(X=(x_{ij})_{m\times l}\)．矩阵方程 \(AX=B\) 等价于 \(l\) 个向量方程组
   \[x_{1j}\alpha_1+\cdots+x_{mj}\alpha_m=\beta_j\quad (j=1,2,\dots,l).\]</p>
   <p><b>必要性：</b>若 \(AX=B\) 有解，则每个 \(\beta_j\) 都可由 \(\alpha_1,\dots,\alpha_m\) 线性表示，即向量组 \(\{\alpha_1,\dots,\alpha_m\}\) 与 \(\{\alpha_1,\dots,\alpha_m,\beta_1,\dots,\beta_l\}\) 等价，故
   \[R(A)=R(\alpha_1,\dots,\alpha_m)=R(\alpha_1,\dots,\alpha_m,\beta_1,\dots,\beta_l)=R(A,B).\]</p>
-  <p><b>充分性：</b>若 \(R(A)=R(A,B)\)，则对每个 \(j\)，有 \(R(\alpha_1,\dots,\alpha_m)=R(\alpha_1,\dots,\alpha_m,\beta_j)\)，由定理 4.5 知 \(\beta_j\) 可由 \(\alpha_1,\dots,\alpha_m\) 线性表示，从而矩阵方程 \(AX=B\) 有解。</p></div></details></div>
+  <p><b>充分性：</b>若 \(R(A)=R(A,B)\)，则对每个 \(j\)，有 \(R(\alpha_1,\dots,\alpha_m)=R(\alpha_1,\dots,\alpha_m,\beta_j)\)，由定理 4.5 知 \(\beta_j\) 可由 \(\alpha_1,\dots,\alpha_m\) 线性表示，从而矩阵方程 \(AX=B\) 有解．</p></div></details></div>
 
 <div class="def"><div class="lab"><span class="n">推论 4.7</span></div>
-<p>向量组 \(B:\beta_1,\dots,\beta_l\) 可由向量组 \(A:\alpha_1,\dots,\alpha_m\) 线性表示的充分必要条件是矩阵方程 \((\alpha_1,\dots,\alpha_m)X=(\beta_1,\dots,\beta_l)\) 有解，即 \(R(\alpha_1,\dots,\alpha_m)=R(\alpha_1,\dots,\alpha_m,\beta_1,\dots,\beta_l)\)。</p></div>
+<p>向量组 \(B:\beta_1,\dots,\beta_l\) 可由向量组 \(A:\alpha_1,\dots,\alpha_m\) 线性表示的充分必要条件是矩阵方程 \((\alpha_1,\dots,\alpha_m)X=(\beta_1,\dots,\beta_l)\) 有解，即 \(R(\alpha_1,\dots,\alpha_m)=R(\alpha_1,\dots,\alpha_m,\beta_1,\dots,\beta_l)\)．</p></div>
 <div class="def"><div class="lab"><span class="n">推论 4.8</span></div>
 <p>向量组 \(A\) 与 \(B\) 等价的充分必要条件是矩阵方程 \((\alpha_1,\dots,\alpha_m)X=(\beta_1,\dots,\beta_l)\) 与 \((\beta_1,\dots,\beta_l)Y=(\alpha_1,\dots,\alpha_m)\) 均有解，即
   \[R(A)=R(B)=R(A,B).\]</p></div>
 
 <div class="ex"><div class="lab">例 4.11</div>
-  <div class="stmt">证明向量组 \(\alpha_1=(1,0,0,1)^T,\ \alpha_2=(0,1,0,2)^T,\ \alpha_3=(0,0,1,3)^T\) 与向量组 \(\beta_1=(1,-1,2,5)^T,\ \beta_2=(2,2,-3,-3)^T,\ \beta_3=(-1,1,0,1)^T,\ \beta_4=(0,-1,1,1)^T\) 等价。</div>
-  <div class="sol"><span class="mk">证</span>记 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(B=(\beta_1,\beta_2,\beta_3,\beta_4)\)。由推论 4.8，只需证 \(R(A)=R(B)=R(A,B)\)。将 \((A,B)\) 化为行阶梯形：
+  <div class="stmt">证明向量组 \(\alpha_1=(1,0,0,1)^T,\ \alpha_2=(0,1,0,2)^T,\ \alpha_3=(0,0,1,3)^T\) 与向量组 \(\beta_1=(1,-1,2,5)^T,\ \beta_2=(2,2,-3,-3)^T,\ \beta_3=(-1,1,0,1)^T,\ \beta_4=(0,-1,1,1)^T\) 等价．</div>
+  <div class="sol"><span class="mk">证</span>记 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(B=(\beta_1,\beta_2,\beta_3,\beta_4)\)．由推论 4.8，只需证 \(R(A)=R(B)=R(A,B)\)．将 \((A,B)\) 化为行阶梯形：
   \[(A,B)=\begin{pmatrix}1&0&0&1&2&-1&0\\ 0&1&0&-1&2&1&-1\\ 0&0&1&2&-3&0&1\\ 1&2&3&5&-3&1&1\end{pmatrix}
   \xrightarrow{r_4-r_1-2r_2-3r_3}
   \begin{pmatrix}1&0&0&1&2&-1&0\\ 0&1&0&-1&2&1&-1\\ 0&0&1&2&-3&0&1\\ 0&0&0&0&0&0&0\end{pmatrix}.\]
-  由此得 \(R(A)=R(A,B)=3\)；同理可算得 \(R(B)=3\)。故 \(R(A)=R(B)=R(A,B)=3\)，两向量组等价。</div>
+  由此得 \(R(A)=R(A,B)=3\)；同理可算得 \(R(B)=3\)．故 \(R(A)=R(B)=R(A,B)=3\)，两向量组等价．</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.12（考研真题）</div>
-  <div class="stmt">设非齐次方程组 \(Ax=b\) 有三个线性无关的解 \(\eta_1,\eta_2,\eta_3\)。证明 \(R(A)\le n-2\)（其中 \(n\) 为未知数个数）。</div>
-  <div class="sol"><span class="mk">证</span>由性质 4.3，\(\xi_1=\eta_1-\eta_3,\ \xi_2=\eta_2-\eta_3\) 都是 \(Ax=0\) 的解。因 \(\eta_1,\eta_2,\eta_3\) 线性无关，易证 \(\xi_1,\xi_2\) 线性无关（若 \(c_1\xi_1+c_2\xi_2=0\)，即 \(c_1\eta_1+c_2\eta_2-(c_1+c_2)\eta_3=0\)，由 \(\eta_i\) 无关得 \(c_1=c_2=0\)）。故 \(Ax=0\) 至少有两个线性无关解，解空间维数 \(n-R(A)\ge2\)，即 \(R(A)\le n-2\)。</div>
-  <p class="muted">注：例如当 \(R(A)=2,\ n=4\) 时，恰有三个线性无关的特解——这与推论 4.4 完全一致。</p>
+  <div class="stmt">设非齐次方程组 \(Ax=b\) 有三个线性无关的解 \(\eta_1,\eta_2,\eta_3\)．证明 \(R(A)\le n-2\)（其中 \(n\) 为未知数个数）．</div>
+  <div class="sol"><span class="mk">证</span>由性质 4.3，\(\xi_1=\eta_1-\eta_3,\ \xi_2=\eta_2-\eta_3\) 都是 \(Ax=0\) 的解．因 \(\eta_1,\eta_2,\eta_3\) 线性无关，易证 \(\xi_1,\xi_2\) 线性无关（若 \(c_1\xi_1+c_2\xi_2=0\)，即 \(c_1\eta_1+c_2\eta_2-(c_1+c_2)\eta_3=0\)，由 \(\eta_i\) 无关得 \(c_1=c_2=0\)）．故 \(Ax=0\) 至少有两个线性无关解，解空间维数 \(n-R(A)\ge2\)，即 \(R(A)\le n-2\)．</div>
+  <p class="muted">注：例如当 \(R(A)=2,\ n=4\) 时，恰有三个线性无关的特解——这与推论 4.4 完全一致．</p>
 </div>
 
 <!-- ============ §4.4 ============ -->
@@ -460,10 +460,10 @@
 <div class="sec-quiz" data-sec="s43" data-ch="4" data-n="28"></div>
 <h2 id="s44"><span class="num">§4.4</span>综合应用与软件实现</h2>
 <div class="ex"><div class="lab">引例　让机械臂"够到"目标：解线性方程组求关节角</div>
-  <p class="stmt">六轴<b>工业机器人</b>要把末端送到某空间点，每个关节转角 \(\theta_i\) 需满足一组方程；在目标点附近线性化后，得到 \(A\theta=b\)。于是"能否够到"（解是否存在）、"有几种姿态"（解是否唯一）、"多余自由度怎么分配"（无穷多解如何选），正好对应本章的全部结论：齐次看零空间、非齐次看增广矩阵秩、矩阵方程看 \(R(A)=R(A,B)\)。</p>
+  <p class="stmt">六轴<b>工业机器人</b>要把末端送到某空间点，每个关节转角 \(\theta_i\) 需满足一组方程；在目标点附近线性化后，得到 \(A\theta=b\)．于是"能否够到"（解是否存在）、"有几种姿态"（解是否唯一）、"多余自由度怎么分配"（无穷多解如何选），正好对应本章的全部结论：齐次看零空间、非齐次看增广矩阵秩、矩阵方程看 \(R(A)=R(A,B)\)．</p>
   <p><b>探索：</b>一个 2 轴简化模型给出
   \(\begin{cases}2\theta_1+\theta_2=5\\ \theta_1+2\theta_2=4\end{cases}\)，
-  学完本节你就能判定它有唯一解，并直接解出 \(\theta_1=2,\ \theta_2=1\)——真实机械臂只是把这套方程放大到六维。</p>
+  学完本节你就能判定它有唯一解，并直接解出 \(\theta_1=2,\ \theta_2=1\)——真实机械臂只是把这套方程放大到六维．</p>
 </div>
 
 <h3>一、应用案例</h3>
@@ -471,11 +471,11 @@
   <details><summary>展开查看</summary>
   <div class="body">
 
-  <p class="stmt">以“电池容量预测电动车续航”这一真实工程问题为例。下表给出 8 款主流纯电动车的可用电池容量 \(C\)(kWh) 与 NEDC 续航 \(R\)(km)（近似真实值）：</p>
+  <p class="stmt">以“电池容量预测电动车续航”这一真实工程问题为例．下表给出 8 款主流纯电动车的可用电池容量 \(C\)(kWh) 与 NEDC 续航 \(R\)(km)（近似真实值）：</p>
   <table class="dt"><thead><tr><th>车型</th><th>容量 C (kWh)</th><th>续航 R (km)</th></tr></thead><tbody><tr><td>五菱宏光MINI</td><td>13.8</td><td>170</td></tr><tr><td>比亚迪海鸥</td><td>30.1</td><td>305</td></tr><tr><td>比亚迪海豚</td><td>44.9</td><td>420</td></tr><tr><td>广汽埃安Y</td><td>63.9</td><td>510</td></tr><tr><td>特斯拉Model3</td><td>60.0</td><td>556</td></tr><tr><td>蔚来ES6</td><td>75.0</td><td>625</td></tr><tr><td>小鹏P7</td><td>80.9</td><td>706</td></tr><tr><td>极氪001</td><td>100.0</td><td>741</td></tr></tbody></table>
-  <p class="stmt">把每个样本代入 \(R=a+bC\) 会得到一个含 8 个方程的<b>超定方程组</b>（方程数 ≫ 未知数）。机器学习中的线性回归不要求“严格成立”，而是求使误差平方和最小的一组 \((a,b)\)，这导出<b>正规方程</b>
+  <p class="stmt">把每个样本代入 \(R=a+bC\) 会得到一个含 8 个方程的<b>超定方程组</b>（方程数 ≫ 未知数）．机器学习中的线性回归不要求“严格成立”，而是求使误差平方和最小的一组 \((a,b)\)，这导出<b>正规方程</b>
   \[(X^{T}X)\begin{pmatrix}a\\ b\end{pmatrix}=X^{T}R,\]
-  其中设计矩阵 \(X\) 首列为全 1（截距）、次列为 \(C\) 值。代入本例数据（\(n=8,\ \sum C=468.6,\ \sum C^2=32965.5,\ \sum R=4033.0,\ \sum CR=274423.9\)）得
+  其中设计矩阵 \(X\) 首列为全 1（截距）、次列为 \(C\) 值．代入本例数据（\(n=8,\ \sum C=468.6,\ \sum C^2=32965.5,\ \sum R=4033.0,\ \sum CR=274423.9\)）得
   \[\begin{pmatrix}8&468.6\\ 468.6&32965.5\end{pmatrix}\begin{pmatrix}a\\ b\end{pmatrix}=\begin{pmatrix}4033.0\\ 274423.9\end{pmatrix}.\]</p>
   <div class="figrow"><svg viewBox="0 0 460 320" width="460" role="img" aria-label="电动车续航回归">
 <rect x="0" y="0" width="460" height="320" fill="#fff" stroke="#e7ebef"/>
@@ -509,19 +509,19 @@
 <text x="250.0" y="312" font-size="11" fill="#4a5560" text-anchor="middle">电池容量 C (kWh)</text>
 <text x="14" y="147.5" font-size="11" fill="#4a5560" text-anchor="middle" transform="rotate(-90 14 147.5)">续航 R (km)</text>
 </svg></div>
-  <p class="muted">图 4-1　8 款车型（容量—续航）散点与拟合直线 \(R=98.66+6.92 C\)。斜率 \(b\) 即平均能量效率（km/kWh）。</p>
-  <div class="sol"><span class="mk">解</span>这是关于 \(a,b\) 的<b>非齐次线性方程组</b>。解得 \(a=98.66,\ b=6.92\)，拟合直线为
+  <p class="muted">图 4-1　8 款车型（容量—续航）散点与拟合直线 \(R=98.66+6.92 C\)．斜率 \(b\) 即平均能量效率（km/kWh）．</p>
+  <div class="sol"><span class="mk">解</span>这是关于 \(a,b\) 的<b>非齐次线性方程组</b>．解得 \(a=98.66,\ b=6.92\)，拟合直线为
   \[R=98.66+6.92 C.\]
-  据此可预测：一款 90 kWh 电池的新车型，预计续航约 722 km。把“预测”转化为“求解一个线性方程组”——这正是机器学习线性回归、乃至深度神经网络反向传播的核心思想。</div>
+  据此可预测：一款 90 kWh 电池的新车型，预计续航约 722 km．把“预测”转化为“求解一个线性方程组”——这正是机器学习线性回归、乃至深度神经网络反向传播的核心思想．</div>
 
   </div>
 </details></div><div class="case"><div class="lab">案例 2 电气工程：直流电网的节点电压分析</div>
   <details><summary>展开查看</summary>
   <div class="body">
 
-  <p class="stmt">某园区直流微电网含 4 个节点，其中节点④接地（0 V），节点①、②、③对地电压 \(v_1,v_2,v_3\) 待求。各节点经电阻互联（如图 4-2），并有电流源分别向节点①、②、③注入 \(5\,\mathrm A,\ 3\,\mathrm A,\ 2\,\mathrm A\)。对节点①列 KCL：流出该节点的电流 = 流入（注入）电流，即
+  <p class="stmt">某园区直流微电网含 4 个节点，其中节点④接地（0 V），节点①、②、③对地电压 \(v_1,v_2,v_3\) 待求．各节点经电阻互联（如图 4-2），并有电流源分别向节点①、②、③注入 \(5\,\mathrm A,\ 3\,\mathrm A,\ 2\,\mathrm A\)．对节点①列 KCL：流出该节点的电流 = 流入（注入）电流，即
   \[\tfrac{v_1-v_2}{2}+\tfrac{v_1-v_3}{4}+\tfrac{v_1}{1}=5,\]
-  其余节点同理。整理为矩阵形式 \(Gv=I\)：</p>
+  其余节点同理．整理为矩阵形式 \(Gv=I\)：</p>
   <table class="dt"><thead><tr><th>电导矩阵 G (S)</th><th>节点①</th><th>节点②</th><th>节点③</th></tr></thead><tbody><tr><td>节点1</td><td>1.750</td><td>-0.500</td><td>-0.250</td></tr><tr><td>节点2</td><td>-0.500</td><td>1.500</td><td>-0.500</td></tr><tr><td>节点3</td><td>-0.250</td><td>-0.500</td><td>1.000</td></tr></tbody></table>
   <div class="figrow"><svg viewBox="0 0 430 300" width="430" role="img" aria-label="直流电阻网络">
 <rect x="0" y="0" width="430" height="300" fill="#fff" stroke="#e7ebef"/>
@@ -560,17 +560,17 @@
 <text x="300" y="44" font-size="9.5" fill="#9a3412" text-anchor="middle">↧ 3 A</text>
 <text x="210" y="142" font-size="9.5" fill="#9a3412" text-anchor="middle">↧ 2 A</text>
 </svg></div>
-  <p class="muted">图 4-2　四节点直流电阻网络：实线为支路电阻，接地符号为参考节点，箭头为电流源注入。</p>
-  <div class="sol"><span class="mk">解</span>这是一个 \(3\times3\) 的<b>非齐次线性方程组</b>。代入数值解得
+  <p class="muted">图 4-2　四节点直流电阻网络：实线为支路电阻，接地符号为参考节点，箭头为电流源注入．</p>
+  <div class="sol"><span class="mk">解</span>这是一个 \(3\times3\) 的<b>非齐次线性方程组</b>．代入数值解得
   \[v_1=5.45\ \mathrm V,\quad v_2=5.93\ \mathrm V,\quad v_3=6.33\ \mathrm V.\]
-  注意电导矩阵 \(G\) 是<b>对称且对角占优</b>的（每行非对角元绝对值之和不超过对角元），这类“M-矩阵”保证方程组必有唯一解——这是电网、芯片供电网络得以稳定求解的数学基础。真实电网有成千上万个节点，求解“潮流”用的正是同一套大规模稀疏线性方程组（LU/Cholesky 分解或牛顿—拉夫逊迭代）。</div>
+  注意电导矩阵 \(G\) 是<b>对称且对角占优</b>的（每行非对角元绝对值之和不超过对角元），这类“M-矩阵”保证方程组必有唯一解——这是电网、芯片供电网络得以稳定求解的数学基础．真实电网有成千上万个节点，求解“潮流”用的正是同一套大规模稀疏线性方程组（LU/Cholesky 分解或牛顿—拉夫逊迭代）．</div>
 
   </div>
 </details></div><div class="case"><div class="lab">案例 3 高铁运营：枢纽客流径路分配（网络流）</div>
   <details><summary>展开查看</summary>
   <div class="body">
 
-  <p class="stmt">某高铁枢纽承担“城市 O—城市 D”方向运输，列车可经三条径路运行（见图 4-3）：径路①直达、径路②经中转枢纽 H、径路③绕行。设三条径路日均运量分别为 \(x_1,x_2,x_3\)（千人次/日）。根据区段总运量守恒与枢纽换乘能力分担规则，建立线性方程组：</p>
+  <p class="stmt">某高铁枢纽承担“城市 O—城市 D”方向运输，列车可经三条径路运行（见图 4-3）：径路①直达、径路②经中转枢纽 H、径路③绕行．设三条径路日均运量分别为 \(x_1,x_2,x_3\)（千人次/日）．根据区段总运量守恒与枢纽换乘能力分担规则，建立线性方程组：</p>
   <table class="dt"><thead><tr><th>约束</th><th>方程</th></tr></thead><tbody>
   <tr><td>总运量守恒</td><td>\(x_1+x_2+x_3=180\)</td></tr>
   <tr><td>干线运能分担</td><td>\(x_1-0.6x_2=20\)</td></tr>
@@ -590,23 +590,23 @@
 <text x="250" y="40" font-size="10" fill="#6d28d9" text-anchor="middle">径路2 x2</text>
 <text x="235" y="232" font-size="10" fill="#9a3412" text-anchor="middle">径路3 x3</text>
 </svg></div>
-  <p class="muted">图 4-3　O—D 客流的三条径路分配网络（实线/紫线/橙虚线）。</p>
+  <p class="muted">图 4-3　O—D 客流的三条径路分配网络（实线/紫线/橙虚线）．</p>
   <div class="sol"><span class="mk">解</span>该 \(3\times3\) 非齐次线性方程组系数矩阵
   \[\begin{pmatrix}1&1&1\\ 1&-0.6&0\\ 0&1&2\end{pmatrix}\begin{pmatrix}x_1\\ x_2\\ x_3\end{pmatrix}=\begin{pmatrix}180\\ 20\\ 150\end{pmatrix},\]
-  解得 \(x_1=66.4,\ x_2=77.3,\ x_3=36.4\)（千人次/日）。运输组织部门据此编制列车运行图与动车组周转。全国高铁的 OD 客流预测、列车径路优化，本质都是在此类网络流守恒方程上，叠加运能与时效约束的大规模线性规划——线性代数既是建模语言，也是求解引擎。</div>
+  解得 \(x_1=66.4,\ x_2=77.3,\ x_3=36.4\)（千人次/日）．运输组织部门据此编制列车运行图与动车组周转．全国高铁的 OD 客流预测、列车径路优化，本质都是在此类网络流守恒方程上，叠加运能与时效约束的大规模线性规划——线性代数既是建模语言，也是求解引擎．</div>
 
   </div>
 </details></div><div class="case"><div class="lab">案例 4 现代产业链：投入产出与列昂惕夫模型</div>
   <details><summary>展开查看</summary>
   <div class="body">
 
-  <p class="stmt">以国民经济三大部门（①农业 ②工业 ③服务业）为例。直接消耗系数矩阵 \(A\) 表示各部门生产 1 单位产出对自身及他部门的消耗：</p>
+  <p class="stmt">以国民经济三大部门（①农业 ②工业 ③服务业）为例．直接消耗系数矩阵 \(A\) 表示各部门生产 1 单位产出对自身及他部门的消耗：</p>
   <table class="dt"><thead><tr><th>消耗系数 A</th><th>①农业</th><th>②工业</th><th>③服务业</th></tr></thead><tbody><tr><td>部门1</td><td>0.15</td><td>0.25</td><td>0.10</td></tr><tr><td>部门2</td><td>0.20</td><td>0.30</td><td>0.15</td></tr><tr><td>部门3</td><td>0.10</td><td>0.15</td><td>0.20</td></tr></tbody></table>
   <p class="stmt">若外部最终需求（居民消费+出口等）为 \(d=(100,150,120)^{T}\)（亿元），则各部门总产出 \(x\) 满足列昂惕夫方程 \((E-A)x=d\)：
   \[(E-A)=\begin{pmatrix}0.85&-0.25&-0.10\\ -0.20&0.70&-0.15\\ -0.10&-0.15&0.80\end{pmatrix}.\]</p>
   <div class="sol"><span class="mk">解</span>这是 \(3\times3\) 非齐次线性方程组，解为总产出
   \[x=(E-A)^{-1}d=\begin{pmatrix}245.3\\ 336.6\\ 243.8\end{pmatrix}\ \text{(亿元)}.\]
-  含义：为最终满足 100/150/120 亿元的需求，三大部门须分别生产约 245.3、336.6、243.8 亿元——其中超出最终需求的部分，正是部门间相互消耗掉的“中间投入”。这一模型由 W. Leontief 提出并获 1973 年诺贝尔经济学奖，今天用于测算“芯片—整车”“能源—制造”等产业链的关联与韧性：当某部门受冲击（\(d\) 变动），只需解一次线性方程组，即可推算全链波动。</div>
+  含义：为最终满足 100/150/120 亿元的需求，三大部门须分别生产约 245.3、336.6、243.8 亿元——其中超出最终需求的部分，正是部门间相互消耗掉的“中间投入”．这一模型由 W. Leontief 提出并获 1973 年诺贝尔经济学奖，今天用于测算“芯片—整车”“能源—制造”等产业链的关联与韧性：当某部门受冲击（\(d\) 变动），只需解一次线性方程组，即可推算全链波动．</div>
   <table class="dt"><thead><tr><th>部门</th><th>总产出 x (亿元)</th><th>最终需求 d (亿元)</th></tr></thead><tbody><tr><td>部门1</td><td>245.3</td><td>100</td></tr><tr><td>部门2</td><td>336.6</td><td>150</td></tr><tr><td>部门3</td><td>243.8</td><td>120</td></tr></tbody></table>
 
   </div>
@@ -614,12 +614,12 @@
 
     <!-- ============ 考研选讲 ============ -->
     <h2 id="adv4">考研选讲</h2>
-    <p class="muted">本栏目选取历年考研真题，展示线性方程组求解、解的结构与矩阵方程的综合运用。建议先独立思考，再展开解答。</p>
+    <p class="muted">本栏目选取历年考研真题，展示线性方程组求解、解的结构与矩阵方程的综合运用．建议先独立思考，再展开解答．</p>
 
     <div class="ex"><div class="lab">选讲 1　（2019 · 考研数学一）</div>
       <p class="stmt">讨论 \(a,b\) 使方程组
       \(\begin{cases}x_1+x_2+x_3=1,\\ x_1+2x_2+3x_3=2,\\ x_1+3x_2+a x_3=b\end{cases}\)
-      有唯一解、无穷多解、无解；并在唯一解时给出通解表达式。</p>
+      有唯一解、无穷多解、无解；并在唯一解时给出通解表达式．</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　对增广矩阵作行变换：
@@ -629,72 +629,72 @@
             \xrightarrow{r_3-2r_2}
             \left(\begin{array}{ccc|c}1&1&1&1\\0&1&2&1\\0&0&a-5&b-3\end{array}\right).\]
           由最后一行分情况：</p>
-          <p>(i) \(a\neq5\)：系数矩阵满秩，有唯一解。由 \((a-5)x_3=b-3\) 得 \(x_3=\dfrac{b-3}{a-5}\)，回代 \(x_2=1-2x_3\)，\(x_1=1-x_2-x_3\)。例如取 \(a=3,b=0\)：得 \(x_3=\dfrac32,\ x_2=-2,\ x_1=\dfrac32\)。</p>
-          <p>(ii) \(a=5\) 且 \(b=3\)：出现自由未知量，无穷多解。</p>
-          <p>(iii) \(a=5\) 且 \(b\neq3\)：出现 \(0=\text{非零}\)，无解。</p>
-          <p><b>方法提炼：</b>先化阶梯形，再看"主元是否齐全、是否出现 \(0=d\)"——这是 §4.1/§4.2 的总纲。</p>
+          <p>(i) \(a\neq5\)：系数矩阵满秩，有唯一解．由 \((a-5)x_3=b-3\) 得 \(x_3=\dfrac{b-3}{a-5}\)，回代 \(x_2=1-2x_3\)，\(x_1=1-x_2-x_3\)．例如取 \(a=3,b=0\)：得 \(x_3=\dfrac32,\ x_2=-2,\ x_1=\dfrac32\)．</p>
+          <p>(ii) \(a=5\) 且 \(b=3\)：出现自由未知量，无穷多解．</p>
+          <p>(iii) \(a=5\) 且 \(b\neq3\)：出现 \(0=\text{非零}\)，无解．</p>
+          <p><b>方法提炼：</b>先化阶梯形，再看"主元是否齐全、是否出现 \(0=d\)"——这是 §4.1/§4.2 的总纲．</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 2　（2017 · 考研数学二）</div>
-      <p class="stmt">求齐次方程组 \(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+2x_2+x_3=0\end{cases}\) 的基础解系。</p>
+      <p class="stmt">求齐次方程组 \(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+2x_2+x_3=0\end{cases}\) 的基础解系．</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　系数矩阵 \(\begin{pmatrix}1&2&3\\2&2&1\end{pmatrix}\) 的秩为 \(2\)（两行不成比例），未知数 \(3\) 个 \(\Rightarrow\) 解空间维数为 \(1\)，只需找一个非零解向量。</p>
-          <p>化阶梯：\(r_2-2r_1\to(0,-2,-5)\)。令 \(x_3=2\)，则 \(-2x_2-10=0\Rightarrow x_2=-5\)；由第一行 \(x_1+2(-5)+3\cdot2=0\Rightarrow x_1=4\)。
-          故一个基础解系为 \(\xi=(4,-5,2)^T\)，通解 \(x=k\xi\)。</p>
-          <p><b>方法提炼：</b>基础解系 = 解空间的一组基；取自由未知量赋值、回代即可，不必死背公式。</p>
+          <p><span style="font-weight:700">解</span>　系数矩阵 \(\begin{pmatrix}1&2&3\\2&2&1\end{pmatrix}\) 的秩为 \(2\)（两行不成比例），未知数 \(3\) 个 \(\Rightarrow\) 解空间维数为 \(1\)，只需找一个非零解向量．</p>
+          <p>化阶梯：\(r_2-2r_1\to(0,-2,-5)\)．令 \(x_3=2\)，则 \(-2x_2-10=0\Rightarrow x_2=-5\)；由第一行 \(x_1+2(-5)+3\cdot2=0\Rightarrow x_1=4\)．
+          故一个基础解系为 \(\xi=(4,-5,2)^T\)，通解 \(x=k\xi\)．</p>
+          <p><b>方法提炼：</b>基础解系 = 解空间的一组基；取自由未知量赋值、回代即可，不必死背公式．</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 3　（2020 · 考研数学一）</div>
-      <p class="stmt">求方程组 \(\begin{cases}x_1+x_2+x_3+x_4=1,\\ x_1+x_2-x_3-x_4=1\end{cases}\) 的通解。</p>
+      <p class="stmt">求方程组 \(\begin{cases}x_1+x_2+x_3+x_4=1,\\ x_1+x_2-x_3-x_4=1\end{cases}\) 的通解．</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　两式相加得 \(2(x_1+x_2)=2\Rightarrow x_1+x_2=1\)；两式相减得 \(2(x_3+x_4)=0\Rightarrow x_3+x_4=0\)。
-          令 \(x_2=s,\ x_4=t\)（自由未知量），则 \(x_1=1-s,\ x_3=-t\)。写成向量形式：
+          <p><span style="font-weight:700">解</span>　两式相加得 \(2(x_1+x_2)=2\Rightarrow x_1+x_2=1\)；两式相减得 \(2(x_3+x_4)=0\Rightarrow x_3+x_4=0\)．
+          令 \(x_2=s,\ x_4=t\)（自由未知量），则 \(x_1=1-s,\ x_3=-t\)．写成向量形式：
           \[x=\begin{pmatrix}1\\0\\0\\0\end{pmatrix}
             +s\begin{pmatrix}1\\-1\\0\\0\end{pmatrix}
             +t\begin{pmatrix}0\\0\\-1\\1\end{pmatrix}.\]
-          其中 \((1,0,0,0)^T\) 是一个特解，\(\{(1,-1,0,0)^T,(0,0,-1,1)^T\}\) 是导出齐次方程组的基础解系。</p>
-          <p><b>方法提炼：</b>这正是 §4.2 的"通解结构定理"——解集合 = 一个点（特解）+ 一个子空间（齐次通解）。</p>
+          其中 \((1,0,0,0)^T\) 是一个特解，\(\{(1,-1,0,0)^T,(0,0,-1,1)^T\}\) 是导出齐次方程组的基础解系．</p>
+          <p><b>方法提炼：</b>这正是 §4.2 的"通解结构定理"——解集合 = 一个点（特解）+ 一个子空间（齐次通解）．</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 4　（2018 · 考研数学二）</div>
-      <p class="stmt">设 \(A=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)，\(B=E\)（二阶单位阵），求矩阵 \(X\) 使 \(AX=B\)。</p>
+      <p class="stmt">设 \(A=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)，\(B=E\)（二阶单位阵），求矩阵 \(X\) 使 \(AX=B\)．</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　因 \(|A|=-2\neq0\)，\(A\) 可逆，故 \(X=A^{-1}B=A^{-1}\)。
+          <p><span style="font-weight:700">解</span>　因 \(|A|=-2\neq0\)，\(A\) 可逆，故 \(X=A^{-1}B=A^{-1}\)．
           \[A^{-1}=-\frac12\begin{pmatrix}4&-2\\-3&1\end{pmatrix}
             =\begin{pmatrix}-2&1\\[2pt]\tfrac32&-\tfrac12\end{pmatrix}.\]
           检验：\(AX=\begin{pmatrix}1&2\\3&4\end{pmatrix}
           \begin{pmatrix}-2&1\\\tfrac32&-\tfrac12\end{pmatrix}
-          =\begin{pmatrix}1&0\\0&1\end{pmatrix}=E\)，正确。</p>
-          <p><b>方法提炼：</b>矩阵方程先判断可逆性；左乘 \(A^{-1}\) 要"贴着 \(A\) 乘"，方向不能反（\(AXB=C\) 型需用 \(A^{-1}\) 左乘、\(B^{-1}\) 右乘）。</p>
+          =\begin{pmatrix}1&0\\0&1\end{pmatrix}=E\)，正确．</p>
+          <p><b>方法提炼：</b>矩阵方程先判断可逆性；左乘 \(A^{-1}\) 要"贴着 \(A\) 乘"，方向不能反（\(AXB=C\) 型需用 \(A^{-1}\) 左乘、\(B^{-1}\) 右乘）．</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 5　（2021 · 考研数学一）</div>
-      <p class="stmt">求下列两个齐次方程组的公共解：\(\text{(I)}\ x_1+x_2+x_3=0\)；\(\text{(II)}\ x_1+2x_2+3x_3=0\)。</p>
+      <p class="stmt">求下列两个齐次方程组的公共解：\(\text{(I)}\ x_1+x_2+x_3=0\)；\(\text{(II)}\ x_1+2x_2+3x_3=0\)．</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　公共解须同时满足两式。两式相减得 \(x_2+2x_3=0\Rightarrow x_2=-2x_3\)；代入 (I)：\(x_1+(-2x_3)+x_3=0\Rightarrow x_1=x_3\)。
-          令 \(x_3=k\)，则公共解为 \((k,-2k,k)^T=k(1,-2,1)^T\)，\(k\) 任意。</p>
-          <p><b>方法提炼：</b>求"公共解"就是联立两个方程组再求解；它体现了子空间交（§3.4 的 \(V\cap W\)）的齐次版本。</p>
+          <p><span style="font-weight:700">解</span>　公共解须同时满足两式．两式相减得 \(x_2+2x_3=0\Rightarrow x_2=-2x_3\)；代入 (I)：\(x_1+(-2x_3)+x_3=0\Rightarrow x_1=x_3\)．
+          令 \(x_3=k\)，则公共解为 \((k,-2k,k)^T=k(1,-2,1)^T\)，\(k\) 任意．</p>
+          <p><b>方法提炼：</b>求"公共解"就是联立两个方程组再求解；它体现了子空间交（§3.4 的 \(V\cap W\)）的齐次版本．</p>
         </div>
       </details>
     </div>
 <div class="hist"><div class="lab">数值求解简史</div>
-  <p>从《九章算术》的直除法、刘徽的“互乘相消”，到高斯—约当消元、现代的高斯消去法（带主元选取以避免小主元带来的数值不稳定），再到针对大型稀疏系统的迭代法（Jacobi、Gauss–Seidel、共轭梯度）与直接法（LU、QR、Cholesky 分解），线性方程组的数值解法始终是计算数学的支柱。今天，从有限元仿真到机器学习中的正规方程，乃至页面排名（PageRank）的求解，背后都是同一类问题。理解其代数结构（秩、基础解系、通解），能帮助我们判断问题是否良定、解是否唯一，并在软件中正确解读结果。</p>
+  <p>从《九章算术》的直除法、刘徽的“互乘相消”，到高斯—约当消元、现代的高斯消去法（带主元选取以避免小主元带来的数值不稳定），再到针对大型稀疏系统的迭代法（Jacobi、Gauss–Seidel、共轭梯度）与直接法（LU、QR、Cholesky 分解），线性方程组的数值解法始终是计算数学的支柱．今天，从有限元仿真到机器学习中的正规方程，乃至页面排名（PageRank）的求解，背后都是同一类问题．理解其代数结构（秩、基础解系、通解），能帮助我们判断问题是否良定、解是否唯一，并在软件中正确解读结果．</p>
 </div>
 
 <details><summary>二、软件实现（Python 与 MATLAB）</summary><div class="body">
-<p class="muted">下面给出可直接运行的 Python 代码（需 <code>numpy</code> 与 <code>sympy</code>），并用 <code>#</code> 注释附上等价的 MATLAB 写法。</p>
+<p class="muted">下面给出可直接运行的 Python 代码（需 <code>numpy</code> 与 <code>sympy</code>），并用 <code>#</code> 注释附上等价的 MATLAB 写法．</p>
 <pre><code>import numpy as np
 from sympy import symbols, linsolve, Matrix
 
@@ -731,7 +731,7 @@ print(sol)                         # 输出通解的参数形式
 <h3>三、交互实验</h3>
 <div class="labx">
   <div class="lab">交互实验 · 线性方程组通解求解器</div>
-  <div class="desc">在下方文本框输入<b>增广矩阵</b>：每行代表一个方程，数字用空格或逗号分隔，最后一列是常数项 \(b\)。点击“求解”后，程序用高斯—约当消元化为行最简形，输出系数阵秩 \(R(A)\)、增广阵秩 \(R(A|b)\)、解的判别（无解 / 唯一解 / 无穷多解）以及通解（特解 + 基础解系）。</div>
+  <div class="desc">在下方文本框输入<b>增广矩阵</b>：每行代表一个方程，数字用空格或逗号分隔，最后一列是常数项 \(b\)．点击“求解”后，程序用高斯—约当消元化为行最简形，输出系数阵秩 \(R(A)\)、增广阵秩 \(R(A|b)\)、解的判别（无解 / 唯一解 / 无穷多解）以及通解（特解 + 基础解系）．</div>
   <div class="row">
     <div class="ctrls">
       <span class="ta-lab">增广矩阵（每行：a1 a2 … an b）</span>
@@ -750,7 +750,7 @@ print(sol)                         # 输出通解的参数形式
       </div>
     </div>
   </div>
-  <pre class="out" id="ls4Out">点击“求解”查看结果（纯文本）。</pre>
+  <pre class="out" id="ls4Out">点击“求解”查看结果（纯文本）．</pre>
 </div>
 
 <div class="rule"></div>
@@ -761,35 +761,35 @@ print(sol)                         # 输出通解的参数形式
 
   <div class="grp">一、选择题（15 题）</div>
   <ol>
-    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)\gt n\)</span><span>D. \(|A|\neq0\)</span></div>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解的充分必要条件是（　）。</li>
-    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)=R(A,b)\)</span><span>D. \(R(A)\neq R(A,b)\)</span></div>非齐次线性方程组 \(Ax=b\) 有解的充分必要条件是（　）。</li>
-    <li><div class="qopts"><span>A. \(n\)</span><span>B. \(R(A)\)</span><span>C. \(n-R(A)\)</span><span>D. \(R(A)-n\)</span></div>当 \(R(A)=r\lt n\) 时，齐次方程组 \(Ax=0\) 的基础解系含有（　）个解向量。</li>
-    <li><div class="qopts"><span>A. 一个特解</span><span>B. 齐次通解</span><span>C. 特解 \(+\) 齐次通解</span><span>D. 齐次方程组的特解</span></div>非齐次方程组 \(Ax=b\) 的通解结构是（　）。</li>
-    <li><div class="qopts"><span>A. 只有零解</span><span>B. 有非零解</span><span>C. 无解</span><span>D. 有唯一解</span></div>设 \(A\) 为 \(3\) 阶方阵且 \(|A|=0\)，则齐次方程组 \(Ax=0\)（　）。</li>
-    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 不确定</span></div>方程组 \(\begin{cases}x+y=1,\\ 2x+2y=2\end{cases}\) 的解的情况是（　）。</li>
-    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 确定有解</span></div>方程组 \(\begin{cases}x+y=1,\\ x+y=2\end{cases}\) 的解的情况是（　）。</li>
-    <li><div class="qopts"><span>A. 必无解</span><span>B. 必有解</span><span>C. 必唯一</span><span>D. 必无穷多</span></div>（考研真题）若 \(A\) 为 \(m\times n\) 矩阵且 \(R(A)=m\)，则 \(Ax=b\)（　）。</li>
-    <li><div class="qopts"><span>A. \(1\)</span><span>B. \(2\)</span><span>C. \(3\)</span><span>D. \(4\)</span></div>设 \(A\) 为 \(4\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含（　）个向量。</li>
-    <li><div class="qopts"><span>A. \(\xi+\eta\)</span><span>B. \(\xi-\eta\)</span><span>C. \(2\xi\)</span><span>D. \(2\eta\)</span></div>设 \(\xi\) 是 \(Ax=0\) 的解，\(\eta\) 是 \(Ax=b\) 的解，则下列向量中一定是 \(Ax=b\) 的解的是（　）。</li>
-    <li><div class="qopts"><span>A. 数域</span><span>B. 向量空间</span><span>C. 群</span><span>D. 环</span></div>齐次线性方程组 \(Ax=0\) 的全部解向量构成的集合，对加法和数乘封闭，称为（　）。</li>
-    <li><div class="qopts"><span>A. 方程数等于未知数且 \(|A|\neq0\)</span><span>B. \(m\lt n\)</span><span>C. 方程组齐次</span><span>D. 任意情形</span></div>克莱姆法则能够直接使用的条件是（　）。</li>
-    <li><div class="qopts"><span>A. \(A\) 可逆</span><span>B. \(R(A)=n\)</span><span>C. \(R(A)\lt n\)</span><span>D. \(R(B)=0\)</span></div>（期末真题）设 \(A,B\) 为 \(n\) 阶方阵且 \(AB=O,\ B\neq O\)，则（　）。</li>
-    <li><div class="qopts"><span>A. 无解</span><span>B. 有解，特解为 \((1,2,3)^T\)</span><span>C. 只有零解</span><span>D. 解不唯一</span></div>设 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(\beta=\alpha_1+2\alpha_2+3\alpha_3\)，则 \(Ax=\beta\)（　）。</li>
-    <li><div class="qopts"><span>A. 全体解构成向量空间</span><span>B. 解集必含零向量</span><span>C. 解集不构成向量空间</span><span>D. 解集只有一点</span></div>非齐次线性方程组 \(Ax=b\ (b\neq0)\) 的解集（　）。</li>
+    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)\gt n\)</span><span>D. \(|A|\neq0\)</span></div>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解的充分必要条件是（　）．</li>
+    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)=R(A,b)\)</span><span>D. \(R(A)\neq R(A,b)\)</span></div>非齐次线性方程组 \(Ax=b\) 有解的充分必要条件是（　）．</li>
+    <li><div class="qopts"><span>A. \(n\)</span><span>B. \(R(A)\)</span><span>C. \(n-R(A)\)</span><span>D. \(R(A)-n\)</span></div>当 \(R(A)=r\lt n\) 时，齐次方程组 \(Ax=0\) 的基础解系含有（　）个解向量．</li>
+    <li><div class="qopts"><span>A. 一个特解</span><span>B. 齐次通解</span><span>C. 特解 \(+\) 齐次通解</span><span>D. 齐次方程组的特解</span></div>非齐次方程组 \(Ax=b\) 的通解结构是（　）．</li>
+    <li><div class="qopts"><span>A. 只有零解</span><span>B. 有非零解</span><span>C. 无解</span><span>D. 有唯一解</span></div>设 \(A\) 为 \(3\) 阶方阵且 \(|A|=0\)，则齐次方程组 \(Ax=0\)（　）．</li>
+    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 不确定</span></div>方程组 \(\begin{cases}x+y=1,\\ 2x+2y=2\end{cases}\) 的解的情况是（　）．</li>
+    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 确定有解</span></div>方程组 \(\begin{cases}x+y=1,\\ x+y=2\end{cases}\) 的解的情况是（　）．</li>
+    <li><div class="qopts"><span>A. 必无解</span><span>B. 必有解</span><span>C. 必唯一</span><span>D. 必无穷多</span></div>（考研真题）若 \(A\) 为 \(m\times n\) 矩阵且 \(R(A)=m\)，则 \(Ax=b\)（　）．</li>
+    <li><div class="qopts"><span>A. \(1\)</span><span>B. \(2\)</span><span>C. \(3\)</span><span>D. \(4\)</span></div>设 \(A\) 为 \(4\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含（　）个向量．</li>
+    <li><div class="qopts"><span>A. \(\xi+\eta\)</span><span>B. \(\xi-\eta\)</span><span>C. \(2\xi\)</span><span>D. \(2\eta\)</span></div>设 \(\xi\) 是 \(Ax=0\) 的解，\(\eta\) 是 \(Ax=b\) 的解，则下列向量中一定是 \(Ax=b\) 的解的是（　）．</li>
+    <li><div class="qopts"><span>A. 数域</span><span>B. 向量空间</span><span>C. 群</span><span>D. 环</span></div>齐次线性方程组 \(Ax=0\) 的全部解向量构成的集合，对加法和数乘封闭，称为（　）．</li>
+    <li><div class="qopts"><span>A. 方程数等于未知数且 \(|A|\neq0\)</span><span>B. \(m\lt n\)</span><span>C. 方程组齐次</span><span>D. 任意情形</span></div>克莱姆法则能够直接使用的条件是（　）．</li>
+    <li><div class="qopts"><span>A. \(A\) 可逆</span><span>B. \(R(A)=n\)</span><span>C. \(R(A)\lt n\)</span><span>D. \(R(B)=0\)</span></div>（期末真题）设 \(A,B\) 为 \(n\) 阶方阵且 \(AB=O,\ B\neq O\)，则（　）．</li>
+    <li><div class="qopts"><span>A. 无解</span><span>B. 有解，特解为 \((1,2,3)^T\)</span><span>C. 只有零解</span><span>D. 解不唯一</span></div>设 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(\beta=\alpha_1+2\alpha_2+3\alpha_3\)，则 \(Ax=\beta\)（　）．</li>
+    <li><div class="qopts"><span>A. 全体解构成向量空间</span><span>B. 解集必含零向量</span><span>C. 解集不构成向量空间</span><span>D. 解集只有一点</span></div>非齐次线性方程组 \(Ax=b\ (b\neq0)\) 的解集（　）．</li>
   </ol>
 
   <div class="grp">二、填空题（10 题）</div>
   <ol>
-    <li>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\) ______ \(n\)（填“\(\lt\)”或“\(=\)”或“\(\gt\)”）。</li>
-    <li>设 \(A\) 为 \(5\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量。</li>
-    <li>非齐次方程组 \(Ax=b\) 有唯一解的充要条件是 \(R(A)=R(A,b)=\) ______。</li>
-    <li>设 \(\xi_1,\xi_2\) 是 \(Ax=0\) 的基础解系，则 \(Ax=b\) 的通解可写为 \(x=\eta^*+k_1\xi_1+\) ______。</li>
-    <li>设 \(A\) 为 \(4\times3\) 矩阵且 \(R(A)=2\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量。</li>
-    <li>矩阵方程 \(AX=B\) 有解的充要条件是 \(R(A)=R(\) ______\()\)（填增广矩阵记号）。</li>
-    <li>若 \(R(A)=R(A,b)=1\lt n\)，则非齐次方程组 \(Ax=b\) ______（填“有唯一解”或“有无穷多解”）。</li>
-    <li>齐次线性方程组总是有解，至少存在 ______ 解（填“零”或“非零”）。</li>
-    <li>由克莱姆法则，当 \(|A|\neq0\) 时，未知数 \(x_j=\dfrac{D_j}{D}\)，其中 \(D_j\) 是将 \(D=|A|\) 的第 \(j\) 列换为 ______ 所得的行列式。</li>
-    <li>设 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 ______ 的解。</li>
+    <li>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\) ______ \(n\)（填“\(\lt\)”或“\(=\)”或“\(\gt\)”）．</li>
+    <li>设 \(A\) 为 \(5\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量．</li>
+    <li>非齐次方程组 \(Ax=b\) 有唯一解的充要条件是 \(R(A)=R(A,b)=\) ______．</li>
+    <li>设 \(\xi_1,\xi_2\) 是 \(Ax=0\) 的基础解系，则 \(Ax=b\) 的通解可写为 \(x=\eta^*+k_1\xi_1+\) ______．</li>
+    <li>设 \(A\) 为 \(4\times3\) 矩阵且 \(R(A)=2\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量．</li>
+    <li>矩阵方程 \(AX=B\) 有解的充要条件是 \(R(A)=R(\) ______\()\)（填增广矩阵记号）．</li>
+    <li>若 \(R(A)=R(A,b)=1\lt n\)，则非齐次方程组 \(Ax=b\) ______（填“有唯一解”或“有无穷多解”）．</li>
+    <li>齐次线性方程组总是有解，至少存在 ______ 解（填“零”或“非零”）．</li>
+    <li>由克莱姆法则，当 \(|A|\neq0\) 时，未知数 \(x_j=\dfrac{D_j}{D}\)，其中 \(D_j\) 是将 \(D=|A|\) 的第 \(j\) 列换为 ______ 所得的行列式．</li>
+    <li>设 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 ______ 的解．</li>
   </ol>
 
   <div class="grp">三、计算题（12 题）</div>
@@ -797,73 +797,73 @@ print(sol)                         # 输出通解的参数形式
     <li>求下列齐次线性方程组的基础解系与通解：
       <p class="stmt">（1）\(\begin{cases}x_1-2x_2+4x_3-7x_4=0,\\ 2x_1+x_2-2x_3+x_4=0,\\ 3x_1-x_2+2x_3-4x_4=0;\end{cases}\)</p>
       <p class="stmt">（2）\(\begin{cases}x_1-8x_2+10x_3+2x_4=0,\\ 2x_1+4x_2+5x_3-x_4=0,\\ 3x_1+8x_2+6x_3-2x_4=0.\end{cases}\)</p></li>
-    <li>已知齐次方程组（Ⅰ）\(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+3x_2+5x_3=0,\\ x_1+x_2+ax_3=0\end{cases}\) 与（Ⅱ）\(\begin{cases}x_1+bx_2+cx_3=0,\\ 2x_1+b^2x_2+(c+1)x_3=0\end{cases}\) 同解，求 \(a,b,c\) 的值。</li>
-    <li>设 \(4\) 元齐次方程组 \(Ax=0\) 的通解为 \(x=k_1(1,0,2,3)^T+k_2(0,1,-1,1)^T\)，求原方程组（写出一组系数矩阵即可）。</li>
+    <li>已知齐次方程组（Ⅰ）\(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+3x_2+5x_3=0,\\ x_1+x_2+ax_3=0\end{cases}\) 与（Ⅱ）\(\begin{cases}x_1+bx_2+cx_3=0,\\ 2x_1+b^2x_2+(c+1)x_3=0\end{cases}\) 同解，求 \(a,b,c\) 的值．</li>
+    <li>设 \(4\) 元齐次方程组 \(Ax=0\) 的通解为 \(x=k_1(1,0,2,3)^T+k_2(0,1,-1,1)^T\)，求原方程组（写出一组系数矩阵即可）．</li>
     <li>解下列非齐次线性方程组：
       <p class="stmt">（1）\(\begin{cases}2x_1+x_2-x_3-x_4=1,\\ 2x_1+x_2+x_3-x_4=1,\\ 4x_1+2x_2+x_3-2x_4=2;\end{cases}\)</p>
       <p class="stmt">（2）\(\begin{cases}3x_1-x_2+2x_3=10,\\ 4x_1+2x_2-x_3=2,\\ 11x_1+3x_2=8.\end{cases}\)</p></li>
-    <li>已知 \(A\) 为 \(4\) 阶方阵，\(A^*\) 为伴随矩阵，\(|A|=0\) 且 \(A^*\neq O\)。若 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\)（其中 \(\eta_1,\eta_2,\eta_3\) 是 \(Ax=b\) 的解），求 \(Ax=b\) 的通解。</li>
-    <li>已知 \(\eta_1=(1,-1,0,2)^T,\ \eta_2=(2,1,-1,4)^T,\ \eta_3=(4,5,-3,1)^T\) 是某线性方程组的三个解，且该方程组系数矩阵 \(A\) 的秩 \(R(A)=2\)，求其通解。</li>
+    <li>已知 \(A\) 为 \(4\) 阶方阵，\(A^*\) 为伴随矩阵，\(|A|=0\) 且 \(A^*\neq O\)．若 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\)（其中 \(\eta_1,\eta_2,\eta_3\) 是 \(Ax=b\) 的解），求 \(Ax=b\) 的通解．</li>
+    <li>已知 \(\eta_1=(1,-1,0,2)^T,\ \eta_2=(2,1,-1,4)^T,\ \eta_3=(4,5,-3,1)^T\) 是某线性方程组的三个解，且该方程组系数矩阵 \(A\) 的秩 \(R(A)=2\)，求其通解．</li>
     <li>讨论 \(a\) 的取值，使非齐次方程组
       \(\begin{cases}x_1+x_2+ax_3=-1,\\ x_1-x_2+2x_3=-1,\\ -x_1+ax_2+x_3=a^2\end{cases}\)
-      有无穷多解，并求其通解。</li>
+      有无穷多解，并求其通解．</li>
     <li>讨论线性方程组
       \(\begin{cases}\lambda x_1+x_2=1,\\ x_1+\lambda x_2=1\end{cases}\)
-      的解，并在有解时求出其解。</li>
+      的解，并在有解时求出其解．</li>
     <li>设有线性方程组
       \(\begin{cases}x_1+x_2-2x_3+3x_4=0,\\ 2x_1+x_2-6x_3+4x_4=-1,\\ 3x_1+2x_2+px_3+7x_4=-1,\\ x_1-x_2-6x_3-x_4=t+2,\end{cases}\)
-      问 \(p,t\) 取何值时方程组无解？有解？并在有解时求全部解。</li>
-    <li>设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)。已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值。</li>
-    <li>设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1-\alpha_2+3\alpha_4\)，求 \(Ax=\beta\) 的通解。</li>
+      问 \(p,t\) 取何值时方程组无解？有解？并在有解时求全部解．</li>
+    <li>设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)．已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值．</li>
+    <li>设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1-\alpha_2+3\alpha_4\)，求 \(Ax=\beta\) 的通解．</li>
     <li>用高斯—约当消元（手算或借助本页“通解求解器”）求齐次方程组
       \(\begin{cases}x_1+x_2-x_3-x_4=0,\\ 2x_1-5x_2+3x_3+2x_4=0,\\ 7x_1-7x_2+3x_3+x_4=0\end{cases}\)
-      的基础解系，并写出通解。</li>
+      的基础解系，并写出通解．</li>
   </ol>
 
   <div class="grp">四、证明题（8 题）</div>
   <ol>
-    <li>证明：齐次线性方程组 \(Ax=0\) 的解集合 \(S=\{x\mid Ax=0\}\) 关于向量加法与数乘封闭，因而是向量空间（解空间）。</li>
-    <li>证明定理 4.1：\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\lt n\)。</li>
-    <li>证明推论 4.2：设 \(A\) 为 \(n\) 阶方阵，则 \(Ax=0\) 有非零解 \(\iff |A|=0\)。</li>
-    <li>证明性质 4.3：若 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 \(Ax=0\) 的解。</li>
-    <li>证明定理 4.7（非齐次通解结构）：当 \(R(A)=R(A,b)=r\lt n\) 时，\(Ax=b\) 的通解为 \(x=\eta^*+\) 对应齐次基础解系的线性组合。</li>
-    <li>设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)。</li>
-    <li>证明定理 4.8：矩阵方程 \(AX=B\) 有解 \(\iff R(A)=R(A,B)\)。</li>
-    <li>设 \(A\) 为 \(m\times n\) 实矩阵，证明 \(R(A^TA)=R(A)\)。</li>
+    <li>证明：齐次线性方程组 \(Ax=0\) 的解集合 \(S=\{x\mid Ax=0\}\) 关于向量加法与数乘封闭，因而是向量空间（解空间）．</li>
+    <li>证明定理 4.1：\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\lt n\)．</li>
+    <li>证明推论 4.2：设 \(A\) 为 \(n\) 阶方阵，则 \(Ax=0\) 有非零解 \(\iff |A|=0\)．</li>
+    <li>证明性质 4.3：若 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 \(Ax=0\) 的解．</li>
+    <li>证明定理 4.7（非齐次通解结构）：当 \(R(A)=R(A,b)=r\lt n\) 时，\(Ax=b\) 的通解为 \(x=\eta^*+\) 对应齐次基础解系的线性组合．</li>
+    <li>设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)．</li>
+    <li>证明定理 4.8：矩阵方程 \(AX=B\) 有解 \(\iff R(A)=R(A,B)\)．</li>
+    <li>设 \(A\) 为 \(m\times n\) 实矩阵，证明 \(R(A^TA)=R(A)\)．</li>
   </ol>
 
   <div class="grp">五、应用与拓展（5 题）</div>
   <ol>
-    <li>人工智能（线性回归）：用最小二乘法拟合直线 \(y=a+bx\) 于数据点 \((2,3),(3,5),(4,6),(5,8)\)。写出正规方程 \(\begin{cases}4a+14b=22,\\ 14a+54b=85\end{cases}\) 并求解 \(a,b\)。</li>
+    <li>人工智能（线性回归）：用最小二乘法拟合直线 \(y=a+bx\) 于数据点 \((2,3),(3,5),(4,6),(5,8)\)．写出正规方程 \(\begin{cases}4a+14b=22,\\ 14a+54b=85\end{cases}\) 并求解 \(a,b\)．</li>
     <li>电气工程：某直流电路两节点对地电压 \(v_1,v_2\) 满足
       \(\begin{cases}v_1+v_2=5,\\ 2v_1-v_2=1,\end{cases}\)
-      求 \(v_1,v_2\)。</li>
+      求 \(v_1,v_2\)．</li>
     <li>高铁运营：三条路径客流量 \(f_1,f_2,f_3\) 满足
       \(\begin{cases}f_1+f_2+f_3=6000,\\ f_1-2f_2=0,\\ f_2+f_3=3500,\end{cases}\)
-      求各路径流量。</li>
-    <li>现代产业链：设两部门直接消耗系数矩阵 \(A=\begin{pmatrix}0.2&0.3\\ 0&0.1\end{pmatrix}\)，最终需求 \(d=\begin{pmatrix}50\\90\end{pmatrix}\)，求解 \((E-A)x=d\) 得到总产出 \(x\)。</li>
-    <li>结合案例 3 的客流方程组，说明：若该枢纽的客流分配存在“自由变量”，在实际运营调度中意味着什么？并以案例 3 原数据验证其解是否唯一。</li>
+      求各路径流量．</li>
+    <li>现代产业链：设两部门直接消耗系数矩阵 \(A=\begin{pmatrix}0.2&0.3\\ 0&0.1\end{pmatrix}\)，最终需求 \(d=\begin{pmatrix}50\\90\end{pmatrix}\)，求解 \((E-A)x=d\) 得到总产出 \(x\)．</li>
+    <li>结合案例 3 的客流方程组，说明：若该枢纽的客流分配存在“自由变量”，在实际运营调度中意味着什么？并以案例 3 原数据验证其解是否唯一．</li>
   </ol>
 
   <details><summary>参考答案（详细）</summary><div class="body">
-    <p><b>一、选择题</b>　1.B（\(R(A)\lt n\) 才有非零解）　2.C（定理 4.5）　3.C（\(n-R(A)\)）　4.C　5.B（\(|A|=0\Rightarrow R(A)\lt 3\)，有非零解）　6.B（\(R(A)=R(A,b)=1\lt 2\)，无穷多解）　7.C（\(R(A)=1\neq R(A,b)=2\)，无解）　8.B（行满秩必相容，推论 4.5）　9.A（\(4-3=1\)）　10.A（\(A(\xi+\eta)=0+b=b\)）　11.B（解空间是向量空间）　12.A（方程数=未知数且 \(|A|\neq0\)）　13.C（\(B\neq O\Rightarrow Ax=0\) 有非零解 \(\Rightarrow R(A)\lt n\)）　14.B（\(\beta\) 可由列线性表示，故有解，特解 \((1,2,3)^T\)）　15.C（非齐次解集不含零向量，不构成向量空间）。</p>
-    <p><b>二、填空题</b>　1. \(\lt\)　2. \(2\)（\(5-3=2\)）　3. \(n\)　4. \(k_2\xi_2\)　5. \(1\)（\(3-2=1\)）　6. \((A,B)\)　7. 有无穷多解　8. 零　9. \(|A|\)；常数项向量 \(b\)　10. 对应齐次方程组 \(Ax=0\)。</p>
+    <p><b>一、选择题</b>　1.B（\(R(A)\lt n\) 才有非零解）　2.C（定理 4.5）　3.C（\(n-R(A)\)）　4.C　5.B（\(|A|=0\Rightarrow R(A)\lt 3\)，有非零解）　6.B（\(R(A)=R(A,b)=1\lt 2\)，无穷多解）　7.C（\(R(A)=1\neq R(A,b)=2\)，无解）　8.B（行满秩必相容，推论 4.5）　9.A（\(4-3=1\)）　10.A（\(A(\xi+\eta)=0+b=b\)）　11.B（解空间是向量空间）　12.A（方程数=未知数且 \(|A|\neq0\)）　13.C（\(B\neq O\Rightarrow Ax=0\) 有非零解 \(\Rightarrow R(A)\lt n\)）　14.B（\(\beta\) 可由列线性表示，故有解，特解 \((1,2,3)^T\)）　15.C（非齐次解集不含零向量，不构成向量空间）．</p>
+    <p><b>二、填空题</b>　1. \(\lt\)　2. \(2\)（\(5-3=2\)）　3. \(n\)　4. \(k_2\xi_2\)　5. \(1\)（\(3-2=1\)）　6. \((A,B)\)　7. 有无穷多解　8. 零　9. \(|A|\)；常数项向量 \(b\)　10. 对应齐次方程组 \(Ax=0\)．</p>
     <p><b>三、计算题</b></p>
-    <p>1.（1）行最简形为 \(\operatorname{diag}(1,1,-2,1)\) 型（见例 4.4），基础解系 \(\xi=(0,2,1,0)^T\)，通解 \(x=k\xi\)。<br>（2）行最简形 \(\begin{pmatrix}1&0&4&0\\0&1&-\frac34&-\frac14\\0&0&0&0\end{pmatrix}\)，自由未知量 \(x_3,x_4\)；取 \((x_3,x_4)=(1,0),(0,1)\) 得基础解系 \(\xi_1=(-16,3,4,0)^T,\ \xi_2=(0,1,0,4)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)。</p>
-    <p>2. 由消元知（Ⅰ）当且仅当 \(a=2\) 时有非零解，其解空间为 \(\operatorname{span}\{(-1,-1,1)^T\}\)。（Ⅱ）中令其解向量满足两式，得 \(b=1,\ c=2\)，此时（Ⅱ）化为 \(x_1+x_2+2x_3=0,\ 2x_1+x_2+3x_3=0\)，其解空间同为 \(\operatorname{span}\{(-1,-1,1)^T\}\)。故两方程组同解当且仅当 \(a=2,\ b=1,\ c=2\)。</p>
-    <p>3. 由通解知基础解系为 \(\xi_1=(1,0,2,3)^T,\ \xi_2=(0,1,-1,1)^T\)。所求矩阵 \(A\) 的每行须与 \(\xi_1,\xi_2\) 都正交，即满足 \(a+2c+3d=0,\ b-c+d=0\)。取两个线性无关解 \(r_1=(-3,-1,0,1),\ r_2=(-2,1,1,0)\)，例如
+    <p>1.（1）行最简形为 \(\operatorname{diag}(1,1,-2,1)\) 型（见例 4.4），基础解系 \(\xi=(0,2,1,0)^T\)，通解 \(x=k\xi\)．<br>（2）行最简形 \(\begin{pmatrix}1&0&4&0\\0&1&-\frac34&-\frac14\\0&0&0&0\end{pmatrix}\)，自由未知量 \(x_3,x_4\)；取 \((x_3,x_4)=(1,0),(0,1)\) 得基础解系 \(\xi_1=(-16,3,4,0)^T,\ \xi_2=(0,1,0,4)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)．</p>
+    <p>2. 由消元知（Ⅰ）当且仅当 \(a=2\) 时有非零解，其解空间为 \(\operatorname{span}\{(-1,-1,1)^T\}\)．（Ⅱ）中令其解向量满足两式，得 \(b=1,\ c=2\)，此时（Ⅱ）化为 \(x_1+x_2+2x_3=0,\ 2x_1+x_2+3x_3=0\)，其解空间同为 \(\operatorname{span}\{(-1,-1,1)^T\}\)．故两方程组同解当且仅当 \(a=2,\ b=1,\ c=2\)．</p>
+    <p>3. 由通解知基础解系为 \(\xi_1=(1,0,2,3)^T,\ \xi_2=(0,1,-1,1)^T\)．所求矩阵 \(A\) 的每行须与 \(\xi_1,\xi_2\) 都正交，即满足 \(a+2c+3d=0,\ b-c+d=0\)．取两个线性无关解 \(r_1=(-3,-1,0,1),\ r_2=(-2,1,1,0)\)，例如
       \[A=\begin{pmatrix}-3&-1&0&1\\ -2&1&1&0\\ 0&0&0&0\\ 0&0&0&0\end{pmatrix}\]
-      （前两行线性无关，秩为 \(2\)，解空间维数恰为 \(4-2=2\)）。</p>
-    <p>4.（1）增广矩阵行最简形为 \(\begin{pmatrix}1&\frac12&0&-\frac12&\frac12\\0&0&1&0&0\\0&0&0&0&0\end{pmatrix}\)，特解 \(\eta^*=(\frac12,0,0,0)^T\)，基础解系 \(\xi_1=(-1,2,0,0)^T,\ \xi_2=(1,0,0,2)^T\)，通解 \(x=\eta^*+k_1\xi_1+k_2\xi_2\)。<br>（2）第三式与第一、二式消元后出现矛盾 \(0=1\)，故<b>无解</b>。</p>
-    <p>5. 由 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\) 得 \(\eta_1-\eta_3=(1,0,0,1)^T\) 是 \(Ax=0\) 的解；又 \(|A|=0,\ A^*\neq O\Rightarrow R(A)=n-1=3\)，故基础解系只含 \(1\) 个向量，取 \(\xi=(1,0,0,1)^T\)。取特解 \(\eta^*=\frac12(\eta_1+\eta_2)=(1,0,0,4)^T\)，通解 \(x=\eta^*+k\xi\)。</p>
-    <p>6. 因 \(R(A)=2\)，齐次基础解系含 \(2\) 个向量。\(\xi_1=\eta_1-\eta_2=(-1,-2,1,-2)^T,\ \xi_2=\eta_1-\eta_3=(-3,-6,3,1)^T\) 均为齐次解且线性无关，作为基础解系；取特解 \(\eta_1\)，通解 \(x=\eta_1+k_1\xi_1+k_2\xi_2\)。</p>
-    <p>7. 系数行列式 \(|A|=(a-4)(a+1)\)。当 \(a=-1\) 时 \(R(A)=R(A,b)=2\lt 3\)，无穷多解，特解可取 \((-1,0,0)^T\)，基础解系 \((-1,3,2)^T\)，通解 \(x=(-1,0,0)^T+k(-1,3,2)^T\)；当 \(a=4\) 时 \(R(A)=2\neq R(A,b)=3\) 无解；其余 \(a\)（即 \(a\neq4,-1\)）有唯一解。</p>
-    <p>8. 系数行列式 \(|A|=\lambda^2-1=(\lambda-1)(\lambda+1)\)。当 \(\lambda\neq\pm1\) 时唯一解，由克莱姆法则得 \(x_1=x_2=\dfrac{1}{\lambda+1}\)；当 \(\lambda=1\) 时两方程同为 \(x_1+x_2=1\)，\(R(A)=R(A,b)=1\lt 2\)，无穷多解，通解 \(x_1=1-k,\ x_2=k\)；当 \(\lambda=-1\) 时两方程为 \(-x_1+x_2=1,\ x_1-x_2=1\)，相加得 \(0=2\) 矛盾，无解。</p>
-    <p>9. 系数矩阵恒有 \(\det A=0\)（秩为 \(3\)），第 4 个方程是前两式的线性组合：\(r_4=-3r_1+2r_2\)。故相容当且仅当常数项也满足该关系：\(b_4=-3b_1+2b_2=-3\cdot0+2\cdot(-1)=-2\)，即 \(t+2=-2\Rightarrow t=-4\)（与 \(p\) 无关）。当 \(t=-4\) 时 \(R(A)=R(A,b)=3\lt 4\)，有无穷多解，基础解系为 \((-1,-2,0,1)^T\)（对应自由未知量 \(x_4\)），特解可取 \((-1,1,0,0)^T\)，通解 \(x=(-1,1,0,0)^T+k(-1,-2,0,1)^T\)。当 \(t\neq-4\) 时 \(R(A)=3\neq R(A,b)=4\)，无解。</p>
-    <p>10. 由例 4.9 的消元结果，当 \(t=-3\) 时 \(R(\alpha_1,\alpha_2,\alpha_3)=2\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，故 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，即 \(t=-3\)。</p>
-    <p>11. 同例 4.1，基础解系 \(\xi_1=(\frac27,\frac57,1,0)^T,\ \xi_2=(\frac37,\frac47,0,1)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)。</p>
-    <p><b>四、证明题</b>　均见正文定理证明（定理 4.1、4.5、4.7、4.8 及性质 4.3、4.1、4.2 等），按正文给出的完整证明过程书写即可。第 6 题即例 4.2 结论，第 8 题即例 4.5 结论。</p>
-    <p><b>五、应用与拓展</b>　1. 正规方程解得 \(a=-0.1,\ b=1.6\)，拟合直线 \(y=-0.1+1.6x\)（验证：\(4(-0.1)+14(1.6)=22,\ 14(-0.1)+54(1.6)=85\)）。　2. 解得 \(v_1=2,\ v_2=3\)（V）。　3. 由 \(f_1=2f_2,\ f_3=3500-f_2\)，代入第一式得 \(2f_2+3500=6000\Rightarrow f_2=1250\)，故 \(f_1=2500,\ f_3=2250\)（人/小时）。　4. \((E-A)x=d\) 即 \(\begin{cases}0.8x_1-0.3x_2=50,\\ 0.9x_2=90,\end{cases}\) 解得 \(x_2=100,\ x_1=100\)，总产出 \((100,100)^T\)。　5. 案例 3 为 3 方程 3 未知，系数行列式非零，解唯一（\(f_1=2000,f_2=1000,f_3=2000\)），无自由变量，说明各路径客流被 OD 需求唯一确定；若存在自由变量，则表示有多组可行分配方案，调度具有冗余余量。</p>
+      （前两行线性无关，秩为 \(2\)，解空间维数恰为 \(4-2=2\)）．</p>
+    <p>4.（1）增广矩阵行最简形为 \(\begin{pmatrix}1&\frac12&0&-\frac12&\frac12\\0&0&1&0&0\\0&0&0&0&0\end{pmatrix}\)，特解 \(\eta^*=(\frac12,0,0,0)^T\)，基础解系 \(\xi_1=(-1,2,0,0)^T,\ \xi_2=(1,0,0,2)^T\)，通解 \(x=\eta^*+k_1\xi_1+k_2\xi_2\)．<br>（2）第三式与第一、二式消元后出现矛盾 \(0=1\)，故<b>无解</b>．</p>
+    <p>5. 由 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\) 得 \(\eta_1-\eta_3=(1,0,0,1)^T\) 是 \(Ax=0\) 的解；又 \(|A|=0,\ A^*\neq O\Rightarrow R(A)=n-1=3\)，故基础解系只含 \(1\) 个向量，取 \(\xi=(1,0,0,1)^T\)．取特解 \(\eta^*=\frac12(\eta_1+\eta_2)=(1,0,0,4)^T\)，通解 \(x=\eta^*+k\xi\)．</p>
+    <p>6. 因 \(R(A)=2\)，齐次基础解系含 \(2\) 个向量．\(\xi_1=\eta_1-\eta_2=(-1,-2,1,-2)^T,\ \xi_2=\eta_1-\eta_3=(-3,-6,3,1)^T\) 均为齐次解且线性无关，作为基础解系；取特解 \(\eta_1\)，通解 \(x=\eta_1+k_1\xi_1+k_2\xi_2\)．</p>
+    <p>7. 系数行列式 \(|A|=(a-4)(a+1)\)．当 \(a=-1\) 时 \(R(A)=R(A,b)=2\lt 3\)，无穷多解，特解可取 \((-1,0,0)^T\)，基础解系 \((-1,3,2)^T\)，通解 \(x=(-1,0,0)^T+k(-1,3,2)^T\)；当 \(a=4\) 时 \(R(A)=2\neq R(A,b)=3\) 无解；其余 \(a\)（即 \(a\neq4,-1\)）有唯一解．</p>
+    <p>8. 系数行列式 \(|A|=\lambda^2-1=(\lambda-1)(\lambda+1)\)．当 \(\lambda\neq\pm1\) 时唯一解，由克莱姆法则得 \(x_1=x_2=\dfrac{1}{\lambda+1}\)；当 \(\lambda=1\) 时两方程同为 \(x_1+x_2=1\)，\(R(A)=R(A,b)=1\lt 2\)，无穷多解，通解 \(x_1=1-k,\ x_2=k\)；当 \(\lambda=-1\) 时两方程为 \(-x_1+x_2=1,\ x_1-x_2=1\)，相加得 \(0=2\) 矛盾，无解．</p>
+    <p>9. 系数矩阵恒有 \(\det A=0\)（秩为 \(3\)），第 4 个方程是前两式的线性组合：\(r_4=-3r_1+2r_2\)．故相容当且仅当常数项也满足该关系：\(b_4=-3b_1+2b_2=-3\cdot0+2\cdot(-1)=-2\)，即 \(t+2=-2\Rightarrow t=-4\)（与 \(p\) 无关）．当 \(t=-4\) 时 \(R(A)=R(A,b)=3\lt 4\)，有无穷多解，基础解系为 \((-1,-2,0,1)^T\)（对应自由未知量 \(x_4\)），特解可取 \((-1,1,0,0)^T\)，通解 \(x=(-1,1,0,0)^T+k(-1,-2,0,1)^T\)．当 \(t\neq-4\) 时 \(R(A)=3\neq R(A,b)=4\)，无解．</p>
+    <p>10. 由例 4.9 的消元结果，当 \(t=-3\) 时 \(R(\alpha_1,\alpha_2,\alpha_3)=2\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，故 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，即 \(t=-3\)．</p>
+    <p>11. 同例 4.1，基础解系 \(\xi_1=(\frac27,\frac57,1,0)^T,\ \xi_2=(\frac37,\frac47,0,1)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)．</p>
+    <p><b>四、证明题</b>　均见正文定理证明（定理 4.1、4.5、4.7、4.8 及性质 4.3、4.1、4.2 等），按正文给出的完整证明过程书写即可．第 6 题即例 4.2 结论，第 8 题即例 4.5 结论．</p>
+    <p><b>五、应用与拓展</b>　1. 正规方程解得 \(a=-0.1,\ b=1.6\)，拟合直线 \(y=-0.1+1.6x\)（验证：\(4(-0.1)+14(1.6)=22,\ 14(-0.1)+54(1.6)=85\)）．　2. 解得 \(v_1=2,\ v_2=3\)（V）．　3. 由 \(f_1=2f_2,\ f_3=3500-f_2\)，代入第一式得 \(2f_2+3500=6000\Rightarrow f_2=1250\)，故 \(f_1=2500,\ f_3=2250\)（人/小时）．　4. \((E-A)x=d\) 即 \(\begin{cases}0.8x_1-0.3x_2=50,\\ 0.9x_2=90,\end{cases}\) 解得 \(x_2=100,\ x_1=100\)，总产出 \((100,100)^T\)．　5. 案例 3 为 3 方程 3 未知，系数行列式非零，解唯一（\(f_1=2000,f_2=1000,f_3=2000\)），无自由变量，说明各路径客流被 OD 需求唯一确定；若存在自由变量，则表示有多组可行分配方案，调度具有冗余余量．</p>
   </div></details>
 </div>
 
@@ -871,7 +871,7 @@ print(sol)                         # 输出通解的参数形式
 
 <section class="self-test" style="margin:30px 0;padding:22px 24px;border-radius:14px;background:linear-gradient(135deg,#eef4ff,#f7faff);border:1px solid #d6e4ff;">
   <h3 style="margin:0 0 8px;font-size:1.18rem;color:#13386b;">本章自测</h3>
-  <p style="margin:0 0 16px;color:#33415c;line-height:1.75;">学完本章，打开<strong>限定本章</strong>的智能组卷：系统从本题库中随机抽取题目、自动判分，答错的题自动进入错题本，并生成你的章节掌握度。你也可以自由调整各题型题量后再生成试卷。</p>
+  <p style="margin:0 0 16px;color:#33415c;line-height:1.75;">学完本章，打开<strong>限定本章</strong>的智能组卷：系统从本题库中随机抽取题目、自动判分，答错的题自动进入错题本，并生成你的章节掌握度．你也可以自由调整各题型题量后再生成试卷．</p>
   <a href="exam.html?ch=4" style="display:inline-block;padding:11px 24px;border-radius:10px;background:#2563eb;color:#fff;font-weight:600;text-decoration:none;box-shadow:0 2px 10px rgba(37,99,235,.25);">开始本章自测 ▶</a>
 </section>
 

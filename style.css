@@ -36,7 +36,7 @@
     margin:26px 0 4px; color:#134e4e; scroll-margin-top:16px}
   p{margin:11px 0}
   .katex{font-size:1.06em; line-height:1.5}
-  /* 纵向省略号 ⋮（\vdots）的字形下沿过大、会掉进下一行：上移交由 JS 的 fixVdots() 在每次公式渲染后直接作用于 DOM，避免依赖 :has() 的浏览器兼容问题。 */
+  /* 纵向省略号 ⋮（\vdots）的字形下沿过大、会掉进下一行：上移交由 JS 的 fixVdots() 在每次公式渲染后直接作用于 DOM，避免依赖 :has() 的浏览器兼容问题． */
   .katex-display{overflow-x:auto; overflow-y:hidden; padding:4px 0 6px; scrollbar-width:none; -ms-overflow-style:none}
   .katex-display::-webkit-scrollbar{display:none}
   .muted{color:var(--muted); font-size:14px}
@@ -266,6 +266,30 @@
 .ex-cmpbox{margin-top:6px}
 .ex-cmpdone{font-size:13px}
 .ex-selfcheck{margin:8px 0;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;color:#166534;font-family:-apple-system,"Microsoft YaHei",sans-serif;line-height:1.7}
+/* ===== 考试系统 · 手机端适配 ===== */
+@media(max-width:860px){
+  .ex-tabs{gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ex-tabs::-webkit-scrollbar{display:none}
+  .ex-tab{flex:0 0 auto;padding:9px 14px;font-size:13.5px}
+  .ex-total{display:none}
+  .btn{padding:12px 18px;font-size:15px;border-radius:10px}
+  .ex-filters{gap:6px}
+  .ex-filters select{flex:1 1 40%;min-width:0;padding:10px 8px;font-size:15px}
+  .ex-search{flex:1 1 100%;padding:10px;font-size:15px}
+  .ex-card{padding:12px;border-radius:10px}
+  .ex-qstem{font-size:15.5px;line-height:1.9}
+  .ex-opt{padding:11px 12px;font-size:15px;line-height:1.75}
+  .ex-grid{font-size:13px;display:block;overflow-x:auto;white-space:nowrap}
+  .ex-grid th,.ex-grid td{padding:7px 8px}
+  .ex-num{width:46px;padding:8px 4px;font-size:15px}
+  .ex-exam-bar{flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:30;box-shadow:0 2px 8px rgba(15,40,80,.08)}
+  .ex-timer{font-size:16px}
+  .ex-fill-in{width:100%;box-sizing:border-box;padding:11px 10px;font-size:16px}
+  .ex-ta{width:100%!important;box-sizing:border-box;font-size:16px;min-height:110px}
+  .ex-upimg{max-width:120px;max-height:120px}
+  .ex-paper-prev{padding:12px;border-radius:10px}
+  .katex{font-size:1.02em}
+}
 /* ===== 本节练习（小节嵌入式随堂练） ===== */
 .sec-quiz{margin:26px 0 28px 0;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#fafcff,#f4f8ff);padding:16px 18px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
 .sq-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -311,6 +335,15 @@
 .sq-self .sq-btn:hover{background:#eff6ff}
 .sq-self .sq-yes{border-color:#bbf7d0;color:#166534}
 .sq-self .sq-yes:hover{background:#f0fdf4}
+/* 本节练习 · 手机端适配 */
+@media(max-width:860px){
+  .sq-drawer{width:100vw;border-left:none}
+  .sq-btn{padding:11px 18px;font-size:15px}
+  .sq-opt{padding:11px 12px;font-size:15px;line-height:1.75}
+  .sq-fillin{width:100%;box-sizing:border-box;min-width:0;padding:11px 10px;font-size:16px}
+  .sq-dclose{width:40px;height:40px;font-size:17px}
+  .sq-dbody{padding:6px 12px 30px}
+}
 
 /* ===== 首页（封面）美化 + 二级标题目录 ===== */
 .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#0b2733 0%,#0e4f4f 50%,#0e7c7c 100%);color:#eafdfb;padding:64px 28px 54px}

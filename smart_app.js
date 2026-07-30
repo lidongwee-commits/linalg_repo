@@ -1,7 +1,7 @@
 /* 智能题库 · 文字版 PDF 识别
  * 功能：上传「带题号的文字层 PDF」或粘贴习题文本 → 自动按题号切分 →
- *       依据关键词判定所属章/节 → 生成可点击跳转到对应教材章节的卡片。
- * 零成本层：纯前端，不调用任何付费 API；PDF 解析用 pdf.js（CDN，失败则引导粘贴文本）。
+ *       依据关键词判定所属章/节 → 生成可点击跳转到对应教材章节的卡片．
+ * 零成本层：纯前端，不调用任何付费 API；PDF 解析用 pdf.js（CDN，失败则引导粘贴文本）．
  */
 (function () {
   'use strict';
@@ -28,7 +28,7 @@
   };
 
   // 小节候选（按顺序匹配；空关键词者为兜底）。第1章在教材中仅有 s11/s16 两个真实锚点，
-  // 故所有第1章题目的跳转锚点统一为 s11（软件类为 s16）。
+  // 故所有第1章题目的跳转锚点统一为 s11（软件类为 s16）．
   var SEC_KW = {
     1: [
       ['s12', ['余子式', '代数余子式', '按行展开', '按列展开', '展开'], '余子式与展开'],
@@ -177,8 +177,8 @@
     var results = document.getElementById('results');
     results.innerHTML = '';
     if (!list.length) {
-      results.innerHTML = '<p class="q-empty">未识别到带编号的题目。请确认 PDF 为「文字层 + 题号（如 1. 2.）」格式；' +
-        '或直接把文本粘贴到左侧文本框再点「识别粘贴文本」。</p>';
+      results.innerHTML = '<p class="q-empty">未识别到带编号的题目．请确认 PDF 为「文字层 + 题号（如 1. 2.）」格式；' +
+        '或直接把文本粘贴到左侧文本框再点「识别粘贴文本」．</p>';
       return;
     }
     for (var i = 0; i < list.length; i++) {
@@ -256,7 +256,7 @@
   // ---------- 处理流程 ----------
   function process(rawText) {
     var full = (rawText || '').trim();
-    if (!full) { setStatus('请输入文本或上传 PDF。', true); return; }
+    if (!full) { setStatus('请输入文本或上传 PDF．', true); return; }
     var sc = scoresOf(full); docBestCh = 1; var bs = -1;
     for (var ch = 1; ch <= 5; ch++) if (sc[ch] > bs) { bs = sc[ch]; docBestCh = ch; }
     var r = splitQuestions(full);
@@ -267,7 +267,7 @@
     });
     updateStats();
     applyFilter();
-    setStatus('识别完成：共 ' + allQuestions.length + ' 题。', false);
+    setStatus('识别完成：共 ' + allQuestions.length + ' 题．', false);
   }
 
   function setStatus(msg, warn) {
@@ -342,7 +342,7 @@
       setStatus('', false);
     };
     btnExport.onclick = function () {
-      if (!allQuestions.length) { setStatus('还没有可导出的结果。', true); return; }
+      if (!allQuestions.length) { setStatus('还没有可导出的结果．', true); return; }
       var data = allQuestions.map(function (q) {
         return { no: q.no || null, chapter: q.cls ? q.cls.ch : null, topic: q.cls ? q.cls.topic : null, anchor: q.cls ? q.cls.anchor : null, text: q.text };
       });
@@ -362,11 +362,11 @@
         pasteArea.value = txt;
         process(txt);
       }).catch(function (err) {
-        setStatus('PDF 解析失败：' + err.message + '。可改用「直接粘贴文本」。', true);
+        setStatus('PDF 解析失败：' + err.message + '．可改用「直接粘贴文本」．', true);
       });
     };
 
     // 初始禁用提示（pdf.js 未加载时仍可粘贴）
-    setStatus('提示：文字版 PDF 将自动联网加载 pdf.js 解析；若网络受限，可直接把题目文本粘贴到左侧框。', false);
+    setStatus('提示：文字版 PDF 将自动联网加载 pdf.js 解析；若网络受限，可直接把题目文本粘贴到左侧框．', false);
   });
 })();

@@ -1,7 +1,7 @@
 /* 教师 / 管理端 · 题库编辑与学生作答复核
  * 纯前端：数据来自 exam_data.js（EXAM_QUESTIONS），编辑在内存 WORK 中进行，
- * 通过「导出 exam_data.js」落地为正式题库文件（单一真相源）。
- * 前端口令仅做可见性隔离，学生端无入口。
+ * 通过「导出 exam_data.js」落地为正式题库文件（单一真相源）．
+ * 前端口令仅做可见性隔离，学生端无入口．
  */
 (function () {
   "use strict";
@@ -22,7 +22,7 @@
   }
   function fixMathDelims(s) {
     if (typeof s !== "string") return s;
-    var out = [], depth = 0, i = 0, n = s.length, CJK = "。、，！？；：「」『』（）〈〉《》【】…—～．";
+    var out = [], depth = 0, i = 0, n = s.length, CJK = "．、，！？；：「」『』（）〈〉《》【】…—～．";
     while (i < n) {
       if (s.slice(i, i + 2) === "\\(") { if (depth > 0) { out.push("\\)"); depth--; } out.push("\\("); depth++; i += 2; continue; }
       if (s.slice(i, i + 2) === "\\)") { if (depth === 0) { i += 2; continue; } out.push("\\)"); depth--; i += 2; continue; }
@@ -64,7 +64,7 @@
     function tryGo() {
       var v = $("gate-pwd").value;
       if (v === ADMIN_PASS) { unlock(); }
-      else { $("gate-err").textContent = "口令错误，请重试。"; }
+      else { $("gate-err").textContent = "口令错误，请重试．"; }
     }
     btn.onclick = tryGo;
     $("gate-pwd").addEventListener("keydown", function (e) { if (e.key === "Enter") tryGo(); });
@@ -79,7 +79,7 @@
       WORK = cached;
       var b = $("adm-banner");
       b.hidden = false;
-      b.innerHTML = "已从本机缓存恢复 <b>" + cached.length + "</b> 题未导出的修改。修改正式生效需点「⬇ 导出 exam_data.js」。　<button class='btn btn-ghost' id='b-clear'>清除缓存</button>";
+      b.innerHTML = "已从本机缓存恢复 <b>" + cached.length + "</b> 题未导出的修改．修改正式生效需点「⬇ 导出 exam_data.js」．　<button class='btn btn-ghost' id='b-clear'>清除缓存</button>";
       $("b-clear").onclick = function () { localStorage.removeItem(LS_CACHE); b.hidden = true; WORK = deepCopy(EXAM_QUESTIONS || []); renderStats(); renderBrowse(); };
     } else {
       WORK = deepCopy(EXAM_QUESTIONS || []);
@@ -159,7 +159,7 @@
       return true;
     });
     var L = $("af-list");
-    if (!list.length) { L.innerHTML = '<p class="muted">无匹配题目。</p>'; return; }
+    if (!list.length) { L.innerHTML = '<p class="muted">无匹配题目．</p>'; return; }
     L.innerHTML = list.map(function (q) {
       var badges = '<span class="ex-badge">' + (CH[q.ch] || q.ch) + "</span>"
         + '<span class="ex-badge">' + (TY[q.type] || q.type) + "</span>"
@@ -224,7 +224,7 @@
   function saveEditor() {
     var type = $("ed-type").value;
     var stem = $("ed-stem").value.trim();
-    if (!stem) { alert("题干不能为空。"); return; }
+    if (!stem) { alert("题干不能为空．"); return; }
     var obj = {
       id: editingId || ("admin-" + Date.now()),
       ch: parseInt($("ed-ch").value, 10),
@@ -237,7 +237,7 @@
     };
     if (type === "mc") {
       var opts = parseOptions($("ed-opts").value);
-      if (opts.length < 2) { alert("选择题至少需要 2 个选项（每行：A. 内容）。"); return; }
+      if (opts.length < 2) { alert("选择题至少需要 2 个选项（每行：A. 内容）．"); return; }
       obj.options = opts;
       var letters = opts.map(function (o) { return o[0]; });
       if (obj.ans && letters.indexOf(obj.ans) === -1) { alert("参考答案必须是选项中的一个字母：" + letters.join(", ")); return; }
@@ -293,7 +293,7 @@
   function exportData() {
     var header = "// 线性代数数字教材 · 题库（由教师管理端导出）\n"
       + "// 导出时间：" + new Date().toLocaleString("zh-CN") + "\n"
-      + "// 共 " + WORK.length + " 题。将此文件替换站点根目录的 exam_data.js 后重新部署即可生效。\n";
+      + "// 共 " + WORK.length + " 题．将此文件替换站点根目录的 exam_data.js 后重新部署即可生效．\n";
     var body = "window.EXAM_QUESTIONS = " + JSON.stringify(WORK, null, 0) + ";\n";
     var blob = new Blob([header + body], { type: "text/javascript;charset=utf-8" });
     var url = URL.createObjectURL(blob);
@@ -305,7 +305,7 @@
     // 导出后清空本机缓存（已落地为正式文件）
     localStorage.removeItem(LS_CACHE);
     var b = $("adm-banner"); if (b) { b.hidden = true; }
-    alert("已导出 exam_data.js（" + WORK.length + " 题）。\n请将其放回站点根目录并重新部署，学生端即可更新。");
+    alert("已导出 exam_data.js（" + WORK.length + " 题）．\n请将其放回站点根目录并重新部署，学生端即可更新．");
   }
 
   /* ---------------- 学生提交记录（本机） ---------------- */
@@ -313,7 +313,7 @@
     var subs = [];
     try { subs = JSON.parse(localStorage.getItem(LS_SUBMIT) || "[]"); } catch (e) {}
     var box = $("sub-list");
-    if (!subs.length) { box.innerHTML = '<p class="muted">暂无学生提交记录（学生需在本浏览器作答并交卷后才会产生）。</p>'; return; }
+    if (!subs.length) { box.innerHTML = '<p class="muted">暂无学生提交记录（学生需在本浏览器作答并交卷后才会产生）．</p>'; return; }
     box.innerHTML = subs.map(function (s, idx) {
       var imgs = (s.images && s.images.length)
         ? '<div class="sub-imgs">' + s.images.map(function (src) { return '<img src="' + src + '">'; }).join("") + "</div>"

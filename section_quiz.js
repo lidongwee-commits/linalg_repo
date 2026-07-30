@@ -1,18 +1,18 @@
 /* ===================================================================
  * 本节练习 section_quiz.js（右侧面板版 · 诚实判分）
  *   - 教材在左、练习在右：点击小节末的「本节小练」卡片，在页面右侧
- *     滑出练习面板，绝不跳转、不离开当前阅读位置。
- *   - 每批 15 题起：本节客观题优先，不足 15 道用同章其他小节补足。
+ *     滑出练习面板，绝不跳转、不离开当前阅读位置．
+ *   - 每批 15 题起：本节客观题优先，不足 15 道用同章其他小节补足．
  *   - 选择题点选即判；填空题做“等价核对”：形式相同/数值等价即判对，
- *     否则展示参考答案，请学生自查（机器不妄断对错，避免误判伤积极性）。
- *   - 全部作答后按“机器判对”数累积能量（EnergyBar.awardPractice，共用 study_v1）。
- *   - 「换一批」重新随机抽题，可反复练。
- *   - 题库懒加载（exam_data.js 挂 window.EXAM_QUESTIONS）。
+ *     否则展示参考答案，请学生自查（机器不妄断对错，避免误判伤积极性）．
+ *   - 全部作答后按“机器判对”数累积能量（EnergyBar.awardPractice，共用 study_v1）．
+ *   - 「换一批」重新随机抽题，可反复练．
+ *   - 题库懒加载（exam_data.js 挂 window.EXAM_QUESTIONS）．
  * =================================================================== */
 (function () {
   "use strict";
   var BATCH = 15;                       // 每批最少题数
-  var CJK_PUNCT = "。，、；：？！）（《》【】";
+  var CJK_PUNCT = "．，、；：？！）（《》【】";
 
   /* ---------- 公式定界符修复 / 转义（与 exam_app.js 一致） ---------- */
   function fixMathDelims(s) {
@@ -154,7 +154,7 @@
 
     var html = "";
     if (nSec < st.total) {
-      html += '<p class="sq-mix">本节客观题 ' + nSec + ' 道，已用同章题目补足 ' + st.total + ' 道。</p>';
+      html += '<p class="sq-mix">本节客观题 ' + nSec + ' 道，已用同章题目补足 ' + st.total + ' 道．</p>';
     }
     html += qs.map(function (q, i) {
       var h = '<div class="sq-q" data-i="' + i + '">';
@@ -265,7 +265,7 @@
             var fb = qEl.querySelector(".sq-fb");
             fb.className = "sq-fb info";
             fb.innerHTML = "📖 参考答案：" + esc(q.ans) + (q.fb ? "<br>" + esc(q.fb) : "") +
-              '<br><small>你输入了：' + esc(v) + '。形式不同但等价也算对——请对照自查，你觉得自己做对了吗？</small>' +
+              '<br><small>你输入了：' + esc(v) + '．形式不同但等价也算对——请对照自查，你觉得自己做对了吗？</small>' +
               '<div class="sq-self">' +
                 '<button class="sq-btn sq-yes" type="button">✓ 我确认做对了</button>' +
                 '<button class="sq-btn sq-no" type="button">✗ 重做 / 我还没做对</button>' +
@@ -277,7 +277,7 @@
               st.done++;
               fb.className = "sq-fb info";
               fb.innerHTML = "📖 参考答案：" + esc(q.ans) + (q.fb ? "<br>" + esc(q.fb) : "") +
-                '<br><small>已自查确认。机器未能逐字核对，但你的练习已记录 ✦</small>';
+                '<br><small>已自查确认．机器未能逐字核对，但你的练习已记录 ✦</small>';
               RT(fb); fb.style.display = "block";
               afterOne();
             });

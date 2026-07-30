@@ -12,7 +12,7 @@
   var qImages = {};                        // 本次考试各主观题已上传的图片（base64）
 
   function $(id) { return document.getElementById(id); }
-  var CJK_PUNCT = "。、，！？；：「」『』（）〈〉《》【】…—～．〔〕";
+  var CJK_PUNCT = "．、，！？；：「」『』（）〈〉《》【】…—～．〔〕";
   function fixMathDelims(s) {
     // 修复 OCR 题常见的 \( \) 嵌套/不配对，以及「反斜杠+中文标点」残片（即 \) 与中文标点相连被 OCR 吞掉右定界符）
     if (typeof s !== "string") return s;
@@ -61,8 +61,8 @@
   }
   function fixVdots(root) {
     // KaTeX 的 \vdots 渲染为外层 <span class="mord"><span class="mord">⋮</span><span class="mord rule"></span></span>;
-    // .mord.rule 是撑高占位条，其外层 .mord 在 vlist 行内定位会下坠到下一行，导致省略号与下方元素重叠/贴底。
-    // 给该外层 .mord 加 inline-block + 上移，可修复重叠，且不依赖 :has() 兼容性。
+    // .mord.rule 是撑高占位条，其外层 .mord 在 vlist 行内定位会下坠到下一行，导致省略号与下方元素重叠/贴底．
+    // 给该外层 .mord 加 inline-block + 上移，可修复重叠，且不依赖 :has() 兼容性．
     if (!root || !root.querySelectorAll) return;
     root.querySelectorAll('.katex-html .mord.rule').forEach(function (rule) {
       var m = rule.parentElement;
@@ -143,7 +143,7 @@
       });
       $("bf-count").textContent = "命中 " + list.length + " 题";
       var L = $("bf-list");
-      if (!list.length) { L.innerHTML = '<p class="muted">无匹配题目。</p>'; RT(L); return; }
+      if (!list.length) { L.innerHTML = '<p class="muted">无匹配题目．</p>'; RT(L); return; }
       L.innerHTML = list.map(function (q) {
         return questionCard(q, false);
       }).join("");
@@ -173,7 +173,7 @@
     } else if (withResult && q.type === "fill") {
       if (q.userAns) extra += '<div class="ex-ua">你的作答：' + esc(q.userAns) + "</div>";
       if (q.ans) extra += '<div class="ex-ca">参考答案：' + esc(q.ans) + "</div>";
-      else extra += '<div class="ex-fb">本题需教师核对/评定。</div>';
+      else extra += '<div class="ex-fb">本题需教师核对/评定．</div>';
       if (q.fb) extra += '<div class="ex-fb">' + esc(q.fb) + "</div>";
     } else if (q.type !== "mc" && q.type !== "fill") {
       if (withResult) {
@@ -184,7 +184,7 @@
             return '<img class="ex-upimg" src="' + src + '" alt="解答图' + (i + 1) + '">';
           }).join("") + "</div>";
         }
-        extra += '<div class="ex-selfcheck">✅ 自查三问：思路方向对了吗？关键步骤都写全了吗？最终结论一致吗？如把握不准，可上传解答图片请教师复核。</div>';
+        extra += '<div class="ex-selfcheck">✅ 自查三问：思路方向对了吗？关键步骤都写全了吗？最终结论一致吗？如把握不准，可上传解答图片请教师复核．</div>';
         var hasRef = !!(q.ans || q.fb);
         if (hasRef) {
           extra += '<div class="ex-airow">'
@@ -207,7 +207,7 @@
   function renderPaperConfig() {
     var pane = $("ex-paper");
     var types = ["mc", "fill", "calc", "proof", "app"];
-    var html = '<p class="muted">按"章 × 题型"设定题量，系统从本题库中抽取对应数量的题目组成试卷。选择题/填空题自动阅卷；计算/证明/应用题交卷后展示参考答案与解题过程，供自查明解（也可上传图片请教师复核）。</p>';
+    var html = '<p class="muted">按"章 × 题型"设定题量，系统从本题库中抽取对应数量的题目组成试卷．选择题/填空题自动阅卷；计算/证明/应用题交卷后展示参考答案与解题过程，供自查明解（也可上传图片请教师复核）．</p>';
     html += '<table class="ex-grid"><thead><tr><th>章节 \\ 题型</th>';
     types.forEach(function (t) { html += "<th>" + TY[t] + "</th>"; });
     html += "</tr></thead><tbody>";
@@ -235,7 +235,7 @@
         if (n > pool.length) n = pool.length;
         if (n > 0) { plan[ch + "_" + t] = { n: n, items: (($("pp-rand").checked) ? shuffle(pool) : pool).slice(0, n) }; total += n; }
       });
-      if (total === 0) { $("pp-out").innerHTML = '<p class="muted">请至少设定一类题目的数量。</p>'; RT($("pp-out")); return; }
+      if (total === 0) { $("pp-out").innerHTML = '<p class="muted">请至少设定一类题目的数量．</p>'; RT($("pp-out")); return; }
       var paper = [];
       for (var k in plan) plan[k].items.forEach(function (q) { paper.push(q); });
       var pts = parseInt($("pp-pts").value) || 4;
@@ -349,7 +349,7 @@
     } catch (e) {}
     var R = $("ex-result");
     var res = "<h3>考试成绩</h3>";
-    res += "<p>自动阅卷得分：<b>" + auto + "</b> / " + (auto + manual ? auto + "+" + manual + "(待评)" : auto) + " 分　正确 " + correct + " / " + items.length + " 题（选择题/填空题自动判分；计算/证明/应用题请对照下方参考解答<b>自查明解</b>）。</p>";
+    res += "<p>自动阅卷得分：<b>" + auto + "</b> / " + (auto + manual ? auto + "+" + manual + "(待评)" : auto) + " 分　正确 " + correct + " / " + items.length + " 题（选择题/填空题自动判分；计算/证明/应用题请对照下方参考解答<b>自查明解</b>）．</p>";
     res += '<div class="ex-rev">' + items.map(function (q) { return questionCard(q, true); }).join("") + "</div>";
     R.innerHTML = res;
     RT(R);
@@ -421,7 +421,7 @@
     var pane = $("ex-wrong");
     var w = getWrong();
     var html = "<h3>错题本（本地保存）</h3>";
-    if (!w.length) html += '<p class="muted">暂无错题。交卷后答错的客观题会自动收录于此。</p>';
+    if (!w.length) html += '<p class="muted">暂无错题．交卷后答错的客观题会自动收录于此．</p>';
     else {
       html += '<div class="ex-row"><button class="btn" id="wz-clear">清空错题本</button> <span class="ex-count">共 ' + w.length + ' 道</span></div>';
       html += '<div class="ex-list">' + w.map(function (q) {
@@ -439,7 +439,7 @@
   function renderScores(pane) {
     var sc = getScores();
     var html = "<h3>近期成绩</h3>";
-    if (!sc.length) html += '<p class="muted">暂无成绩记录。</p>';
+    if (!sc.length) html += '<p class="muted">暂无成绩记录．</p>';
     else html += "<ul class='ex-scores'>" + sc.map(function (s) {
       return "<li>" + s.date + "　自动阅卷 <b>" + s.score + "</b> / " + s.total + " 分（" + s.n + " 题）</li>";
     }).join("") + "</ul>";
@@ -448,9 +448,166 @@
     pane.appendChild(d);
   }
 
+  // ---------------- 数据同步（恢复码 / 备份文件） ----------------
+  var SYNC_MAGIC = "LAXD1.";
+  function collectData(withSubs) {
+    var d = {
+      wrong: getWrong(),
+      scores: getScores(),
+      study: (function () { try { return JSON.parse(localStorage.getItem("study_v1")) || null; } catch (e) { return null; } })()
+    };
+    if (withSubs) {
+      try { d.subs = JSON.parse(localStorage.getItem(LS_SUBMIT) || "[]"); } catch (e) { d.subs = []; }
+    }
+    return d;
+  }
+  function encodeData(d) {
+    return SYNC_MAGIC + btoa(unescape(encodeURIComponent(JSON.stringify(d))));
+  }
+  function decodeData(code) {
+    code = (code || "").trim();
+    if (code.indexOf(SYNC_MAGIC) !== 0) throw new Error("bad magic");
+    return JSON.parse(decodeURIComponent(escape(atob(code.slice(SYNC_MAGIC.length)))));
+  }
+  function mergeData(d) {
+    var report = [];
+    // 错题本：按 id 并集（保留较新的 ts）
+    if (d.wrong && d.wrong.length) {
+      var w = getWrong(), map = {};
+      w.forEach(function (x) { map[x.id] = x; });
+      var added = 0;
+      d.wrong.forEach(function (x) {
+        if (!x || !x.id) return;
+        if (!map[x.id] || (x.ts || 0) > (map[x.id].ts || 0)) { if (!map[x.id]) added++; map[x.id] = x; }
+      });
+      var out = Object.keys(map).map(function (k) { return map[k]; });
+      out.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      setWrong(out);
+      report.push("错题本合并完成（新增 " + added + " 题，共 " + out.length + " 题）");
+    }
+    // 成绩：按 ts+score 签名去重合并
+    if (d.scores && d.scores.length) {
+      var sc = getScores(), seen = {};
+      sc.forEach(function (x) { seen[(x.ts || 0) + "_" + (x.score || 0)] = 1; });
+      var addedS = 0;
+      d.scores.forEach(function (x) {
+        var k = (x.ts || 0) + "_" + (x.score || 0);
+        if (!seen[k]) { seen[k] = 1; sc.push(x); addedS++; }
+      });
+      sc.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      setScores(sc.slice(0, 200));
+      report.push("成绩记录合并完成（新增 " + addedS + " 条）");
+    }
+    // 作答存档（仅备份文件包含）
+    if (d.subs && d.subs.length) {
+      try {
+        var subs = JSON.parse(localStorage.getItem(LS_SUBMIT) || "[]"), seenT = {};
+        subs.forEach(function (x) { seenT[x.ts || 0] = 1; });
+        var addedB = 0;
+        d.subs.forEach(function (x) { if (!seenT[x.ts || 0]) { subs.push(x); addedB++; } });
+        subs.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+        localStorage.setItem(LS_SUBMIT, JSON.stringify(subs.slice(0, 300)));
+        report.push("作答存档合并完成（新增 " + addedB + " 份）");
+      } catch (e) { report.push("作答存档合并失败（可能超出浏览器容量）"); }
+    }
+    // 能量与掌握度：逐项取较大值
+    if (d.study) {
+      try {
+        var cur = JSON.parse(localStorage.getItem("study_v1")) || {};
+        cur.pts = Math.max(cur.pts || 0, d.study.pts || 0);
+        cur.streak = Math.max(cur.streak || 0, d.study.streak || 0);
+        if (d.study.mastery) {
+          if (!cur.mastery) cur.mastery = {};
+          Object.keys(d.study.mastery).forEach(function (ch) {
+            var a = cur.mastery[ch], b = d.study.mastery[ch];
+            if (!a || (b.total || 0) > (a.total || 0)) cur.mastery[ch] = b;
+          });
+        }
+        Object.keys(d.study).forEach(function (k) { if (cur[k] === undefined) cur[k] = d.study[k]; });
+        localStorage.setItem("study_v1", JSON.stringify(cur));
+        report.push("能量与掌握度已同步（取两端较高值）");
+      } catch (e) {}
+    }
+    return report;
+  }
+  function renderSync() {
+    var pane = $("ex-sync"); if (!pane) return;
+    pane.innerHTML =
+      '<h3 style="margin:18px 0 6px">📱 多设备同步</h3>' +
+      '<p class="muted" style="line-height:1.9">学习数据（错题本、成绩、能量与掌握度）保存在当前浏览器中．' +
+      '换手机、换电脑或更换浏览器时，用下面的<b>恢复码</b>即可把数据带过去：' +
+      '本机点「生成恢复码」→ 复制后通过微信「文件传输助手」发给自己 → 在新设备打开本页粘贴 → 点「导入恢复」．' +
+      '两端数据会<b>自动合并</b>，不会覆盖丢失．</p>' +
+      '<div style="margin:14px 0 22px">' +
+      '  <button id="sync-gen" class="btn">生成恢复码</button> ' +
+      '  <button id="sync-copy" class="btn" hidden>复制恢复码</button>' +
+      '  <textarea id="sync-out" readonly hidden style="width:100%;margin-top:10px;height:96px;font-size:12px;' +
+      'border:1px solid var(--line);border-radius:8px;padding:8px;color:#456;word-break:break-all"></textarea>' +
+      '  <div id="sync-gen-msg" class="muted" style="margin-top:6px"></div>' +
+      '</div>' +
+      '<div style="margin:0 0 22px">' +
+      '  <textarea id="sync-in" placeholder="把另一台设备生成的恢复码粘贴到这里" style="width:100%;height:96px;font-size:12px;' +
+      'border:1px solid var(--line);border-radius:8px;padding:8px;word-break:break-all"></textarea>' +
+      '  <button id="sync-import" class="btn" style="margin-top:8px">导入恢复</button>' +
+      '  <div id="sync-in-msg" class="muted" style="margin-top:6px"></div>' +
+      '</div>' +
+      '<details style="margin:6px 0 20px"><summary style="cursor:pointer;color:var(--muted)">完整备份文件（含主观题作答与图片，数据较大）</summary>' +
+      '<div style="margin:10px 0">' +
+      '  <button id="sync-dl" class="btn">下载备份文件</button> ' +
+      '  <label class="btn" style="display:inline-block;cursor:pointer">导入备份文件<input id="sync-file" type="file" accept=".json,application/json" hidden></label>' +
+      '  <div id="sync-file-msg" class="muted" style="margin-top:6px"></div>' +
+      '</div></details>';
+    $("sync-gen").onclick = function () {
+      var code = encodeData(collectData(false));
+      var ta = $("sync-out"); ta.value = code; ta.hidden = false;
+      $("sync-copy").hidden = false;
+      $("sync-gen-msg").textContent = "长度 " + code.length + " 字符，可直接粘贴到微信发送．";
+    };
+    $("sync-copy").onclick = function () {
+      var ta = $("sync-out"); ta.select(); ta.setSelectionRange(0, ta.value.length);
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      if (!ok && navigator.clipboard) { navigator.clipboard.writeText(ta.value); ok = true; }
+      $("sync-gen-msg").textContent = ok ? "已复制，去微信粘贴发送即可．" : "复制失败，请手动全选复制．";
+    };
+    $("sync-import").onclick = function () {
+      var msg = $("sync-in-msg");
+      try {
+        var rep = mergeData(decodeData($("sync-in").value));
+        msg.innerHTML = rep.length ? ("✅ " + rep.join("；") + "．") : "恢复码有效，但其中没有可合并的数据．";
+        msg.style.color = "#1b7a3d";
+      } catch (e) {
+        msg.textContent = "恢复码无效，请确认完整粘贴（以 " + SYNC_MAGIC + " 开头）．";
+        msg.style.color = "#c0392b";
+      }
+    };
+    $("sync-dl").onclick = function () {
+      var blob = new Blob([JSON.stringify(collectData(true))], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "线代学习数据备份_" + new Date().toISOString().slice(0, 10) + ".json";
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+      $("sync-file-msg").textContent = "已下载，换设备后用「导入备份文件」恢复．";
+    };
+    $("sync-file").onchange = function () {
+      var f = this.files && this.files[0], msg = $("sync-file-msg");
+      if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        try {
+          var rep = mergeData(JSON.parse(r.result));
+          msg.innerHTML = "✅ " + (rep.length ? rep.join("；") + "．" : "文件有效，但没有可合并的数据．");
+          msg.style.color = "#1b7a3d";
+        } catch (e) { msg.textContent = "文件无法解析，请确认是本系统导出的备份．"; msg.style.color = "#c0392b"; }
+      };
+      r.readAsText(f);
+    };
+  }
+
   // ---------------- tab 切换 ----------------
   function switchTab(tab) {
-    ["browse", "paper", "exam", "wrong"].forEach(function (t) {
+    ["browse", "paper", "exam", "wrong", "sync"].forEach(function (t) {
       var p = $("ex-" + t); if (p) p.hidden = (t !== tab);
     });
     document.querySelectorAll(".ex-tab").forEach(function (b) {
@@ -459,6 +616,7 @@
     if (tab === "browse") renderBrowse();
     else if (tab === "paper") renderPaperConfig();
     else if (tab === "wrong") renderWrong();
+    else if (tab === "sync") renderSync();
     else if (tab === "exam" && !$("ex-questions")) {
       // 未组卷时给一个默认快速抽题
       quickExam();

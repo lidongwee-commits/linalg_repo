@@ -66,8 +66,8 @@
     <h1 class="title">智能题库 · 文字版 PDF 识别<span class="en">上传习题 → 自动分题 → 链接教材章节</span></h1>
     <p class="sb-lede">
       把一份<b>带题号的文字层 PDF</b>（如课后习题、测验卷、考研真题）上传，或直接将题目文本粘贴到右侧，
-      本工具会按题号自动切分，并依据关键词判断每题所属章节，生成可一键跳转到对应教材小节（<code>chX.html#sXY</code>）的卡片。
-      纯前端运行，<b>不调用任何付费接口</b>；PDF 解析依赖 pdf.js（联网加载，失败时可改用「直接粘贴文本」）。
+      本工具会按题号自动切分，并依据关键词判断每题所属章节，生成可一键跳转到对应教材小节（<code>chX.html#sXY</code>）的卡片．
+      纯前端运行，<b>不调用任何付费接口</b>；PDF 解析依赖 pdf.js（联网加载，失败时可改用「直接粘贴文本」）．
     </p>
 
     <div class="sb-grid">
@@ -78,11 +78,11 @@
           <br>
           <input type="file" id="pdfFile" accept="application/pdf">
         </div>
-        <p style="font-size:12px;color:var(--muted);margin:10px 0 0">支持：带可选中文字层的 PDF（非扫描图片）。扫描版请先用 OCR 转文字，或粘贴文本。</p>
+        <p style="font-size:12px;color:var(--muted);margin:10px 0 0">支持：带可选中文字层的 PDF（非扫描图片）．扫描版请先用 OCR 转文字，或粘贴文本．</p>
       </div>
       <div class="sb-box">
         <h3>② 或直接粘贴题目文本</h3>
-        <textarea id="pasteArea" placeholder="把题目文本粘贴到这里，例如：&#10;1. 计算下列行列式…&#10;2. 设矩阵 A=…，求 A 的逆矩阵。&#10;3. 判断向量组是否线性相关……"></textarea>
+        <textarea id="pasteArea" placeholder="把题目文本粘贴到这里，例如：&#10;1. 计算下列行列式…&#10;2. 设矩阵 A=…，求 A 的逆矩阵．&#10;3. 判断向量组是否线性相关……"></textarea>
         <div class="sb-btns">
           <button class="btn" id="btnPaste">识别粘贴文本</button>
           <button class="btn ghost" id="btnClear">清空</button>

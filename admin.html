@@ -59,7 +59,7 @@
     <input type="password" id="gate-pwd" class="gate-input" placeholder="管理口令" autofocus>
     <button id="gate-btn" class="btn">进入</button>
     <div id="gate-err" class="gate-err"></div>
-    <p class="gate-tip">默认口令 <code>teacher2026</code>（可在 <code>admin_app.js</code> 顶部修改）。本题库仅教师可见，学生端不提供入口。</p>
+    <p class="gate-tip">默认口令 <code>teacher2026</code>（可在 <code>admin_app.js</code> 顶部修改）．本题库仅教师可见，学生端不提供入口．</p>
   </div>
 </div>
 
@@ -119,7 +119,7 @@
           <div class="ed-label">选项</div>
           <div>
             <textarea id="ed-opts" class="ed-area" placeholder="仅选择题需要，每行一个：&#10;A. 选项一&#10;B. 选项二"></textarea>
-            <div class="ed-hint">每行格式：字母. 内容（例如 A. 正确）。其他选项题型可留空。</div>
+            <div class="ed-hint">每行格式：字母. 内容（例如 A. 正确）．其他选项题型可留空．</div>
           </div>
           <div class="ed-label">参考答案</div>
           <input id="ed-ans" class="ed-input" placeholder="选择题填字母，填空填结果，主观题可留空">
@@ -136,7 +136,7 @@
 
       <section class="panel" id="sec-submit" hidden>
         <h2>学生提交记录（本机浏览器）</h2>
-        <p class="muted">此处显示在<strong>本浏览器</strong>内学生作答（图片 + 文字）的存档，教师可手动评定并回写。跨设备共享需配合后端，或导出后统一录入。</p>
+        <p class="muted">此处显示在<strong>本浏览器</strong>内学生作答（图片 + 文字）的存档，教师可手动评定并回写．跨设备共享需配合后端，或导出后统一录入．</p>
         <div id="sub-list" class="ex-list"></div>
       </section>
 
@@ -144,23 +144,23 @@
         <h2>使用说明</h2>
         <details open>
           <summary>如何更新题库并生效？</summary>
-          <p>1. 在「题库编辑」中筛选、新增或修改题目，点「保存」。<br>
-          2. 修改仅暂存在本浏览器；点「⬇ 导出 exam_data.js」下载最新题库文件。<br>
-          3. 将下载的 <code>exam_data.js</code> 放回站点根目录并重新部署（或运行 <code>build_chapters.py</code>），学生端即可见到更新。</p>
+          <p>1. 在「题库编辑」中筛选、新增或修改题目，点「保存」．<br>
+          2. 修改仅暂存在本浏览器；点「⬇ 导出 exam_data.js」下载最新题库文件．<br>
+          3. 将下载的 <code>exam_data.js</code> 放回站点根目录并重新部署（或运行 <code>build_chapters.py</code>），学生端即可见到更新．</p>
         </details>
         <details>
           <summary>学生端如何对照 / 批改？</summary>
           <p>计算 / 证明 / 应用题在学生端为「自查明解」模式：</p>
           <ul>
-            <li>交卷后，学生可上传解答图片 + 文字作答，存档于本机浏览器。</li>
-            <li>学生点「对照参考解答」按钮即可展开本题参考答案与完整解题过程，并奖励少量能量（标记"做了对照"）。</li>
-            <li>若学生把握不准，可把图片/文字带去请教师复核，或后续接入 AI 批改（需另部署后端，暂未启用）。</li>
+            <li>交卷后，学生可上传解答图片 + 文字作答，存档于本机浏览器．</li>
+            <li>学生点「对照参考解答」按钮即可展开本题参考答案与完整解题过程，并奖励少量能量（标记"做了对照"）．</li>
+            <li>若学生把握不准，可把图片/文字带去请教师复核，或后续接入 AI 批改（需另部署后端，暂未启用）．</li>
           </ul>
-          <p>目前学生作答会存档于本机，教师可在本页「学生提交记录」手动评定。</p>
+          <p>目前学生作答会存档于本机，教师可在本页「学生提交记录」手动评定．</p>
         </details>
         <details>
           <summary>权限说明</summary>
-          <p>本题库页面 <code>admin.html</code> 通过前端口令保护，<strong>学生端不提供任何入口</strong>（考试页 exam.html 不展示答案与解析）。前端口令仅作"可见性"隔离，无法替代服务端鉴权；请勿将含有敏感数据的接口密钥写入前端代码。</p>
+          <p>本题库页面 <code>admin.html</code> 通过前端口令保护，<strong>学生端不提供任何入口</strong>（考试页 exam.html 不展示答案与解析）．前端口令仅作"可见性"隔离，无法替代服务端鉴权；请勿将含有敏感数据的接口密钥写入前端代码．</p>
         </details>
       </section>
 

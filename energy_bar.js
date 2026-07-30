@@ -1,12 +1,12 @@
 /* 全局成长能量条 · Energy Bar（v2：嵌入侧栏/顶栏，不打扰阅读，机制更贴合实际）
- * 数据存本机 localStorage(study_v1)，零后端，跨页面一致。
+ * 数据存本机 localStorage(study_v1)，零后端，跨页面一致．
  *
  * 能量代表“学习投入”，靠真实学习行为累积：
  *   - 认真学完一个小节（滚动到该节并停留数秒）→ 阅读积分（每日封顶，防空刷）
  *   - 做「学完就练」每题 → 努力分；答对再 + 正确分
  *   - 完成一次考试/自测 → 按正确率给分
  *   - 连续每天学习 → 连击奖励
- * 能量满 100 升级，开启新的成长周期。
+ * 能量满 100 升级，开启新的成长周期．
  */
 (function () {
   'use strict';
@@ -208,9 +208,9 @@
     var ns = nextStage(s.energy);
     var hint = document.getElementById('eb-hint');
     if (hint) {
-      if (s.energy >= ENERGY_MAX - 0.001) hint.textContent = '这一成长周期已圆满，新旅程正开始。';
-      else if (ns) hint.textContent = '距离「' + ns.name + '」还差 ' + (ns.at - s.energy) + ' 点能量。';
-      else hint.textContent = '继续前进，让成长看得见。';
+      if (s.energy >= ENERGY_MAX - 0.001) hint.textContent = '这一成长周期已圆满，新旅程正开始．';
+      else if (ns) hint.textContent = '距离「' + ns.name + '」还差 ' + (ns.at - s.energy) + ' 点能量．';
+      else hint.textContent = '继续前进，让成长看得见．';
     }
     var chs = document.getElementById('eb-chs');
     if (chs) {

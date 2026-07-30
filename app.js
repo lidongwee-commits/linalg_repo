@@ -2,8 +2,8 @@
 /* ---------- KaTeX 本地渲染 ---------- */
 function fixVdots(root){
   // \vdots 在 KaTeX 中渲染为 <span class="mord"><span class="mord">⋮</span><span class="mord rule" ...></span></span>
-  // .mord.rule 是撑高用的占位条；其外层 .mord 在 vlist 行内定位中偏下，会掉进下一行。
-  // 直接给外层 .mord 加 display:inline-block + transform 上移，绕开 :has() 兼容问题，且 transform 不被 vlist 吞掉。
+  // .mord.rule 是撑高用的占位条；其外层 .mord 在 vlist 行内定位中偏下，会掉进下一行．
+  // 直接给外层 .mord 加 display:inline-block + transform 上移，绕开 :has() 兼容问题，且 transform 不被 vlist 吞掉．
   if(!root || !root.querySelectorAll) return;
   root.querySelectorAll('.katex-html .mord.rule').forEach(function(rule){
     var m=rule.parentElement;
@@ -22,7 +22,7 @@ window.addEventListener('DOMContentLoaded',function(){
       {left:'\\(',right:'\\)',display:false}
     ],throwOnError:false,macros:{'\\xlongequal':'\\overset{#1}{=\\!=\\!=}'},ignoredClasses:['katex','katex-lazy']};
     // 折叠块内的**正文**公式延迟到展开时再渲染，避免一次性把全部公式塞进 DOM 导致页面巨大、折叠卡顿；
-    // 但 summary（始终可见的标题）里的公式必须立即渲染，否则会出现「标题里的公式点开才显示」。
+    // 但 summary（始终可见的标题）里的公式必须立即渲染，否则会出现「标题里的公式点开才显示」．
     document.querySelectorAll('details:not([open])').forEach(function(d){
       d.classList.add('katex-lazy');
       var sm=d.querySelector('summary');
@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded',function(){
         d.classList.remove('katex-lazy');
         d.removeEventListener('toggle',onToggle);
         // 展开时一次性渲染本折叠块内的公式（整块渲染，已验证可靠）；
-        // 用 requestIdleCallback（退化 setTimeout）让出主线程，避免大块内容抢占滚动。
+        // 用 requestIdleCallback（退化 setTimeout）让出主线程，避免大块内容抢占滚动．
         var sched=window.requestIdleCallback
           ? function(cb){ return requestIdleCallback(cb,{timeout:200}); }
           : function(cb){ return setTimeout(cb,16); };
@@ -138,9 +138,9 @@ function resetP(){P=[[2,1,0],[1,3,1],[0,2,1]];renderP();
 function parseRow(id){return document.getElementById(id).value.trim().split(/\s+/).map(Number);}
 function cramer(){
   const A=[parseRow('c1'),parseRow('c2'),parseRow('c3')],b=parseRow('cb');
-  if(A.some(r=>r.length!==3)||b.length!==3){document.getElementById('cramerOut').innerHTML='请每行输入 3 个数。';return;}
+  if(A.some(r=>r.length!==3)||b.length!==3){document.getElementById('cramerOut').innerHTML='请每行输入 3 个数．';return;}
   const dA=det3(A);
-  if(Math.abs(dA)<1e-9){document.getElementById('cramerOut').innerHTML='D = 0，克拉默法则不适用（方程组无解或有无穷多解）。';return;}
+  if(Math.abs(dA)<1e-9){document.getElementById('cramerOut').innerHTML='D = 0，克拉默法则不适用（方程组无解或有无穷多解）．';return;}
   const Aj=[A.map(r=>r.slice()),A.map(r=>r.slice()),A.map(r=>r.slice())];
   for(let i=0;i<3;i++)Aj[0][i][0]=b[i];
   for(let i=0;i<3;i++)Aj[1][i][1]=b[i];
@@ -309,7 +309,7 @@ function matrixMultiplyCalc(){
     d.appendChild(b);
   }
   gc.appendChild(d);
-  out.textContent='已计算 C=AB（'+m+'x'+n+'）。点击 C 中任一格查看该行·列展开式。';
+  out.textContent='已计算 C=AB（'+m+'x'+n+'）．点击 C 中任一格查看该行·列展开式．';
 }
 function showCell(i,j){
   const out=document.getElementById('mmOut');
@@ -348,11 +348,11 @@ function calcInvN(){
   if(!out) return;
   const n=Math.max(2,Math.min(5,parseInt(document.getElementById('invN').value)||3));
   const inp=document.querySelectorAll('#invGrid input');
-  if(inp.length!==n*n){ out.textContent='请先点击"生成矩阵"以生成 '+n+'×'+n+' 输入框。'; return; }
+  if(inp.length!==n*n){ out.textContent='请先点击"生成矩阵"以生成 '+n+'×'+n+' 输入框．'; return; }
   const M=[]; let k=0;
   for(let i=0;i<n;i++){ const row=[]; for(let j=0;j<n;j++) row.push(parseFloat(inp[k++].value)||0); M.push(row); }
   const d=detN(M);
-  if(Math.abs(d)<1e-9){ out.textContent='|A| = '+d.toFixed(4)+'，矩阵不可逆（奇异）。'; return; }
+  if(Math.abs(d)<1e-9){ out.textContent='|A| = '+d.toFixed(4)+'，矩阵不可逆（奇异）．'; return; }
   const Ad=adjN(M);
   let html='|A| = '+d.toFixed(4)+'\nA⁻¹ = (1/'+d.toFixed(4)+') · A* =\n';
   const rows=[];
@@ -381,19 +381,19 @@ function elementaryStep(){
   const out=document.getElementById('esOut');
   if(!out) return;
   let M=parseMatText('esMat');
-  if(!M || !M.length || M.some(r=>r.some(x=>isNaN(x)))){ out.textContent='输入格式有误，请每行用空格或逗号分隔数字。'; return; }
+  if(!M || !M.length || M.some(r=>r.some(x=>isNaN(x)))){ out.textContent='输入格式有误，请每行用空格或逗号分隔数字．'; return; }
   const op=document.getElementById('esOp').value;
   const i=parseInt(document.getElementById('esI').value)||1;
   const j=parseInt(document.getElementById('esJ').value)||1;
   const k=parseFloat(document.getElementById('esK').value)||0;
   const m=M.length, n=M[0].length;
-  if(i<1||i>m||j<1||j>m){ out.textContent='行号 i,j 应在 1~'+m+' 之间。'; return; }
+  if(i<1||i>m||j<1||j>m){ out.textContent='行号 i,j 应在 1~'+m+' 之间．'; return; }
   const desc={swap:'交换 r'+i+' ↔ r'+j, scale:'r'+i+' × '+k, add:'r'+i+' + '+k+'·r'+j}[op];
   if(op==='swap'){
-    if(i===j){ out.textContent='交换同一行无效。'; return; }
+    if(i===j){ out.textContent='交换同一行无效．'; return; }
     const t=M[i-1]; M[i-1]=M[j-1]; M[j-1]=t;
   } else if(op==='scale'){
-    if(k===0){ out.textContent='乘 0 会使整行清零，通常无意义，已照执行。'; }
+    if(k===0){ out.textContent='乘 0 会使整行清零，通常无意义，已照执行．'; }
     M[i-1]=M[i-1].map(v=>v*k);
   } else if(op==='add'){
     M[i-1]=M[i-1].map((v,idx)=>v+k*M[j-1][idx]);
@@ -578,7 +578,7 @@ if(document.getElementById('evsvg') && typeof evDraw==='function') evDraw();
 // ============================================================
 //  第三章 向量组 · 交互控件
 //  所有函数与 id 均以 c3 / v3 前缀，避免与主文件（calcInvN、
-//  buildInv、matrixMultiplyCalc、gradeQuiz …）冲突。
+//  buildInv、matrixMultiplyCalc、gradeQuiz …）冲突．
 // ============================================================
 
 // ---------- 小工具 ----------
@@ -686,11 +686,11 @@ function c3depCheck() {
   }
   s += "秩 R(A) = " + rank + "，向量个数 m = " + m + "\n";
   if (rank < m) {
-    s += "结论：R(A) < m，故 α₁,…,α" + m + " 线性相关。\n\n";
+    s += "结论：R(A) < m，故 α₁,…,α" + m + " 线性相关．\n\n";
     const piv = res.pivots, free = [];
     for (let c = 0; c < m; c++) if (piv.indexOf(c) === -1) free.push(c);
     if (rank === 0) {
-      s += "（所有向量均为零向量，R(A)=0，显然线性相关；每个向量都可由其余向量以系数 0 表示。）";
+      s += "（所有向量均为零向量，R(A)=0，显然线性相关；每个向量都可由其余向量以系数 0 表示．）";
     } else if (free.length >= 1) {
       const fc = free[0];
       const parts = [];
@@ -701,13 +701,13 @@ function c3depCheck() {
       }
       s += "由行最简形，其中一个线性关系为：\n  " + names[fc] + " = " +
            parts.join(" + ").replace(/\+ -/g, "- ") + "\n";
-      s += "（即第 " + (fc + 1) + " 个向量可由其余向量线性表示。）";
+      s += "（即第 " + (fc + 1) + " 个向量可由其余向量线性表示．）";
     } else {
-      s += "（矩阵秩更小，所有向量共线于低维子空间。）";
+      s += "（矩阵秩更小，所有向量共线于低维子空间．）";
     }
   } else {
-    s += "结论：R(A) = m，故 α₁,…,α" + m + " 线性无关。";
-    if (n === m) s += "\n（此时 |A| ≠ 0，它们构成 R^" + n + " 的一组基。）";
+    s += "结论：R(A) = m，故 α₁,…,α" + m + " 线性无关．";
+    if (n === m) s += "\n（此时 |A| ≠ 0，它们构成 R^" + n + " 的一组基．）";
   }
   out.textContent = s;
 }
@@ -760,12 +760,12 @@ function v3rankCalc() {
   const out = document.getElementById("v3rankOut");
   if (!out) return;
   const rows = v3parseMat(document.getElementById("v3matIn").value);
-  if (rows.length === 0) { out.textContent = "请输入至少一个向量（每行一个向量）。"; return; }
+  if (rows.length === 0) { out.textContent = "请输入至少一个向量（每行一个向量）．"; return; }
   const d = rows[0].length;
   for (let i = 1; i < rows.length; i++) {
     if (rows[i].length !== d) {
       out.textContent = "错误：第 " + (i + 1) + " 行有 " + rows[i].length +
-        " 个分量，与第 1 行的 " + d + " 个分量不一致。";
+        " 个分量，与第 1 行的 " + d + " 个分量不一致．";
       return;
     }
   }
@@ -780,7 +780,7 @@ function v3rankCalc() {
   const rank = res.pivots.length;
   const names = [];
   for (let c = 0; c < d; c++) names.push("α" + (c + 1));
-  let s = "输入 " + m + " 个 " + d + " 维向量（每行一个）。\n";
+  let s = "输入 " + m + " 个 " + d + " 维向量（每行一个）．\n";
   s += "转置为 " + d + "×" + m + " 矩阵后作初等行变换，行最简形 RREF 为：\n\n";
   s += c3fmtMat(res.R) + "\n\n";
   s += "秩 R = " + rank + "\n";
@@ -817,12 +817,12 @@ window.addEventListener("DOMContentLoaded", function () {
 /* ========== 第四章 交互 ========== */
 /* =========================================================================
    JS functions for Chapter 4 (线性方程组) interactive widgets.
-   依赖：_ch4_new.html 中对应的控件 id（ls4Mat / ls4Out）。
+   依赖：_ch4_new.html 中对应的控件 id（ls4Mat / ls4Out）．
    注意：所有函数名与控件 id 均以 c4/ls4 前缀，避免与主文件其它控件冲突；
    主文件已占用：calcInvN,buildInv,buildMM,matrixMultiplyCalc,imageBrightness,
    initImageGrid,elementaryStep,parseMatText,fmtMat,detN,adjN,readMat,showCell,
-   solveLinSys,calcEig,gradeQuiz,drawMatrix,grid。
-   本文件所有输出均为纯文本（out.textContent）。
+   solveLinSys,calcEig,gradeQuiz,drawMatrix,grid．
+   本文件所有输出均为纯文本（out.textContent）．
    ========================================================================= */
 
 /* ---------- 工具：解析文本框中的增广矩阵（每行空格/逗号分隔） ---------- */
@@ -885,7 +885,7 @@ function c4Solve(){
   if(!out) return;
   const M0=c4ParseMat('ls4Mat');
   if(!M0){
-    out.textContent='输入格式有误：请每行用空格或逗号分隔数字，最后一列为常数项 b，且至少要有两列（未知数与 b）。';
+    out.textContent='输入格式有误：请每行用空格或逗号分隔数字，最后一列为常数项 b，且至少要有两列（未知数与 b）．';
     return;
   }
   const m=M0.length, ncol=M0[0].length;
@@ -910,7 +910,7 @@ function c4Solve(){
   // 不一致判定：存在主元落在最后一列（b 列）
   const inconsistent=pivots.some(p=>p===n);
   if(inconsistent){
-    lines.push('判别：存在形如 "0 = 1" 的行，故 R(A) ≠ R(A|b)，方程组【无解】。');
+    lines.push('判别：存在形如 "0 = 1" 的行，故 R(A) ≠ R(A|b)，方程组【无解】．');
     out.textContent=lines.join('\n');
     return;
   }
@@ -922,14 +922,14 @@ function c4Solve(){
       const p=pivots[r];
       if(p<n) x[p]=M[r][n];
     }
-    lines.push('判别：R(A)=R(A|b)='+n+'，方程组有【唯一解】。');
+    lines.push('判别：R(A)=R(A|b)='+n+'，方程组有【唯一解】．');
     lines.push('唯一解 x = '+c4Vec(x));
     out.textContent=lines.join('\n');
     return;
   }
 
   // 无穷多解：构造特解 + 基础解系
-  lines.push('判别：R(A)=R(A|b)='+rankA+' < '+n+'，方程组有【无穷多解】。');
+  lines.push('判别：R(A)=R(A|b)='+rankA+' < '+n+'，方程组有【无穷多解】．');
   lines.push('解空间维数 = n - R(A) = '+(n-rankA));
   lines.push('');
 
@@ -995,7 +995,7 @@ function c4Clear(){
   const ta=document.getElementById('ls4Mat');
   const out=document.getElementById('ls4Out');
   if(ta) ta.value='';
-  if(out) out.textContent='已清空，请输入增广矩阵后点击“求解”。';
+  if(out) out.textContent='已清空，请输入增广矩阵后点击“求解”．';
 }
 
 /* ---------- 初始化：DOM 就绪后绑定 ---------- */
@@ -1010,8 +1010,8 @@ window.addEventListener('DOMContentLoaded',function(){
 /* ========== 第五章 交互 ========== */
 /* =========================================================================
    Chapter 5 interactive widgets  (相似矩阵与二次型)
-   函数名统一加 c5 / eig5 前缀，避免与主文件已有函数冲突。
-   所有输出均为纯文本（out.textContent）。
+   函数名统一加 c5 / eig5 前缀，避免与主文件已有函数冲突．
+   所有输出均为纯文本（out.textContent）．
    ========================================================================= */
 
 /* ---------- 椭圆主轴交互（§5.4 引例 4） ---------- */
@@ -1043,7 +1043,7 @@ function evPreset(k){
 function evSnap(which){
   var M=evMat(), e=evEig(M[0],M[1],M[2],M[3]);
   var out=document.getElementById('evout');
-  if(!e.real){ if(out) out.textContent='该矩阵没有实特征值（如旋转矩阵），\n没有可对准的实特征方向。'; return; }
+  if(!e.real){ if(out) out.textContent='该矩阵没有实特征值（如旋转矩阵），\n没有可对准的实特征方向．'; return; }
   var v=which? e.v2 : e.v1;
   var deg=Math.atan2(v[1],v[0])*180/Math.PI; if(deg<0) deg+=360;
   document.getElementById('evth').value=Math.round(deg);
@@ -1430,7 +1430,7 @@ function eig5Build(){
   const n = parseInt(document.getElementById('eig5N').value) || 3;
   c5BuildGrid('eig5Grid', n, 'eig5c');
   const out = document.getElementById('eig5Out');
-  if(out) out.textContent = '已生成 ' + n + ' 阶输入框，请输入矩阵元素后点"计算"。';
+  if(out) out.textContent = '已生成 ' + n + ' 阶输入框，请输入矩阵元素后点"计算"．';
 }
 function eig5Calc(){
   const out = document.getElementById('eig5Out');
@@ -1444,7 +1444,7 @@ function eig5Calc(){
     const { B, C } = c5CharCoeffs(M);
     txt += '特征多项式 |A-λE| = λ^2 ' + (B >= 0 ? '+ ' : '- ') + Math.abs(B) + 'λ ' + (C >= 0 ? '+ ' : '- ') + Math.abs(C) + '\n';
     const disc = B * B - 4 * C;
-    if(disc < 0){ txt += '判别式 < 0，无实数特征值（有一对共轭复根）。\n'; out.textContent = txt; return; }
+    if(disc < 0){ txt += '判别式 < 0，无实数特征值（有一对共轭复根）．\n'; out.textContent = txt; return; }
     const r1 = (-B + Math.sqrt(disc)) / 2, r2 = (-B - Math.sqrt(disc)) / 2;
     reals = [r1, r2];
     txt += '特征值（实数）：λ1 = ' + r1 + ', λ2 = ' + r2 + '\n\n';
@@ -1452,14 +1452,14 @@ function eig5Calc(){
     const { B, C, D } = c5CharCoeffs(M);
     txt += '特征多项式 |A-λE| = λ^3 ' + (B >= 0 ? '+ ' : '- ') + Math.abs(B) + 'λ^2 ' + (C >= 0 ? '+ ' : '- ') + Math.abs(C) + 'λ ' + (D >= 0 ? '+ ' : '- ') + Math.abs(D) + '\n';
     reals = c5CubicRealRoots(B, C, D).filter(r => Number.isFinite(r));
-    if(reals.length === 0){ txt += '未找到实数特征值。\n'; out.textContent = txt; return; }
+    if(reals.length === 0){ txt += '未找到实数特征值．\n'; out.textContent = txt; return; }
     txt += '实数特征值：' + reals.map(r => r.toFixed(4)).join(', ') + '\n\n';
   } else {
     const c = c5CharPoly(M);
     txt += '特征多项式 p(λ) = λ^' + n + ' ' + c5PolyStr(c, n) + '\n';
     const all = c5PolyRoots(c, n);
     reals = all.filter(z => Math.abs(z.im) < 1e-6).map(z => z.re);
-    if(reals.length === 0){ txt += '未找到实数特征值（特征值为复数）。\n'; out.textContent = txt; return; }
+    if(reals.length === 0){ txt += '未找到实数特征值（特征值为复数）．\n'; out.textContent = txt; return; }
     txt += '实数特征值（约）：' + reals.map(r => r.toFixed(4)).join(', ');
     if(all.some(z => Math.abs(z.im) >= 1e-6)) txt += '（其余为共轭复根，未列出）';
     txt += '\n\n';
@@ -1476,7 +1476,7 @@ function c5DefBuild(){
   const n = parseInt(document.getElementById('c5DefN').value) || 3;
   c5BuildGrid('c5DefGrid', n, 'c5defc');
   const out = document.getElementById('c5DefOut');
-  if(out) out.textContent = '已生成 ' + n + ' 阶对称矩阵输入框（按上三角+对角线输入，下三角自动对称）。';
+  if(out) out.textContent = '已生成 ' + n + ' 阶对称矩阵输入框（按上三角+对角线输入，下三角自动对称）．';
 }
 function c5DefCalc(){
   const out = document.getElementById('c5DefOut');
@@ -1499,13 +1499,13 @@ function c5DefCalc(){
   const allNeg = d.every(v => v < -1e-9);
   const altNegPos = d.every((v, i) => (i % 2 === 0) ? v < -1e-9 : v > 1e-9);
   if(allPos){
-    txt += '各阶顺序主子式全 > 0 → A 正定（positive definite）。';
+    txt += '各阶顺序主子式全 > 0 → A 正定（positive definite）．';
   } else if(altNegPos){
-    txt += '奇数阶 < 0、偶数阶 > 0 → A 负定（negative definite）。';
+    txt += '奇数阶 < 0、偶数阶 > 0 → A 负定（negative definite）．';
   } else if(d.some(v => Math.abs(v) < 1e-9)){
-    txt += '出现零主子式，无法用霍尔维茨定理直接判定（可能半正定/半负定/不定），需进一步分析。';
+    txt += '出现零主子式，无法用霍尔维茨定理直接判定（可能半正定/半负定/不定），需进一步分析．';
   } else {
-    txt += '顺序主子式符号既非全正也非交错 → A 不定（indefinite）。';
+    txt += '顺序主子式符号既非全正也非交错 → A 不定（indefinite）．';
   }
   out.textContent = txt;
 }
