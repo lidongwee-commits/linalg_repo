@@ -1,17 +1,26 @@
-/* 全局成长能量条 · Energy Bar
- * 与学习中心(study_app.js)共用同一份 localStorage(study_v1) 进度数据：
- *   - 阅读教材章节 -> awardReading(ch) 累积能量
- *   - 做题/考试判分 -> awardExam(right,total) 累积能量（由 exam_app.js 调用）
- * 数据完全兼容 study_app.js，跨页面一致，零后端。
+/* 全局成长能量条 · Energy Bar（v2：嵌入侧栏/顶栏，不打扰阅读，机制更贴合实际）
+ * 数据存本机 localStorage(study_v1)，零后端，跨页面一致。
  *
- * 设计：右下角常驻一条「成长能量条」——阶段图标 + 等级 + 横向能量进度 + 今日能量，
- * 始终可见、随学习实时增长，比隐藏的圆形核心更直观。点「详情」展开各章掌握度。
+ * 能量代表“学习投入”，靠真实学习行为累积：
+ *   - 认真学完一个小节（滚动到该节并停留数秒）→ 阅读积分（每日封顶，防空刷）
+ *   - 做「学完就练」每题 → 努力分；答对再 + 正确分
+ *   - 完成一次考试/自测 → 按正确率给分
+ *   - 连续每天学习 → 连击奖励
+ * 能量满 100 升级，开启新的成长周期。
  */
 (function () {
   'use strict';
   var LS_KEY = 'study_v1';
   var ENERGY_MAX = 100;
   var SEED_ENERGY = 8;
+
+  // —— 机制参数（贴合实际、可解释）——
+  var READ_POINTS = 3;       // 认真学完 1 个小节
+  var READ_DWELL = 4000;     // 停留满 4 秒才算“认真学完”
+  var READ_DAILY_CAP = 15;   // 阅读积分每日封顶（约 5 节），防止空刷
+  var TRY_POINTS = 1;        // 「学完就练」每做 1 题：努力分
+  var RIGHT_POINTS = 1;      // 每答对 1 题：额外正确分
+  var STREAK_BONUS = 5;      // 连续学习连击奖励（每天一次）
 
   var CHAPTERS = [
     { ch: 1, name: '行列式' }, { ch: 2, name: '矩阵' }, { ch: 3, name: '向量组' },
@@ -30,7 +39,7 @@
   function defaultState() {
     return { energy: SEED_ENERGY, level: 1, mastery: {}, lastDay: null, streak: 0,
       papers: 0, perfectCount: 0, todayGain: 0, lastGainDay: null, lastRate: null,
-      readCh: {}, lastReadDay: null };
+      readDaily: {}, streakBonusDay: null };
   }
   function load() {
     try { var s = JSON.parse(localStorage.getItem(LS_KEY)); if (s) return Object.assign(defaultState(), s); }
@@ -41,64 +50,95 @@
 
   function currentStage(e) { var c = STAGES[0]; for (var i = 0; i < STAGES.length; i++) if (e >= STAGES[i].at) c = STAGES[i]; return c; }
   function nextStage(e) { for (var i = 0; i < STAGES.length; i++) if (e < STAGES[i].at) return STAGES[i]; return null; }
-
-  // 阅读奖励：首次阅读某章给能量；每日首次阅读额外奖励
-  function awardReading(ch) {
-    var s = load(); var t = todayStr(); var gained = 0;
-    if (!s.readCh[ch]) { s.readCh[ch] = true; gained += 4; }
-    if (s.lastReadDay !== t) { s.lastReadDay = t; gained += 2; }
-    if (gained) {
-      s.energy += gained;
-      while (s.energy >= ENERGY_MAX) { s.energy -= ENERGY_MAX; s.level++; }
-      save(s);
-    }
-    return gained;
-  }
-
-  // 做题/考试奖励（由 exam_app.js 判分后调用）
-  function awardExam(right, total) {
-    if (!total) return 0;
-    var s = load(); var t = todayStr(); var rate = right / total;
-    var gain = Math.round(10 * (0.5 + 0.5 * rate)) + right;
-    if (s.lastGainDay !== t) { s.todayGain = 0; s.lastGainDay = t; }
-    if (s.lastDay !== t) {
-      s.streak = (s.lastDay && prevDay(t) === s.lastDay) ? s.streak + 1 : 1;
-      s.lastDay = t; gain += 5;
-    }
-    s.energy += gain; s.todayGain += gain;
-    while (s.energy >= ENERGY_MAX) { s.energy -= ENERGY_MAX; s.level++; }
-    save(s);
-    return gain;
-  }
   function prevDay(s) {
     if (!s) return null;
     var d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() - 1);
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
 
+  // 统一加分：累加能量、升级、维护连续天数与今日能量
+  function bump(gain) {
+    if (!(gain > 0)) return 0;
+    var s = load(), t = todayStr(), extra = 0;
+    if (s.lastGainDay !== t) { s.todayGain = 0; s.lastGainDay = t; }
+    if (s.lastDay !== t) {
+      var consec = s.lastDay && prevDay(t) === s.lastDay;
+      s.streak = consec ? (s.streak || 1) + 1 : 1;
+      s.lastDay = t;
+      if (consec && s.streak >= 2 && s.streakBonusDay !== t) { extra = STREAK_BONUS; s.streakBonusDay = t; }
+    }
+    gain += extra;
+    s.todayGain = (s.todayGain || 0) + gain;
+    s.energy += gain;
+    while (s.energy >= ENERGY_MAX) { s.energy -= ENERGY_MAX; s.level = (s.level || 1) + 1; }
+    save(s);
+    return gain;
+  }
+
+  // 阅读：滚动到小节并停留 → 认真学完（每日封顶）
+  function awardSectionStudy(secId) {
+    if (!secId) return 0;
+    var s = load(), t = todayStr();
+    if (!s.readDaily) s.readDaily = {};
+    var day = s.readDaily[t];
+    if (!day) day = s.readDaily[t] = { secs: [], gain: 0 };
+    if (day.secs.indexOf(secId) >= 0) return 0;   // 今日已记
+    if (day.gain >= READ_DAILY_CAP) return 0;      // 阅读封顶
+    day.secs.push(secId);
+    day.gain += READ_POINTS;
+    save(s);
+    var g = bump(READ_POINTS);
+    if (g) { floatGain(g); render(); }
+    return g;
+  }
+
+  // 学完就练：努力分 + 正确分（仅机器可判对的才计入“答对”）
+  function awardPractice(right, total) {
+    if (!total) return 0;
+    var gain = total * TRY_POINTS + (right || 0) * RIGHT_POINTS;
+    var g = bump(gain);
+    if (g) { floatGain(g); render(); }
+    return g;
+  }
+
+  // 考试 / 自测：按正确率给分
+  function awardExam(right, total) {
+    if (!total) return 0;
+    var rate = (right || 0) / total;
+    var gain = Math.round(total * (0.25 + 0.75 * rate));
+    var g = bump(gain);
+    if (g) { floatGain(g); render(); }
+    return g;
+  }
+
   /* ---------------- UI ---------------- */
-  function detectChapter() {
-    var m = location.pathname.match(/ch(\d)\.html$/);
-    if (m) return parseInt(m[1], 10);
+  // 优先放入可见的插槽（桌面→左侧栏；移动→顶栏）；都不可见则退化为右上角小条
+  function findSlot() {
+    var ids = ['eb-slot', 'eb-slot-m'];
+    for (var i = 0; i < ids.length; i++) {
+      var el = document.getElementById(ids[i]);
+      if (el && el.offsetParent !== null) return el;
+    }
     return null;
   }
 
   var detailOpen = false;
   function buildUI() {
-    if (document.getElementById('eb-bar')) return;
-    var bar = document.createElement('div');
-    bar.className = 'eb-bar'; bar.id = 'eb-bar';
-    bar.innerHTML =
-      '<div class="eb-ico" id="eb-ico">🌱</div>' +
-      '<div class="eb-main">' +
-        '<div class="eb-top"><span class="eb-name" id="eb-name">萌芽</span>' +
-        '<span class="eb-lv" id="eb-lv">Lv.1</span></div>' +
-        '<div class="eb-track"><div class="eb-fill" id="eb-fill"></div>' +
-        '<span class="eb-pct" id="eb-pct">0%</span></div>' +
-      '</div>' +
-      '<div class="eb-today" id="eb-today">今日 +0</div>' +
-      '<button class="eb-toggle" id="eb-toggle" type="button">详情</button>';
-    document.body.appendChild(bar);
+    if (document.getElementById('eb-chip')) return;
+
+    var chip = document.createElement('div');
+    chip.className = 'eb-chip'; chip.id = 'eb-chip';
+    chip.innerHTML =
+      '<span class="eb-ico" id="eb-ico">🌱</span>' +
+      '<span class="eb-name" id="eb-name">萌芽</span>' +
+      '<span class="eb-lv" id="eb-lv">Lv.1</span>' +
+      '<span class="eb-bar-mini"><i id="eb-fill"></i></span>' +
+      '<span class="eb-pct" id="eb-pct">0%</span>' +
+      '<button class="eb-toggle" id="eb-toggle" type="button">成长</button>';
+
+    var slot = findSlot();
+    if (slot) slot.appendChild(chip);
+    else { document.body.appendChild(chip); chip.classList.add('eb-floating'); }
 
     var detail = document.createElement('div');
     detail.className = 'eb-detail'; detail.id = 'eb-detail'; detail.hidden = true;
@@ -111,8 +151,14 @@
       '</div>' +
       '<div class="eb-hint" id="eb-hint"></div>' +
       '<div class="eb-growhelp">' +
-        '<b>能量怎么增长</b>' +
-        '<ul><li>每日首次学习：+2</li><li>首次读完某章：+4</li><li>每答对 1 题：+1，并随正确率额外奖励</li><li>连续每日学习：+5 连击奖励</li><li>完成一次自测/考试：再按正确率加成</li></ul>' +
+        '<b>能量如何增长</b>' +
+        '<ul>' +
+          '<li>认真学完 1 个小节（滚动到并停留）：+3，每日阅读封顶 +15</li>' +
+          '<li>做「学完就练」每题：+1 努力分，答对再 +1</li>' +
+          '<li>完成一次考试 / 自测：按正确率给分（满分≈题数）</li>' +
+          '<li>连续每天学习：连击奖励 +5</li>' +
+          '<li>能量满 100 升级，开启新的成长周期</li>' +
+        '</ul>' +
       '</div>' +
       '<div class="eb-chs" id="eb-chs"></div>';
     document.body.appendChild(detail);
@@ -135,7 +181,6 @@
     var lv = document.getElementById('eb-lv'); if (lv) lv.textContent = 'Lv.' + s.level;
     var fill = document.getElementById('eb-fill'); if (fill) fill.style.width = (s.energy / ENERGY_MAX * 100) + '%';
     var pct = document.getElementById('eb-pct'); if (pct) pct.textContent = Math.round(s.energy) + '%';
-    var today = document.getElementById('eb-today'); if (today) today.textContent = '今日 +' + (s.todayGain || 0);
     if (detailOpen) renderDetail();
   }
 
@@ -168,28 +213,55 @@
 
   function floatGain(gain) {
     if (!gain) return;
+    var chip = document.getElementById('eb-chip');
     var f = document.createElement('div'); f.className = 'eb-float'; f.textContent = '+' + gain;
+    if (chip) {
+      var r = chip.getBoundingClientRect();
+      f.style.left = (r.right + 8) + 'px';
+      f.style.top = (r.top + r.height / 2 - 10) + 'px';
+      f.style.right = 'auto';
+    } else {
+      f.style.top = '12px'; f.style.right = '16px'; f.style.left = 'auto';
+    }
     document.body.appendChild(f);
-    var bar = document.getElementById('eb-bar');
-    if (bar) { bar.classList.add('eb-pulse'); setTimeout(function () { bar.classList.remove('eb-pulse'); }, 520); }
+    if (chip) { chip.classList.add('eb-pulse'); setTimeout(function () { chip.classList.remove('eb-pulse'); }, 520); }
     setTimeout(function () { if (f.parentNode) f.parentNode.removeChild(f); }, 1300);
+  }
+
+  // 阅读观测：小节进入视野并停留满 READ_DWELL 毫秒，记一次“认真学完”
+  function setupReadingObserver() {
+    var secs = document.querySelectorAll('h2[id^="s"]');
+    if (!secs.length || !('IntersectionObserver' in window)) return;
+    var timers = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var id = en.target.id;
+        if (en.isIntersecting) {
+          if (!timers[id]) {
+            timers[id] = setTimeout(function () {
+              awardSectionStudy(id);
+              delete timers[id];
+            }, READ_DWELL);
+          }
+        } else {
+          if (timers[id]) { clearTimeout(timers[id]); delete timers[id]; }
+        }
+      });
+    }, { threshold: 0.55 });
+    secs.forEach(function (el) { io.observe(el); });
   }
 
   function init() {
     buildUI();
-    var ch = detectChapter();
-    var gained = 0;
-    if (ch) gained = awardReading(ch);
+    setupReadingObserver();
     render();
-    if (gained) floatGain(gained);
-    // 跨标签同步
     window.addEventListener('storage', function (e) { if (e.key === LS_KEY) render(); });
   }
 
-  // 暴露给考试系统
   window.EnergyBar = {
     init: init,
-    awardReading: awardReading,
+    awardSectionStudy: awardSectionStudy,
+    awardPractice: awardPractice,
     awardExam: awardExam,
     refresh: render
   };

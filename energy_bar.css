@@ -1,39 +1,33 @@
-/* ===== 全局成长能量条 · Energy Bar =====
-   始终可见的横向能量条：阶段图标 + 等级 + 能量进度 + 今日能量；点「详情」展开各章掌握度。
-   纯前端、零后端，数据存于本机 localStorage(study_v1)。 */
-.eb-bar{
-  position:fixed; right:18px; bottom:18px; z-index:9999;
-  display:flex; align-items:center; gap:11px;
-  padding:10px 14px; border-radius:14px;
-  background:rgba(255,255,255,.94); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
-  border:1px solid #e3e9ef; box-shadow:0 8px 26px rgba(20,45,75,.16);
-  font-family:-apple-system,"Microsoft YaHei",sans-serif;
-  max-width:min(360px, calc(100vw - 36px));
-}
-.eb-bar.eb-pulse{ animation:eb-pop .5s ease; }
+/* ===== 全局成长能量条 · Energy Bar（v2） =====
+   嵌入左侧栏 / 移动端顶栏的紧凑状态条；不外溢、不遮挡正文。
+   纯前端、零后端，数据存本机 localStorage(study_v1)。 */
+.eb-chip{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); margin:12px 0 6px;
+  font-family:-apple-system,"Microsoft YaHei",sans-serif; color:#e8f0f6; }
+/* 退化形态：无插槽页面（如管理端）固定在右上角小条，不再遮挡底部内容 */
+.eb-chip.eb-floating{ position:fixed; top:10px; right:10px; z-index:9999; margin:0;
+  background:rgba(255,255,255,.95); color:#13386b; border:1px solid #e3e9ef;
+  box-shadow:0 8px 26px rgba(20,45,75,.16); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
+.eb-chip.eb-pulse{ animation:eb-pop .5s ease; }
 @keyframes eb-pop{ 0%,100%{transform:scale(1)} 40%{transform:scale(1.04)} }
-.eb-ico{ font-size:24px; line-height:1; flex:0 0 auto; }
-.eb-main{ flex:1; min-width:130px; }
-.eb-top{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:5px; gap:8px; }
-.eb-name{ font-weight:700; color:#13386b; font-size:14px; }
-.eb-lv{ font-size:12px; font-weight:700; color:#2563eb; background:#eaf1ff; padding:1px 8px; border-radius:999px; flex:0 0 auto; }
-.eb-track{ position:relative; height:11px; border-radius:999px; background:#eef2f7; overflow:hidden; }
-.eb-fill{ position:absolute; left:0; top:0; bottom:0; width:0;
+.eb-ico{ font-size:20px; line-height:1; flex:0 0 auto; }
+.eb-name{ font-weight:700; font-size:13px; flex:0 0 auto; white-space:nowrap; }
+.eb-lv{ font-size:11px; font-weight:700; color:#7df9ff; background:rgba(125,249,255,.16); padding:1px 7px; border-radius:999px; flex:0 0 auto; white-space:nowrap; }
+.eb-floating .eb-lv{ color:#2563eb; background:#eaf1ff; }
+.eb-bar-mini{ position:relative; flex:1; height:8px; min-width:46px; border-radius:999px; background:rgba(255,255,255,.18); overflow:hidden; }
+.eb-floating .eb-bar-mini{ background:#eef2f7; }
+.eb-bar-mini i{ position:absolute; left:0; top:0; bottom:0; width:0; display:block;
   background:linear-gradient(90deg,#34d399,#3b82f6); border-radius:999px;
-  transition:width .7s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 8px rgba(59,130,246,.4); }
-.eb-pct{ position:absolute; right:7px; top:50%; transform:translateY(-50%);
-  font-size:10px; font-weight:700; color:#475569; }
-.eb-today{ font-size:12px; font-weight:700; color:#0f9d58; white-space:nowrap; flex:0 0 auto; }
-.eb-toggle{ border:none; background:#2563eb; color:#fff; font-size:12px; font-weight:600;
-  padding:7px 13px; border-radius:10px; cursor:pointer; white-space:nowrap; flex:0 0 auto;
-  font-family:inherit; }
+  transition:width .7s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 8px rgba(59,130,246,.45); }
+.eb-pct{ font-size:11px; font-weight:700; flex:0 0 auto; min-width:30px; text-align:right; }
+.eb-toggle{ border:none; background:#2563eb; color:#fff; font-size:11px; font-weight:600;
+  padding:5px 10px; border-radius:8px; cursor:pointer; flex:0 0 auto; font-family:inherit; white-space:nowrap; }
 .eb-toggle:hover{ background:#1d4ed8; }
 
-.eb-detail{ position:fixed; right:18px; bottom:80px; z-index:9999; width:300px; max-width:calc(100vw - 36px);
-  background:rgba(255,255,255,.97); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
-  border:1px solid #e3e9ef; border-radius:14px; box-shadow:0 14px 36px rgba(20,45,75,.22);
-  padding:14px 16px; font-family:-apple-system,"Microsoft YaHei",sans-serif;
-  animation:eb-in .18s ease; }
+.eb-detail{ position:fixed; top:12px; right:12px; z-index:9999; width:300px; max-width:calc(100vw - 24px);
+  background:rgba(255,255,255,.98); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  border:1px solid #e3e9ef; border-radius:14px; box-shadow:0 14px 40px rgba(20,45,75,.24);
+  padding:14px 16px; font-family:-apple-system,"Microsoft YaHei",sans-serif; animation:eb-in .18s ease; }
 @keyframes eb-in{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
 .eb-dhead{ display:flex; justify-content:space-between; align-items:center; font-weight:700; color:#13386b; margin-bottom:10px; }
 .eb-close{ cursor:pointer; font-size:18px; color:#94a3b8; line-height:1; }
@@ -54,14 +48,19 @@
 .eb-growhelp ul{ margin:0; padding-left:18px; }
 .eb-growhelp li{ margin:2px 0; }
 
-.eb-float{ position:fixed; right:30px; bottom:86px; z-index:10000;
-  font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:800; font-size:20px; color:#16a34a;
-  text-shadow:0 1px 4px rgba(255,255,255,.8); pointer-events:none;
-  animation:eb-rise 1.3s ease-out forwards; }
-@keyframes eb-rise{ 0%{opacity:0; transform:translateY(8px) scale(.8)} 20%{opacity:1} 100%{opacity:0; transform:translateY(-44px) scale(1.05)} }
+.eb-float{ position:fixed; z-index:10000; font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:800; font-size:18px; color:#16a34a;
+  text-shadow:0 1px 4px rgba(255,255,255,.85); pointer-events:none; animation:eb-rise 1.3s ease-out forwards; }
+@keyframes eb-rise{ 0%{opacity:0; transform:translateY(8px) scale(.8)} 20%{opacity:1} 100%{opacity:0; transform:translateY(-40px) scale(1.05)} }
+
+/* 顶栏插槽（移动端）：靠右对齐 */
+.topbar-slot{ margin-left:auto; display:flex; align-items:center; }
+@media (max-width:860px){
+  .topbar .eb-chip{ margin:0; padding:6px 8px; gap:6px; }
+  .topbar .eb-name, .topbar .eb-lv{ display:none; }
+  .topbar .eb-bar-mini{ min-width:28px; }
+  .topbar .eb-toggle{ padding:4px 8px; }
+}
 
 @media (max-width:560px){
-  .eb-bar{ left:12px; right:12px; max-width:none; gap:8px; padding:9px 12px; }
-  .eb-today{ display:none; }
-  .eb-main{ min-width:0; }
+  .eb-detail{ right:8px; left:8px; width:auto; }
 }

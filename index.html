@@ -8,32 +8,113 @@
 <link rel="stylesheet" href="energy_bar.css">
 </head>
 <body>
-<div class="topbar"><b>线性代数 · 数字教材</b><span>第一~五章</span></div>
+<div class="topbar"><b>线性代数 · 数字教材</b><span>第一~五章</span><span class="topbar-slot" id="eb-slot-m"></span></div>
 <div class="hero">
+  <div class="hero-deco"></div>
+  <svg class="hero-art" viewBox="0 0 220 180" aria-hidden="true">
+    <g stroke="#7df9ff" stroke-opacity="0.35" stroke-width="1" fill="none">
+      <path d="M20 160 H200 M20 160 V20"/>
+      <path d="M20 130 H200 M20 100 H200 M20 70 H200 M20 40 H200"/>
+      <path d="M60 160 V20 M100 160 V20 M140 160 V20 M180 160 V20"/>
+    </g>
+    <g stroke-linecap="round">
+      <line x1="20" y1="160" x2="120" y2="95" stroke="#7df9ff" stroke-width="3"/>
+      <line x1="20" y1="160" x2="70" y2="60" stroke="#a78bfa" stroke-width="3"/>
+      <line x1="20" y1="160" x2="170" y2="35" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="5 4"/>
+    </g>
+    <polygon points="20,160 120,95 170,35 70,60" fill="#7df9ff" fill-opacity="0.10" stroke="#7df9ff" stroke-opacity="0.4"/>
+    <circle cx="120" cy="95" r="3.5" fill="#7df9ff"/>
+    <circle cx="70" cy="60" r="3.5" fill="#a78bfa"/>
+    <circle cx="170" cy="35" r="4" fill="#fbbf24"/>
+  </svg>
   <div class="hero-in">
-    <div class="kicker">Linear Algebra · Interactive</div>
+    <div class="kicker">Linear Algebra · Interactive Digital Textbook</div>
     <h1 class="title">线性代数<span class="en">交互式数字教材</span></h1>
     <p class="lede">面向线上线下混合式教学，涵盖行列式、矩阵、向量组、线性方程组、相似矩阵与二次型五章。每章均含可亲手操作的交互演示——拖动向量看几何、调矩阵看变换、解方程组看过程，让抽象的代数「看得见、摸得着」。建议从第一章开始，逐章学习。</p>
+    <div class="hero-cta">
+      <a class="btn-hero" href="ch1.html">▸ 从第一章开始</a>
+      <a class="btn-hero ghost" href="exam.html">题库与自测</a>
+    </div>
+    <div class="hero-stats">
+      <span><b>5</b> 章</span><span><b>991</b> 题</span><span><b>∞</b> 交互演示</span>
+    </div>
   </div>
 </div>
 <div class="layout">
 <aside class="side">
-  <h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
-  <div class="sub">交互式数字教材</div>
-  <a href="ch1.html" style="background:#1b3547;color:#fff">▸ 进入第一章</a>
+<h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<a href="index.html" style="background:#1b3547;color:#fff">🏠 首页</a>
+<div class="ch">第1章 · 行列式</div>
+<a href="ch1.html">整章</a>
+<a href="ch1.html#s11">行列式的概念</a>
+<a href="ch1.html#s12">行列式的性质</a>
+<a href="ch1.html#s13">行列式的展开定理</a>
+<a href="ch1.html#s14">克拉默（Cramer）法则</a>
+<a href="ch1.html#s15">应用实例</a>
+<a href="ch1.html#s16">用软件计算行列式</a>
+<a href="ch1.html#adv">考研选讲</a>
+<div class="ch">第2章 · 矩阵及其运算</div>
+<a href="ch2.html">整章</a>
+<a href="ch2.html#s21">矩阵的概念与特殊矩阵</a>
+<a href="ch2.html#s22">矩阵的线性运算与乘法</a>
+<a href="ch2.html#s23">逆矩阵</a>
+<a href="ch2.html#s24">分块矩阵</a>
+<a href="ch2.html#s25">矩阵的初等变换</a>
+<a href="ch2.html#s26">矩阵的秩</a>
+<a href="ch2.html#s27">综合应用与软件实现</a>
+<a href="ch2.html#adv2">考研选讲</a>
+<div class="ch">第3章 · 向量组</div>
+<a href="ch3.html">整章</a>
+<a href="ch3.html#s31">向量组的线性表示</a>
+<a href="ch3.html#s32">向量组的线性相关性</a>
+<a href="ch3.html#s33">向量组的秩与极大无关组</a>
+<a href="ch3.html#s34">向量空间与基</a>
+<a href="ch3.html#s35">综合应用与软件实现</a>
+<a href="ch3.html#adv3">考研选讲</a>
+<div class="ch">第4章 · 线性方程组</div>
+<a href="ch4.html">整章</a>
+<a href="ch4.html#s41">齐次线性方程组</a>
+<a href="ch4.html#s42">非齐次线性方程组</a>
+<a href="ch4.html#s43">解的结构综合与矩阵方程</a>
+<a href="ch4.html#s44">综合应用与软件实现</a>
+<a href="ch4.html#adv4">考研选讲</a>
+<div class="ch">第5章 · 相似矩阵与二次型</div>
+<a href="ch5.html">整章</a>
+<a href="ch5.html#s51">特征值与特征向量</a>
+<a href="ch5.html#s52">相似矩阵与对角化</a>
+<a href="ch5.html#s53">实对称矩阵的对角化</a>
+<a href="ch5.html#s54">二次型及其标准形</a>
+<a href="ch5.html#s55">正定二次型</a>
+<a href="ch5.html#s56">综合应用与软件实现</a>
+<a href="ch5.html#adv5">考研选讲</a>
 </aside>
   <div class="page"><div class="col">
-    <h2 class="sec-h">选择章节开始学习</h2>
-    <div class="cards">
-<a class="card" href="ch1.html"><span class="cn">第1章 · 行列式</span><span class="en">Chapter 1</span></a>
-<a class="card" href="ch2.html"><span class="cn">第2章 · 矩阵及其运算</span><span class="en">Chapter 2</span></a>
-<a class="card" href="ch3.html"><span class="cn">第3章 · 向量组</span><span class="en">Chapter 3</span></a>
-<a class="card" href="ch4.html"><span class="cn">第4章 · 线性方程组</span><span class="en">Chapter 4</span></a>
-<a class="card" href="ch5.html"><span class="cn">第5章 · 相似矩阵与二次型</span><span class="en">Chapter 5</span></a>
-    </div>
+    <h2 class="sec-h">第1章 · 行列式</h2>
+<p class="home-chdesc">二阶、三阶行列式计算，n 阶行列式定义，性质与按行展开，以及解线性方程组的克拉默法则。</p>
+<div class="home-secs"><a class="home-sec" href="ch1.html#s11">行列式的概念</a><a class="home-sec" href="ch1.html#s12">行列式的性质</a><a class="home-sec" href="ch1.html#s13">行列式的展开定理</a><a class="home-sec" href="ch1.html#s14">克拉默（Cramer）法则</a><a class="home-sec" href="ch1.html#s15">应用实例</a><a class="home-sec" href="ch1.html#s16">用软件计算行列式</a><a class="home-sec" href="ch1.html#adv">考研选讲</a></div>
+<a class="home-go" href="ch1.html">▸ 进入第1章学习</a>
+<h2 class="sec-h">第2章 · 矩阵及其运算</h2>
+<p class="home-chdesc">矩阵的线性运算、乘法、转置与逆矩阵，分块矩阵，以及初等变换与矩阵秩。</p>
+<div class="home-secs"><a class="home-sec" href="ch2.html#s21">矩阵的概念与特殊矩阵</a><a class="home-sec" href="ch2.html#s22">矩阵的线性运算与乘法</a><a class="home-sec" href="ch2.html#s23">逆矩阵</a><a class="home-sec" href="ch2.html#s24">分块矩阵</a><a class="home-sec" href="ch2.html#s25">矩阵的初等变换</a><a class="home-sec" href="ch2.html#s26">矩阵的秩</a><a class="home-sec" href="ch2.html#s27">综合应用与软件实现</a><a class="home-sec" href="ch2.html#adv2">考研选讲</a></div>
+<a class="home-go" href="ch2.html">▸ 进入第2章学习</a>
+<h2 class="sec-h">第3章 · 向量组</h2>
+<p class="home-chdesc">向量组的线性组合、线性相关与线性无关，向量组的秩，以及线性方程组解的结构。</p>
+<div class="home-secs"><a class="home-sec" href="ch3.html#s31">向量组的线性表示</a><a class="home-sec" href="ch3.html#s32">向量组的线性相关性</a><a class="home-sec" href="ch3.html#s33">向量组的秩与极大无关组</a><a class="home-sec" href="ch3.html#s34">向量空间与基</a><a class="home-sec" href="ch3.html#s35">综合应用与软件实现</a><a class="home-sec" href="ch3.html#adv3">考研选讲</a></div>
+<a class="home-go" href="ch3.html">▸ 进入第3章学习</a>
+<h2 class="sec-h">第4章 · 线性方程组</h2>
+<p class="home-chdesc">高斯消元法解线性方程组，解的存在性与唯一性，从向量空间观点理解方程组。</p>
+<div class="home-secs"><a class="home-sec" href="ch4.html#s41">齐次线性方程组</a><a class="home-sec" href="ch4.html#s42">非齐次线性方程组</a><a class="home-sec" href="ch4.html#s43">解的结构综合与矩阵方程</a><a class="home-sec" href="ch4.html#s44">综合应用与软件实现</a><a class="home-sec" href="ch4.html#adv4">考研选讲</a></div>
+<a class="home-go" href="ch4.html">▸ 进入第4章学习</a>
+<h2 class="sec-h">第5章 · 相似矩阵与二次型</h2>
+<p class="home-chdesc">特征值与特征向量，相似矩阵与对角化，二次型及其标准化（配方法与正交变换）。</p>
+<div class="home-secs"><a class="home-sec" href="ch5.html#s51">特征值与特征向量</a><a class="home-sec" href="ch5.html#s52">相似矩阵与对角化</a><a class="home-sec" href="ch5.html#s53">实对称矩阵的对角化</a><a class="home-sec" href="ch5.html#s54">二次型及其标准形</a><a class="home-sec" href="ch5.html#s55">正定二次型</a><a class="home-sec" href="ch5.html#s56">综合应用与软件实现</a><a class="home-sec" href="ch5.html#adv5">考研选讲</a></div>
+<a class="home-go" href="ch5.html">▸ 进入第5章学习</a>
+
     <footer class="site-footer">
       <div class="wm">© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　© 线性代数数字教材 · 版权所有　</div>
-      <div class="cp">© 2026 线性代数数字教材 · 版权所有，仅供教学使用，未经授权不得转载</div>
+      <div class="cp">© 2026 线性代数数字教材 · 版权所有，仅供教学使用，未经授权不得转载<br>交流联系：<a href="mailto:ldwmath@163.com">ldwmath@163.com</a></div>
     </footer>
   </div></div>
 </div>
