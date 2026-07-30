@@ -149,15 +149,14 @@
           3. 将下载的 <code>exam_data.js</code> 放回站点根目录并重新部署（或运行 <code>build_chapters.py</code>），学生端即可见到更新。</p>
         </details>
         <details>
-          <summary>如何接入 AI 自动批改？</summary>
-          <p>计算 / 证明 / 应用题在学生端支持「上传解答图片 + 文字作答」。要让 AI 自动评分：</p>
+          <summary>学生端如何对照 / 批改？</summary>
+          <p>计算 / 证明 / 应用题在学生端为「自查明解」模式：</p>
           <ul>
-            <li>部署一个有公网地址的 Serverless / 云函数（如腾讯云函数、Vercel、Cloudflare Workers）。</li>
-            <li>它需接收 POST JSON：<code>{id, ch, type, stem, reference, solution, studentText, images}</code>（images 为 base64 图片数组）。</li>
-            <li>返回 JSON：<code>{score:"85", comment:"步骤基本正确"}</code> 或 <code>{result:"待定", feedback:"..."}</code>。</li>
-            <li>在 <code>exam_app.js</code> 顶部把 <code>AI_GRADING_WEBHOOK</code> 设为该函数地址即可。</li>
+            <li>交卷后，学生可上传解答图片 + 文字作答，存档于本机浏览器。</li>
+            <li>学生点「对照参考解答」按钮即可展开本题参考答案与完整解题过程，并奖励少量能量（标记"做了对照"）。</li>
+            <li>若学生把握不准，可把图片/文字带去请教师复核，或后续接入 AI 批改（需另部署后端，暂未启用）。</li>
           </ul>
-          <p>未配置时，学生作答会存档于本机，教师可在本页「学生提交记录」手动评定。</p>
+          <p>目前学生作答会存档于本机，教师可在本页「学生提交记录」手动评定。</p>
         </details>
         <details>
           <summary>权限说明</summary>

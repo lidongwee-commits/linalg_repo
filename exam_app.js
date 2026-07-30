@@ -8,12 +8,7 @@
   var DIFF = { 1: "易", 2: "中", 3: "难" };
   var LS_WRONG = "exam_wrong_v1";
   var LS_SCORE = "exam_scores_v1";
-  var LS_SUBMIT = "exam_submissions_v1";   // 学生主观题作答存档（含图片），供教师复核 / AI 批改
-  // —— AI 批改后端 Webhook（可选）——
-  // 部署一个有公网地址的 Serverless / 云函数，接收 {id,ch,type,stem,reference,solution,studentText,images}
-  // 返回 JSON，如 {score:"85", comment:"步骤基本正确，最后一步符号有误"} 或 {result:"待定", feedback:"..."}。
-  // 留空时前端仅做本地存档 + 教师手动评定（纯前端、零成本）。
-  var AI_GRADING_WEBHOOK = "";
+  var LS_SUBMIT = "exam_submissions_v1";   // 学生主观题作答存档（含图片），供教师复核
   var qImages = {};                        // 本次考试各主观题已上传的图片（base64）
 
   function $(id) { return document.getElementById(id); }
@@ -182,19 +177,25 @@
       if (q.fb) extra += '<div class="ex-fb">' + esc(q.fb) + "</div>";
     } else if (q.type !== "mc" && q.type !== "fill") {
       if (withResult) {
-        // 自查明解：交卷后立即展示参考答案与完整解题过程，学生自行对照检查
+        // 学生自查明解：作答与图片先展示，参考答案由学生点"对照"展开（并记能量，说明做了对照）
         if (q.userAns) extra += '<div class="ex-ua">你的文字作答：' + esc(q.userAns) + "</div>";
         if (q.userImages && q.userImages.length) {
           extra += '<div class="ex-upshow">你上传的解答：' + q.userImages.map(function (src, i) {
             return '<img class="ex-upimg" src="' + src + '" alt="解答图' + (i + 1) + '">';
           }).join("") + "</div>";
         }
-        if (q.ans) extra += '<div class="ex-ca">参考答案：' + esc(q.ans) + "</div>";
-        if (q.fb) extra += '<div class="ex-fb"><b>📖 解题过程（请对照自查）：</b><br>' + esc(q.fb) + "</div>";
-        extra += '<div class="ex-selfcheck">✅ 自查三问：思路方向对了吗？关键步骤都写全了吗？最终结论一致吗？'
-          + '如把握不准，可上传解答图片请教师复核或点击下方 AI 批改。</div>';
-        extra += '<div class="ex-airow"><button class="btn ex-aibtn" data-ai="' + q.id + '">🤖 请求 AI 批改（可选）</button></div>'
-          + '<div class="ex-aibox" id="aibox_' + q.id + '"></div>';
+        extra += '<div class="ex-selfcheck">✅ 自查三问：思路方向对了吗？关键步骤都写全了吗？最终结论一致吗？如把握不准，可上传解答图片请教师复核。</div>';
+        var hasRef = !!(q.ans || q.fb);
+        if (hasRef) {
+          extra += '<div class="ex-airow">'
+            + '<button class="btn ex-cmpbtn" data-cmp="' + q.id + '">📖 对照参考解答（+能量）</button>'
+            + '<span class="ex-cmpdone" id="cmpdone_' + q.id + '" style="display:none;color:#16a34a;font-weight:700">已对照 ✦</span>'
+            + '</div>';
+          extra += '<div class="ex-cmpbox" id="cmpbox_' + q.id + '" style="display:none">';
+          if (q.ans) extra += '<div class="ex-ca">参考答案：' + esc(q.ans) + "</div>";
+          if (q.fb) extra += '<div class="ex-fb"><b>📖 解题过程：</b><br>' + esc(q.fb) + "</div>";
+          extra += '</div>';
+        }
       } else {
         extra += '<div class="ex-fb">（计算/证明/应用题 · 交卷后即可对照参考解答自查）</div>';
       }
@@ -352,8 +353,16 @@
     res += '<div class="ex-rev">' + items.map(function (q) { return questionCard(q, true); }).join("") + "</div>";
     R.innerHTML = res;
     RT(R);
-    R.querySelectorAll(".ex-aibtn").forEach(function (btn) {
-      btn.addEventListener("click", function () { aiGrade(btn.getAttribute("data-ai")); });
+    R.querySelectorAll(".ex-cmpbtn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var qid = btn.getAttribute("data-cmp");
+        var box = $("cmpbox_" + qid), done = $("cmpdone_" + qid);
+        if (box) box.style.display = "block";
+        btn.style.display = "none";
+        if (done) done.style.display = "inline";
+        // 学生主动对照参考解答 → 奖励少量能量，标记"做了自查"
+        try { if (window.EnergyBar && window.EnergyBar.awardPractice) window.EnergyBar.awardPractice(0, 1); } catch (e) {}
+      });
     });
     // 错题本
     var w = getWrong();
@@ -405,43 +414,6 @@
       fr.readAsDataURL(file);
     });
     inp.value = "";
-  }
-
-  // ---------------- AI 批改（可选后端） ----------------
-  function aiGrade(qid) {
-    var q = null;
-    for (var i = 0; i < BANK.length; i++) if (BANK[i].id === qid) { q = BANK[i]; break; }
-    var box = $("aibox_" + qid);
-    if (!q) { if (box) box.innerHTML = '<div class="ex-fb">未找到该题。</div>'; return; }
-    if (box) box.innerHTML = '<span class="muted">正在请求 AI 批改…</span>';
-    if (!AI_GRADING_WEBHOOK) {
-      if (box) box.innerHTML =
-        '<div class="ex-fb"><b>AI 批改后端未配置。</b>当前为纯前端演示：学生作答（图片 + 文字）已存档于本机浏览器，'
-        + '教师可在「教师管理端」复核并手动评定。若要接入 AI，请在 <code>exam_app.js</code> 顶部设置 '
-        + '<code>AI_GRADING_WEBHOOK</code>——一个接收 {问题, 参考答案, 学生文字, 学生图片} 并返回 {score, comment} 的服务器地址。</div>';
-      return;
-    }
-    var payload = {
-      id: q.id, ch: q.ch, type: q.type, stem: q.stem,
-      reference: q.ans || "", solution: q.fb || "",
-      studentText: q.userAns || "", images: q.userImages || []
-    };
-    fetch(AI_GRADING_WEBHOOK, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        var score = d && (d.score != null ? d.score : d.result != null ? d.result : "");
-        var comment = d && (d.comment || d.feedback || d.msg || "");
-        if (box) box.innerHTML =
-          '<div class="ex-ca">AI 评分：' + (score !== "" ? esc(String(score)) : "待定") + "</div>"
-          + (comment ? '<div class="ex-fb">' + esc(String(comment)) + "</div>" : "");
-      })
-      .catch(function (e) {
-        if (box) box.innerHTML = '<div class="ex-fb">AI 批改请求失败：' + esc(e && e.message ? e.message : String(e)) + "。请检查 Webhook 地址或网络。</div>";
-      });
   }
 
   // ---------------- 错题本 ----------------
