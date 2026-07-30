@@ -169,10 +169,10 @@
       '<div class="eb-growhelp">' +
         '<div class="eb-gh-title">能量来源</div>' +
         '<div class="eb-gh-grid">' +
-          '<div class="eb-gh-card"><span class="eb-gh-ico">📖</span><span class="eb-gh-lbl">学完小节</span><span class="eb-gh-pts">+3</span></div>' +
-          '<div class="eb-gh-card"><span class="eb-gh-ico">✍️</span><span class="eb-gh-lbl">学完就练</span><span class="eb-gh-pts">+1~2</span></div>' +
-          '<div class="eb-gh-card"><span class="eb-gh-ico">📝</span><span class="eb-gh-lbl">考试自测</span><span class="eb-gh-pts">按正确率</span></div>' +
-          '<div class="eb-gh-card"><span class="eb-gh-ico">🔥</span><span class="eb-gh-lbl">连击学习</span><span class="eb-gh-pts">+5</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">📖</span><span class="eb-gh-lbl">学完<br>小节</span><span class="eb-gh-pts">+3</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">✍️</span><span class="eb-gh-lbl">学完<br>就练</span><span class="eb-gh-pts">+1~2</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">📝</span><span class="eb-gh-lbl">考试<br>自测</span><span class="eb-gh-pts">按正确率</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">🔥</span><span class="eb-gh-lbl">连击<br>学习</span><span class="eb-gh-pts">+5</span></div>' +
         '</div>' +
       '</div>' +
       '<div class="eb-chs" id="eb-chs"></div>' +
