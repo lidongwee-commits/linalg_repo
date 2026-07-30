@@ -59,6 +59,11 @@
       .replace(/[ＸXⅩ]/g, "x")
       .toLowerCase();
   }
+  /* 去掉题干自身已有的序号，避免与试卷/错题本序号叠加成 "2. 14. ..." */
+  function stripStemNo(s) {
+    if (typeof s !== "string") return s;
+    return s.replace(/^\s*\d+[\.．、\)\]）]\s*/, "");
+  }
   function fixVdots(root) {
     // KaTeX 的 \vdots 渲染为外层 <span class="mord"><span class="mord">⋮</span><span class="mord rule"></span></span>;
     // .mord.rule 是撑高占位条，其外层 .mord 在 vlist 行内定位会下坠到下一行，导致省略号与下方元素重叠/贴底。
@@ -159,7 +164,7 @@
       + '<span class="ex-badge">' + TY[q.type] + "</span>"
       + '<span class="ex-badge">' + SRC[q.src] + "</span>"
       + '<span class="ex-badge">难度' + (DIFF[q.diff] || q.diff) + "</span>";
-    var body = '<div class="ex-qstem">' + esc(q.stem) + "</div>";
+    var body = '<div class="ex-qstem">' + esc(stripStemNo(q.stem)) + "</div>";
     if (q.type === "mc" && q.options) {
       body += '<div class="ex-opts">' + q.options.map(function (o) {
         return '<div class="ex-opt"><span class="ex-ol">' + esc(o[0]) + ".</span> <span>" + esc(o[1]) + "</span></div>";
@@ -238,7 +243,7 @@
       window.__paper = { items: paper, pts: pts, time: time };
       var out = '<div class="ex-paper-prev"><h3>试卷预览（共 ' + total + ' 题）</h3>';
       out += paper.map(function (q, i) {
-        return "<div class='ex-pq'><b>" + (i + 1) + ".</b> [" + CH[q.ch] + "·" + TY[q.type] + "] " + esc(q.stem);
+        return "<div class='ex-pq'><b>" + (i + 1) + ".</b> [" + CH[q.ch] + "·" + TY[q.type] + "] " + esc(stripStemNo(q.stem));
       }).join("") + "</div>";
       out += "<div class='ex-row'><button class='btn' id='pp-start'>开始考试 ▶</button> <button class='btn' onclick='window.print()'>打印试卷</button></div></div>";
       $("pp-out").innerHTML = out;
@@ -266,7 +271,7 @@
     var Q = $("ex-questions");
     Q.innerHTML = items.map(function (q, i) {
       var inner = '<div class="ex-qno">' + (i + 1) + ". [" + CH[q.ch] + "·" + TY[q.type] + "]</div>";
-      inner += '<div class="ex-qstem">' + esc(q.stem) + "</div>";
+      inner += '<div class="ex-qstem">' + esc(stripStemNo(q.stem)) + "</div>";
       if (q.type === "mc") {
         inner += '<div class="ex-opts">';
         q.options.forEach(function (o) {
