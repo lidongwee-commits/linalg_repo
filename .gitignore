@@ -1,0 +1,9 @@
+# 构建/调试残留（勿带入线上仓库）
+_*
+*.bak*
+z_test.js
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+*.swp

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性代数 · 第5章 相似矩阵与二次型</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+</head>
+<body>
+<div class="topbar"><b>线性代数 · 数字教材</b><span>第5章 相似矩阵与二次型</span></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
+<div class="sub">交互式数字教材</div>
+<a href="index.html" style="background:#1b3547;color:#fff">← 教材目录</a>
+<div class="ch">第1章 · 行列式</div>
+<a href="ch1.html">整章</a>
+<a href="ch1.html#s11">行列式的概念</a>
+<a href="ch1.html#s12">行列式的性质</a>
+<a href="ch1.html#s13">行列式的展开定理</a>
+<a href="ch1.html#s14">克拉默（Cramer）法则</a>
+<a href="ch1.html#s15">应用实例</a>
+<a href="ch1.html#s16">用软件计算行列式</a>
+<a href="ch1.html#adv">考研选讲</a>
+<div class="ch">第2章 · 矩阵及其运算</div>
+<a href="ch2.html">整章</a>
+<a href="ch2.html#s21">矩阵的概念与特殊矩阵</a>
+<a href="ch2.html#s22">矩阵的线性运算与乘法</a>
+<a href="ch2.html#s23">逆矩阵</a>
+<a href="ch2.html#s24">分块矩阵</a>
+<a href="ch2.html#s25">矩阵的初等变换</a>
+<a href="ch2.html#s26">矩阵的秩</a>
+<a href="ch2.html#s27">综合应用与软件实现</a>
+<a href="ch2.html#adv2">考研选讲</a>
+<div class="ch">第3章 · 向量组</div>
+<a href="ch3.html">整章</a>
+<a href="ch3.html#s31">向量组的线性表示</a>
+<a href="ch3.html#s32">向量组的线性相关性</a>
+<a href="ch3.html#s33">向量组的秩与极大无关组</a>
+<a href="ch3.html#s34">向量空间与基</a>
+<a href="ch3.html#s35">综合应用与软件实现</a>
+<a href="ch3.html#adv3">考研选讲</a>
+<div class="ch">第4章 · 线性方程组</div>
+<a href="ch4.html">整章</a>
+<a href="ch4.html#s41">齐次线性方程组</a>
+<a href="ch4.html#s42">非齐次线性方程组</a>
+<a href="ch4.html#s43">解的结构综合与矩阵方程</a>
+<a href="ch4.html#s44">综合应用与软件实现</a>
+<a href="ch4.html#adv4">考研选讲</a>
+<div class="ch">第5章 · 相似矩阵与二次型</div>
+<a href="ch5.html">▸ 整章</a>
+<a href="#s51">特征值与特征向量</a>
+<a href="#s52">相似矩阵与对角化</a>
+<a href="#s53">实对称矩阵的对角化</a>
+<a href="#s54">二次型及其标准形</a>
+<a href="#s55">正定二次型</a>
+<a href="#s56">综合应用与软件实现</a>
+<a href="#adv5">考研选讲</a>
+<a href="#hw5">习题</a>
+<div class="ch">学习工具</div>
+<a href="exam.html">▸ 题库·考试系统</a>
+<a href="smart_bank.html">▸ 智能题库（PDF识别）</a>
+</aside>
+  <div class="page"><div class="col">
+<!-- ============ 第五章 相似矩阵与二次型（重写版） ============ -->
+<div class="kicker">Chapter Five</div>
+<h1 class="title">相似矩阵与二次型<span class="en">Similar Matrices and Quadratic Forms</span></h1>
+<p class="lede">对角矩阵是最"省事"的矩阵：它把复杂的线性变换拆成各坐标轴独立伸缩。本章先问一个根本问题——对一般的方阵 \(A\)，是否存在数 \(\lambda\) 与方向 \(x\) 使得 \(Ax\) 与 \(x\) "同向"（即 \(Ax=\lambda x\)）？这就是特征值与特征向量，它是理解矩阵结构的总钥匙。顺着这条线索，我们把矩阵"化简"为对角形（相似对角化、实对称矩阵的正交对角化），再把这套语言用于二次齐次多项式（二次型），得到化标准形、判定正定性的完整方法。我国古代数学已有深刻的"开方"思想：秦九韶《数书九章》的"正负开方术"系统地求解高次代数方程，本质上与"求特征多项式的根"同源；现代华罗庚先生在矩阵几何与典型群研究中的工作，则把这种代数结构推向了更广阔的天地。本章处处可见"化简—分类—判定"的数学范式，对考研与后续课程都极为关键。</p>
+
+<!-- ============ §5.1 ============ -->
+<h2 id="s51"><span class="num">§5.1</span>特征值与特征向量</h2>
+
+<h3>一、引例：人口迁移与用户状态的稳定分布（马尔可夫链）</h3>
+<div class="ex"><div class="lab">引例 1　用户状态演化与网页排名（马尔可夫链）</div>
+  <p class="stmt">某国每年有 \(10\%\) 的城市人口流向农村、\(20\%\) 的农村人口流入城市，且总人口不变。设第 \(k\) 年城市、农村人口占比分别为 \(x_k,y_k\)，则
+  \[\begin{cases}x_{k+1}=0.9x_k+0.2y_k,\\ y_{k+1}=0.1x_k+0.8y_k\end{cases}
+  \quad\Longrightarrow\quad
+  \begin{pmatrix}x_{k+1}\\ y_{k+1}\end{pmatrix}
+  =
+  \begin{pmatrix}0.9&0.2\\ 0.1&0.8\end{pmatrix}
+  \begin{pmatrix}x_k\\ y_k\end{pmatrix}=A\begin{pmatrix}x_k\\ y_k\end{pmatrix}.\]
+  从任意初始分布（例如 \((x_0,y_0)=(\tfrac12,\tfrac12)\)）出发，逐年迭代可得
+  \((x_1,y_1)\approx(0.55,0.45),\ (x_2,y_2)\approx(0.585,0.415),\ (x_3,y_3)\approx(0.604,0.396),\ \dots\)，序列迅速收敛到 \((\tfrac23,\tfrac13)\)。</p>
+  <p class="stmt">当 \(k\to\infty\) 时，若分布趋于稳定，则应有 \((x_{k+1},y_{k+1})^T=(x_k,y_k)^T=(x,y)^T\)，即 \(A(x,y)^T=(x,y)^T=1\cdot(x,y)^T\)。于是 \((x,y)^T\) 正是 \(A\) 的"属于特征值 \(1\)"的非零向量（计算可知 \(A\begin{pmatrix}2\\1\end{pmatrix}=\begin{pmatrix}2\\1\end{pmatrix}\)），城市与农村人口最终趋于 \(2:1\)。这里"变换后方向不变"的向量，正是<strong>特征向量</strong>的直观含义。这样的稳态模型在今天无处不在：电商平台的"活跃—流失"用户演化、社交网络的信息扩散、乃至 PageRank 的网页排名，本质上都是同一个马尔可夫链问题——求转移矩阵"属于特征值 \(1\) 的特征向量"。</p>
+</div>
+
+<h3>二、特征值与特征向量的定义与求法</h3>
+<div class="def"><div class="lab"><span class="n">定义 5.1</span>特征值与特征向量</div>
+<p>设 \(A\) 为 \(n\) 阶方阵，\(x\) 为非零列向量。若存在数 \(\lambda\) 使
+  \[Ax=\lambda x,\]
+  则称 \(\lambda\) 为 \(A\) 的<strong>特征值</strong>，称非零向量 \(x\) 为 \(A\) 的属于特征值 \(\lambda\) 的<strong>特征向量</strong>。</p></div>
+<p class="muted">注意：特征向量必须非零；若 \(x\) 是属于 \(\lambda\) 的特征向量，则对任意 \(k\neq0\)，\(kx\) 也是属于 \(\lambda\) 的特征向量。</p>
+
+<div class="ex"><div class="lab">例 5.1　用定义判断</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}1&6\\5&2\end{pmatrix}\)，\(u=\begin{pmatrix}6\\-5\end{pmatrix}\)，\(v=\begin{pmatrix}3\\-2\end{pmatrix}\)，判断二者是否为特征向量。</div>
+  <div class="sol"><span class="mk">解</span>
+  \[Au=\begin{pmatrix}1&6\\5&2\end{pmatrix}\begin{pmatrix}6\\-5\end{pmatrix}
+  =\begin{pmatrix}-24\\20\end{pmatrix}=-4\begin{pmatrix}6\\-5\end{pmatrix}=-4u,\]
+  故 \(u\) 是属于特征值 \(-4\) 的特征向量。
+  \[Av=\begin{pmatrix}1&6\\5&2\end{pmatrix}\begin{pmatrix}3\\-2\end{pmatrix}
+  =\begin{pmatrix}-9\\11\end{pmatrix},\]
+  它不是某个常数乘 \(v\)，故 \(v\) 不是特征向量。事实上 \(A\) 的特征值为 \(7\) 与 \(-4\)。</div>
+</div>
+
+<div class="note"><b>求法与特征方程。</b>把 \(Ax=\lambda x\) 改写为
+  \[(A-\lambda E)x=0.\]
+  这是含 \(n\) 个未知量、\(n\) 个方程的齐次线性方程组，有非零解的充要条件是
+  \[|A-\lambda E|=0.\]
+  上式是以 \(\lambda\) 为未知量的一元 \(n\) 次方程，称为 \(A\) 的<strong>特征方程</strong>，左端的 \(n\) 次多项式 \(f(\lambda)=|A-\lambda E|\) 称为<strong>特征多项式</strong>。\(A\) 的特征值就是特征方程的全部根（重根按重数计）；对求得的特征值 \(\lambda_i\)，解方程组 \((A-\lambda_i E)x=0\) 即得属于它的全部特征向量。</p>
+  <details><summary>几何直观：特征向量 = 变换的"不变方向"</summary><div class="body"><p>把矩阵 \(A\) 看成一个平面（或空间）上的线性变换。一般向量被 \(A\) 作用后，方向通常会改变；而<strong>特征向量是在这个变换下只被拉伸/压缩、方向保持不变（或反向）的那些特殊方向</strong>，对应的拉伸倍数就是特征值。例如旋转矩阵没有实特征向量（平面上的每个方向都被转走了），而伸缩、投影、反射矩阵都有特征向量。直观上，特征向量标出了变换的"主轴"。</p></div></details>
+</div>
+
+<div class="labx">
+  <div class="lab">交互实验 · 转动向量 \(x\)，观察 \(Ax\)——亲手找到特征向量</div>
+  <div class="desc">虚线圆上的蓝色虚线箭头是单位向量 \(x\)，橙色实线箭头是它的像 \(Ax\)。拖动角度滑块让 \(x\) 转一整圈：多数时候 \(Ax\) 与 \(x\) 方向不同；当二者<strong>恰好共线</strong>时（画面高亮），\(x\) 就是特征向量，倍数就是特征值。灰色封闭曲线是整个单位圆被 \(A\) 映成的像，红/绿虚线是特征向量所在的"不变方向"。可修改矩阵元素或选用预设矩阵（旋转矩阵没有实特征方向——转一圈也不会共线）。</div>
+  <div class="ctrls" style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+    <svg id="evsvg" width="300" height="300" viewBox="-150 -150 300 300" style="background:#fff;border:1px solid #dbe3ea;border-radius:8px;flex:0 0 auto"></svg>
+    <div style="min-width:250px">
+      <div style="margin:4px 0">矩阵 \(A=\)
+        <input type="number" id="eva11" value="2" step="0.5" style="width:52px" oninput="evDraw()">
+        <input type="number" id="eva12" value="1" step="0.5" style="width:52px" oninput="evDraw()"><br>
+        <span style="display:inline-block;width:4.5em"></span>
+        <input type="number" id="eva21" value="1" step="0.5" style="width:52px" oninput="evDraw()">
+        <input type="number" id="eva22" value="2" step="0.5" style="width:52px" oninput="evDraw()">
+      </div>
+      <div style="margin:6px 0">预设：
+        <select id="evpre" onchange="evPreset(this.value)">
+          <option value="sym">对称阵（伸缩主轴）</option>
+          <option value="ex51">例 5.1 的矩阵</option>
+          <option value="shear">剪切矩阵</option>
+          <option value="rot">旋转 45°（无实特征向量）</option>
+          <option value="proj">投影到 x 轴</option>
+        </select>
+      </div>
+      <div style="margin:6px 0">x 的方向角 θ =
+        <input type="range" id="evth" min="0" max="360" step="1" value="20" oninput="evDraw()" style="vertical-align:middle;width:130px">
+        <span id="evthv">20°</span>
+      </div>
+      <div style="margin:6px 0">
+        <button type="button" class="btn" onclick="evSnap(0)">对准 ξ₁</button>
+        <button type="button" class="btn" onclick="evSnap(1)">对准 ξ₂</button>
+      </div>
+      <div class="out" id="evout" style="white-space:pre;margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ex"><div class="lab">例 5.2　各行元素之和给出特征值的快捷判断</div>
+  <div class="stmt">设 \(3\) 阶方阵 \(A\) 的每行元素之和均为 \(-2\)，求 \(A\) 的一个特征值。</div>
+  <div class="sol"><span class="mk">解</span>由题设
+  \[A\begin{pmatrix}1\\1\\1\end{pmatrix}
+  =\begin{pmatrix}-2\\-2\\-2\end{pmatrix}
+  =-2\begin{pmatrix}1\\1\\1\end{pmatrix},\]
+  故 \(\lambda=-2\) 是 \(A\) 的一个特征值，\(\begin{pmatrix}1\\1\\1\end{pmatrix}^T\) 是其一个特征向量。更一般地，若每行元素之和为 \(c\)，则 \(c\) 是特征值。</div>
+</div>
+
+<div class="ex"><div class="lab">例 5.3　求特征值与特征向量</div>
+  <div class="stmt">求 \(A=\begin{pmatrix}1&2&2\\2&1&2\\2&2&1\end{pmatrix}\) 的特征值与特征向量。</div>
+  <div class="sol"><span class="mk">解</span>特征多项式
+  \[|A-\lambda E|
+  =\begin{vmatrix}1-\lambda&2&2\\2&1-\lambda&2\\2&2&1-\lambda\end{vmatrix}
+  =(\lambda+1)^2(5-\lambda).\]
+  故特征值为 \(\lambda_1=\lambda_2=-1,\ \lambda_3=5\)。
+  <p><b>对 \(\lambda=-1\)：</b>解 \((A+E)x=0\)。此时
+  \[A+E=\begin{pmatrix}2&2&2\\2&2&2\\2&2&2\end{pmatrix}\xrightarrow{\text{初等行变换}}
+  \begin{pmatrix}1&1&1\\0&0&0\\0&0&0\end{pmatrix},\]
+  同解方程组 \(x_1+x_2+x_3=0\)，基础解系可取
+  \[p_1=\begin{pmatrix}-1\\1\\0\end{pmatrix},\quad p_2=\begin{pmatrix}-1\\0\\1\end{pmatrix}.\]
+  属于 \(-1\) 的全部特征向量为 \(k_1p_1+k_2p_2\ (k_1,k_2\) 不全为 \(0)\)。</p>
+  <p><b>对 \(\lambda=5\)：</b>解 \((A-5E)x=0\)。
+  \[A-5E=\begin{pmatrix}-4&2&2\\2&-4&2\\2&2&-4\end{pmatrix}\xrightarrow{\text{消元}}
+  \begin{pmatrix}1&-2&1\\0&2&-2\\0&0&0\end{pmatrix},
+  \quad\text{得基础解系}\quad p_3=\begin{pmatrix}1\\1\\1\end{pmatrix}.\]
+  属于 \(5\) 的全部特征向量为 \(k_3p_3\ (k_3\neq0)\)。</p></div>
+</div>
+
+<div class="ex"><div class="lab">例 5.4　含重根的特征值</div>
+  <div class="stmt">求 \(A=\begin{pmatrix}-1&1&0\\-4&3&0\\1&0&2\end{pmatrix}\) 的特征值与特征向量。</div>
+  <div class="sol"><span class="mk">解</span>
+  \[|A-\lambda E|
+  =\begin{vmatrix}-1-\lambda&1&0\\-4&3-\lambda&0\\1&0&2-\lambda\end{vmatrix}
+  =(2-\lambda)(1-\lambda)^2.\]
+  特征值为 \(\lambda_1=2,\ \lambda_2=\lambda_3=1\)。
+  <p>对 \(\lambda=2\)：\(A-2E=\begin{pmatrix}-3&1&0\\-4&1&0\\1&0&0\end{pmatrix}\to\begin{pmatrix}1&0&0\\0&1&0\\0&0&0\end{pmatrix}\)，基础解系 \(p_1=\begin{pmatrix}0\\0\\1\end{pmatrix}\)。</p>
+  <p>对 \(\lambda=1\)：\(A-E=\begin{pmatrix}-2&1&0\\-4&2&0\\1&0&1\end{pmatrix}\to\begin{pmatrix}1&0&1\\0&1&2\\0&0&0\end{pmatrix}\)，基础解系 \(p_2=\begin{pmatrix}-1\\-2\\1\end{pmatrix}\)。属于 \(1\) 的全部特征向量为 \(k_2p_2\ (k_2\neq0)\)。</p></div>
+</div>
+
+<h3>三、特征值与特征向量的性质</h3>
+<div class="def"><div class="lab"><span class="n">性质 5.1</span>特征值的和与积</div>
+<p>设 \(A=(a_{ij})_{n\times n}\) 的全部特征值为 \(\lambda_1,\lambda_2,\dots,\lambda_n\)，则
+  \[\sum_{i=1}^n\lambda_i=\sum_{i=1}^n a_{ii}=\operatorname{tr}(A),\qquad
+  \prod_{i=1}^n\lambda_i=|A|.\]
+  其中 \(\operatorname{tr}(A)\) 称为 \(A\) 的<strong>迹</strong>（主对角元之和）。</p></div>
+<div class="def"><div class="lab"><span class="n">推论 5.1</span>可逆的充要条件</div>
+<p>\(n\) 阶方阵 \(A\) 可逆 \(\iff\) 它的 \(n\) 个特征值全不为 \(0\)（因为 \(|A|=\prod\lambda_i\)）。</p></div>
+
+<div class="ex"><div class="lab">例 5.5　特征值的多项式与伴随矩阵</div>
+  <div class="stmt">设 \(\lambda\) 是方阵 \(A\) 的特征值，\(x\) 为对应的特征向量。证明：
+  (1) \(\lambda^2\) 是 \(A^2\) 的特征值；
+  (2) 对多项式 \(\varphi(t)=a_m t^m+\cdots+a_1 t+a_0\)，\(\varphi(\lambda)\) 是 \(\varphi(A)\) 的特征值；
+  (3) 若 \(A\) 可逆，则 \(\lambda^{-1}\) 是 \(A^{-1}\) 的特征值，\(\dfrac{|A|}{\lambda}\) 是伴随矩阵 \(A^*\) 的特征值。</div>
+  <div class="sol"><span class="mk">证</span>(1) 由 \(Ax=\lambda x\) 得 \(A^2x=A(\lambda x)=\lambda Ax=\lambda^2x\)，故 \(\lambda^2\) 是 \(A^2\) 的特征值。
+  (2) 同理逐次可得 \(A^kx=\lambda^kx\)，于是
+  \[\varphi(A)x=(a_mA^m+\cdots+a_1A+a_0E)x=(a_m\lambda^m+\cdots+a_1\lambda+a_0)x=\varphi(\lambda)x.\]
+  (3) 由 \(A^{-1}(Ax)=A^{-1}(\lambda x)\) 得 \(x=\lambda A^{-1}x\)，即 \(A^{-1}x=\lambda^{-1}x\)。又 \(A^*=|A|A^{-1}\)，故 \(A^*x=|A|A^{-1}x=\dfrac{|A|}{\lambda}x\)。</div>
+</div>
+
+<div class="ex"><div class="lab">例 5.6　（考研精选）已知 \(A\) 的特征值为 \(1,-1,2\)，求 \(B=A^*+3A-2E\) 的特征值与 \(|B|\)</div>
+  <div class="sol"><span class="mk">解</span>因 \(A\) 的特征值全不为 \(0\)，故 \(A\) 可逆，且 \(|A|=1\cdot(-1)\cdot2=-2\)。于是 \(A^*=|A|A^{-1}=-2A^{-1}\)，
+  \[B=-2A^{-1}+3A-2E.\]
+  对 \(A\) 的任一特征值 \(\lambda\)，\(B\) 的对应特征值为 \(\varphi(\lambda)=-\dfrac{2}{\lambda}+3\lambda-2\)：
+  \[\varphi(1)=-1,\quad \varphi(-1)=-3,\quad \varphi(2)=3.\]
+  故 \(B\) 的特征值为 \(-1,-3,3\)，且 \(|B|=(-1)\cdot(-3)\cdot3=9\)。</div>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.1</span>不同特征值的特征向量线性无关</div>
+<p>设 \(\lambda_1,\lambda_2,\dots,\lambda_m\) 是方阵 \(A\) 的 \(m\) 个<strong>互不相同</strong>的特征值，\(p_1,p_2,\dots,p_m\) 是依次对应的特征向量，则 \(p_1,p_2,\dots,p_m\) 线性无关。</p>
+<details><summary>证明（数学归纳法，完整）</summary><div class="body"><p><b>归纳基础（\(m=1\)）：</b>单个特征向量 \(p_1\neq0\)，当然线性无关。</p>
+  <p><b>归纳假设：</b>设结论对 \(m-1\) 个不同特征值已成立，即 \(p_1,\dots,p_{m-1}\) 线性无关。</p>
+  <p><b>归纳步骤：</b>设有常数 \(c_1,\dots,c_m\) 使
+  \[c_1p_1+c_2p_2+\cdots+c_mp_m=0.\tag{1}\]
+  两边左乘 \(A\)，利用 \(Ap_i=\lambda_ip_i\) 得
+  \[c_1\lambda_1p_1+c_2\lambda_2p_2+\cdots+c_m\lambda_mp_m=0.\tag{2}\]
+  用 \((2)-\lambda_m\cdot(1)\)，消去 \(p_m\) 项：
+  \[c_1(\lambda_1-\lambda_m)p_1+\cdots+c_{m-1}(\lambda_{m-1}-\lambda_m)p_{m-1}=0.\]
+  由归纳假设 \(p_1,\dots,p_{m-1}\) 线性无关，故对每个 \(i=1,\dots,m-1\) 有 \(c_i(\lambda_i-\lambda_m)=0\)。因 \(\lambda_i\neq\lambda_m\)，得 \(c_i=0\ (i=1,\dots,m-1)\)。代回 (1) 得 \(c_mp_m=0\)，又 \(p_m\neq0\)，故 \(c_m=0\)。于是所有系数为 \(0\)，向量组线性无关。归纳完成，定理得证。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.2</span>不同特征值的特征向量组的合并仍线性无关</div>
+<p>设 \(\lambda_1,\dots,\lambda_m\) 是 \(A\) 的互不相同特征值，而 \(p_{i1},\dots,p_{ir_i}\) 是属于 \(\lambda_i\) 的线性无关特征向量（\(i=1,\dots,m\)），则把这 \(m\) 组向量合并所成的向量组
+  \[p_{11},\dots,p_{1r_1},\ p_{21},\dots,p_{2r_2},\ \dots,\ p_{m1},\dots,p_{mr_m}\]
+  仍线性无关。</p></div>
+<details><summary>证明</summary><div class="body"><p><span style="font-weight:700">证</span>　设合并后的向量组为
+\[\{p_{11},\dots,p_{1r_1},\ p_{21},\dots,p_{2r_2},\ \dots,\ p_{m1},\dots,p_{mr_m}\}.\]
+考虑线性组合
+\[\sum_{i=1}^{m}\sum_{j=1}^{r_i} c_{ij}p_{ij}=0.\tag{1}\]
+把属于同一特征值 \(\lambda_i\) 的项记为 \(P_i=\sum_{j=1}^{r_i}c_{ij}p_{ij}\)，则 (1) 可写成
+\[P_1+P_2+\cdots+P_m=0.\tag{2}\]
+因为 \(P_i\) 是属于 \(\lambda_i\) 的特征向量（或零向量），而 \(\lambda_1,\dots,\lambda_m\) 互不相同，由定理 5.1 知 \(P_1,P_2,\dots,P_m\) 线性无关。于是由 (2) 得 \(P_i=0\)（\(i=1,\dots,m\)）。</p>
+<p>对每个固定的 \(i\)，\(P_i=\sum_{j=1}^{r_i}c_{ij}p_{ij}=0\)。但已知 \(p_{i1},\dots,p_{ir_i}\) 线性无关，故所有系数 \(c_{ij}=0\)。因此合并后的向量组线性无关。证毕。</p></div></details>
+
+<div class="hist"><div class="lab">数学家小传 · Cauchy 与特征值</div>
+  <p>法国数学家 <b>Cauchy（柯西，1789—1857）</b> 首先明确给出"特征方程"这一术语，证明了任意阶实对称矩阵都有实特征值，并证明了<strong>相似矩阵具有相同的特征多项式（从而相同特征值）</strong>——这正是本章 §5.2 定理 5.3 的源头。他还系统研究了代换理论。特征值思想可上溯到欧拉，后经拉格朗日、柯西、凯莱等人逐步成形。值得一提的是，我国秦九韶《数书九章》中的"正负开方术"已能系统求解高次代数方程，与"求特征多项式的根"在方法精神上遥相呼应。</p>
+  <details><summary>拓展：正交矩阵的实特征值</summary><div class="body"><p>作为性质 5.1 的推论应用：若 \(A\) 为正交矩阵（\(A^TA=E\)），设其属于实特征值 \(\lambda\) 的特征向量为 \(x\)，则
+  \[x^Tx=x^T(A^TA)x=(Ax)^T(Ax)=(\lambda x)^T(\lambda x)=\lambda^2x^Tx.\]
+  因 \(x\neq0\) 有 \(x^Tx>0\)，故 \(\lambda^2=1\)，即正交矩阵的实特征值只能是 \(\pm1\)。这正是教材 §5.1 习题中常见结论。</p></div></details>
+</div>
+
+<div class="note">本节要点：特征值由 \(|A-\lambda E|=0\) 求出；每个 \(\lambda_i\) 对应的特征向量是齐次方程组 \((A-\lambda_iE)x=0\) 的非零解。不同特征值的特征向量必线性无关，这是后续对角化的理论基石。</div>
+
+<!-- ============ §5.2 ============ -->
+
+<div class="sec-quiz" data-sec="s51" data-ch="5" data-n="56"></div>
+<h2 id="s52"><span class="num">§5.2</span>相似矩阵与对角化</h2>
+
+<h3>一、引例：斐波那契数列的通项</h3>
+<div class="ex"><div class="lab">引例 2　用户裂变与 Transformer 注意力（斐波那契模型）</div>
+  <p class="stmt">斐波那契数列 \(u_0=1,u_1=1,u_n=u_{n-1}+u_{n-2}\ (n\ge2)\)。把它写成矩阵递推
+  \[\begin{pmatrix}u_n\\u_{n-1}\end{pmatrix}
+  =\begin{pmatrix}1&1\\1&0\end{pmatrix}
+  \begin{pmatrix}u_{n-1}\\u_{n-2}\end{pmatrix}
+  =M^{n-1}\begin{pmatrix}u_1\\u_0\end{pmatrix},\quad M=\begin{pmatrix}1&1\\1&0\end{pmatrix}.\]
+  若能把 \(M\) 对角化 \(M=P\Lambda P^{-1}\)，则 \(M^{n-1}=P\Lambda^{\,n-1}P^{-1}\)，从而直接得到 \(u_n\) 的显式公式
+  \[u_n=\frac{1}{\sqrt5}\Bigl[\Bigl(\frac{1+\sqrt5}{2}\Bigr)^{n+1}-\Bigl(\frac{1-\sqrt5}{2}\Bigr)^{n+1}\Bigr].\]
+  可见，<strong>对角化是计算矩阵高次幂、从而求解递推关系的利器</strong>。具体计算见本节例 2 的方法延伸。</p>
+</div>
+
+<h3>二、相似矩阵的概念与性质</h3>
+<div class="def"><div class="lab"><span class="n">定义 5.2</span>相似矩阵</div>
+<p>设 \(A,B\) 都是 \(n\) 阶方阵。若存在可逆矩阵 \(P\)，使得
+  \[P^{-1}AP=B,\]
+  则称 \(A\) 与 \(B\) <strong>相似</strong>，记作 \(A\sim B\)。</p></div>
+<p class="muted">相似是矩阵间的等价关系：反身性 \(A\sim A\)（取 \(P=E\)）；对称性（由 \(B=P^{-1}AP\) 得 \(A=QBQ^{-1}\)，令 \(Q=P^{-1}\)）；传递性（由 \(A\sim B,B\sim C\) 得 \(A\sim C\)，合并变换矩阵）。</p>
+
+<div class="def"><div class="lab"><span class="n">定理 5.3</span>相似矩阵的不变量</div>
+<p>若 \(n\) 阶方阵 \(A\sim B\)，则
+  (1) \(A\) 与 \(B\) 有相同的特征多项式，从而有相同的特征值与相同的迹；
+  (2) \(|A|=|B|\)；
+  (3) \(A\) 与 \(B\) 等价，\(R(A)=R(B)\)；
+  (4) 当 \(A,B\) 都可逆时，\(A^{-1}\sim B^{-1}\)。</p>
+<details><summary>证明</summary><div class="body"><p>(1) 由 \(B=P^{-1}AP\) 得
+  \[|B-\lambda E|=|P^{-1}AP-\lambda P^{-1}EP|=|P^{-1}(A-\lambda E)P|=|P^{-1}|\,|A-\lambda E|\,|P|=|A-\lambda E|.\]
+  故特征多项式相同，特征值、迹随之相同。</p>
+  <p>(2) 在上式令 \(\lambda=0\) 得 \(|B|=|A|\)。</p>
+  <p>(3) 因 \(P\) 可逆，\(B=P^{-1}AP\) 是两可逆矩阵夹乘 \(A\)，故 \(A\) 与 \(B\) 等价，秩相等。</p>
+  <p>(4) 若 \(A,B\) 可逆，则 \(B^{-1}=(P^{-1}AP)^{-1}=P^{-1}A^{-1}P\)，即 \(A^{-1}\sim B^{-1}\)。</p></div></details></div>
+
+<h3>三、矩阵可对角化的条件</h3>
+<div class="def"><div class="lab"><span class="n">定义 5.3</span>可对角化</div>
+<p>若 \(n\) 阶方阵 \(A\) 与某个对角阵相似，即存在可逆阵 \(P\) 使 \(P^{-1}AP=\Lambda\) 为对角阵，则称 \(A\) <strong>可对角化</strong>。</p></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.4</span>可对角化的充要条件</div>
+<p>\(n\) 阶方阵 \(A\) 可对角化 \(\iff\) \(A\) 有 \(n\) 个线性无关的特征向量。</p>
+<details><summary>证明</summary><div class="body"><p><b>必要性：</b>若 \(P^{-1}AP=\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_n)\)，则 \(AP=P\Lambda\)。记 \(P=(p_1,\dots,p_n)\)，比较列得 \(Ap_i=\lambda_i p_i\)，即每列 \(p_i\) 都是 \(A\) 的特征向量（属于 \(\lambda_i\)）。又 \(P\) 可逆，故 \(p_1,\dots,p_n\) 线性无关。</p>
+  <p><b>充分性：</b>若 \(A\) 有 \(n\) 个线性无关的特征向量 \(p_1,\dots,p_n\)，对应特征值 \(\lambda_1,\dots,\lambda_n\)，令 \(P=(p_1,\dots,p_n)\)，则 \(AP=P\Lambda\)，而 \(P\) 可逆，故 \(P^{-1}AP=\Lambda\)。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">推论 5.3</span>充分判别</div>
+<p>若 \(n\) 阶方阵 \(A\) 有 \(n\) 个互不相同的特征值，则 \(A\) 必可对角化。</p></div>
+<p class="muted">理由：由定理 5.1，不同特征值的特征向量线性无关，于是直接得到 \(n\) 个线性无关特征向量。</p>
+<div class="def"><div class="lab"><span class="n">推论 5.4</span>重根情形</div>
+<p>\(n\) 阶方阵 \(A\) 可对角化 \(\iff\) 对 \(A\) 的每个 \(k\) 重特征值 \(\lambda\)，恰有 \(k\) 个线性无关的特征向量，即 \(R(A-\lambda E)=n-k\)。</p></div>
+
+<div class="ex"><div class="lab">例 5.7　对角化并求高次幂</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}1&4&2\\0&-3&4\\0&4&3\end{pmatrix}\)，求可逆阵 \(P\) 使 \(P^{-1}AP=\Lambda\)，并求 \(A^{100}\)。</div>
+  <div class="sol"><span class="mk">解</span>特征多项式
+  \[|A-\lambda E|=(1-\lambda)\begin{vmatrix}-3-\lambda&4\\4&3-\lambda\end{vmatrix}
+  =(1-\lambda)\bigl[(-3-\lambda)(3-\lambda)-16\bigr]
+  =(1-\lambda)(\lambda^2-25)=(1-\lambda)(\lambda-5)(\lambda+5).\]
+  特征值为 \(\lambda_1=1,\ \lambda_2=5,\ \lambda_3=-5\)。由推论 5.3 知 \(A\) 可对角化。
+  <p><b>求特征向量：</b></p>
+  <p>\(\lambda=1\)：\(A-E=\begin{pmatrix}0&4&2\\0&-4&4\\0&4&2\end{pmatrix}\to\begin{pmatrix}0&1&0\\0&0&1\\0&0&0\end{pmatrix}\)，得 \(p_1=\begin{pmatrix}1\\0\\0\end{pmatrix}\)。</p>
+  <p>\(\lambda=5\)：\(A-5E=\begin{pmatrix}-4&4&2\\0&-8&4\\0&4&-2\end{pmatrix}\to\begin{pmatrix}1&0&-2\\0&2&-1\\0&0&0\end{pmatrix}\)，令 \(x_3=2\) 得 \(p_2=\begin{pmatrix}2\\1\\2\end{pmatrix}\)。</p>
+  <p>\(\lambda=-5\)：\(A+5E=\begin{pmatrix}6&4&2\\0&2&4\\0&4&8\end{pmatrix}\to\begin{pmatrix}1&0&-1\\0&1&2\\0&0&0\end{pmatrix}\)，令 \(x_3=1\) 得 \(p_3=\begin{pmatrix}1\\-2\\1\end{pmatrix}\)。</p>
+  <p>令 \(P=(p_1,p_2,p_3)=\begin{pmatrix}1&2&1\\0&1&-2\\0&2&1\end{pmatrix}\)，则 \(|P|=5\neq0\)，且
+  \[P^{-1}=\begin{pmatrix}1&0&-1\\0&\tfrac15&\tfrac25\\0&-\tfrac25&\tfrac15\end{pmatrix},\qquad
+  P^{-1}AP=\begin{pmatrix}1&&\\&5&\\&&-5\end{pmatrix}=\Lambda.\]
+  于是
+  \[A^{100}=P\Lambda^{100}P^{-1}
+  =\begin{pmatrix}1&2&1\\0&1&-2\\0&2&1\end{pmatrix}
+  \begin{pmatrix}1&&\\&5^{100}&\\&&5^{100}\end{pmatrix}
+  \begin{pmatrix}1&0&-1\\0&\tfrac15&\tfrac25\\0&-\tfrac25&\tfrac15\end{pmatrix}
+  =\begin{pmatrix}1&0&5^{100}-1\\0&5^{100}&0\\0&0&5^{100}\end{pmatrix}.\]
+  （注意 \((-5)^{100}=5^{100}\)，故对角块中 \(5\) 与 \(-5\) 的高次幂相同。）</p></div>
+</div>
+
+<div class="ex"><div class="lab">例 5.8　（考研精选）含参对角化</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}0&0&1\\1&1&a\\1&0&0\end{pmatrix}\)，问 \(a\) 取何值时 \(A\) 可对角化？</div>
+  <div class="sol"><span class="mk">解</span>
+  \[|A-\lambda E|=
+  \begin{vmatrix}-\lambda&0&1\\1&1-\lambda&a\\1&0&-\lambda\end{vmatrix}
+  =-(\lambda-1)^2(\lambda+1).\]
+  特征值为 \(\lambda_1=-1,\ \lambda_2=\lambda_3=1\)（二重）。单根 \(\lambda=-1\) 必有一个线性无关特征向量；要使 \(A\) 可对角化，关键看二重根 \(\lambda=1\) 是否有 \(2\) 个线性无关特征向量，即要求 \(R(A-E)=3-2=1\)。计算
+  \[A-E=\begin{pmatrix}-1&0&1\\1&0&a\\1&0&-1\end{pmatrix}.\]
+  第三行 \((1,0,-1)\) 与第一行 \((-1,0,1)\) 成比例，可被消去；第二行为 \((1,0,a)\)。将第二行加上第一行得 \((0,0,a+1)\)：
+  <ul>
+    <li>当 \(a\neq-1\) 时，\((0,0,a+1)\) 是非零行且与 \((-1,0,1)\) 线性无关，\(R(A-E)=2\)，二重根只有 \(3-2=1\) 个线性无关特征向量，<b>不可对角化</b>；</li>
+    <li>当 \(a=-1\) 时，第二行 \((1,0,-1)\) 也与第一行成比例，\(R(A-E)=1\)，二重根恰有 \(2\) 个线性无关特征向量，<b>可对角化</b>。</li>
+  </ul>
+  故当且仅当 \(\boldsymbol{a=-1}\) 时 \(A\) 可对角化。
+  <p class="muted">方法提炼：判断含参矩阵可否对角化，先求特征值，单根自动"合格"，只需对每个 \(k\) 重根 \(\lambda\) 检查 \(R(A-\lambda E)=n-k\) 是否成立——这是考研常考套路。</p></div>
+</div>
+
+<div class="note">对角化的"配方"步骤：(1) 解特征方程得特征值；(2) 对每个 \(\lambda_i\) 解 \((A-\lambda_iE)x=0\) 得基础解系；(3) 若全部特征向量总数达到 \(n\)，把它们按列排成 \(P\)，则 \(P^{-1}AP=\Lambda\)，对角元为对应的特征值（排列与 \(P\) 的列一致）。可逆阵 \(P\) 不唯一。</div>
+
+<!-- ============ §5.3 ============ -->
+
+<div class="sec-quiz" data-sec="s52" data-ch="5" data-n="44"></div>
+<h2 id="s53"><span class="num">§5.3</span>实对称矩阵的对角化</h2>
+
+<h3>一、引例：振动的主频率</h3>
+<div class="ex"><div class="lab">引例 3　高铁车体与机床的振动模态（弹簧振子模型）</div>
+  <p class="stmt">两个质量相同的物体用三个弹簧串联，其微小振动方程可写为 \(M\ddot{x}+Kx=0\)，其中 \(M\) 为质量矩阵、\(K\) 为刚度矩阵（均为实对称正定）。作变换 \(x=Qy\) 并令 \(Q\) 为 \(M^{-1}K\) 的正交特征向量矩阵，可将系统解耦为独立简谐振动 \(\ddot y_i+\omega_i^2y_i=0\)，其中 \(\omega_i^2\) 正是 \(M^{-1}K\) 的特征值。<strong>每个特征值对应一个"主频率"，对应特征向量给出该振动模式中各质量的振幅比例</strong>。这正是实对称矩阵正交对角化在力学中的直接体现。</p>
+</div>
+
+<h3>二、实对称矩阵的对角化定理</h3>
+<div class="def"><div class="lab"><span class="n">定理 5.5</span>实对称矩阵的特征值为实数</div>
+<p>设 \(A\) 为实对称矩阵（\(A^T=A\)，元素全为实数），则 \(A\) 的特征值全为实数。</p>
+<details><summary>证明</summary><div class="body"><p>先以二阶情形验证思路，再给一般证明。对一般的 \(n\) 阶实对称阵 \(A\)，设其（复）特征值为 \(\lambda\)，对应（复）特征向量 \(x\neq0\)，即 \(Ax=\lambda x\)。转置共轭得 \(\overline{x}^T A=\overline{\lambda}\,\overline{x}^T\)（因 \(A\) 实对称，\(A^T=A=\overline{A}\)）。两边右乘 \(x\)：
+  \[\overline{x}^T A x=\overline{\lambda}\,\overline{x}^T x.\]
+  另一方面，\(\overline{x}^T A x=\overline{x}^T(\lambda x)=\lambda\,\overline{x}^T x\)。两式相减得 \((\lambda-\overline{\lambda})\,\overline{x}^T x=0\)。因 \(x\neq0\)，\(\overline{x}^T x=\sum|x_i|^2>0\)，故 \(\lambda=\overline{\lambda}\)，即 \(\lambda\) 为实数。</p>
+  <p>二阶特例：\(A=\begin{pmatrix}a&b\\b&c\end{pmatrix}\)，特征多项式 \(|\lambda E-A|=\lambda^2-(a+c)\lambda+(ac-b^2)\)，判别式 \((a-c)^2+4b^2\ge0\)，根恒为实数。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.6</span>不同特征值的特征向量正交</div>
+<p>实对称矩阵 \(A\) 的属于不同特征值的特征向量必<strong>正交</strong>。</p>
+<details><summary>证明</summary><div class="body"><p>设 \(Ap_1=\lambda_1p_1,\ Ap_2=\lambda_2p_2\)，且 \(\lambda_1\neq\lambda_2\)。由 \(Ap_1=\lambda_1p_1\) 左乘 \(p_2^T\) 并利用 \(A^T=A\)：
+  \[\lambda_1 p_2^T p_1=p_2^T A p_1=(Ap_2)^T p_1=(\lambda_2p_2)^T p_1=\lambda_2 p_2^T p_1.\]
+  故 \((\lambda_1-\lambda_2)p_2^Tp_1=0\)。因 \(\lambda_1\neq\lambda_2\)，得 \(p_2^Tp_1=0\)，即 \(p_1\perp p_2\)。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.7</span>重特征值对应的特征向量个数</div>
+<p>若 \(\lambda\) 是 \(n\) 阶实对称阵 \(A\) 的 \(r\) 重特征值，则矩阵 \(A-\lambda E\) 的秩为 \(n-r\)，从而 \(\lambda\) 恰有 \(r\) 个线性无关的特征向量。</p>
+<details><summary>证明</summary><div class="body">
+<p>记 \(\lambda\) 的特征子空间 \(V_\lambda=\{x\mid Ax=\lambda x\}\) 的维数为 \(k\)（即 \(\lambda\) 的<strong>几何重数</strong>）。我们证明 \(k=r\)，由此 \(A-\lambda E\) 的解空间维数为 \(r\)，故 \(R(A-\lambda E)=n-r\)。</p>
+<p><b>第一步：把 \(A\) 正交相似到分块对角形。</b>取 \(V_\lambda\) 的一组标准正交基 \(p_1,\dots,p_k\)，将其扩充为 \(\mathbb R^n\) 的标准正交基 \(p_1,\dots,p_k,q_1,\dots,q_{n-k}\)，以它们为列作正交阵 \(P=(p_1,\dots,p_k,q_1,\dots,q_{n-k})\)。考察 \(B=P^TAP\)：其 \((i,j)\) 元为 \(p_i^TAp_j\)（这里把 \(q\) 也统一记作后 \(n-k\) 个列）。当 \(j\le k\) 时 \(Ap_j=\lambda p_j\)，故第 \(j\) 列的元素为
+\[p_i^TAp_j=\lambda\,p_i^Tp_j=\lambda\delta_{ij}\ (i\le k),\qquad q_i^TAp_j=\lambda\,q_i^Tp_j=0\ (i\ge 1),\]
+即 \(B\) 的前 \(k\) 列构成 \(\begin{pmatrix}\lambda E_k\\ O\end{pmatrix}\)。又 \(B^T=(P^TAP)^T=P^TA^TP=B\)，即 \(B\) 仍是对称阵，于是它的前 \(k\) 行也是 \((\lambda E_k\ \ O)\)。故
+\[P^TAP=B=\begin{pmatrix}\lambda E_k & O\\ O & D\end{pmatrix},\]
+其中 \(D\) 是 \(n-k\) 阶实对称阵。</p>
+<p><b>第二步：\(\lambda\) 不是 \(D\) 的特征值。</b>反设 \(Dy=\lambda y\) 有非零解 \(y\)，令 \(x=P\begin{pmatrix}0\\ y\end{pmatrix}\ne 0\)。由 \(A=PBP^T\) 得
+\[Ax=PB\begin{pmatrix}0\\ y\end{pmatrix}=P\begin{pmatrix}0\\ Dy\end{pmatrix}=\lambda P\begin{pmatrix}0\\ y\end{pmatrix}=\lambda x,\]
+即 \(x\in V_\lambda\)。但 \(x\) 是 \(q_1,\dots,q_{n-k}\) 的线性组合，与 \(p_1,\dots,p_k\) 均正交，从而与整个 \(V_\lambda\) 正交，于是 \(x^Tx=0\)，\(x=0\)，矛盾。故 \(|D-\lambda E_{n-k}|\ne 0\)。</p>
+<p><b>第三步：比较代数重数。</b>相似矩阵有相同的特征多项式，故
+\[|A-\mu E|=|B-\mu E|=(\lambda-\mu)^k\,|D-\mu E_{n-k}|.\]
+由第二步 \(\mu=\lambda\) 不是 \(|D-\mu E_{n-k}|\) 的根，所以 \(\lambda\) 作为特征多项式根的重数（代数重数）恰为 \(k\)。而题设 \(\lambda\) 是 \(r\) 重特征值，故 \(k=r\)。</p>
+<p>于是齐次方程组 \((A-\lambda E)x=0\) 的解空间维数为 \(r\)，即 \(R(A-\lambda E)=n-r\)，且 \(\lambda\) 恰有 \(r\) 个线性无关的特征向量。<span style="float:right">∎</span></p>
+<p class="note" style="margin-top:6px"><b>注</b>　此定理是实对称阵特有的：一般矩阵只有"几何重数 \(\le\) 代数重数"（如 \(\begin{pmatrix}1&1\\0&1\end{pmatrix}\) 的特征值 \(1\) 是 \(2\) 重根却只有 \(1\) 个线性无关特征向量）。正因几何重数总能"配满"代数重数，实对称阵才必可对角化（定理 5.8）。</p>
+</div></details></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.8</span>正交对角化（谱定理）</div>
+<p>设 \(A\) 为 \(n\) 阶实对称阵，则必存在正交阵 \(P\)（\(P^{-1}=P^T\)），使得
+  \[P^{-1}AP=P^TAP=\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_n),\]
+  其中 \(\Lambda\) 的对角元为 \(A\) 的全部特征值（重根按重数计）。换言之，<strong>实对称矩阵必可正交对角化</strong>。</p>
+<details><summary>证明</summary><div class="body"><p>设 \(A\) 的互异特征值为 \(\lambda_1,\dots,\lambda_s\)，重数分别为 \(r_1,\dots,r_s\)，\(\sum r_i=n\)。由定理 5.7，每个 \(\lambda_i\) 恰有 \(r_i\) 个线性无关特征向量；将它们用施密特方法正交化、再单位化，得到 \(r_i\) 个两两正交的单位特征向量。由定理 5.6，不同特征值的特征向量已彼此正交，故总共得到 \(n\) 个两两正交的单位特征向量。以它们为列构成正交阵 \(P\)，则必有 \(P^TAP=\Lambda\)。</p></div></details></div>
+
+<div class="ex"><div class="lab">例 5.9　正交对角化（施密特正交化每步写出）</div>
+  <div class="stmt">求正交阵 \(P\) 使 \(P^TAP=\Lambda\)，其中 \(A=\begin{pmatrix}0&1&1\\1&0&1\\1&1&0\end{pmatrix}\)。</div>
+  <div class="sol"><span class="mk">解</span>
+  \[|A-\lambda E|=-\begin{vmatrix}\lambda&-1&-1\\-1&\lambda&-1\\-1&-1&\lambda\end{vmatrix}
+  =-(\lambda+1)^2(\lambda-2).\]
+  特征值为 \(\lambda_1=2,\ \lambda_2=\lambda_3=-1\)。
+  <p><b>对 \(\lambda=2\)：</b>\((A-2E)x=0\) 得基础解系 \((1,1,1)^T\)，单位化
+  \[p_1=\frac{1}{\sqrt3}\begin{pmatrix}1\\1\\1\end{pmatrix}.\]</p>
+  <p><b>对 \(\lambda=-1\)：</b>\((A+E)x=0\) 即 \(x_1+x_2+x_3=0\)，基础解系可取 \(\xi_1=(-1,1,0)^T,\ \xi_2=(-1,0,1)^T\)。</p>
+  <p><b>施密特正交化：</b>取 \(u_1=\xi_1=(-1,1,0)^T\)，
+  \[e_1=\frac{u_1}{\|u_1\|}=\frac{1}{\sqrt2}\begin{pmatrix}-1\\1\\0\end{pmatrix}.\]
+  再取
+  \[u_2=\xi_2-\frac{\xi_2\cdot e_1}{e_1\cdot e_1}e_1
+  =\begin{pmatrix}-1\\0\\1\end{pmatrix}-\frac{1}{2}\begin{pmatrix}-1\\1\\0\end{pmatrix}
+  =\begin{pmatrix}-\tfrac12\\-\tfrac12\\1\end{pmatrix}\sim\begin{pmatrix}-1\\-1\\2\end{pmatrix},\]
+  \[e_2=\frac{u_2}{\|u_2\|}=\frac{1}{\sqrt6}\begin{pmatrix}-1\\-1\\2\end{pmatrix}.\]
+  令
+  \[P=(p_1,e_1,e_2)=\begin{pmatrix}
+  \frac1{\sqrt3}&-\frac1{\sqrt2}&-\frac1{\sqrt6}\\[2pt]
+  \frac1{\sqrt3}&\frac1{\sqrt2}&-\frac1{\sqrt6}\\[2pt]
+  \frac1{\sqrt3}&0&\frac2{\sqrt6}
+  \end{pmatrix},\]
+  则 \(P\) 为正交阵，且 \(P^TAP=\operatorname{diag}(2,-1,-1)\)。可验 \(P^TP=E\)。</p></div>
+</div>
+
+<div class="ex"><div class="lab">例 5.10　已知部分特征值反求矩阵</div>
+  <div class="stmt">设三阶实对称阵 \(A\) 的特征值为 \(\lambda_1=-1,\ \lambda_2=\lambda_3=1\)，属于 \(-1\) 的特征向量为 \(\xi=(0,1,1)^T\)，求 \(A\)。</div>
+  <div class="sol"><span class="mk">解</span>因 \(A\) 实对称，属于 \(\lambda=1\) 的两个特征向量必与 \(\xi\) 正交，即满足 \(x_2+x_3=0\)。在该平面内取一组正交基（已与 \(\xi\) 正交）：
+  \[q_1=\begin{pmatrix}1\\0\\0\end{pmatrix},\qquad q_2=\begin{pmatrix}0\\1\\-1\end{pmatrix}\quad(\text{二者已正交}).\]
+  单位化得 \(p_2=q_1,\ p_3=\frac{1}{\sqrt2}(0,1,-1)^T\)，而 \(p_1=\frac{1}{\sqrt2}(0,1,1)^T\)。令
+  \[P=(p_1,p_2,p_3)=\begin{pmatrix}0&1&0\\[2pt]\frac1{\sqrt2}&0&\frac1{\sqrt2}\\[2pt]\frac1{\sqrt2}&0&-\frac1{\sqrt2}\end{pmatrix},
+  \quad \Lambda=\operatorname{diag}(-1,1,1).\]
+  则 \(A=P\Lambda P^T\)，算得
+  \[A=\begin{pmatrix}1&0&0\\0&0&-1\\0&-1&0\end{pmatrix}.\]
+  验算：\(A\xi=\begin{pmatrix}0\\-1\\-1\end{pmatrix}=-1\cdot\xi\)，符合题设；且 \(A^T=A\)。</p></div>
+</div>
+
+<div class="hist"><div class="lab">数学家小传 · 华罗庚与矩阵几何</div>
+  <p>我国数学家 <b>华罗庚（1910—1985）</b> 在矩阵几何、典型群、多复变函数论等领域作出世界级贡献。他与万哲先合著的《典型群》系统研究了一类保持矩阵某种"几何结构"的变换，深刻揭示了矩阵相似、合同、正交等关系背后的对称美。如今教材中"正交对角化""合同标准形"等结论，正是这种"用变换化简结构"思想的典范——化繁为简、以简驭繁。</p>
+  <details><summary>拓展：对称矩阵的正交对角化意味着什么</summary><div class="body"><p>对实对称阵 \(A\)，存在正交阵 \(P\) 使 \(P^TAP=\Lambda\)。由于正交变换保持向量长度与内积（几何上就是"旋转/反射"），这意味着<strong>实对称阵在标准正交基下看起来就是一个纯伸缩</strong>——没有剪切、没有旋转混合。因此在力学、统计（PCA）、图像压缩中，对称阵总可以"对角化而不改变几何尺度"，这是它优于一般矩阵的关键。</p></div></details>
+</div>
+
+<!-- ============ §5.4 ============ -->
+
+<div class="sec-quiz" data-sec="s53" data-ch="5" data-n="13"></div>
+<h2 id="s54"><span class="num">§5.4</span>二次型及其标准形</h2>
+
+<h3>一、引例：椭圆方程的"主轴"（配方法与正交变换的几何来源）</h3>
+<div class="ex"><div class="lab">引例 4　机器学习决策边界与不确定椭球（二次型主轴）</div>
+  <p class="stmt">平面曲线 \(x^2+xy+y^2=1\) 是椭圆。把它写成二次型
+  \[f(x,y)=\begin{pmatrix}x&y\end{pmatrix}
+  \begin{pmatrix}1&\tfrac12\\[2pt]\tfrac12&1\end{pmatrix}
+  \begin{pmatrix}x\\y\end{pmatrix}.\]
+  该对称阵的特征值为 \(\lambda_1=\tfrac32,\ \lambda_2=\tfrac12\)。取正交变换（相当于把坐标轴旋转 \(45^\circ\)）\((x,y)^T=Q(X,Y)^T\)，则
+  \[f=\frac32 X^2+\frac12 Y^2=1,\]
+  即 \(\dfrac{X^2}{2/3}+\dfrac{Y^2}{2}=1\)，是一个半轴为 \(\sqrt{2/3}\) 与 \(\sqrt2\) 的椭圆。<strong>正交变换的"主轴"方向正是特征向量方向</strong>，这就是"主轴定理"的二维原型。</p>
+  <details><summary>几何直观：二次型标准形 = 主轴旋转</summary><div class="body"><p>二次曲线 \(ax^2+2bxy+cy^2=1\) 的"歪斜"来自交叉项 \(2bxy\)。通过旋转坐标轴（正交变换）消去交叉项，曲线在新坐标系下变成标准的 \(\frac{X^2}{\alpha^2}+\frac{Y^2}{\beta^2}=1\) 形态——这相当于把坐标系对准了椭圆的两条主轴。在 \(n\) 维，二次型 \(x^TAx\) 的正交标准形 \(y^T\Lambda y\) 就是把坐标对准了 \(A\) 的 \(n\) 个正交特征方向。</p></div></details>
+</div>
+
+<div class="labx">
+  <div class="lab">交互实验 · 拖动系数，看椭圆的"主轴"</div>
+  <div class="desc">曲线 \(ax^2+2bxy+cy^2=1\)。拖动滑块改变交叉项系数 \(b\)（或 \(a,\ c\)），左图实时画出曲线与两条<b>主轴</b>（虚线，即对称阵 \(\begin{pmatrix}a&b\\ b&c\end{pmatrix}\) 的特征向量方向），右侧同步给出特征值、旋转角与标准形。当某个特征值 \(\le0\) 时曲线不再是椭圆（变为双曲线或退化）。</div>
+  <div class="ctrls" style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+    <svg id="e5svg" width="300" height="300" viewBox="-150 -150 300 300" style="background:#fff;border:1px solid #dbe3ea;border-radius:8px;flex:0 0 auto"></svg>
+    <div style="min-width:230px">
+      <div style="margin:4px 0">a = <input type="range" id="e5a" min="0.2" max="2" step="0.05" value="1" oninput="e5draw()" style="vertical-align:middle;width:130px"> <span id="e5av">1.00</span></div>
+      <div style="margin:4px 0">b = <input type="range" id="e5b" min="-1.2" max="1.2" step="0.05" value="0.5" oninput="e5draw()" style="vertical-align:middle;width:130px"> <span id="e5bv">0.50</span></div>
+      <div style="margin:4px 0">c = <input type="range" id="e5c" min="0.2" max="2" step="0.05" value="1" oninput="e5draw()" style="vertical-align:middle;width:130px"> <span id="e5cv">1.00</span></div>
+      <div class="out" id="e5out" style="white-space:pre;margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<h3>二、二次型的定义与矩阵表示</h3>
+<div class="def"><div class="lab"><span class="n">定义 5.4</span>二次型</div>
+<p>含 \(n\) 个变量 \(x_1,\dots,x_n\) 的二次齐次多项式
+  \[f(x_1,\dots,x_n)=\sum_{i=1}^n\sum_{j=1}^n a_{ij}x_ix_j\qquad(a_{ij}=a_{ji})\]
+  称为 <strong>\(n\) 元二次型</strong>。取 \(a_{ij}=a_{ji}\)，可写成矩阵形式
+  \[f=x^TAx,\]
+  其中 \(A=(a_{ij})\) 为实对称矩阵，称为二次型 \(f\) 的<strong>矩阵</strong>，\(\operatorname{rank}(A)\) 称为二次型的<strong>秩</strong>。二次型与实对称矩阵一一对应。</p></div>
+
+<div class="ex"><div class="lab">例 5.11　写出二次型的矩阵</div>
+  <div class="stmt">将 \(f(x,y)=x^2+4xy+2y^2\) 写成 \(x^TAx\) 并指出 \(A\) 与秩。</div>
+  <div class="sol"><span class="mk">解</span>交叉项系数 \(4=2a_{12}\)，故 \(a_{12}=a_{21}=2\)，
+  \[A=\begin{pmatrix}1&2\\2&2\end{pmatrix},\quad f=(x\ y)\begin{pmatrix}1&2\\2&2\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix}.\]
+  \(|A|=2-4=-2\neq0\)，故 \(\operatorname{rank}(A)=2\)，二次型秩为 \(2\)。</div>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定义 5.5</span>合同矩阵</div>
+<p>设 \(A,B\) 为 \(n\) 阶方阵。若存在可逆阵 \(C\) 使
+  \[B=C^TAC,\]
+  则称 \(A\) 与 \(B\) <strong>合同</strong>。</p></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.9</span>合同保持对称与秩</div>
+<p>若 \(A\) 与 \(B\) 合同且 \(A\) 为对称阵，则 \(B\) 亦为对称阵，且 \(R(B)=R(A)\)。</p>
+<details><summary>证明</summary><div class="body"><p>由 \(B=C^TAC\) 且 \(A^T=A\)，得
+  \[B^T=(C^TAC)^T=C^TA^T(C^T)^T=C^TAC=B,\]
+  故 \(B\) 对称。又 \(C\) 可逆，\(C^T\) 也可逆，故 \(A\) 与 \(B\) 等价，从而 \(R(B)=R(A)\)。</p></div></details></div>
+
+<div class="note"><b>化标准形的矩阵语言。</b>对二次型 \(f=x^TAx\) 作可逆线性变换 \(x=Cy\)（要求 \(C\) 可逆），则
+\[f=(Cy)^TA(Cy)=y^T(C^TAC)y=y^TBy,\quad B=C^TAC.\]
+即新二次型的矩阵 \(B\) 与原矩阵 \(A\) <strong>合同</strong>。<strong>化二次型为标准形，等价于寻找可逆阵 \(C\) 使 \(C^TAC\) 为对角阵</strong>。若 \(C\) 是正交阵，则同时有 \(C^TAC=C^{-1}AC=\Lambda\)，即合同且相似。</div>
+
+<h3>三、正交变换法（主轴定理）</h3>
+<div class="def"><div class="lab"><span class="n">定理 5.10</span>主轴定理</div>
+<p>任给 \(n\) 元实二次型 \(f=x^TAx\)，总存在正交变换 \(x=Py\) 将其化为标准形
+  \[f=\lambda_1y_1^2+\lambda_2y_2^2+\cdots+\lambda_ny_n^2,\]
+  其中 \(\lambda_1,\dots,\lambda_n\) 是 \(A\) 的特征值，\(P\) 的列是 \(A\) 的对应正交单位特征向量。</p></div>
+<p class="muted">步骤：(1) 求 \(A\) 的特征值；(2) 对每个特征值求正交单位特征向量（重根用施密特正交化）；(3) 以这些向量为列构成正交阵 \(P\)，即得正交变换。</p>
+
+<div class="ex"><div class="lab">例 5.12　正交变换化标准形</div>
+  <div class="stmt">用正交变换将 \(f(x_1,x_2,x_3)=2x_1x_2+2x_1x_3+2x_2x_3\) 化为标准形。</div>
+  <div class="sol"><span class="mk">解</span>二次型矩阵
+  \[A=\begin{pmatrix}0&1&1\\1&0&1\\1&1&0\end{pmatrix}\]
+  （恰为例 5.9 的矩阵）。由例 5.9，其特征值 \(2,-1,-1\)，正交阵
+  \[P=\begin{pmatrix}
+  \frac1{\sqrt3}&-\frac1{\sqrt2}&-\frac1{\sqrt6}\\[2pt]
+  \frac1{\sqrt3}&\frac1{\sqrt2}&-\frac1{\sqrt6}\\[2pt]
+  \frac1{\sqrt3}&0&\frac2{\sqrt6}
+  \end{pmatrix},\quad P^TAP=\operatorname{diag}(2,-1,-1).\]
+  故正交变换 \(x=Py\) 下
+  \[f=2y_1^2-y_2^2-y_3^2.\]</div>
+</div>
+
+<h3>四、配方法化标准形</h3>
+<div class="ex"><div class="lab">例 5.13　（完整）拉格朗日配方法</div>
+  <div class="stmt">化 \(f(x_1,x_2,x_3)=x_1^2+x_1x_2+x_1x_3+x_2x_3\) 为标准形，并写出所用可逆线性变换。</div>
+  <div class="sol"><span class="mk">解</span>先把含 \(x_1\) 的项配成平方：
+  \[\begin{aligned}
+  f&=x_1^2+x_1(x_2+x_3)+x_2x_3\\
+  &=\Bigl(x_1+\tfrac12x_2+\tfrac12x_3\Bigr)^2-\tfrac14(x_2+x_3)^2+x_2x_3\\
+  &=\Bigl(x_1+\tfrac12x_2+\tfrac12x_3\Bigr)^2-\tfrac14(x_2^2+2x_2x_3+x_3^2)+x_2x_3\\
+  &=\Bigl(x_1+\tfrac12x_2+\tfrac12x_3\Bigr)^2-\tfrac14x_2^2+\tfrac12x_2x_3-\tfrac14x_3^2\\
+  &=\Bigl(x_1+\tfrac12x_2+\tfrac12x_3\Bigr)^2-\Bigl(\tfrac12x_2-\tfrac12x_3\Bigr)^2.
+  \end{aligned}\]
+  令
+  \[\begin{cases}y_1=x_1+\tfrac12x_2+\tfrac12x_3,\\ y_2=\tfrac12x_2-\tfrac12x_3,\\ y_3=x_3,\end{cases}
+  \quad\text{即}\quad
+  \begin{cases}x_1=y_1-y_2-y_3,\\ x_2=2y_2+y_3,\\ x_3=y_3,\end{cases}\]
+  则 \(f=y_1^2-y_2^2\)，所用变换矩阵 \(C=\begin{pmatrix}1&-1&-1\\0&2&1\\0&0&1\end{pmatrix}\)，\(|C|=2\neq0\) 可逆。
+  <p class="muted">展开还原验证：\((x_1+\frac12x_2+\frac12x_3)^2-(\frac12x_2-\frac12x_3)^2 = x_1^2+x_1x_2+x_1x_3+\frac14x_2^2+\frac12x_2x_3+\frac14x_3^2-\frac14x_2^2+\frac12x_2x_3-\frac14x_3^2 = x_1^2+x_1x_2+x_1x_3+x_2x_3\)，与原式一致。</p>
+  <p>注意：配方法得到的标准形系数为 \(1,-1\)（及隐去的 \(0\) 项），其正平方项个数为 \(1\)；而正交变换法得到 \(2y_1^2-y_2^2-y_3^2\)，特征值 \( \frac32,-\frac12,0\)——两者<strong>正惯性指数同为 \(1\)</strong>，符合下面的惯性定理。</p></div>
+</div>
+
+<div class="ex"><div class="lab">例 5.14　（完整）无平方项的配方</div>
+  <div class="stmt">化 \(f(x_1,x_2,x_3)=x_1x_2+2x_1x_3\) 为标准形。</div>
+  <div class="sol"><span class="mk">解</span>先作可逆变换制造平方项：令
+  \[\begin{cases}x_1=y_1+y_2,\\ x_2=y_1-y_2,\\ x_3=y_3,\end{cases}\]
+  则
+  \[f=(y_1+y_2)(y_1-y_2)+2(y_1+y_2)y_3=y_1^2-y_2^2+2y_1y_3+2y_2y_3.\]
+  对 \(y_1,y_3\) 配方：
+  \[f=(y_1+y_3)^2-y_3^2-y_2^2+2y_2y_3=(y_1+y_3)^2-(y_2-y_3)^2.\]
+  再令
+  \[\begin{cases}z_1=y_1+y_3,\\ z_2=y_2-y_3,\\ z_3=y_3,\end{cases}
+  \quad\text{即}\quad
+  \begin{cases}y_1=z_1-z_3,\\ y_2=z_2+z_3,\\ y_3=z_3,\end{cases}\]
+  得 \(f=z_1^2-z_2^2\)，变换矩阵 \(C\) 可逆（\(|C|=-2\neq0\)）。</div>
+</div>
+
+<h3>五、惯性定理与规范形</h3>
+<div class="def"><div class="lab"><span class="n">定理 5.11</span>惯性定理</div>
+<p>设实二次型 \(f=x^TAx\) 的秩为 \(r\)，经两个实可逆变换 \(x=Cy\) 与 \(x=Pz\) 分别化为
+  \[f=k_1y_1^2+\cdots+k_ry_r^2\quad(k_i\neq0),\qquad f=\lambda_1z_1^2+\cdots+\lambda_rz_r^2\quad(\lambda_i\neq0),\]
+  则 \(k_1,\dots,k_r\) 中正数的个数与 \(\lambda_1,\dots,\lambda_r\) 中正数的个数相等（从而负数个数也相等）。</p>
+<details><summary>证明（思路＋关键步骤，实质完整）</summary><div class="body"><p>记正平方项个数为 \(p\)、负平方项个数为 \(q=r-p\)。假设另一次标准形有 \(s\) 个正项、\(r-s\) 个负项。由 \(x=Cy\) 与 \(x=Pz\) 得 \(z=P^{-1}Cy=Qy\)，即两个标准形通过变量替换相联系。</p>
+  <p><b>关键步骤（反证）：</b>设 \(p>s\)。考虑第一组标准形中使 \(y_{p+1}=\cdots=y_r=0\) 的"正子空间" \(V_+\)（维数 \(p\)）与第二组标准形中令 \(z_1=\cdots=z_s=0\) 的"非正子空间" \(W\)（维数 \(n-s\)）。因 \(p>s\)，有 \(p+(n-s)=n+(p-s)>n\)，故 \(V_+\cap W\neq\{0\}\)，存在非零向量同时属于两者。在该向量上，第一组给出 \(f>0\)（只有正平方项非零），第二组给出 \(f\le0\)（正平方项全为 \(0\)），矛盾。同理 \(s>p\) 亦矛盾，故 \(p=s\)。证毕。</p>
+  <p>该证明的核心是"维数论证"：两个互补符号的子空间维数之和超过 \(n\) 则必有非零交，从而导出矛盾。这是惯性定理最经典的证明路线。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">定义 5.6</span>正/负惯性指数与符号差</div>
+<p>秩为 \(r\) 的实二次型，其标准形中正平方项的个数 \(p\) 称为<strong>正惯性指数</strong>，负平方项的个数 \(q\) 称为<strong>负惯性指数</strong>；\(p-q=2p-r\) 称为<strong>符号差</strong>。</p></div>
+<div class="def"><div class="lab"><span class="n">定义 5.7</span>规范形</div>
+<p>若标准形中平方项的系数只取 \(1,-1,0\)，则称其为二次型的<strong>规范形</strong>。规范形完全由秩 \(r\) 与正惯性指数 \(p\) 决定。</p></div>
+<div class="def"><div class="lab"><span class="n">定理 5.12 / 5.13</span>规范形唯一与合同标准形</div>
+<p>任意实二次型总可经可逆线性变换化为唯一的规范形；等价地，任意 \(n\) 阶实对称阵 \(A\) 合同于
+  \[\begin{pmatrix}E_p&&\\&-E_{r-p}&\\&&O\end{pmatrix},\]
+  其中 \(r=R(A)\)，\(p\) 为正特征值个数（重根按重数计）。</p></div>
+
+<div class="hist"><div class="lab">数学家小传 · Sylvester 与惯性定理</div>
+  <p>英国数学家 <b>Sylvester（西尔维斯特，1814—1897）</b> 在研析二次曲线、二次曲面的分类时，提出了"惯性定理"——标准形中正、负平方项的个数在实可逆变换下保持不变。他也是"matrix（矩阵）"一词的创造者，并与 Cayley 共同奠定了矩阵理论。惯性定理后来被 Jacobi 重新发现并证明，成为二次型理论的基石。</p>
+  <details><summary>拓展：为什么配方法系数不是特征值，但正负个数一致</summary><div class="body"><p>配方法得到的标准形系数依赖于所选可逆变换，一般不是原矩阵的特征值；但由惯性定理，<strong>正、负平方项的个数是变换无关的</strong>。因此"正惯性指数 \(p\)"才是二次型真正的不变量，它等于正特征值的个数（主轴定理给出一组特殊的、系数为特征值的变换）。所以无论用配方法还是正交变换，判定正定性只需看符号个数。</p></div></details>
+</div>
+
+<!-- ============ §5.5 ============ -->
+
+<div class="sec-quiz" data-sec="s54" data-ch="5" data-n="47"></div>
+<h2 id="s55"><span class="num">§5.5</span>正定二次型</h2>
+<div class="ex"><div class="lab">引例　为什么 AI 训练要"正定"：损失函数的碗形曲面</div>
+  <p class="stmt">机器学习里，损失函数 \(L(\theta)\) 在最优参数 \(\theta^*\) 附近可近似为二次型
+  \(L\approx L^*+\frac12(\theta-\theta^*)^T H(\theta-\theta^*)\)，其中 \(H\) 是 Hessian 矩阵。要让梯度下降从任意起点都能"滑"向极小，必须 \(H\) 是<b>正定矩阵</b>——即这个"碗"处处向上开口。控制理论里判断系统是否稳定的 Lyapunov 函数，同样要求正定。二次型正定与否，决定了优化与控制系统会不会"翻车"。</p>
+  <p><b>探索：</b>给定 \(H=\begin{pmatrix}2&1\\1&2\end{pmatrix}\)，用"顺序主子式"判据（学完本节你就懂）立刻知道它正定；换成 \(\begin{pmatrix}1&2\\2&1\end{pmatrix}\) 则不正定——试着解释为什么后者会让优化"跑偏"。</p>
+</div>
+
+<h3>一、定义与判定</h3>
+<div class="def"><div class="lab"><span class="n">定义 5.8</span>正定二次型与正定矩阵</div>
+<p>设 \(n\) 元实二次型 \(f=x^TAx\)。若对任意一组不全为零的实数 \(c_1,\dots,c_n\)，都有 \(f(c_1,\dots,c_n)>0\)，则称 \(f\) 为<strong>正定二次型</strong>，称实对称阵 \(A\) 为<strong>正定矩阵</strong>。若恒有 \(f\lt 0\)，则称负定（此时 \(-f\) 正定）。</p></div>
+
+<div class="ex"><div class="lab">例 5.15　直观判别</div>
+  <div class="stmt">判断下列二次型是否正定：
+  (1) \(f=x_1^2+x_2^2+x_3^2\)；
+  (2) \(g=x_1^2+x_2^2\)；
+  (3) \(h=x_1^2+x_2^2-x_3^2\)。</div>
+  <div class="sol"><span class="mk">解</span>(1) 任意不全为零的 \((c_1,c_2,c_3)\)，有 \(c_1^2+c_2^2+c_3^2>0\)，故正定。
+  (2) 取 \((0,0,1)\) 得 \(g=0\)，不满足"恒大于 \(0\)"，故不正定（若只看作二元型则正定）。
+  (3) 取 \((0,0,1)\) 得 \(h=-1\lt 0\)，故不正定。</div>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.14</span>正定的标准形判别</div>
+<p>\(n\) 元实二次型 \(f=x^TAx\) 正定 \(\iff\) 其标准形的 \(n\) 个系数全为正，即 \(f\) 的正惯性指数等于 \(n\)。</p>
+<details><summary>证明</summary><div class="body"><p>设可逆变换 \(x=Cy\) 使 \(f=d_1y_1^2+\cdots+d_ny_n^2\)。因 \(C\) 可逆，对任意 \(x\neq0\) 有 \(y=C^{-1}x\neq0\)，从而
+  \[f(x)=d_1y_1^2+\cdots+d_ny_n^2>0\quad(\forall x\neq0)\]
+  等价于每个 \(d_i>0\ (i=1,\dots,n)\)，即正惯性指数为 \(n\)。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">推论 5.5</span>特征值判据</div>
+<p>实对称阵 \(A\) 正定 \(\iff\) \(A\) 的全部特征值均为正数。</p>
+<details><summary>证明</summary><div class="body"><p>由定理 5.8，存在正交阵 \(P\) 使 \(P^TAP=\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_n)\)，其中 \(\lambda_i\) 为 \(A\) 的全部特征值。作正交变换 \(x=Py\)（可逆），则
+  \[f=x^TAx=y^T\Lambda y=\lambda_1y_1^2+\cdots+\lambda_ny_n^2.\]
+  由定理 5.14，\(f\) 正定 \(\iff\) 所有系数 \(\lambda_i>0\)。而正交变换是特殊的可逆线性变换，故该标准形即为主轴标准形，正惯性指数为 \(n\) 当且仅当全部特征值 \(>0\)。证毕。</p></div></details></div>
+<div class="def"><div class="lab"><span class="n">推论 5.6</span>正定阵的合同分解</div>
+<p>\(A\) 正定 \(\iff\) 存在可逆阵 \(C\) 使 \(A=C^TC\)（即 \(A\) 与单位阵 \(E\) 合同）。</p>
+<details><summary>证明</summary><div class="body"><p><span style="font-weight:700">证</span>　“\(\Rightarrow\)”：设 \(A\) 正定，则正惯性指数为 \(n\)，故 \(A\) 与 \(E\) 合同，即存在可逆阵 \(C\) 使 \(A=C^TEC=C^TC\)。</p>
+<p>“\(\Leftarrow\)”：若 \(A=C^TC\) 且 \(C\) 可逆，则对任意 \(x\neq0\) 有 \(Cx\neq0\)，于是 \(x^TAx=(Cx)^T(Cx)=\|Cx\|^2>0\)，故 \(A\) 正定。证毕。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">推论 5.7</span>正定阵的行列式为正</div>
+<p>若 \(A\) 正定，则 \(|A|>0\)。</p>
+<details><summary>证明</summary><div class="body"><p><span style="font-weight:700">证</span>　由推论 5.5，\(A\) 正定时全部特征值 \(\lambda_i>0\)；又 \(|A|=\prod_{i=1}^{n}\lambda_i\)，故 \(|A|>0\)。证毕。</p></div></details></div>
+
+<div class="def"><div class="lab"><span class="n">定理 5.15</span>霍尔维茨（Hurwitz）定理</div>
+<p>实二次型 \(f=x^TAx\) 正定 \(\iff\) 实对称阵 \(A=(a_{ij})\) 的<strong>各阶顺序主子式全为正</strong>，即
+  \[a_{11}>0,\quad
+  \begin{vmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{vmatrix}>0,\quad\cdots,\quad
+  \begin{vmatrix}a_{11}&\cdots&a_{1n}\\\vdots&&\vdots\\a_{n1}&\cdots&a_{nn}\end{vmatrix}>0.\]
+  （证明从略，但其核心特例"特征值全正 \(\Rightarrow\) 正定"已在推论 5.5 中完整证明；顺序主子式全正与特征值全正等价可由合同标准形与行列式乘法链推出。）</p>
+<details><summary>关键步骤补充</summary><div class="body"><p>若 \(A\) 正定，则对前 \(k\) 个变量作同样的二次型必正定，故其顺序主子式对应的 \(k\) 阶主子阵也正定，行列式 \(>0\)（推论 5.7）。反之，若各阶顺序主子式全正，可对 \(n\) 用归纳法构造分解 \(A=C^TDC\)（\(D\) 对角且对角元为正），故 \(A\) 与 \(E\) 合同，从而正定。这里"各阶顺序主子式全正"是判定正定性最常用、最易计算的代数准则。</p></div></details></div>
+
+<div class="ex"><div class="lab">例 5.16　顺序主子式判别</div>
+  <div class="stmt">判断 \(A=\begin{pmatrix}2&1&0\\1&2&1\\0&1&2\end{pmatrix}\) 是否正定。</div>
+  <div class="sol"><span class="mk">解</span>计算顺序主子式：
+  \[\Delta_1=2>0,\quad
+  \Delta_2=\begin{vmatrix}2&1\\1&2\end{vmatrix}=3>0,\quad
+  \Delta_3=|A|=2\cdot(4-1)-1\cdot(2-0)=6-2=4>0.\]
+  三阶顺序主子式全正，故 \(A\) 正定。</div>
+</div>
+
+<div class="ex"><div class="lab">例 5.17　（考研精选）参数正定</div>
+  <div class="stmt">设二次型 \(f=tx_1^2+tx_2^2+tx_3^2+2x_1x_2+2x_1x_3-2x_2x_3\)，求 \(t\) 使 \(f\) 正定。</div>
+  <div class="sol"><span class="mk">解</span>矩阵
+  \[A=\begin{pmatrix}t&1&1\\1&t&-1\\1&-1&t\end{pmatrix}.\]
+  由霍尔维茨定理需各阶顺序主子式全正：
+  \[\Delta_1=t>0,\quad \Delta_2=\begin{vmatrix}t&1\\1&t\end{vmatrix}=t^2-1>0,\quad
+  \Delta_3=|A|=t^3-3t-2=(t-2)(t+1)^2>0.\]
+  联立得 \(t>2\)（因 \(t>0\) 且 \(t^2>1\Rightarrow t>1\)，再结合 \(\Delta_3>0\Rightarrow t>2\)）。故当 \(t>2\) 时 \(f\) 正定。</div>
+</div>
+
+<div class="ex"><div class="lab">例 5.18　正定矩阵的性质</div>
+  <div class="stmt">设 \(A\) 正定，证明 \(A^{-1}\) 也正定；并证明 \(A+E\) 的行列式 \(>1\)。</div>
+  <div class="sol"><span class="mk">证</span>(1) \(A\) 实对称 \(\Rightarrow (A^{-1})^T=(A^T)^{-1}=A^{-1}\)，故 \(A^{-1}\) 实对称。由 \(A\) 正定，其特征值 \(\lambda_i>0\)，则 \(A^{-1}\) 的特征值 \(\mu_i=1/\lambda_i>0\)，由推论 5.5 知 \(A^{-1}\) 正定。
+  (2) 设 \(A\) 的特征值为 \(\lambda_i>0\)，则 \(A+E\) 的特征值为 \(\lambda_i+1>1\)，故
+  \[|A+E|=\prod(\lambda_i+1)>1.\]</div>
+</div>
+
+<div class="note">正定判别三步法：① 看是否实对称（否则谈不上二次型正定）；② 用主轴定理看特征值是否全正；③ 用霍尔维茨定理看顺序主子式是否全正（最常用）。负定则：奇数阶顺序主子式全负、偶数阶全正。</div>
+
+<!-- ============ §5.6 ============ -->
+
+<div class="sec-quiz" data-sec="s55" data-ch="5" data-n="26"></div>
+<h2 id="s56"><span class="num">§5.6</span>综合应用与软件实现</h2>
+<div class="ex"><div class="lab">引例　智能工厂的"异常体检"：马氏距离就是个二次型</div>
+  <p class="stmt"><b>高端制造</b>中，正常零件的尺寸、振动等特征构成一个椭球状分布。判断一个新零件是否异常，用的是"马氏距离"——它正是一个以"逆协方差矩阵"为系数的<b>二次型</b>。把全书串起来：特征值（椭球的主轴方向）+ 二次型（到中心的距离）+ 正定（协方差可逆，距离才有意义）。一个小小的二次型，就是智能制造里"在线质检"的数学核心。</p>
+  <p><b>探索：</b>若某特征协方差为 \(\Sigma=\begin{pmatrix}2&0\\0&1\end{pmatrix}\)，则点 \(x=(1,1)^T\) 的马氏距离平方为
+  \(x^T\Sigma^{-1}x=1^2/2+1^2/1=1.5\)——学完本节你就能亲手算出任意新零件的"健康分"，并设定报警阈值。</p>
+</div>
+
+<h3>一、应用案例</h3>
+<div class="case"><div class="lab">案例 1 网络排序 · PageRank（人工智能的奠基算法）</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+  <p><b>问题提出：</b>搜索引擎面对数十亿网页，如何仅凭"超链接"自动判定哪些页面更重要？最朴素的想法是"被越多页面链接就越重要"，但这既会被互相刷分的垃圾页操纵，也无法区分"来自权威页的链接"与"来自垃圾页的链接"。</p>
+
+  <p><b>分析建模：</b>把网页看作节点、超链接看作有向边，构造<b>列随机矩阵</b> \(M\)：\(M_{ij}=1/d_j\)（\(d_j\) 为页面 \(j\) 的出链数）当 \(j\) 链接到 \(i\)，否则为 \(0\)（每列和为 \(1\)）。在"随机冲浪"模型中，重要性向量 \(r\) 满足 \(Mr=r\)，即 \(r\) 是 \(M\) 的<b>属于特征值 \(1\) 的特征向量</b>；再引入阻尼因子 \(d\approx0.85\) 抵抗死链与圈：\(r=dMr+(1-d)\mathbf 1/n\)。这正与 §5.1 马尔可夫稳定分布同源。</p>
+
+  <p><b>解决问题：</b>以 4 页网络为例（A→B,C；B→C；C→A；D→A,B）：
+  \[M=\begin{pmatrix}0&0&1&0.5\\0.5&0&0&0.5\\0.5&1&0&0\\0&0&0&0\end{pmatrix},\quad d_A=d_C=1,\ d_B=d_D=2.\]
+  代入 \(d=0.85\) 做幂迭代（\(r\leftarrow dMr+(1-d)\mathbf 1/4\)，反复归一）得
+  \[r_A\approx0.374,\quad r_B\approx0.212,\quad r_C\approx0.377,\quad r_D\approx0.038,\]
+  排名 C &gt; A &gt; B &gt; D。</p>
+
+  <p><b>效果对照：</b>朴素"入链计数"给 A、B、C 各记 \(2\) 条、D 记 \(0\) 条，三者并列无法区分；而 PageRank 揭示 <b>C 最关键</b>（它被"自身重要且互相引用"的 A、B 同时指向），B 因主要被"弱页"D 指向而垫底，D 虽出链很多却因无入链几乎为 \(0\)。这正是"重要页面投出的票更值钱"的迭代思想——今天知识图谱、推荐系统的"重要性传播"都沿用同一套特征值框架。</p>
+
+  </div>
+</details></div>
+
+<div class="case"><div class="lab">案例 2 主成分分析 PCA（人工智能 · 数据降维）</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+  <p><b>问题提出：</b>大模型的词向量、人脸图像动辄上千维，直接存储与计算代价高昂；更糟的是这些维度高度相关（身高≈臂展），存在大量冗余。能否在"尽量少损失信息"的前提下把数据压到 1～2 维？</p>
+
+  <p><b>分析建模：</b>对 \(n\) 个样本、\(p\) 维数据去中心化得 \(X\)，协方差矩阵 \(\Sigma=\frac1{n-1}X^TX\)（实对称半正定）。对 \(\Sigma\) 正交对角化 \(\Sigma=Q\Lambda Q^T\)，取最大特征值对应的特征向量作为主成分方向；数据在其上投影方差最大、信息损失最小。这正是 §5.3 定理 5.8 在统计降维中的直接应用，也用到 §5.5"特征值排序"思想。</p>
+
+  <p><b>解决问题：</b>取 12 名体检者的三项指标（身高 cm、臂展 cm、体重 kg），协方差矩阵为
+  \[\Sigma=\begin{pmatrix}61.17&60.36&73.67\\60.36&60.36&73.27\\73.67&73.27&90.42\end{pmatrix}.\]
+  其特征值 \(\lambda_1\approx210.81,\ \lambda_2\approx0.76,\ \lambda_3\approx0.40\)，方差贡献率分别为 \(99.46\%\)、\(0.36\%\)、\(0.19\%\)，累积至第一主成分已达 \(99.46\%\)；第一主成分方向 \(q_1\approx(-0.537,-0.534,-0.653)^T\)——三项指标几乎等权，说明"身材大小"是主要差异维度。</p>
+
+  <p><b>效果对照：</b>把 3 维数据投影到 \(q_1\) 这一维，即可用<b>单个数</b>保留原始信息量的 \(99.46\%\)，存储空间降到原来的 \(1/3\) 且几乎无损。人脸识别、语音降噪乃至大模型的维度压缩都以此为底——例如把 768 维词向量压到 64 维仍能保持语义相似度。第一样本投影坐标约 \((0.98,0.33)\)（取前两主成分），在散点图上与其余样本的分布趋势一致，肉眼可辨"高个/矮个"两类。</p>
+
+  </div>
+</details></div>
+
+<div class="case"><div class="lab">案例 3 电气工程 · 电力系统暂态稳定性</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+  <p><b>问题提出：</b>电网受到小扰动（如某条线路投切）后，功率振荡究竟会自行衰减（系统安全），还是越演越烈直至崩溃（大停电）？工程师需要一个可量化的判据。</p>
+
+  <p><b>分析建模：</b>线性化后的电力系统满足 \(\dot x=Ax\)，\(A\) 为系统矩阵。由线性系统理论，\(A\) 的特征值（极点）<b>实部符号决定稳定性</b>：全部特征值实部为负 \(\Rightarrow\) 渐近稳定；存在正实部 \(\Rightarrow\) 失稳。因此"让所有特征值落在复平面左半平面"成为柔性直流输电、新能源并网控制器与智能电网设计的核心目标。</p>
+
+  <p><b>解决问题：</b>取一个双机等效系统
+  \[A=\begin{pmatrix}-1&4\\-2&3\end{pmatrix}.\]
+  其特征值 \(\lambda_{1,2}=1\pm2\mathrm i\)，实部 \(+1>0\)——<b>系统失稳</b>。施加单输入状态反馈 \(u=-Kx\)，令
+  \[B=\begin{pmatrix}0\\1\end{pmatrix},\]
+  用极点配置把闭环极点指定到 \(\{-3,-4\}\)，解得反馈增益
+  \[K=\begin{pmatrix}-0.5&9\end{pmatrix}.\]
+  此时闭环矩阵 \(A-BK\) 的特征值为 \(-3,-4\)，全部落在左半平面。</p>
+
+  <p><b>效果对照：</b>改造前特征值实部为 \(+1\)，任何微小扰动都呈指数增长（振荡发散，对应电压崩溃）；改造后极点移至 \(-3,-4\)，扰动以 \(e^{-3t},e^{-4t}\) 快速衰减，系统在约 \(1\) 秒内恢复平稳。特征值分析正是智能电网与电机控制"把危险极点推回左半平面"的数学工具。</p>
+
+  </div>
+</details></div>
+
+<div class="case"><div class="lab">案例 4 高铁 · 车体振动模态分析</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+  <p><b>问题提出：</b>高速列车以 350 km/h 运行时，车体与转向架是弹性结构，会随轨道不平顺产生微振动。若某阶固有频率恰好与轨道激励频率接近，就会<b>共振</b>，轻则噪声刺耳、重则结构疲劳。如何事先找出这些"危险频率"并避开？</p>
+
+  <p><b>分析建模：</b>多自由度弹性结构的微振动满足 \(M\ddot x+Kx=0\)，其中 \(M,K\) 为实对称正定（质量阵、刚度阵）。作广义特征值分解 \(Kv=\omega^2 Mv\)，每个特征值 \(\omega_i^2\) 给出一种"振型"的固有频率平方，对应特征向量 \(v_i\) 描述该振型下各部位的振幅比例。这正是 §5.3 定理 5.8（实对称矩阵正交对角化）在重大装备中的直接应用。</p>
+
+  <p><b>解决问题：</b>取二自由度简化模型（车体 \(m_1=1\)、设备 \(m_2=0.6\)；悬挂刚度 \(k_1=120\)、二系刚度 \(k_2=80\)）：
+  \[M=\begin{pmatrix}1&0\\0&0.6\end{pmatrix},\quad K=\begin{pmatrix}200&-80\\-80&80\end{pmatrix}.\]
+  解广义特征值问题得固有频率
+  \[\omega_1\approx16.59\ \text{rad/s},\quad \omega_2\approx7.63\ \text{rad/s},\]
+  振型分别为 \(v_1\approx(0.729,-0.685)^T\)、\(v_2\approx(0.491,0.871)^T\)。</p>
+
+  <p><b>效果对照：</b>将二系刚度提高到 \(k_2=140\)，重新计算得固有频率升至 \(20.69\)、\(8.09\ \text{rad/s}\)。这说明<b>增大刚度可把固有频率推离轨道激励频带</b>，从而避开共振；而振型向量告诉工程师"哪两个部位反相摆动最大"，据此局部加强。高铁正是用模态分析优化乘坐舒适性与结构安全，并为智能运维中的"振动健康监测"提供基准。</p>
+
+  </div>
+</details></div>
+
+<div class="case"><div class="lab">案例 5 新能源汽车 · 永磁同步电机极点配置</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+  <p><b>问题提出：</b>新能源汽车的永磁同步电机（PMSM）要求转速与电流响应"又快又稳"：加速时尽快到位、遇到负载突变不抖动。如何设计控制器实现这一动态品质？</p>
+
+  <p><b>分析建模：</b>PMSM 常用状态空间模型 \(\dot x=Ax+Bu\) 描述，\(A\) 的特征值（系统"极点"）决定动态响应的速度与稳定性：极点越靠左半平面、实部绝对值越大，响应越快越稳。工程师通过"极点配置"选取反馈 \(u=-Kx\)，把闭环极点移到期望位置——这正是案例 3 同款思想在运动控制中的落地，也是自动驾驶、机器人关节驱动共通的控制内核。</p>
+
+  <p><b>解决问题：</b>取电机电流环等效模型
+  \[A=\begin{pmatrix}-2&10\\-5&-1\end{pmatrix},\quad B=\begin{pmatrix}0\\1\end{pmatrix}.\]
+  原极点 \(-1.5\pm7.05\mathrm i\)：实部偏小，响应迟缓且欠阻尼。指定期望极点 \(\{-8,-12\}\)，解得
+  \[K=\begin{pmatrix}1&17\end{pmatrix},\]
+  闭环矩阵 \(A-BK\) 的特征值恰为 \(-8,-12\)。</p>
+
+  <p><b>效果对照：</b>改造前调节时间约 \(1.33\) 秒（电机"软绵绵"、提速慢），改造后约 \(0.25\) 秒、<b>提速 5 倍以上</b>且无明显超调。从电池热管理到整车能量流，新能源汽车电控系统的动态品质，归根结底都是"把矩阵特征值摆到合适位置"的线性代数问题。</p>
+
+  </div>
+</details></div>
+
+<details><summary>二、软件实现（Python / MATLAB，点击展开）</summary>
+<div class="note">下面给出可运行的 Python 代码（需安装 <code>numpy</code>、<code>scipy</code>、<code>sympy</code>）。MATLAB 等价写法以 <code>#</code> 注释附后。</div>
+<pre><code># 1) 求特征值、特征向量（数值，numpy）
+import numpy as np
+A = np.array([[1., 2, 2],
+              [2., 1, 2],
+              [2., 2, 1]])
+w, V = np.linalg.eig(A)          # w: 特征值数组; V: 列是对应特征向量
+print("特征值:", w)               # [-1. -1.  5.]
+print("特征向量(列):\n", V)
+# MATLAB: [V,D]=eig(A);   % V列=特征向量, D对角=特征值
+
+# 2) 实对称矩阵正交对角化（推荐 eigh，保证实数与正交）
+Lam, Q = np.linalg.eigh(A)       # Lam 升序特征值; Q 列=标准正交特征向量, Q^T A Q = diag(Lam)
+print("正交阵 Q:\n", Q)
+print("Q^T A Q =\n", Q.T @ A @ Q)
+# MATLAB: [Q,D]=eig(A);  % 对称阵时 Q 正交
+
+# 3) 对角化求高次幂 A^100
+# 对一般可对角化矩阵：
+D = np.diag(w)
+P = V
+A100 = P @ np.linalg.matrix_power(D, 100) @ np.linalg.inv(P)
+print("A^100(近似):\n", A100)
+
+# 4) sympy 符号求特征值与对角化
+import sympy as sp
+As = sp.Matrix([[1, 4, 2], [0, -3, 4], [0, 4, 3]])
+print("特征多项式:", sp.factor(As.charpoly().as_expr()))
+# 对角化（若可对角化）：
+P_sym, D_sym = As.diagonalize()
+print("P=\n", P_sym, "\nΛ=\n", D_sym)
+
+# 5) 二次型化标准形（正交变换）
+B = np.array([[0., 1, 1],
+              [1., 0, 1],
+              [1., 1, 0]])
+vals, R = np.linalg.eigh(B)      # 正交变换 R, 标准形系数=vals
+print("二次型标准形系数:", vals)   # [ -1., -1., 2.]
+
+# 6) 正定判别：顺序主子式
+def is_pos_def(M):
+    M = np.array(M, dtype=float)
+    n = M.shape[0]
+    for k in range(1, n+1):
+        if np.linalg.det(M[:k, :k]) <= 0:
+            return False
+    return True
+print("正定?", is_pos_def([[2,1,0],[1,2,1],[0,1,2]]))   # True
+# MATLAB: all(eig(A)>0)  % 特征值全正等价正定（对称阵）</code></pre>
+</details>
+
+<h3>三、交互实验</h3>
+<div class="labx">
+  <div class="lab">交互实验 1 · 特征值与特征向量计算器</div>
+  <div class="desc">输入一个 2 阶或 3 阶矩阵（每行空格/逗号分隔），点击计算。程序先输出特征多项式系数，再求实数根对应的特征向量（数值消元），以纯文本呈现。复杂根会提示"非实数根"。</div>
+  <div class="row">
+    <div class="ctrls">
+      <label>阶数 n
+        <input type="number" id="eig5N" min="2" max="6" value="3" style="width:52px">
+      </label>（支持 2–6 阶，自定义方阵阶数）
+      <button class="btn" onclick="eig5Calc()">计算特征值/向量</button>
+      <button class="ghost" onclick="eig5Build()">生成矩阵</button>
+    </div>
+  </div>
+  <div id="eig5Grid" class="matrix-in m3"></div>
+  <pre class="out" id="eig5Out">点击"生成矩阵"后再计算。</pre>
+</div>
+
+<div class="labx">
+  <div class="lab">交互实验 2 · 二次型正定判别器</div>
+  <div class="desc">输入一个对称矩阵（2 阶或 3 阶，只用到上三角与对角线，下三角按对称自动补全）。程序计算各阶顺序主子式并判定正定 / 负定 / 不定 / 半正定。配合本节霍尔维茨定理使用。</div>
+  <div class="row">
+    <div class="ctrls">
+      <label>阶数 n
+        <input type="number" id="c5DefN" min="2" max="6" value="3" style="width:52px">
+      </label>（支持 2–6 阶，自定义对称阵阶数）
+      <button class="btn" onclick="c5DefCalc()">判别正定性</button>
+      <button class="ghost" onclick="c5DefBuild()">生成矩阵</button>
+    </div>
+  </div>
+  <div id="c5DefGrid" class="matrix-in m3"></div>
+  <pre class="out" id="c5DefOut">点击"生成矩阵"后再判别。</pre>
+</div>
+
+
+    <!-- ============ 考研选讲 ============ -->
+    <h2 id="adv5">考研选讲</h2>
+    <p class="muted">本栏目选取历年考研真题，展示特征值、对角化与二次型的综合运用。建议先独立思考，再展开解答。</p>
+
+    <div class="ex"><div class="lab">选讲 1　（2019 · 考研数学一）</div>
+      <p class="stmt">已知 \(3\) 阶矩阵 \(A\) 的特征值为 \(1,2,3\)。求 \(|A^2+2A+E|\)。</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　若 \(\lambda\) 是 \(A\) 的特征值，则 \(A^2+2A+E\) 的对应特征值为 \(\lambda^2+2\lambda+1=(\lambda+1)^2\)。
+          三个特征值为 \((1+1)^2=4\)、\((2+1)^2=9\)、\((3+1)^2=16\)。行列式等于特征值之积：
+          \[|A^2+2A+E|=4\times9\times16=576.\]</p>
+          <p><b>方法提炼：</b>涉及 \(A\) 的多项式时，"特征值同步作多项式"是万能钥匙；行列式则是所有特征值的乘积。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 2　（2017 · 考研数学一）</div>
+      <p class="stmt">设 \(A=\begin{pmatrix}2&1\\1&2\end{pmatrix}\)。求可逆矩阵 \(P\) 使 \(P^{-1}AP\) 为对角阵，并写出该对角阵。</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　特征方程 \(|A-\lambda E|=(2-\lambda)^2-1=0\Rightarrow \lambda_1=1,\ \lambda_2=3\)。
+          \(\lambda=1\)：\((A-E)x=0\)，\(A-E=\begin{pmatrix}1&1\\1&1\end{pmatrix}\)，特征向量可取 \(p_1=(1,-1)^T\)。
+          \(\lambda=3\)：\((A-3E)x=0\)，\(A-3E=\begin{pmatrix}-1&1\\1&-1\end{pmatrix}\)，特征向量可取 \(p_2=(1,1)^T\)。
+          取 \(P=(p_1,p_2)=\begin{pmatrix}1&1\\-1&1\end{pmatrix}\)，则 \(P^{-1}AP=\operatorname{diag}(1,3)\)。</p>
+          <p><b>方法提炼：</b>单根自动对应一个线性无关特征向量；把特征向量按列排成 \(P\)，即得对角化——这是 §5.2 的标准流程。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 3　（2022 · 考研数学一）</div>
+      <p class="stmt">判断 \(A=\begin{pmatrix}1&1\\0&1\end{pmatrix}\) 与 \(B=\begin{pmatrix}1&0\\0&1\end{pmatrix}\) 是否相似，并说明理由。</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　二者特征值均为 \(1\)（二重）。但 \(A\) 不可对角化：\(A-E=\begin{pmatrix}0&1\\0&0\end{pmatrix}\) 秩为 \(1\)，故属于 \(\lambda=1\) 的线性无关特征向量只有 \(1\) 个，几何重数 \(1\lt\) 代数重数 \(2\)。
+          \(B\) 本身就是对角阵（已对角化）。相似矩阵必"同时可对角化或同时不可对角化"（相似保持可对角性），故 \(A\) 与 \(B\) 不相似。</p>
+          <p><b>方法提炼：</b>相似要求特征值"连同重数相同"且"每个特征值的几何重数也相同"；仅凭特征值相等无法下结论。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 4　（2018 · 考研数学一）</div>
+      <p class="stmt">用正交变换将二次型 \(f=2x_1^2+2x_2^2+2x_3^2+2x_1x_2+2x_1x_3+2x_2x_3\) 化为标准形，并写出所用正交矩阵。</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　二次型矩阵 \(A=\begin{pmatrix}2&1&1\\1&2&1\\1&1&2\end{pmatrix}\)。
+          易验 \(A(1,1,1)^T=4(1,1,1)^T\)，\(A(1,-1,0)^T=1\cdot(1,-1,0)^T\)，\(A(1,0,-1)^T=1\cdot(1,0,-1)^T\)，故特征值为 \(\lambda=4,1,1\)。
+          将对应特征向量单位化、正交化（\(\lambda=1\) 的两个特征向量已正交），得正交矩阵 \(Q\)，使 \(Q^TAQ=\operatorname{diag}(4,1,1)\)。故标准形为 \(f=4y_1^2+y_2^2+y_3^2\)。</p>
+          <p><b>方法提炼：</b>实对称矩阵必可正交对角化（§5.3 定理），正交变换保持几何形状——这是 PCA、振动模态分析的数学基础。</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 5　（2020 · 考研数学一）</div>
+      <p class="stmt">判断二次型 \(f=x_1^2+2x_2^2+3x_3^2+2x_1x_2+2x_1x_3\) 是否正定。</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　二次型矩阵 \(A=\begin{pmatrix}1&1&1\\1&2&0\\1&0&3\end{pmatrix}\)。
+          顺序主子式：
+          \(\Delta_1=a_{11}=1>0\)；
+          \(\Delta_2=\begin{vmatrix}1&1\\1&2\end{vmatrix}=2-1=1>0\)；
+          \(\Delta_3=|A|=1\cdot(6-0)-1\cdot(3-0)+1\cdot(0-2)=6-3-2=1>0\)。
+          各阶顺序主子式全正，故 \(f\) 正定。</p>
+          <p><b>方法提炼：</b>实对称矩阵正定 \(\iff\) 所有顺序主子式为正（Sylvester 准则），比"配方"更便于程序化判断——这正是 §5.5 的要点。</p>
+        </div>
+      </details>
+    </div>
+<!-- ============ 习题五 ============ -->
+<div class="hw" id="hw5"><h4>习题五</h4>
+
+<div class="grp">一、选择题（15 题）</div>
+<p>1. 设 \(A=\begin{pmatrix}1&2\\2&1\end{pmatrix}\)，下列矩阵中与 \(A\) 合同的是（　）。</p>
+<div class="qopts"><span>A. \(\begin{pmatrix}-2&1\\1&-2\end{pmatrix}\)</span><span>B. \(\begin{pmatrix}2&-1\\-1&2\end{pmatrix}\)</span><span>C. \(\begin{pmatrix}2&1\\1&2\end{pmatrix}\)</span><span>D. \(\begin{pmatrix}1&-2\\-2&1\end{pmatrix}\)</span></div>
+
+<p>2. 若 \(n\) 阶方阵 \(A\sim B\)，则下列结论中<strong>不一定</strong>成立的是（　）。</p>
+<div class="qopts"><span>A. \(|A|=|B|\)</span><span>B. \(A\) 与 \(B\) 特征值相同</span><span>C. \(A=B\)</span><span>D. \(R(A)=R(B)\)</span></div>
+
+<p>3. 设 \(\lambda_1,\lambda_2\) 是矩阵 \(A\) 的两个不同特征值，\(\alpha_1,\alpha_2\) 是对应的特征向量，则 \(\alpha_1,\ A(\alpha_1+\alpha_2)\) 线性无关的充要条件是（　）。</p>
+<div class="qopts"><span>A. \(\lambda_1\neq0\)</span><span>B. \(\lambda_2\neq0\)</span><span>C. \(\lambda_1=0\)</span><span>D. \(\lambda_2=0\)</span></div>
+
+<p>4. \(n\) 阶方阵 \(A\) 有 \(n\) 个互不相同的特征值，则 \(A\)（　）。</p>
+<div class="qopts"><span>A. 必不可对角化</span><span>B. 必可对角化</span><span>C. 必为正定</span><span>D. 必为实对称</span></div>
+
+<p>5. 实对称矩阵的特征值一定是（　）。</p>
+<div class="qopts"><span>A. 非负实数</span><span>B. 实数</span><span>C. 正数</span><span>D. 复数</span></div>
+
+<p>6. 正交矩阵的实特征值的绝对值等于（　）。</p>
+<div class="qopts"><span>A. \(0\)</span><span>B. \(1\)</span><span>C. \(2\)</span><span>D. 不一定</span></div>
+
+<p>7. 二次型 \(f=x^TAx\) 正定的充要条件是（　）。</p>
+<div class="qopts"><span>A. \(A\) 的行列式 \(>0\)</span><span>B. \(A\) 的特征值全为正</span><span>C. \(A\) 的迹 \(>0\)</span><span>D. \(A\) 的秩为 \(n\)</span></div>
+
+<p>8. \(n\) 元二次型正定的充要条件是（　）。</p>
+<div class="qopts"><span>A. 标准形系数全为正</span><span>B. 负惯性指数为 \(0\) 但秩 \(\lt n\)</span><span>C. 规范形系数为 \(1,0,-1\)</span><span>D. 顺序主子式有正有负</span></div>
+
+<p>9. 霍尔维茨定理指出，实对称阵 \(A\) 正定当且仅当（　）。</p>
+<div class="qopts"><span>A. 所有主子式 \(>0\)</span><span>B. 各阶顺序主子式全 \(>0\)</span><span>C. \(|A|>0\)</span><span>D. 奇数阶顺序主子式 \(\lt 0\)</span></div>
+
+<p>10. 二次型 \(x^2+xy+y^2\) 是（　）。</p>
+<div class="qopts"><span>A. 正定</span><span>B. 负定</span><span>C. 不定</span><span>D. 半正定</span></div>
+
+<p>11. 合同变换不改变二次型的（　）。</p>
+<div class="qopts"><span>A. 特征值</span><span>B. 行列式</span><span>C. 秩与正惯性指数</span><span>D. 迹</span></div>
+
+<p>12. 二次型 \(x_1^2-4x_1x_2+x_2^2\) 是（　）。</p>
+<div class="qopts"><span>A. 正定</span><span>B. 负定</span><span>C. 不定</span><span>D. 半正定</span></div>
+
+<p>13. 设 \(A\) 的特征值为 \(1,2,3\)，则 \(|A|=\)（　）。</p>
+<div class="qopts"><span>A. \(1\)</span><span>B. \(6\)</span><span>C. \(3\)</span><span>D. \(11\)</span></div>
+
+<p>14. 若 \(A\sim B\)，则对任意正整数 \(k\) 有（　）。</p>
+<div class="qopts"><span>A. \(A^k\sim B^k\)</span><span>B. \(A^k=B^k\)</span><span>C. \(|A^k|\neq|B^k|\)</span><span>D. \(A^k\) 与 \(B^k\) 不相似</span></div>
+
+<p>15. 下列矩阵中正定的是（　）。</p>
+<div class="qopts"><span>A. \(\begin{pmatrix}1&2\\2&4\end{pmatrix}\)</span><span>B. \(\begin{pmatrix}-1&0\\0&-2\end{pmatrix}\)</span><span>C. \(\begin{pmatrix}2&0\\0&3\end{pmatrix}\)</span><span>D. \(\begin{pmatrix}1&2\\2&1\end{pmatrix}\)</span></div>
+
+
+<div class="grp">二、填空题（10 题）</div>
+<p>1. 二次型 \(f=(x_1+x_2)^2+(x_2-x_3)^2+(x_1+x_3)^2\) 的秩为 ______。</p>
+<p>2. 设 \(A\) 为 2 阶方阵，\(\alpha_1,\alpha_2\) 线性无关，\(A\alpha_1=0,\ A\alpha_2=2\alpha_1+\alpha_2\)，则 \(A\) 的非零特征值为 ______。</p>
+<p>3. 若 4 阶方阵 \(A\sim B\)，且 \(A\) 的特征值为 \(\frac12,\frac13,\frac14,\frac15\)，则 \(|B^{-1}-E|=\) ______。</p>
+<p>4. 设 \(\alpha,\beta\) 为 3 维列向量，若 \(\alpha\beta^T\sim\begin{pmatrix}2&0&0\\0&0&0\\0&0&0\end{pmatrix}\)，则 \(\beta^T\alpha=\) ______。</p>
+<p>5. 设 \(\alpha=(1,1,1)^T,\ \beta=(1,0,k)^T\)，若 \(\alpha\beta^T\sim\operatorname{diag}(3,0,0)\)，则 \(k=\) ______。</p>
+<p>6. 设 \(A=\begin{pmatrix}0&-1&0\\1&0&0\\0&0&-1\end{pmatrix}\)，则 \(A^{2004}-2A^2=\) ______。</p>
+<p>7. 设 3 阶方阵 \(A\) 的特征值互不相同且 \(|A|=0\)，则 \(R(A)=\) ______。</p>
+<p>8. 设 \(A=(a_{ij})_{3\times3}\) 是正交矩阵且 \(a_{11}=1\)，则线性方程组 \(Ax=\begin{pmatrix}1\\0\\0\end{pmatrix}\) 的一个解为 ______。</p>
+<p>9. 已知实二次型 \(f=a(x_1^2+x_2^2+x_3^2)+4x_1x_2+4x_1x_3+4x_2x_3\) 经正交变换化为标准形 \(f=6y_1^2\)，则 \(a=\) ______。</p>
+<p>10. 若二次型 \(f=2x_1^2+x_2^2+x_3^2+2x_1x_2+t x_2x_3\) 正定，则 \(t\) 的取值范围是 ______。</p>
+
+
+<div class="grp">三、计算题（12 题）</div>
+<p>1. 求矩阵 \(A=\begin{pmatrix}1&-1\\2&4\end{pmatrix}\) 的特征值与特征向量。</p>
+<p>2. 求矩阵 \(A=\begin{pmatrix}1&2&3\\2&1&3\\3&3&6\end{pmatrix}\) 的特征值与特征向量。</p>
+<p>3. 已知 \(n\) 阶方阵 \(A\) 满足 \(A^2=A\)，求 \(A\) 的可能特征值。</p>
+<p>4. 设 3 阶方阵 \(A\) 的特征值为 \(1,2,3\)，求 \(|A^3-5A^2+7A|\)。</p>
+<p>5. 设 3 阶方阵 \(A\) 的特征值为 \(1,-1,2\)，求 \(\bigl|\frac13 A^2\bigr|\cdot|A^{-1}-E|\)。</p>
+<p>6. 已知 \(A=\begin{pmatrix}-2&0&0\\2&x&2\\3&1&1\end{pmatrix}\sim B=\begin{pmatrix}-1&0&0\\0&2&0\\0&0&y\end{pmatrix}\)，(1) 求 \(x,y\)；(2) 求可逆阵 \(P\) 使 \(P^{-1}AP=B\)。</p>
+<p>7. 设 3 阶方阵 \(A\) 的特征值为 \(1,0,-1\)，对应特征向量依次为 \(\begin{pmatrix}1\\2\\2\end{pmatrix},\begin{pmatrix}2\\-2\\1\end{pmatrix},\begin{pmatrix}-2\\-1\\2\end{pmatrix}\)，求 \(A\)。</p>
+<p>8. 设 \(A=\begin{pmatrix}3&-2\\-2&3\end{pmatrix}\)，求 \(\varphi(A)=A^{10}-5A^9\)。</p>
+<p>9. 设 \(A=\begin{pmatrix}0&0&1\\x&1&y\\1&0&0\end{pmatrix}\) 可对角化，求 \(x,y\) 应满足的关系。</p>
+<p>10. 求正交矩阵 \(P\) 使 \(P^TAP=\Lambda\)，其中 \(A=\begin{pmatrix}1&2&2\\2&1&2\\2&2&1\end{pmatrix}\)。</p>
+<p>11. 用配方法化 \(f=x_1^2+2x_2^2+2x_1x_2-4x_2x_3\) 为标准形，并写出变换。</p>
+<p>12. 判别二次型 \(f=-2x_1^2-6x_2^2-4x_3^2+2x_1x_2+2x_1x_3\) 的正定性。</p>
+
+
+<div class="grp">四、证明题（8 题）</div>
+<p>1. 证明：若 \(\lambda\) 是可逆阵 \(A\) 的特征值，则 \(\dfrac{|A|}{\lambda}\) 是 \(A^*\) 的特征值。</p>
+<p>2. 证明：相似矩阵有相同的秩。</p>
+<p>3. 证明定理 5.1 的推论：若 \(p_1,p_2\) 分属不同特征值 \(\lambda_1\neq\lambda_2\)，则 \(p_1+p_2\) 不是 \(A\) 的特征向量。</p>
+<p>4. 设 \(A\) 为 \(n\) 阶正交阵且 \(|A|\lt 0\)，证明 \(|A+E|=0\)。</p>
+<p>5. 设 \(\xi\) 为 \(n\) 维非零列向量，\(\|\xi\|=2\)，\(A=\xi\xi^T\)。证明：(1) \(A^2=4A\)；(2) \(\xi\) 是 \(A\) 的特征向量；(3) \(A\) 相似于对角阵。</p>
+<p>6. 证明：实对称阵 \(A\) 正定时，其伴随矩阵 \(A^*\) 也正定。</p>
+<p>7. 设 \(A\) 正定，\(B\) 实反对称，证明 \(A-B^2\) 正定。</p>
+<p>8. 证明：二次型 \(f=x^TAx\) 在 \(\|x\|=1\) 时的最大值为 \(A\) 的最大特征值。</p>
+
+
+<div class="grp">五、应用拓展题（5 题）</div>
+<p>1. （人口流动）城市—农村人口转移矩阵为 \(A=\begin{pmatrix}0.9&0.2\\0.1&0.8\end{pmatrix}\)，求长期稳定分布，并说明总人口不变下最终城乡比例。</p>
+<p>2. （PageRank 思想）构造一个 3 网页的链接矩阵（列归一），说明其属于特征值 \(1\) 的特征向量如何给出排名。</p>
+<p>3. （PCA 思想）设数据协方差阵 \(C=\begin{pmatrix}2&1\\1&2\end{pmatrix}\)，求其主成分方向（即特征向量）与对应方差（特征值）。</p>
+<p>4. （振动）二自由度系统刚度阵 \(K=\begin{pmatrix}2&-1\\-1&2\end{pmatrix}\)、质量阵 \(M=E\)，求固有频率平方与振型。</p>
+<p>5. （图像压缩）取 \(3\times3\) 对称阵 \(S=\begin{pmatrix}3&2&0\\2&3&0\\0&0&1\end{pmatrix}\)，作正交对角化，说明保留最大特征值对应的成分如何实现压缩。</p>
+
+
+<details><summary>参考答案（详细）</summary><div class="body">
+<p><b>一、选择题</b>：1.D（\(A\) 特征值为 \(3,-1\)，\(D\) 特征值为 \(3,-1\)，惯性指数同为 \((1,1)\)，合同）；2.C；3.B（\(\alpha_1,A(\alpha_1+\alpha_2)=\alpha_1+\lambda_2\alpha_2\) 与 \(\alpha_1\) 线性无关 \(\iff \lambda_2\neq0\)）；4.B；5.B；6.B；7.B；8.A；9.B；10.A（矩阵 \(\begin{pmatrix}1&1/2\\1/2&1\end{pmatrix}\) 特征值 \(3/2,1/2>0\)）；11.C；12.C（矩阵 \(\begin{pmatrix}1&-2\\-2&1\end{pmatrix}\) 特征值 \(3,-1\)，不定）；13.B；14.A；15.C。</p>
+<p><b>二、填空题</b>：1. 秩为 \(2\)（展开后矩阵 \(\begin{pmatrix}2&1&1\\1&2&-1\\1&-1&2\end{pmatrix}\)，行列式 \(0\) 但二阶子式非零）；2. 非零特征值为 \(1\)（由 \(A\alpha_2=\alpha_2+2\alpha_1\) 知 \(\alpha_2\) 属特征值 \(1\)）；3. \(24\)（\(B^{-1}-E\) 特征值 \(1,2,3,4\)，积 \(24\)）；4. \(2\)（\(\operatorname{tr}(\alpha\beta^T)=\beta^T\alpha=2\)）；5. \(k=2\)（\(\beta^T\alpha=1+0+k=3\)）；6. \(\operatorname{diag}(3,3,-1)\)（\(A=\begin{pmatrix}0&-1&0\\1&0&0\\0&0&-1\end{pmatrix}\)，\(A^2=\operatorname{diag}(-1,-1,1)\)，\(A^{2004}=(A^2)^{1002}=E\)，故 \(A^{2004}-2A^2=\operatorname{diag}(3,3,-1)\)）；7. \(R(A)=2\)（特征值互异且有一零根，另两非零特征向量无关，故秩 \(2\)）；8. \((1,0,0)^T\)（正交阵列即解）；9. \(a=2\)（矩阵特征值 \(a+4, a-2, a-2\)，仅一个非零特征值 \(6\Rightarrow a+4=6\)）；10. \(|t|\lt\sqrt2\)（顺序主子式 \(2,1,1-t^2/2>0\)）。</p>
+<p><b>三、计算题</b>：1. 特征值 \(2,3\)；\(\lambda=2\) 对应 \((1,-1)^T\)，\(\lambda=3\) 对应 \((1,-2)^T\)。2. 特征多项式 \(|A-\lambda E|=(1-\lambda)[(1-\lambda)(6-\lambda)-9]-2[2(6-\lambda)-27]+3[6-3(1-\lambda)]\)，展开化简得特征根 \(\lambda=0,-1,9\)，对应特征向量自行求解。3. 由 \(A^2=A\) 得 \(\lambda^2=\lambda\)，故 \(\lambda=0\) 或 \(1\)。4. 设 \(g(t)=t^3-5t^2+7t\)，在特征值 \(1,2,3\) 处分别取值 \(g(1)=3,\ g(2)=2,\ g(3)=3\)，故 \(|A^3-5A^2+7A|=3\cdot2\cdot3=18\)。5. \(\frac13A^2\) 特征值 \(1/3,1/3,4/3\)，行列式 \(4/27\)；\(A^{-1}-E\) 特征值 \(0,-2,-1/2\)，行列式 \(0\)，故整体 \(0\)。6. 因 \(A\sim\operatorname{diag}(-1,2,y)\)，\(-1\) 是 \(A\) 的特征值，故 \(|A+E|=-2x=0\)，得 \(x=0\)；再由迹相等 \(-2+0+1=-1+2+y\) 得 \(y=-2\)。（2）取三个线性无关特征向量为列即得 \(P\)（略）。7. \(A=P\operatorname{diag}(1,0,-1)P^{-1}\)，代入特征向量矩阵即可（答案略）。8. \(A\) 特征值 \(1,5\)，对角化后 \(\varphi(A)\) 特征值 \(1^{10}-5\cdot1^9=-4\)，\(5^{10}-5\cdot5^9=0\)，故 \(\varphi(A)=-4P_1\)（投影），具体为 \(-4\cdot\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}-2&-2\\-2&-2\end{pmatrix}\)。9. \(|A-\lambda E|=-(\lambda-1)^2(\lambda+1)\)，二重根 \(1\) 需 \(R(A-E)=1\)，即 \(x+y=0\)。10. 见例 5.9 方法，特征向量正交单位化即可（如取 \(p_1=(1,1,1)/\sqrt3\)，\(p_2=(1,-1,0)/\sqrt2\)，\(p_3=(1,1,-2)/\sqrt6\)）。11. \(f=(x_1+x_2)^2+2x_2^2-4x_2x_3=(x_1+x_2)^2+2(x_2-x_3)^2-2x_3^2\)，令 \(y_1=x_1+x_2,y_2=x_2-x_3,y_3=x_3\) 得标准形 \(y_1^2+2y_2^2-2y_3^2\)。12. 矩阵 \(\begin{pmatrix}-2&1&1\\1&-6&0\\1&0&-4\end{pmatrix}\)，顺序主子式 \(\Delta_1=-2\lt 0,\ \Delta_2=\begin{vmatrix}-2&1\\1&-6\end{vmatrix}=11>0,\ \Delta_3=-38\lt 0\)，奇数阶为负、偶数阶为正，故二次型负定。</p>
+<p><b>四、证明题</b>：略（按正文定理方法，注意 (4) 由 \(|A+E|=|A||A^{-1}+E|=|A|\,|A^T+E|\)，正交且 \(|A|\lt 0\) 推出含特征值 \(-1\)）；(8) 用正交对角化 \(x=Qy,\|y\|=1\)，\(f=y^T\Lambda y\le \lambda_{\max}\)，取最大特征值对应单位特征向量取到等号。</p>
+<p><b>五、应用拓展</b>：1. 稳定分布为特征值 \(1\) 的特征向量 \((2,1)^T\)，归一化 \((2/3,1/3)\)，城乡比 \(2:1\)。2. 例如链接矩阵 \(M=\begin{pmatrix}0&1&0\\1/2&0&1\\1/2&0&0\end{pmatrix}\)，求 \(Mr=r,\ r^T\mathbf1=1\)。3. 特征值 \(3,1\)，主成分方向 \((1,1)^T/\sqrt2\)（方差3）、\((1,-1)^T/\sqrt2\)（方差1）。4. 解 \(|K-\omega^2 E|=0\) 得 \(\omega^2=1,3\)，振型分别为 \((1,1)^T,(1,-1)^T\)。5. \(S\) 特征值 \(5,1,1\)，保留 \(5\) 对应成分（投影到 \((1,1,0)/\sqrt2\) 方向）即可压缩。</p>
+</div></details>
+</div>
+
+<section class="self-test" style="margin:30px 0;padding:22px 24px;border-radius:14px;background:linear-gradient(135deg,#eef4ff,#f7faff);border:1px solid #d6e4ff;">
+  <h3 style="margin:0 0 8px;font-size:1.18rem;color:#13386b;">本章自测</h3>
+  <p style="margin:0 0 16px;color:#33415c;line-height:1.75;">学完本章，打开<strong>限定本章</strong>的智能组卷：系统从本题库中随机抽取题目、自动判分，答错的题自动进入错题本，并生成你的章节掌握度。你也可以自由调整各题型题量后再生成试卷。</p>
+  <a href="exam.html?ch=5" style="display:inline-block;padding:11px 24px;border-radius:10px;background:#2563eb;color:#fff;font-weight:600;text-decoration:none;box-shadow:0 2px 10px rgba(37,99,235,.25);">开始本章自测 ▶</a>
+</section>
+
+
+    <footer>《线性代数》数字教材 · 第一~五章（行列式 / 矩阵 / 向量组 / 线性方程组 / 相似矩阵与二次型）</footer>
+  
+
+
+
+  </div></div>
+</div>
+<script src="app.js"></script>
+<script src="energy_bar.js"></script>
+<script src="section_quiz.js"></script>
+</body>
+</html>

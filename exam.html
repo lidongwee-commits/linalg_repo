@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性代数 · 题库与考试系统</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+</head>
+<body>
+<div class="topbar"><b>线性代数 · 数字教材</b><span>题库与考试系统</span></div>
+<div class="layout">
+<aside class="side">
+  <h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
+  <div class="sub">交互式数字教材</div>
+  <a href="index.html">← 教材目录</a>
+  <div class="ch">学习工具</div>
+  <a href="exam.html" style="background:#1b3547;color:#fff">▸ 题库·考试系统</a>
+</aside>
+  <div class="page"><div class="col">
+    <div class="kicker">Exercise Bank &amp; Exam</div>
+    <h1 class="title">题库与考试系统<span class="en">智能出卷 · 在线考试 · 自动阅卷</span></h1>
+    <p class="lede">本系统从全书五章习题与本章测试（共 <span id="ex-total">0</span> 题）中，支持按"章 × 题型"智能组卷、在线限时作答、客观题自动阅卷，并自动收录错题本与成绩记录（均保存在本地浏览器）。</p>
+    <div class="ex-tabs">
+      <button class="ex-tab active" data-tab="browse">题库浏览</button>
+      <button class="ex-tab" data-tab="paper">智能组卷</button>
+      <button class="ex-tab" data-tab="exam">在线考试</button>
+      <button class="ex-tab" data-tab="wrong">错题本</button>
+    </div>
+    <div id="ex-browse" class="ex-pane"></div>
+    <div id="ex-paper" class="ex-pane" hidden></div>
+    <div id="ex-exam" class="ex-pane" hidden></div>
+    <div id="ex-wrong" class="ex-pane" hidden></div>
+    <footer style="margin-top:30px;color:var(--muted);font-size:13px">题库与考试系统 · 数据来源于《线性代数》数字教材五章习题及本章测试 · 纯前端离线运行</footer>
+  </div></div>
+</div>
+<script src="exam_data.js"></script>
+<script src="exam_app.js"></script>
+<script src="energy_bar.js"></script>
+</body>
+</html>

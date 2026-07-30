@@ -1,0 +1,289 @@
+
+  :root{
+    --ink:#232a31; --soft-ink:#4a5560; --muted:#8a949e; --line:#e7ebef;
+    --paper:#fbfaf7; --accent:#0e7c7c; --accent-soft:#e8f5f5;
+    --case:#6d28d9; --case-soft:#f6f0fb; --hist:#9a3412; --hist-soft:#fbf4ec;
+    --dark:#10202c; --demo:#0f766e; --demo-soft:#effaf8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Songti SC","SimSun","Noto Serif SC",Georgia,serif;
+    color:var(--ink); background:#e9ecef; line-height:1.95; font-size:16.5px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .layout{display:flex; min-height:100vh}
+  .side{width:236px; flex:0 0 236px; background:#10202c; color:#aebcc8;
+    padding:26px 16px; position:sticky; top:0; height:100vh; overflow:auto; font-family:-apple-system,"Microsoft YaHei",sans-serif}
+  .side h1{font-size:14px; color:#fff; margin:0 0 2px; font-weight:600}
+  .side .sub{font-size:11px; color:#7d8b97; margin-bottom:18px; line-height:1.5}
+  .side .ch{color:#5eead4; font-size:11px; letter-spacing:1px; margin:14px 0 4px}
+  .side a{display:block; color:#aebcc8; text-decoration:none; font-size:12.5px; padding:5px 9px; border-radius:6px}
+  .side a:hover{background:#1b3547; color:#fff}
+  .topbar{display:none}
+  .page{flex:1; display:flex; justify-content:center; padding:46px 28px 110px}
+  .col{max-width:772px; width:100%}
+  .kicker{font-family:-apple-system,"Microsoft YaHei",sans-serif; color:var(--accent);
+    font-size:12.5px; letter-spacing:2px; font-weight:600; text-transform:uppercase}
+  h1.title{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-size:34px; font-weight:700;
+    margin:6px 0 2px; letter-spacing:1px}
+  .title .en{display:block; font-size:15px; color:var(--muted); font-weight:400; letter-spacing:1px; margin-top:4px}
+  .lede{font-size:16px; color:var(--soft-ink); margin:18px 0 6px}
+  h2{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-size:23px; font-weight:700;
+    margin:46px 0 6px; padding-bottom:8px; border-bottom:2px solid var(--accent); scroll-margin-top:16px}
+  h2 .num{color:var(--accent); margin-right:8px}
+  h3{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-size:17px; font-weight:600;
+    margin:26px 0 4px; color:#134e4e; scroll-margin-top:16px}
+  p{margin:11px 0}
+  .katex{font-size:1.06em; line-height:1.5}
+  /* 纵向省略号 ⋮（\vdots）的字形下沿过大、会掉进下一行：上移交由 JS 的 fixVdots() 在每次公式渲染后直接作用于 DOM，避免依赖 :has() 的浏览器兼容问题。 */
+  .katex-display{overflow-x:auto; overflow-y:hidden; padding:4px 0 6px; scrollbar-width:none; -ms-overflow-style:none}
+  .katex-display::-webkit-scrollbar{display:none}
+  .muted{color:var(--muted); font-size:14px}
+  .def{border-left:3px solid var(--accent); background:var(--accent-soft);
+    padding:12px 18px; margin:16px 0; border-radius:0 8px 8px 0}
+  .def .lab{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700;
+    color:var(--accent); font-size:13.5px; letter-spacing:.5px; margin-bottom:4px}
+  .def .lab .n{margin-right:6px}
+  /* 例题：题目与解答分离 */
+  .ex{margin:18px 0; padding-left:16px; border-left:2px solid #d7dee2}
+  .ex .lab{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700;
+    color:#0f766e; font-size:14px; margin-bottom:2px}
+  .ex .stmt{margin:4px 0 8px}
+  .ex .sol{color:var(--soft-ink); font-size:15.5px; margin:6px 0}
+  .ex .sol .mk{font-weight:700; color:#134e4e; font-family:-apple-system,"Microsoft YaHei",sans-serif; margin-right:6px}
+  .note{background:#f4f6f8; border-left:3px solid #cbd5e1; padding:10px 16px;
+    margin:14px 0; border-radius:0 8px 8px 0; font-size:15px; color:var(--soft-ink)}
+  .note b{color:#334155}
+  .case{border-left:3px solid var(--case); background:var(--case-soft);
+    padding:13px 18px; margin:18px 0; border-radius:0 8px 8px 0}
+  .case .lab{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700;
+    color:var(--case); font-size:12.5px; letter-spacing:.5px; margin-bottom:4px}
+  .case details{background:transparent; border-color:#e4d8f4}
+  .hist{border-left:3px solid var(--hist); background:var(--hist-soft);
+    padding:14px 20px; margin:22px 0; border-radius:0 8px 8px 0}
+  .hist .lab{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700;
+    color:var(--hist); font-size:13px; letter-spacing:.5px; margin-bottom:6px}
+  .hist details{background:#fff; border-color:#efdcc9}
+  .hist details>summary{color:#7c2d12}
+  .labx{background:var(--dark); border-radius:12px; padding:18px 20px; margin:20px 0; color:#dbe6ee}
+  .labx .lab{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-size:13.5px;
+    font-weight:700; color:#5eead4; letter-spacing:.5px; margin-bottom:3px}
+  .labx .desc{font-size:13px; color:#9fb1c0; margin-bottom:12px}
+  .labx .row{display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start}
+  .labx .ctrls{flex:1; min-width:240px}
+  .matrix-in{display:grid; gap:7px; margin:6px 0}
+  .m2{grid-template-columns:repeat(2,62px)} .m3{grid-template-columns:repeat(3,56px)} .m4{grid-template-columns:repeat(4,52px)}
+  .matrix-in input{width:100%; height:42px; text-align:center; font-size:15px;
+    border:1px solid #2a3a48; background:#13202c; color:#e6f0f5; border-radius:7px}
+  .matrix-in input:focus{outline:2px solid #2dd4bf; border-color:transparent}
+  .labx textarea{width:100%; min-height:80px; resize:vertical; font-size:14px; line-height:1.55;
+    border:1px solid #2a3a48; background:#13202c; color:#e6f0f5; border-radius:7px; padding:8px 10px;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .labx textarea:focus{outline:2px solid #2dd4bf; border-color:transparent}
+  .labx .ta-lab{font-size:12px; color:#9fb1c0; margin:2px 0 4px}
+  .btn{background:#2dd4bf; color:#06231f; border:0; padding:8px 15px; border-radius:8px;
+    cursor:pointer; font-size:13px; font-weight:600; font-family:-apple-system,"Microsoft YaHei",sans-serif; margin:6px 6px 0 0}
+  .btn.ghost{background:#13202c; color:#9fe9df; border:1px solid #2a4a48}
+  .out{margin-top:12px; padding:9px 13px; background:#13202c; border-radius:8px; font-size:13.5px; color:#cfe9e9}
+  .out b{color:#5eead4}
+  canvas{background:#0a1118; border-radius:10px; width:300px; height:300px; flex:0 0 300px; max-width:100%}
+  details{border:1px solid var(--line); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden}
+  details.demo{border-color:#bfe6df; background:var(--demo-soft)}
+  details>summary{cursor:pointer; padding:11px 16px; font-family:-apple-system,"Microsoft YaHei",sans-serif;
+    font-weight:600; font-size:14px; color:#134e4e; list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::before{content:"▸ "; color:var(--accent)}
+  details[open]>summary::before{content:"▾ "}
+  details .body{padding:4px 18px 16px; border-top:1px solid var(--line); font-size:15px; color:var(--soft-ink)}
+  details.demo .body{border-top-color:#d6efe9}
+  /* 习题 */
+  .hw{background:#fff; border:1px solid var(--line); border-radius:12px; padding:20px 26px; margin:18px 0}
+  .hw h4{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-size:15px; margin:0 0 10px; color:var(--ink)}
+  .hw .grp{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700; font-size:14.5px;
+    color:var(--accent); margin:18px 0 6px; padding-bottom:4px; border-bottom:1px dashed var(--line)}
+  .hw ol{margin:8px 0; padding-left:24px} .hw li{margin:13px 0}
+  .hw p,.hw li{color:var(--ink)}
+  .hw p,.hw li{color:var(--ink)}
+  .qopts{display:flex; flex-wrap:wrap; gap:8px 10px; align-items:baseline;
+    margin:8px 0 0; font-size:15.5px; color:var(--soft-ink)}
+  /* qopts 选项：可点选（无原生控件，靠 JS 切换选中），仅小圆圈 + 序号，去卡片 */
+  .qopts>span{display:inline-flex; align-items:center; gap:6px; margin:0 20px 6px 0;
+    padding:2px 0; cursor:pointer; font-size:15px; line-height:1.5; user-select:none; color:var(--soft-ink)}
+  .qopts>span:hover{color:var(--accent)}
+  .qopts>span::before{content:""; width:14px; height:14px; flex:0 0 auto; box-sizing:border-box;
+    border:2px solid #b9c2cd; border-radius:50%; background:#fff; transition:border-color .15s, background .15s}
+  .qopts>span.sel::before{border-color:var(--accent); background:var(--accent); box-shadow:inset 0 0 0 3px #fff}
+  /* RGB 调色交互（第三章 引例 1） */
+  .rgb-mix{display:flex; flex-wrap:wrap; gap:22px; align-items:center; margin:18px 0;
+    padding:16px 18px; background:#fff; border:1px solid var(--line); border-radius:12px}
+  .rgb-swatch{width:120px; height:120px; border-radius:12px; border:1px solid #d7dee6;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.04); flex:0 0 auto}
+  .rgb-controls{flex:1 1 260px; min-width:240px}
+  .rgb-row{display:flex; align-items:center; gap:10px; margin:7px 0}
+  .rgb-tag{width:54px; flex:0 0 auto; font-weight:700; font-size:13px; color:var(--c,#555);
+    font-family:-apple-system,"Microsoft YaHei",sans-serif}
+  .rgb-row input[type=range]{flex:1 1 auto; accent-color:var(--c,#0e7c7c); height:6px}
+  .rgb-row output{width:36px; text-align:right; font-variant-numeric:tabular-nums; color:var(--soft-ink); font-size:14px}
+  .rgb-expr{margin:8px 0 2px; font-size:14px; color:var(--accent); font-weight:600}
+  .rgb-note{margin-top:6px; font-size:12.5px; color:var(--muted); line-height:1.6; max-width:380px}
+  .rgb-presets{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+  .rgb-presets .chip{font-size:13px; padding:4px 13px; border:1px solid var(--line); background:#f6f9fb;
+    border-radius:20px; cursor:pointer; color:var(--ink); font-family:inherit; transition:.15s}
+  .rgb-presets .chip:hover{border-color:var(--accent); background:#eef7f7; color:var(--accent)}
+  /* 自测 */
+  .quiz{background:#eef7f7; border:1px solid #cdeae9; border-radius:12px; padding:18px 24px; margin:18px 0}
+  .quiz h4{font-family:-apple-system,"Microsoft YaHei",sans-serif; margin:0 0 12px; color:var(--accent)}
+  .q{margin:13px 0; padding-bottom:11px; border-bottom:1px dashed var(--line)}
+  .q .qt{font-weight:600; margin-bottom:6px}
+  .q .src{font-size:12.5px; color:var(--muted); font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:400}
+  /* 选择题选项（真实单选）：更小的圆形控件 + 贴着的序号，去卡片高亮 */
+  .q label, .hw li > label{display:inline-flex; align-items:center; gap:6px; margin:0 20px 6px 0;
+    padding:2px 0; cursor:pointer; font-size:15px; line-height:1.5; color:var(--soft-ink)}
+  .q label:hover, .hw li > label:hover{color:var(--accent)}
+  .q label > input[type=radio], .hw li > label > input[type=radio]{
+    appearance:none; -webkit-appearance:none; order:-1; width:14px; height:14px; margin:0; flex:0 0 auto;
+    border:2px solid #b9c2cd; border-radius:50%; position:relative; cursor:pointer; background:#fff;
+    transition:border-color .15s, background .15s}
+  .q label > input[type=radio]::after, .hw li > label > input[type=radio]::after{
+    content:""; position:absolute; inset:2px; border-radius:50%; background:var(--accent);
+    transform:scale(0); transition:transform .12s}
+  .q label > input[type=radio]:checked, .hw li > label > input[type=radio]:checked{border-color:var(--accent)}
+  .q label > input[type=radio]:checked::after, .hw li > label > input[type=radio]:checked::after{transform:scale(1)}
+  .q label > b, .hw li > label > b{font-weight:700; color:var(--muted); margin:0 2px 0 0}
+  .q .fb{font-size:13.5px; margin-top:5px; display:none}
+  .q.correct .fb{display:block; color:#16a34a}
+  .q.wrong .fb{display:block; color:#dc2626}
+  .score{font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700; color:var(--accent); margin-top:6px}
+  .rule{height:1px; background:var(--line); margin:30px 0}
+  footer{margin-top:54px; color:#9aa7b4; font-size:12.5px; border-top:1px solid var(--line); padding-top:16px; line-height:1.7;
+    font-family:-apple-system,"Microsoft YaHei",sans-serif}
+  code{background:#eef2f6; padding:1px 6px; border-radius:5px; font-size:13px; font-family:ui-monospace,Menlo,monospace}
+  @media(max-width:860px){
+    .side{display:none}
+    .topbar{display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:20;
+      background:#10202c; color:#fff; padding:12px 16px; font-family:-apple-system,"Microsoft YaHei",sans-serif}
+    .topbar b{font-size:15px} .topbar span{font-size:11px; color:#8aa}
+    .layout{display:block}
+    .page{padding:20px 16px 80px}
+    body{font-size:16px; line-height:1.85}
+    h1.title{font-size:27px} h2{font-size:20px}
+    .labx .row{gap:12px} canvas{width:100%; height:auto; aspect-ratio:1/1}
+    .qopts{gap:6px 8px}
+    .qopts>span{margin:0 16px 5px 0; padding:1px 0; font-size:14px}
+    .q label, .hw li > label{margin:0 16px 5px 0; padding:1px 0; font-size:14px}
+    .rgb-mix{gap:14px; padding:12px} .rgb-swatch{width:92px; height:92px}
+  }
+  /* 数据表与图表并排 */
+  table.dt{width:100%; border-collapse:collapse; margin:14px 0; background:#fff;
+    border:1px solid var(--line); border-radius:8px; overflow:hidden; font-size:13.6px}
+  table.dt th{background:var(--accent-soft); color:var(--accent);
+    font-family:-apple-system,"Microsoft YaHei",sans-serif; font-weight:700; font-size:12.5px;
+    text-align:center; padding:8px 9px; border-bottom:1px solid var(--line)}
+  table.dt td{text-align:center; padding:7px 9px; border-bottom:1px solid #f0f3f5; color:var(--soft-ink)}
+  table.dt tbody tr:nth-child(even){background:#fafcfc}
+  table.dt tbody tr:last-child td{border-bottom:none}
+  .figrow{display:flex; flex-wrap:wrap; gap:18px; align-items:flex-start; margin:14px 0}
+  .figrow>svg{flex:1 1 320px; max-width:480px; height:auto; border:1px solid var(--line);
+    border-radius:10px; background:#fff}
+  .px-cap{color:var(--muted); font-size:13.5px; margin:8px 0; line-height:1.7}
+  .figrow+.px-cap, p.px-cap{display:block; max-width:772px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:26px 0}
+.card{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;transition:.15s}
+.card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(14,124,124,.12)}
+.card .cn{font-family:-apple-system,"Microsoft YaHei",sans-serif;font-weight:700;font-size:17px;color:var(--accent)}
+.card .en{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.card .meta{font-size:13px;color:var(--soft-ink);margin-top:8px}
+
+/* ===== 题库与考试系统 ===== */
+.ex-tabs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.ex-tab{font-family:-apple-system,"Microsoft YaHei",sans-serif;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--soft-ink);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:600}
+.ex-tab:hover{border-color:var(--accent);color:var(--accent)}
+.ex-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ex-total{margin-left:auto;color:var(--muted);font-size:13px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.ex-pane{margin-top:6px}
+.btn{font-family:-apple-system,"Microsoft YaHei",sans-serif;cursor:pointer;border:none;background:var(--accent);color:#fff;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;margin:4px 6px 4px 0}
+.btn:hover{background:#0b6666}
+.ex-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.ex-filters select,.ex-search{font-family:-apple-system,"Microsoft YaHei",sans-serif;padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fff;color:var(--ink)}
+.ex-search{flex:1;min-width:180px}
+.ex-count{color:var(--muted);font-size:13px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.ex-list{display:flex;flex-direction:column;gap:12px}
+.ex-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.ex-badge{display:inline-block;font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:11.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:2px 8px;margin:0 6px 8px 0}
+.ex-qstem{font-size:16px;margin-bottom:8px;line-height:1.85}
+.ex-opts{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.ex-opt{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fcfdfd;font-size:15px;cursor:pointer}
+.ex-opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.ex-ol{font-weight:700;color:var(--accent);flex:0 0 auto}
+.ex-ua{font-size:13.5px;color:#b45309;margin-top:6px}
+.ex-ca{font-size:13.5px;color:#15803d;margin-top:4px}
+.ex-fb{font-size:13.5px;color:var(--soft-ink);margin-top:4px;line-height:1.7}
+.ex-grid{border-collapse:collapse;width:100%;margin:10px 0;font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:14px}
+.ex-grid th,.ex-grid td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.ex-grid th{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.ex-grid td:first-child{text-align:left}
+.ex-num{width:54px;padding:6px;border:1px solid var(--line);border-radius:6px;text-align:center;font-family:inherit}
+.ex-pool{font-size:11px;color:var(--muted);margin-top:2px}
+.ex-row{margin:12px 0;font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:14px;color:var(--soft-ink)}
+.ex-paper-prev{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff;margin-top:10px}
+.ex-pq{padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px;line-height:1.8}
+.ex-exam-bar{display:flex;align-items:center;gap:14px;padding:10px 12px;background:var(--accent-soft);border-radius:10px;margin-bottom:12px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.ex-timer{margin-left:auto;font-weight:700;color:#b45309;font-variant-numeric:tabular-nums}
+.ex-fill-in{border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:15px;font-family:inherit}
+.ex-ta{font-family:inherit;font-size:15px;border:1px solid var(--line);border-radius:8px;padding:8px;resize:vertical}
+.ex-rev{margin-top:14px;display:flex;flex-direction:column;gap:12px}
+.ex-scores{list-style:none;padding:0;margin:0;font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:14px}
+.ex-scores li{padding:6px 0;border-bottom:1px dashed var(--line)}
+/* ===== 主观题图片上传 + AI 批改 ===== */
+.ex-up{margin:8px 0}
+.ex-uplabel{font-size:13px;color:var(--soft-ink);cursor:pointer;display:inline-block}
+.ex-upinput{font-size:13px;margin-left:6px}
+.ex-thumbs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.ex-thumbs img{width:62px;height:62px;object-fit:cover;border:1px solid var(--line);border-radius:6px}
+.ex-upshow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;align-items:flex-start}
+.ex-upshow>span{font-size:13px;color:var(--soft-ink);align-self:center}
+.ex-upimg{max-width:150px;max-height:150px;border:1px solid var(--line);border-radius:8px}
+.ex-airow{margin:6px 0}
+.ex-aibtn{background:#6366f1}
+.ex-aibtn:hover{background:#4f46e5}
+.ex-aibox{margin-top:4px}
+.ex-selfcheck{margin:8px 0;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;color:#166534;font-family:-apple-system,"Microsoft YaHei",sans-serif;line-height:1.7}
+/* ===== 本节练习（小节嵌入式随堂练） ===== */
+.sec-quiz{margin:26px 0;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#fafcff,#f4f8ff);padding:16px 18px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.sq-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sq-title{font-weight:700;font-size:16px;color:var(--ink)}
+.sq-sub{font-size:12.5px;color:var(--muted)}
+.sq-btn{margin-left:auto;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-size:14px;cursor:pointer;font-family:inherit}
+.sq-btn:hover{filter:brightness(1.1)}
+.sq-body{margin-top:12px}
+.sq-q{padding:12px 0;border-top:1px dashed var(--line)}
+.sq-stem{font-size:15px;line-height:1.9;margin-bottom:8px}
+.sq-opts{display:flex;flex-direction:column;gap:6px}
+.sq-opt{display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:#fff;font-size:14.5px;line-height:1.7;transition:border-color .15s,background .15s}
+.sq-opt:hover{border-color:var(--accent)}
+.sq-opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.sq-opt.right{border-color:#16a34a;background:#f0fdf4}
+.sq-opt.wrongpick{border-color:#dc2626;background:#fef2f2}
+.sq-fillin{border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:14.5px;font-family:inherit;min-width:180px}
+.sq-fb{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:13.5px;line-height:1.8;display:none}
+.sq-fb.ok{display:block;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.sq-fb.bad{display:block;background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.sq-actions{margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sq-result{font-size:14px;font-weight:700;color:var(--ink)}
+.sq-energy{font-size:13px;color:#7c3aed}
+.sq-more{font-size:13px}
+/* ===== 本节练习 · 右侧抽屉面板（教材在左、练习在右，不跳转） ===== */
+.sq-drawer{position:fixed;top:0;right:0;height:100vh;width:min(460px,92vw);background:#fff;border-left:1px solid var(--line);box-shadow:-8px 0 28px rgba(15,40,80,.14);transform:translateX(105%);transition:transform .28s ease;z-index:960;display:flex;flex-direction:column;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.sq-drawer.open{transform:translateX(0)}
+.sq-dhead{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f6faff,#eef5ff)}
+.sq-dtitles{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sq-dtitle{font-size:15px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sq-dprog{font-size:12.5px;color:var(--muted)}
+.sq-dclose{margin-left:auto;flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:8px;width:32px;height:32px;font-size:15px;cursor:pointer;color:var(--soft-ink)}
+.sq-dclose:hover{border-color:var(--accent);color:var(--accent)}
+.sq-dbody{flex:1;overflow-y:auto;padding:6px 16px 26px}
+.sq-mix{font-size:12.5px;color:var(--muted);background:var(--accent-soft);border-radius:8px;padding:7px 10px;margin:10px 0 2px}
+/* 宽屏时给教材让出空间，避免面板遮挡正文 */
+@media (min-width:1500px){ body.sq-open .layout{margin-right:460px} }
