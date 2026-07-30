@@ -8472,7 +8472,8 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "fill",
     "no": 53,
-    "stem": "计算以下\\(n+1\\)阶行列式： \\[ D_{n+1}=\\begin{vmatrix} x & a_1 & a_2 & \\cdots & a_{n-1} & 1 \\\\ a_1 & x & a_2 & \\cdots & a_{n-1} & 1 \\\\ a_1 & a_2 & x & \\cdots & a_{n-1} & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ a_1 & a_2 & a_3 & \\cdots & x & 1 \\\\ a_1 & a_2 & a_3 & \\cdots & a_n & 1 \\end{vmatrix}",
+    "stem": "计算以下\\(n+1\\)阶行列式： \\[ D_{n+1}=\\begin{vmatrix} x & a_1 & a_2 & \\cdots & a_{n-1} & 1 \\\\ a_1 & x & a_2 & \\cdots & a_{n-1} & 1 \\\\ a_1 & a_2 & x & \\cdots & a_{n-1} & 1 \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ a_1 & a_2 & a_3 & \\cdots & x & 1 \\\\ a_1 & a_2 & a_3 & \\cdots & a_n & 1 \\end{vmatrix} \\]",
+
     "options": null,
     "ans": "\\( (x-a_1)(x-a_2)\\cdots(x-a_n)\\)",
     "fb": "解：将第1列减第2列、第2列减第3列……依次作差，可提取因子\\((x-a_1),(x-a_2),\\ldots,(x-a_n)\\)，故\\(D_{n+1}=(x-a_1)(x-a_2)\\cdots(x-a_n)\\)．故应填该式．",
@@ -8500,7 +8501,8 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "fill",
     "no": 55,
-    "stem": "计算以下\\(n+1\\)阶行列式： \\[ D_{n+1}=\\begin{vmatrix} 1 & x & x^2 & \\cdots & x^{n-1} & x^n \\\\ a_{11} & 1 & x & \\cdots & x^{n-2} & x^{n-1} \\\\ a_{21} & a_{22} & 1 & \\cdots & x^{n-3} & x^{n-2} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ a_{n-1,1} & a_{n-1,2} & a_{n-1,3} & \\cdots & 1 & x \\\\ a_{n1} & a_{n2} & a_{n3} & \\cdots & a_{nn} & 1 \\end{vmatrix}",
+    "stem": "计算以下\\(n+1\\)阶行列式： \\[ D_{n+1}=\\begin{vmatrix} 1 & x & x^2 & \\cdots & x^{n-1} & x^n \\\\ a_{11} & 1 & x & \\cdots & x^{n-2} & x^{n-1} \\\\ a_{21} & a_{22} & 1 & \\cdots & x^{n-3} & x^{n-2} \\\\ \\vdots & \\vdots & \\vdots & & \\vdots & \\vdots \\\\ a_{n-1,1} & a_{n-1,2} & a_{n-1,3} & \\cdots & 1 & x \\\\ a_{n1} & a_{n2} & a_{n3} & \\cdots & a_{nn} & 1 \\end{vmatrix} \\]",
+
     "options": null,
     "ans": "\\( \\prod_{i=1}^{n}(1-a_ix)\\)",
     "fb": "解：将第2至第\\(n+1\\)列分别减去第1列乘相应常数作列消元，化为下三角行列式，主对角元为\\(1-a_1x,1-a_2x,\\ldots,1-a_nx\\)，故\\(D_{n+1}=\\prod_{i=1}^n(1-a_ix)\\)．故应填该式．",

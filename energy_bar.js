@@ -167,16 +167,27 @@
       '</div>' +
       '<div class="eb-hint" id="eb-hint"></div>' +
       '<div class="eb-growhelp">' +
-        '<b>能量如何增长</b>' +
-        '<ul>' +
-          '<li>认真学完 1 个小节（滚动到并停留）：+3，每日阅读封顶 +15</li>' +
-          '<li>做「学完就练」每题：+1 努力分，答对再 +1</li>' +
-          '<li>完成一次考试 / 自测：按正确率给分（满分≈题数）</li>' +
-          '<li>连续每天学习：连击奖励 +5</li>' +
-          '<li>能量满 100 升级，开启新的成长周期</li>' +
-        '</ul>' +
+        '<div class="eb-gh-title">能量来源</div>' +
+        '<div class="eb-gh-grid">' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">📖</span><span class="eb-gh-lbl">学完小节</span><span class="eb-gh-pts">+3</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">✍️</span><span class="eb-gh-lbl">学完就练</span><span class="eb-gh-pts">+1~2</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">📝</span><span class="eb-gh-lbl">考试自测</span><span class="eb-gh-pts">按正确率</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">🔥</span><span class="eb-gh-lbl">连击学习</span><span class="eb-gh-pts">+5</span></div>' +
+        '</div>' +
       '</div>' +
-      '<div class="eb-chs" id="eb-chs"></div>';
+      '<div class="eb-chs" id="eb-chs"></div>' +
+      '<div class="eb-sync">' +
+        '<div class="eb-gh-title">数据同步</div>' +
+        '<p class="eb-sync-tip">换设备、换浏览器时，用恢复码把能量与掌握度带走．</p>' +
+        '<div class="eb-sync-row">' +
+          '<button class="eb-btn" id="eb-sync-gen" type="button">生成恢复码</button>' +
+          '<button class="eb-btn" id="eb-sync-copy" type="button" hidden>复制</button>' +
+        '</div>' +
+        '<textarea id="eb-sync-out" readonly hidden></textarea>' +
+        '<textarea id="eb-sync-in" placeholder="粘贴另一台设备的恢复码"></textarea>' +
+        '<button class="eb-btn" id="eb-sync-imp" type="button">导入恢复</button>' +
+        '<div class="eb-sync-msg" id="eb-sync-msg"></div>' +
+      '</div>';
     document.body.appendChild(detail);
 
     document.getElementById('eb-toggle').addEventListener('click', function (e) {
@@ -188,6 +199,64 @@
     document.getElementById('eb-close').addEventListener('click', function (e) {
       e.stopPropagation(); detailOpen = false; detail.hidden = true;
     });
+
+    // 能量数据同步（仅 study_v1：能量、等级、掌握度）
+    (function () {
+      var SYNC_MAGIC = 'EBS1.';
+      function encodeStudy() {
+        var s = load();
+        return SYNC_MAGIC + btoa(unescape(encodeURIComponent(JSON.stringify(s))));
+      }
+      function decodeStudy(code) {
+        code = (code || '').trim();
+        if (code.indexOf(SYNC_MAGIC) !== 0) throw new Error('格式不对，请检查恢复码');
+        return JSON.parse(decodeURIComponent(escape(atob(code.slice(SYNC_MAGIC.length)))));
+      }
+      function mergeStudy(d) {
+        var cur = load();
+        if (d.energy !== undefined) cur.energy = Math.max(cur.energy || 0, d.energy || 0);
+        if (d.level !== undefined) cur.level = Math.max(cur.level || 1, d.level || 1);
+        if (d.pts !== undefined) cur.pts = Math.max(cur.pts || 0, d.pts || 0);
+        if (d.streak !== undefined) cur.streak = Math.max(cur.streak || 0, d.streak || 0);
+        if (d.mastery) {
+          if (!cur.mastery) cur.mastery = {};
+          Object.keys(d.mastery).forEach(function (ch) {
+            var a = cur.mastery[ch], b = d.mastery[ch];
+            if (!a || (b.total || 0) > (a.total || 0)) cur.mastery[ch] = b;
+          });
+        }
+        ['lastDay', 'streakBonusDay', 'lastGainDay', 'todayGain'].forEach(function (k) {
+          if (d[k] !== undefined && (!cur[k] || d[k] > cur[k])) cur[k] = d[k];
+        });
+        save(cur);
+        render();
+      }
+      var genBtn = document.getElementById('eb-sync-gen');
+      var copyBtn = document.getElementById('eb-sync-copy');
+      var outTa = document.getElementById('eb-sync-out');
+      var inTa = document.getElementById('eb-sync-in');
+      var impBtn = document.getElementById('eb-sync-imp');
+      var msg = document.getElementById('eb-sync-msg');
+      if (genBtn) {
+        genBtn.addEventListener('click', function () {
+          outTa.value = encodeStudy(); outTa.hidden = false; copyBtn.hidden = false;
+          if (msg) msg.textContent = '复制后通过微信「文件传输助手」发给另一台设备';
+        });
+      }
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          outTa.select();
+          try { document.execCommand('copy'); if (msg) msg.textContent = '已复制到剪贴板'; }
+          catch (e) { if (msg) msg.textContent = '复制失败，请手动复制上方文本框'; }
+        });
+      }
+      if (impBtn) {
+        impBtn.addEventListener('click', function () {
+          try { mergeStudy(decodeStudy(inTa.value)); if (msg) msg.textContent = '能量与掌握度已同步'; }
+          catch (e) { if (msg) msg.textContent = e.message || '导入失败'; }
+        });
+      }
+    })();
   }
 
   function render() {
