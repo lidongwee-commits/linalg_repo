@@ -101,6 +101,18 @@
     return g;
   }
 
+  // 累积章节掌握度（练习 + 考试）：正确数 / 总作答数，百分比用于详情面板的五章柱状条
+  function recordMastery(ch, right, total) {
+    if (!ch || !total) return;
+    var s = load();
+    if (!s.mastery) s.mastery = {};
+    if (!s.mastery[ch]) s.mastery[ch] = { right: 0, total: 0 };
+    s.mastery[ch].right += (right || 0);
+    s.mastery[ch].total += total;
+    save(s);
+    if (detailOpen) renderDetail();
+  }
+
   // 考试 / 自测：按正确率给分
   function awardExam(right, total) {
     if (!total) return 0;
@@ -277,6 +289,7 @@
     awardSectionStudy: awardSectionStudy,
     awardPractice: awardPractice,
     awardExam: awardExam,
+    recordMastery: recordMastery,
     refresh: render
   };
 

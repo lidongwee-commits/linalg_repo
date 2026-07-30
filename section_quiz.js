@@ -145,7 +145,7 @@
   function renderBatch(sec, ch, secTitle) {
     var qs = pickBatch(sec, ch);
     var nSec = qs.filter(function (q) { return q.sec === sec; }).length;
-    var st = { total: qs.length, done: 0, right: 0, awarded: false };
+    var st = { total: qs.length, done: 0, right: 0, awarded: false, ch: ch };
     dTitle.textContent = "本节小练 · " + (secTitle || sec);
     function prog() {
       dProg.textContent = "已答 " + st.done + " / " + st.total + " · 机器判对 " + st.right;
@@ -192,6 +192,12 @@
             }
           } catch (e) {}
           if (gain) bar.querySelector(".sq-energy").textContent = "⚡ 能量 +" + gain;
+          // 同时累积本章掌握度（机器判对数 / 总题数）
+          try {
+            if (window.EnergyBar && window.EnergyBar.recordMastery) {
+              window.EnergyBar.recordMastery(st.ch, st.right, st.total);
+            }
+          } catch (e) {}
         }
       }
     }

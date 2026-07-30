@@ -365,6 +365,19 @@
     if (R.scrollIntoView) { try { R.scrollIntoView({ behavior: "smooth" }); } catch (e) {} }
     // 能量柱：完成一次考试即累积能量（与学习中心共用 study_v1）
     try { if (window.EnergyBar && window.EnergyBar.awardExam) window.EnergyBar.awardExam(correct, items.length); } catch (e) {}
+    // 按章节累积掌握度（只统计机器可判对的选择题/填空题）
+    try {
+      if (window.EnergyBar && window.EnergyBar.recordMastery) {
+        var byCh = {};
+        items.forEach(function (q) {
+          if (q.type !== "mc" && q.type !== "fill") return;
+          if (!byCh[q.ch]) byCh[q.ch] = { right: 0, total: 0 };
+          byCh[q.ch].total++;
+          if (q.ok === true) byCh[q.ch].right++;
+        });
+        for (var c in byCh) window.EnergyBar.recordMastery(c, byCh[c].right, byCh[c].total);
+      }
+    } catch (e) {}
   }
 
   // ---------------- 图片上传 ----------------

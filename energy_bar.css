@@ -23,13 +23,15 @@
 .eb-bar-mini{ position:relative; flex:1; height:12px; border-radius:999px; background:rgba(255,255,255,.18); overflow:hidden; }
 .eb-floating .eb-bar-mini{ background:#eef2f7; }
 .eb-bar-mini i{ position:absolute; left:0; top:0; bottom:0; width:0; display:block;
-  background:linear-gradient(90deg,#34d399,#3b82f6); border-radius:999px;
-  transition:width .7s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 10px rgba(59,130,246,.45); }
-/* 能量条持续涌动光效：像水流一样往前推 */
-.eb-bar-mini i::after{ content:""; position:absolute; inset:0; border-radius:999px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
-  transform:translateX(-100%); animation:eb-flow 1.8s ease-in-out infinite; }
-@keyframes eb-flow{ 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+  background:linear-gradient(90deg,#34d399,#3b82f6,#60a5fa,#3b82f6,#34d399);
+  background-size:200% 100%; border-radius:999px;
+  transition:width .7s cubic-bezier(.2,.8,.2,1);
+  box-shadow:0 0 12px rgba(59,130,246,.45), inset 0 -2px 3px rgba(0,0,0,.08);
+  animation:eb-grad-flow 3s linear infinite; }
+/* 顶部一道柔和的光泽，增强"液态填充"质感（不移动，避免廉价感） */
+.eb-bar-mini i::before{ content:""; position:absolute; top:1px; left:4px; right:4px; height:40%;
+  border-radius:999px; background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0)); }
+@keyframes eb-grad-flow{ 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
 
 .eb-pct{ font-size:12px; font-weight:800; min-width:40px; text-align:right; white-space:nowrap; }
 .eb-toggle{ align-self:flex-start; border:none; background:#2563eb; color:#fff; font-size:12px; font-weight:600;
@@ -49,12 +51,27 @@
 .eb-stat b{ display:block; font-size:18px; color:#1e3a5f; }
 .eb-stat small{ color:#64748b; font-size:11px; }
 .eb-hint{ font-size:12px; color:#475569; background:#f1f5f9; padding:8px 10px; border-radius:8px; margin-bottom:10px; line-height:1.6; }
-.eb-chs{ display:flex; flex-direction:column; gap:6px; }
-.eb-ch{ display:flex; align-items:center; gap:8px; font-size:12px; }
-.eb-ch .eb-nm{ width:44px; color:#334155; flex:0 0 44px; }
-.eb-ch .eb-track{ flex:1; height:7px; background:#eef2f7; border-radius:999px; overflow:hidden; }
-.eb-ch .eb-track i{ display:block; height:100%; background:linear-gradient(90deg,#34d399,#3b82f6); border-radius:999px; }
-.eb-ch .eb-v{ width:34px; text-align:right; color:#64748b; flex:0 0 34px; }
+.eb-chs{ display:flex; flex-direction:column; gap:10px; }
+.eb-ch{ display:flex; align-items:center; gap:10px; font-size:12px; }
+.eb-ch .eb-nm{ width:48px; color:#334155; flex:0 0 48px; font-weight:600; }
+/* 章节掌握度：更粗的柱状条，带流动渐变 + 光泽 + 扫光 */
+.eb-ch .eb-track{ flex:1; height:16px; background:#e8edf3; border-radius:999px; overflow:hidden;
+  position:relative; box-shadow:inset 0 1px 3px rgba(20,45,75,.12), 0 1px 2px rgba(255,255,255,.8); }
+.eb-ch .eb-track i{ display:block; height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg,#22d3ee,#3b82f6,#6366f1,#3b82f6,#22d3ee);
+  background-size:200% 100%;
+  box-shadow:0 0 14px rgba(59,130,246,.4), inset 0 -2px 4px rgba(0,0,0,.08);
+  transition:width .9s cubic-bezier(.2,.8,.2,1);
+  animation:eb-ch-flow 2.8s linear infinite;
+  position:relative; }
+.eb-ch .eb-track i::before{ content:""; position:absolute; top:1px; left:4px; right:4px; height:40%;
+  border-radius:999px; background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,0)); }
+.eb-ch .eb-track i::after{ content:""; position:absolute; inset:0; border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:translateX(-100%); animation:eb-ch-sweep 2s ease-in-out infinite; }
+@keyframes eb-ch-flow{ 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+@keyframes eb-ch-sweep{ 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+.eb-ch .eb-v{ width:38px; text-align:right; color:#475569; flex:0 0 38px; font-weight:700; }
 .eb-growhelp{ margin-bottom:10px; font-size:12px; color:#475569; background:#f8fafc; border-radius:10px; padding:10px 12px; line-height:1.7; }
 .eb-growhelp b{ display:block; color:#13386b; margin-bottom:4px; }
 .eb-growhelp ul{ margin:0; padding-left:18px; }
