@@ -129,11 +129,15 @@
     var chip = document.createElement('div');
     chip.className = 'eb-chip'; chip.id = 'eb-chip';
     chip.innerHTML =
-      '<span class="eb-ico" id="eb-ico">🌱</span>' +
-      '<span class="eb-name" id="eb-name">萌芽</span>' +
-      '<span class="eb-lv" id="eb-lv">Lv.1</span>' +
-      '<span class="eb-bar-mini"><i id="eb-fill"></i></span>' +
-      '<span class="eb-pct" id="eb-pct">0%</span>' +
+      '<div class="eb-head">' +
+        '<span class="eb-ico" id="eb-ico">🌱</span>' +
+        '<span class="eb-name" id="eb-name">萌芽</span>' +
+        '<span class="eb-lv" id="eb-lv">Lv.1</span>' +
+      '</div>' +
+      '<div class="eb-bar-box">' +
+        '<span class="eb-bar-mini"><i id="eb-fill"></i></span>' +
+        '<span class="eb-pct" id="eb-pct">0%</span>' +
+      '</div>' +
       '<button class="eb-toggle" id="eb-toggle" type="button">成长</button>';
 
     var slot = findSlot();
@@ -251,10 +255,20 @@
     secs.forEach(function (el) { io.observe(el); });
   }
 
+  // 窗口尺寸变化导致原插槽隐藏/新插槽可见时，自动迁移能量条
+  function relocateIfNeeded() {
+    var chip = document.getElementById('eb-chip');
+    if (!chip) return;
+    if (chip.parentElement && chip.parentElement.offsetParent !== null) return;
+    var slot = findSlot();
+    if (slot) slot.appendChild(chip);
+  }
+
   function init() {
     buildUI();
     setupReadingObserver();
     render();
+    window.addEventListener('resize', relocateIfNeeded);
     window.addEventListener('storage', function (e) { if (e.key === LS_KEY) render(); });
   }
 

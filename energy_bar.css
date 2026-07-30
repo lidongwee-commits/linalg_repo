@@ -1,27 +1,39 @@
-/* ===== 全局成长能量条 · Energy Bar（v2） =====
-   嵌入左侧栏 / 移动端顶栏的紧凑状态条；不外溢、不遮挡正文。
+/* ===== 全局成长能量条 · Energy Bar（v2.1） =====
+   默认竖版（嵌入左侧栏），移动端顶栏自动横排；能量条带持续"涌动"光效。
    纯前端、零后端，数据存本机 localStorage(study_v1)。 */
-.eb-chip{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px;
+
+/* 基础竖版：在左侧栏里占满宽度，百分比不再被截断 */
+.eb-chip{ display:flex; flex-direction:column; gap:8px; padding:12px; border-radius:14px;
   background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); margin:12px 0 6px;
   font-family:-apple-system,"Microsoft YaHei",sans-serif; color:#e8f0f6; }
-/* 退化形态：无插槽页面（如管理端）固定在右上角小条，不再遮挡底部内容 */
-.eb-chip.eb-floating{ position:fixed; top:10px; right:10px; z-index:9999; margin:0;
+/* 退化形态：无插槽页面（如管理端）固定在右上角小条 */
+.eb-chip.eb-floating{ position:fixed; top:10px; right:10px; z-index:9999; margin:0; width:220px;
   background:rgba(255,255,255,.95); color:#13386b; border:1px solid #e3e9ef;
   box-shadow:0 8px 26px rgba(20,45,75,.16); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); }
 .eb-chip.eb-pulse{ animation:eb-pop .5s ease; }
 @keyframes eb-pop{ 0%,100%{transform:scale(1)} 40%{transform:scale(1.04)} }
-.eb-ico{ font-size:20px; line-height:1; flex:0 0 auto; }
-.eb-name{ font-weight:700; font-size:13px; flex:0 0 auto; white-space:nowrap; }
-.eb-lv{ font-size:11px; font-weight:700; color:#7df9ff; background:rgba(125,249,255,.16); padding:1px 7px; border-radius:999px; flex:0 0 auto; white-space:nowrap; }
+
+.eb-head{ display:flex; align-items:center; gap:8px; }
+.eb-ico{ font-size:24px; line-height:1; }
+.eb-name{ font-weight:700; font-size:13px; white-space:nowrap; }
+.eb-lv{ font-size:11px; font-weight:700; color:#7df9ff; background:rgba(125,249,255,.16); padding:2px 8px; border-radius:999px; white-space:nowrap; }
 .eb-floating .eb-lv{ color:#2563eb; background:#eaf1ff; }
-.eb-bar-mini{ position:relative; flex:1; height:8px; min-width:46px; border-radius:999px; background:rgba(255,255,255,.18); overflow:hidden; }
+
+.eb-bar-box{ display:flex; align-items:center; gap:8px; }
+.eb-bar-mini{ position:relative; flex:1; height:12px; border-radius:999px; background:rgba(255,255,255,.18); overflow:hidden; }
 .eb-floating .eb-bar-mini{ background:#eef2f7; }
 .eb-bar-mini i{ position:absolute; left:0; top:0; bottom:0; width:0; display:block;
   background:linear-gradient(90deg,#34d399,#3b82f6); border-radius:999px;
-  transition:width .7s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 8px rgba(59,130,246,.45); }
-.eb-pct{ font-size:11px; font-weight:700; flex:0 0 auto; min-width:30px; text-align:right; }
-.eb-toggle{ border:none; background:#2563eb; color:#fff; font-size:11px; font-weight:600;
-  padding:5px 10px; border-radius:8px; cursor:pointer; flex:0 0 auto; font-family:inherit; white-space:nowrap; }
+  transition:width .7s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 10px rgba(59,130,246,.45); }
+/* 能量条持续涌动光效：像水流一样往前推 */
+.eb-bar-mini i::after{ content:""; position:absolute; inset:0; border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:translateX(-100%); animation:eb-flow 1.8s ease-in-out infinite; }
+@keyframes eb-flow{ 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+.eb-pct{ font-size:12px; font-weight:800; min-width:40px; text-align:right; white-space:nowrap; }
+.eb-toggle{ align-self:flex-start; border:none; background:#2563eb; color:#fff; font-size:12px; font-weight:600;
+  padding:6px 12px; border-radius:8px; cursor:pointer; font-family:inherit; white-space:nowrap; }
 .eb-toggle:hover{ background:#1d4ed8; }
 
 .eb-detail{ position:fixed; top:12px; right:12px; z-index:9999; width:300px; max-width:calc(100vw - 24px);
@@ -52,14 +64,17 @@
   text-shadow:0 1px 4px rgba(255,255,255,.85); pointer-events:none; animation:eb-rise 1.3s ease-out forwards; }
 @keyframes eb-rise{ 0%{opacity:0; transform:translateY(8px) scale(.8)} 20%{opacity:1} 100%{opacity:0; transform:translateY(-40px) scale(1.05)} }
 
-/* 顶栏插槽（移动端）：靠右对齐 */
+/* 顶栏插槽（移动端）：横排紧凑 */
 .topbar-slot{ margin-left:auto; display:flex; align-items:center; }
-@media (max-width:860px){
-  .topbar .eb-chip{ margin:0; padding:6px 8px; gap:6px; }
-  .topbar .eb-name, .topbar .eb-lv{ display:none; }
-  .topbar .eb-bar-mini{ min-width:28px; }
-  .topbar .eb-toggle{ padding:4px 8px; }
-}
+.topbar .eb-chip{ flex-direction:row; align-items:center; padding:6px 8px; gap:6px; margin:0; }
+.topbar .eb-head{ gap:6px; }
+.topbar .eb-ico{ font-size:18px; }
+.topbar .eb-name{ display:none; }
+.topbar .eb-lv{ font-size:10px; padding:1px 6px; }
+.topbar .eb-bar-box{ flex:1; min-width:50px; gap:6px; }
+.topbar .eb-bar-mini{ height:8px; }
+.topbar .eb-pct{ font-size:10px; min-width:32px; }
+.topbar .eb-toggle{ padding:4px 8px; font-size:11px; }
 
 @media (max-width:560px){
   .eb-detail{ right:8px; left:8px; width:auto; }
