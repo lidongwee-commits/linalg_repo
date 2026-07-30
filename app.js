@@ -20,8 +20,17 @@ window.addEventListener('DOMContentLoaded',function(){
       {left:'\\[',right:'\\]',display:true},
       {left:'\\(',right:'\\)',display:false}
     ],throwOnError:false,macros:{'\\xlongequal':'\\overset{#1}{=\\!=\\!=}'},ignoredClasses:['katex','katex-lazy']};
-    // 折叠块内的公式延迟到展开时再渲染，避免一次性把全部公式塞进 DOM 导致页面巨大、折叠卡顿
-    document.querySelectorAll('details:not([open])').forEach(function(d){d.classList.add('katex-lazy');});
+    // 折叠块内的**正文**公式延迟到展开时再渲染，避免一次性把全部公式塞进 DOM 导致页面巨大、折叠卡顿；
+    // 但 summary（始终可见的标题）里的公式必须立即渲染，否则会出现「标题里的公式点开才显示」。
+    document.querySelectorAll('details:not([open])').forEach(function(d){
+      d.classList.add('katex-lazy');
+      var sm=d.querySelector('summary');
+      if(sm){
+        d.classList.remove('katex-lazy');
+        try{ renderMathInElement(sm,katexOpts); fixVdots(sm); }catch(e){}
+        d.classList.add('katex-lazy');
+      }
+    });
     renderMathInElement(document.body,katexOpts);
     fixVdots(document.body);
     document.querySelectorAll('details.katex-lazy').forEach(function(d){

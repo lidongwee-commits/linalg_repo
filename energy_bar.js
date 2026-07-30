@@ -1,8 +1,11 @@
-/* 全局科幻能量柱 · Energy Core
+/* 全局成长能量条 · Energy Bar
  * 与学习中心(study_app.js)共用同一份 localStorage(study_v1) 进度数据：
  *   - 阅读教材章节 -> awardReading(ch) 累积能量
  *   - 做题/考试判分 -> awardExam(right,total) 累积能量（由 exam_app.js 调用）
  * 数据完全兼容 study_app.js，跨页面一致，零后端。
+ *
+ * 设计：右下角常驻一条「成长能量条」——阶段图标 + 等级 + 横向能量进度 + 今日能量，
+ * 始终可见、随学习实时增长，比隐藏的圆形核心更直观。点「详情」展开各章掌握度。
  */
 (function () {
   'use strict';
@@ -80,53 +83,64 @@
     return null;
   }
 
-  var panelOpen = false;
+  var detailOpen = false;
   function buildUI() {
-    if (document.getElementById('eb-core')) return;
-    var core = document.createElement('div');
-    core.className = 'eb-core'; core.id = 'eb-core'; core.title = '成长能量核心 · 点击查看';
-    core.innerHTML = '<span class="eb-lvl" id="eb-lvl">1</span>';
-    document.body.appendChild(core);
-
-    var panel = document.createElement('div');
-    panel.className = 'eb-panel'; panel.id = 'eb-panel'; panel.hidden = true;
-    panel.innerHTML =
-      '<span class="eb-close" id="eb-close">×</span>' +
-      '<h3>⚡ 成长能量核心</h3>' +
-      '<div class="eb-sub">每一次阅读与练习，都让光更亮一点</div>' +
-      '<div class="eb-row">' +
-        '<div class="eb-stem"><div class="eb-fill" id="eb-fill"><span class="eb-pct" id="eb-pct"></span></div></div>' +
-        '<div class="eb-info">' +
-          '<div class="eb-stage" id="eb-stage"></div>' +
-          '<div class="eb-hint" id="eb-hint"></div>' +
-          '<div class="eb-stats">' +
-            '<div class="eb-stat"><b id="eb-day">1</b><small>连续天数</small></div>' +
-            '<div class="eb-stat"><b id="eb-today">0</b><small>今日能量</small></div>' +
-            '<div class="eb-stat"><b id="eb-lv">1</b><small>等级</small></div>' +
-          '</div>' +
-        '</div>' +
+    if (document.getElementById('eb-bar')) return;
+    var bar = document.createElement('div');
+    bar.className = 'eb-bar'; bar.id = 'eb-bar';
+    bar.innerHTML =
+      '<div class="eb-ico" id="eb-ico">🌱</div>' +
+      '<div class="eb-main">' +
+        '<div class="eb-top"><span class="eb-name" id="eb-name">萌芽</span>' +
+        '<span class="eb-lv" id="eb-lv">Lv.1</span></div>' +
+        '<div class="eb-track"><div class="eb-fill" id="eb-fill"></div>' +
+        '<span class="eb-pct" id="eb-pct">0%</span></div>' +
       '</div>' +
+      '<div class="eb-today" id="eb-today">今日 +0</div>' +
+      '<button class="eb-toggle" id="eb-toggle" type="button">详情</button>';
+    document.body.appendChild(bar);
+
+    var detail = document.createElement('div');
+    detail.className = 'eb-detail'; detail.id = 'eb-detail'; detail.hidden = true;
+    detail.innerHTML =
+      '<div class="eb-dhead"><span>成长详情</span><span class="eb-close" id="eb-close">×</span></div>' +
+      '<div class="eb-stats">' +
+        '<div class="eb-stat"><b id="eb-day">1</b><small>连续天数</small></div>' +
+        '<div class="eb-stat"><b id="eb-today2">0</b><small>今日能量</small></div>' +
+        '<div class="eb-stat"><b id="eb-lv2">1</b><small>等级</small></div>' +
+      '</div>' +
+      '<div class="eb-hint" id="eb-hint"></div>' +
       '<div class="eb-chs" id="eb-chs"></div>' +
       '<div class="eb-foot">数据保存在本机浏览器 · 纯前端零成本</div>';
-    document.body.appendChild(panel);
+    document.body.appendChild(detail);
 
-    core.addEventListener('click', function () {
-      panelOpen = !panelOpen;
-      panel.hidden = !panelOpen;
-      if (panelOpen) render();
+    document.getElementById('eb-toggle').addEventListener('click', function (e) {
+      e.stopPropagation();
+      detailOpen = !detailOpen;
+      detail.hidden = !detailOpen;
+      if (detailOpen) renderDetail();
     });
     document.getElementById('eb-close').addEventListener('click', function (e) {
-      e.stopPropagation(); panelOpen = false; panel.hidden = true;
+      e.stopPropagation(); detailOpen = false; detail.hidden = true;
     });
   }
 
   function render() {
     var s = load();
-    var lvl = document.getElementById('eb-lvl'); if (lvl) lvl.textContent = s.level;
-    var fill = document.getElementById('eb-fill'); if (fill) fill.style.height = (s.energy / ENERGY_MAX * 100) + '%';
-    var pct = document.getElementById('eb-pct'); if (pct) pct.innerHTML = '<span>' + Math.round(s.energy) + '%</span>';
-    var st = currentStage(s.energy);
-    var stageEl = document.getElementById('eb-stage'); if (stageEl) stageEl.innerHTML = '<span class="eb-ico">' + st.icon + '</span>' + st.name;
+    var ico = document.getElementById('eb-ico'); if (ico) ico.textContent = currentStage(s.energy).icon;
+    var name = document.getElementById('eb-name'); if (name) name.textContent = currentStage(s.energy).name;
+    var lv = document.getElementById('eb-lv'); if (lv) lv.textContent = 'Lv.' + s.level;
+    var fill = document.getElementById('eb-fill'); if (fill) fill.style.width = (s.energy / ENERGY_MAX * 100) + '%';
+    var pct = document.getElementById('eb-pct'); if (pct) pct.textContent = Math.round(s.energy) + '%';
+    var today = document.getElementById('eb-today'); if (today) today.textContent = '今日 +' + (s.todayGain || 0);
+    if (detailOpen) renderDetail();
+  }
+
+  function renderDetail() {
+    var s = load();
+    var day = document.getElementById('eb-day'); if (day) day.textContent = s.streak || 1;
+    var t2 = document.getElementById('eb-today2'); if (t2) t2.textContent = '+' + (s.todayGain || 0);
+    var lv2 = document.getElementById('eb-lv2'); if (lv2) lv2.textContent = s.level;
     var ns = nextStage(s.energy);
     var hint = document.getElementById('eb-hint');
     if (hint) {
@@ -134,9 +148,6 @@
       else if (ns) hint.textContent = '距离「' + ns.name + '」还差 ' + (ns.at - s.energy) + ' 点能量。';
       else hint.textContent = '继续前进，让成长看得见。';
     }
-    var day = document.getElementById('eb-day'); if (day) day.textContent = s.streak || 1;
-    var today = document.getElementById('eb-today'); if (today) today.textContent = '+' + (s.todayGain || 0);
-    var lv = document.getElementById('eb-lv'); if (lv) lv.textContent = s.level;
     var chs = document.getElementById('eb-chs');
     if (chs) {
       chs.innerHTML = '';
@@ -156,8 +167,8 @@
     if (!gain) return;
     var f = document.createElement('div'); f.className = 'eb-float'; f.textContent = '+' + gain;
     document.body.appendChild(f);
-    var core = document.getElementById('eb-core');
-    if (core) { core.classList.add('eb-pulse'); setTimeout(function () { core.classList.remove('eb-pulse'); }, 520); }
+    var bar = document.getElementById('eb-bar');
+    if (bar) { bar.classList.add('eb-pulse'); setTimeout(function () { bar.classList.remove('eb-pulse'); }, 520); }
     setTimeout(function () { if (f.parentNode) f.parentNode.removeChild(f); }, 1300);
   }
 
@@ -169,7 +180,7 @@
     render();
     if (gained) floatGain(gained);
     // 跨标签同步
-    window.addEventListener('storage', function (e) { if (e.key === LS_KEY) { if (panelOpen) render(); else render(); } });
+    window.addEventListener('storage', function (e) { if (e.key === LS_KEY) render(); });
   }
 
   // 暴露给考试系统
