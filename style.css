@@ -266,7 +266,7 @@
 .ex-aibox{margin-top:4px}
 .ex-selfcheck{margin:8px 0;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;color:#166534;font-family:-apple-system,"Microsoft YaHei",sans-serif;line-height:1.7}
 /* ===== 本节练习（小节嵌入式随堂练） ===== */
-.sec-quiz{margin:26px 0;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#fafcff,#f4f8ff);padding:16px 18px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.sec-quiz{margin:26px 0 100px 0;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,#fafcff,#f4f8ff);padding:16px 18px;font-family:-apple-system,"Microsoft YaHei",sans-serif}
 .sq-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sq-title{font-weight:700;font-size:16px;color:var(--ink)}
 .sq-sub{font-size:12.5px;color:var(--muted)}

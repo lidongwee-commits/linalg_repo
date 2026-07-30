@@ -9,7 +9,8 @@ function fixVdots(root){
     var m=rule.parentElement;
     if(m && m.classList && m.classList.contains('mord')){
       m.style.display='inline-block';
-      m.style.transform='translateY(-1em)';
+      m.style.transform='translateY(-1.7em)';
+      m.style.verticalAlign='middle';
     }
   });
 }

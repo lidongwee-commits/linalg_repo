@@ -110,8 +110,11 @@
         '<div class="eb-stat"><b id="eb-lv2">1</b><small>等级</small></div>' +
       '</div>' +
       '<div class="eb-hint" id="eb-hint"></div>' +
-      '<div class="eb-chs" id="eb-chs"></div>' +
-      '<div class="eb-foot">数据保存在本机浏览器 · 纯前端零成本</div>';
+      '<div class="eb-growhelp">' +
+        '<b>能量怎么增长</b>' +
+        '<ul><li>每日首次学习：+2</li><li>首次读完某章：+4</li><li>每答对 1 题：+1，并随正确率额外奖励</li><li>连续每日学习：+5 连击奖励</li><li>完成一次自测/考试：再按正确率加成</li></ul>' +
+      '</div>' +
+      '<div class="eb-chs" id="eb-chs"></div>';
     document.body.appendChild(detail);
 
     document.getElementById('eb-toggle').addEventListener('click', function (e) {

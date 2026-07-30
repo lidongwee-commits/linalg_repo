@@ -175,16 +175,23 @@
     dBody.scrollTop = 0;
     RT(dBody);
 
-    function finishOne(qEl, ok, q) {
-      st.done++; if (ok) st.right++;
-      prog();
-      var fb = qEl.querySelector(".sq-fb");
-      var msg = ok ? "✅ 答对了！" : "❌ 再想想～正确答案：" + esc(q.ans);
-      if (q.fb) msg += "<br>" + esc(q.fb);
-      fb.className = "sq-fb " + (ok ? "ok" : "bad");
-      fb.innerHTML = msg;
-      RT(fb);
-      if (st.done === st.total) {
+      function finishOne(qEl, ok, q, userAns) {
+        st.done++; if (ok) st.right++;
+        prog();
+        var fb = qEl.querySelector(".sq-fb");
+        var msg = "";
+        if (q.type === "fill") {
+          msg = "📖 参考答案：" + esc(q.ans);
+          if (q.fb) msg += "<br>" + esc(q.fb);
+          msg += "<br><small>你输入了：" + esc(userAns || "") + "；若形式不同但等价，也算对。</small>";
+        } else {
+          msg = ok ? "✅ 答对了！" : "❌ 再想想～正确答案：" + esc(q.ans);
+          if (q.fb) msg += "<br>" + esc(q.fb);
+        }
+        fb.className = "sq-fb " + (ok ? "ok" : "bad");
+        fb.innerHTML = msg;
+        RT(fb);
+        if (st.done === st.total) {
         var bar = dBody.querySelector(".sq-actions");
         bar.style.display = "flex";
         bar.querySelector(".sq-result").textContent = "本批完成：答对 " + st.right + " / " + st.total;
@@ -224,12 +231,29 @@
       } else {
         var btn = qEl.querySelector(".sq-check"), inp = qEl.querySelector(".sq-fillin");
         var done = false;
+        function looseFillMatch(v, a) {
+          if (!a) return true;                // 无标准答案 -> 不判错
+          var nv = norm(v), na = norm(a);
+          if (nv === na) return true;
+          // 支持常见等价：1/2 == 0.5；x^2 == x^{2}；去掉空格后比对
+          var strip = function (s) { return s.replace(/[\\{}\[\]()^]/g, "").replace(/\\\\/g, ""); };
+          if (strip(nv) === strip(na)) return true;
+          // 数值近似：若两边都能算成数字，误差<1e-6
+          try {
+            var ev = Function('"use strict"; return (' + nv.replace(/x/g, '1').replace(/n/g, '2') + ')')();
+            var ea = Function('"use strict"; return (' + na.replace(/x/g, '1').replace(/n/g, '2') + ')')();
+            if (typeof ev === 'number' && typeof ea === 'number' && isFinite(ev) && isFinite(ea) && Math.abs(ev - ea) < 1e-6) return true;
+          } catch (e) {}
+          return false;
+        }
         var check = function () {
           if (done) return;
           var v = inp.value.trim();
           if (!v) { inp.focus(); return; }
           done = true; btn.disabled = true; inp.disabled = true;
-          finishOne(qEl, q.ans && norm(v) === norm(q.ans), q);
+          var ok = looseFillMatch(v, q.ans);
+          if (ok) st.right++; // 宽松匹配成功即算对
+          finishOne(qEl, true, q, v); // 填空题统一不标红，避免机器误判打击积极性
         };
         btn.addEventListener("click", check);
         inp.addEventListener("keydown", function (e) { if (e.key === "Enter") check(); });

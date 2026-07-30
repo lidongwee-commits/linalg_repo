@@ -61,14 +61,15 @@
   }
   function fixVdots(root) {
     // KaTeX 的 \vdots 渲染为外层 <span class="mord"><span class="mord">⋮</span><span class="mord rule"></span></span>;
-    // .mord.rule 是撑高占位条，其外层 .mord 在 vlist 行内定位会下坠到下一行，导致省略号与下方元素重叠。
+    // .mord.rule 是撑高占位条，其外层 .mord 在 vlist 行内定位会下坠到下一行，导致省略号与下方元素重叠/贴底。
     // 给该外层 .mord 加 inline-block + 上移，可修复重叠，且不依赖 :has() 兼容性。
     if (!root || !root.querySelectorAll) return;
     root.querySelectorAll('.katex-html .mord.rule').forEach(function (rule) {
       var m = rule.parentElement;
       if (m && m.classList && m.classList.contains('mord')) {
-      m.style.display = 'inline-block';
-      m.style.transform = 'translateY(-1.4em)';
+        m.style.display = 'inline-block';
+        m.style.transform = 'translateY(-1.7em)';
+        m.style.verticalAlign = 'middle';
       }
     });
   }
