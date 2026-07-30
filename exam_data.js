@@ -650,7 +650,7 @@ window.EXAM_QUESTIONS =
     "src": "test",
     "type": "mc",
     "no": 13,
-    "stem": "13. 下列命题中正确的是？",
+    "stem": "13. 设 A、B 为 n 阶方阵，下列命题中正确的是？",
     "options": [
       [
         "A",
@@ -2399,7 +2399,7 @@ window.EXAM_QUESTIONS =
     "src": "test",
     "type": "mc",
     "no": 22,
-    "stem": "22. （考研真题）下列命题正确的是（　）。",
+    "stem": "22. （考研真题）设 A、B 为 n 阶方阵，下列命题正确的是（　）。",
     "options": [
       [
         "A",
@@ -6014,7 +6014,7 @@ window.EXAM_QUESTIONS =
     "src": "hw",
     "type": "mc",
     "no": 3,
-    "stem": "3. 设 \\(\\lambda_1,\\lambda_2\\) 是矩阵 \\(A\\) 的两个不同特征值，\\(\\alpha_1,\\alpha_2\\) 是对应的特征向量，则 \\(\\alpha_1,\\ A(\\alpha_1+\\alpha_2)\\) 线性无关的充要条件是（　）。",
+    "stem": "3. 设 A 为 n 阶方阵，\\( \\lambda_1,\\lambda_2 \\) 是其两个不同特征值，\\(\\alpha_1,\\alpha_2\\) 是对应的特征向量，则 \\(\\alpha_1,\\ A(\\alpha_1+\\alpha_2)\\) 线性无关的充要条件是（　）。",
     "options": [
       [
         "A",
@@ -6138,7 +6138,7 @@ window.EXAM_QUESTIONS =
     "src": "hw",
     "type": "mc",
     "no": 7,
-    "stem": "7. 二次型 \\(f=x^TAx\\) 正定的充要条件是（　）。",
+    "stem": "7. 设二次型 \\(f=x^TAx\\) 的矩阵 A 为 n 阶实对称矩阵，若 f 正定的充要条件是（　）。",
     "options": [
       [
         "A",
@@ -6324,7 +6324,7 @@ window.EXAM_QUESTIONS =
     "src": "hw",
     "type": "mc",
     "no": 13,
-    "stem": "13. 设 \\(A\\) 的特征值为 \\(1,2,3\\)，则 \\(|A|=\\)（　）。",
+    "stem": "13. 设 A 为 n 阶方阵，其特征值为 \\(1,2,3\\)，则 \\(|A|=\\)（　）。",
     "options": [
       [
         "A",
@@ -6355,7 +6355,7 @@ window.EXAM_QUESTIONS =
     "src": "hw",
     "type": "mc",
     "no": 14,
-    "stem": "14. 若 \\(A\\sim B\\)，则对任意正整数 \\(k\\) 有（　）。",
+    "stem": "14. 设 A、B 为 n 阶方阵，若 \\(A\\sim B\\)，则对任意正整数 \\(k\\) 有（　）。",
     "options": [
       [
         "A",
@@ -6753,7 +6753,7 @@ window.EXAM_QUESTIONS =
     "src": "hw",
     "type": "proof",
     "no": 3,
-    "stem": "3. 证明定理 5.1 的推论：若 \\(p_1,p_2\\) 分属不同特征值 \\(\\lambda_1\\neq\\lambda_2\\)，则 \\(p_1+p_2\\) 不是 \\(A\\) 的特征向量。",
+    "stem": "3. 设 \\(A\\) 为 \\(n\\) 阶方阵。证明定理 5.1 的推论：若 \\(p_1,p_2\\) 分属 \\(A\\) 的不同特征值 \\(\\lambda_1\\neq\\lambda_2\\)，则 \\(p_1+p_2\\) 不是 \\(A\\) 的特征向量。",
     "options": null,
     "ans": null,
     "fb": "证明：反设 \\(p_1+p_2\\) 是 \\(A\\) 的特征向量，对应特征值 \\(\\mu\\)，则\n\\[ A(p_1+p_2)=\\mu(p_1+p_2). \\]\n而 \\(Ap_1=\\lambda_1p_1,\\ Ap_2=\\lambda_2p_2\\)，故\n\\[ \\lambda_1p_1+\\lambda_2p_2=\\mu p_1+\\mu p_2, \\]\n即 \\((\\lambda_1-\\mu)p_1+(\\lambda_2-\\mu)p_2=0\\)。\n因属于不同特征值的特征向量线性无关，故 \\(p_1,p_2\\) 线性无关，从而\n\\[ \\lambda_1-\\mu=0,\\quad \\lambda_2-\\mu=0, \\]\n得 \\(\\lambda_1=\\lambda_2\\)，与 \\(\\lambda_1\\neq\\lambda_2\\) 矛盾。\n故 \\(p_1+p_2\\) 不是 \\(A\\) 的特征向量。证毕。",
@@ -6823,7 +6823,7 @@ window.EXAM_QUESTIONS =
     "src": "hw",
     "type": "proof",
     "no": 8,
-    "stem": "8. 证明：二次型 \\(f=x^TAx\\) 在 \\(\\|x\\|=1\\) 时的最大值为 \\(A\\) 的最大特征值。",
+    "stem": "8. 设 \\(A\\) 为 \\(n\\) 阶实对称矩阵。证明：二次型 \\(f=x^TAx\\) 在 \\(\\|x\\|=1\\) 时的最大值为 \\(A\\) 的最大特征值。",
     "options": null,
     "ans": null,
     "fb": "证明：实对称阵 \\(A\\) 可正交对角化：存在正交阵 \\(Q\\) 使 \\(A=Q\\Lambda Q^T\\)，\\(\\Lambda=\\operatorname{diag}(\\lambda_1,\\dots,\\lambda_n)\\)，且不妨设 \\(\\lambda_1\\ge\\cdots\\ge\\lambda_n\\)。\n令 \\(y=Q^Tx\\)，因 \\(Q\\) 正交，\\(\\|y\\|=\\|x\\|=1\\)。则\n\\[ f=x^TAx=y^T\\Lambda y=\\sum_{i=1}^n\\lambda_i y_i^2. \\]\n由 \\(\\sum y_i^2=1\\) 且 \\(\\lambda_i\\le\\lambda_1\\)，得\n\\[ f\\le\\lambda_1\\sum y_i^2=\\lambda_1, \\]\n当 \\(y=(1,0,\\dots,0)^T\\)（即 \\(x=q_1\\)，\\(A\\) 属于最大特征值 \\(\\lambda_1\\) 的单位特征向量）时取等号。\n故 \\(f\\) 在 \\(\\|x\\|=1\\) 时的最大值为 \\(A\\) 的最大特征值。证毕。",
@@ -6938,7 +6938,7 @@ window.EXAM_QUESTIONS =
     "src": "test",
     "type": "mc",
     "no": 2,
-    "stem": "2. 若 \\(A\\sim B\\)，则下列\\textbf{不一定}成立的是（　）。",
+    "stem": "2. 设 A、B 为 n 阶方阵，若 \\(A\\sim B\\)，则下列\\textbf{不一定}成立的是（　）。",
     "options": [
       [
         "A",
@@ -7062,7 +7062,7 @@ window.EXAM_QUESTIONS =
     "src": "test",
     "type": "mc",
     "no": 6,
-    "stem": "6. 二次型 \\(f=x^TAx\\) 正定当且仅当（　）。",
+    "stem": "6. 设二次型 \\(f=x^TAx\\) 的矩阵 A 为 n 阶实对称矩阵，若 f 正定当且仅当（　）。",
     "options": [
       [
         "A",
@@ -7217,7 +7217,7 @@ window.EXAM_QUESTIONS =
     "src": "test",
     "type": "mc",
     "no": 11,
-    "stem": "11. 设 \\(A\\) 的特征值为 \\(1,2,3\\)，则 \\(|A|=\\)（　）。",
+    "stem": "11. 设 A 为 n 阶方阵，其特征值为 \\(1,2,3\\)，则 \\(|A|=\\)（　）。",
     "options": [
       [
         "A",
@@ -7248,7 +7248,7 @@ window.EXAM_QUESTIONS =
     "src": "test",
     "type": "mc",
     "no": 12,
-    "stem": "12. 若 \\(A\\) 的特征值为 \\(2\\)，则 \\(A^2\\) 的特征值为（　）。",
+    "stem": "12. 设 A 为 n 阶方阵，若 \\( A \\) 的特征值为 \\(2\\)，则 \\(A^2\\) 的特征值为（　）。",
     "options": [
       [
         "A",
@@ -9420,7 +9420,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "fill",
     "no": 16,
-    "stem": "化简矩阵算式：\\( (BC^T-E)^T(AB^{-1})^T+[(BA^{-1})^T]^{-1} \\)。",
+    "stem": "设 \\(A,B,C\\) 均为 \\(n\\) 阶方阵，且 \\(A,B\\) 可逆。化简矩阵算式：\\( (BC^T-E)^T(AB^{-1})^T+[(BA^{-1})^T]^{-1} \\)。",
     "options": null,
     "ans": "\\( CA^T \\)",
     "fb": "\\((BC^T-E)^T=CB^T-E\\)，\\((AB^{-1})^T=(B^T)^{-1}A^T\\)，第一项为 \\((CB^T-E)(B^T)^{-1}A^T=(C-(B^T)^{-1})A^T\\)；第二项 \\([(BA^{-1})^T]^{-1}=(B^T)^{-1}A^T\\)，相加消去中间项得 \\(CA^T\\)。故应填 \\( CA^T \\)。",
@@ -15039,7 +15039,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "fill",
     "no": 8,
-    "stem": "若 \\( A^2 = E \\)，则 A 的特征值是______.",
+    "stem": "设 A 为 n 阶方阵，若 \\( A^2 = E \\)，则 A 的特征值是______.",
     "options": null,
     "ans": "1 或 -1",
     "fb": "解析：由 \\(A^2=E\\) 得特征值 \\(\\lambda\\) 满足 \\(\\lambda^2=1\\)，故 \\(\\lambda=1\\) 或 \\(-1\\)。故应填 \\(1\\) 或 \\(-1\\)。",
@@ -15174,7 +15174,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "mc",
     "no": 4,
-    "stem": "设 \\( \\lambda_1 \\) 与 \\( \\lambda_2 \\) 是矩阵 A 的两个不同的特征值，\\( \\xi, \\eta \\) 是 A 的分别属于 \\( \\lambda_1, \\lambda_2 \\) 的特征向量，则下列结论成立的是______. (A) 对任意 \\( k_1 \\neq 0, k_2 \\neq 0 \\)，\\( k_1 \\xi + k_2 \\eta \\) 都是 A 的特征向量 (B) 存在常数 \\( k_1 \\neq 0, k_2 \\neq 0 \\)，\\( k_1 \\xi + k_2 \\eta \\) 是 A 的特征向量 (C) 当 \\( k_1 \\neq 0, k_2 \\neq 0 \\) 时，\\( k_1 \\xi + k_2 \\eta \\) 不可能是 A 的特征向量 (D) 存在唯一的一组常数 \\( k_1 \\neq 0, k_2 \\neq 0 \\)，使 \\( k_1 \\xi + k_2 \\eta \\) 是 A 的特征向量",
+    "stem": "设 \\( \\lambda_1 \\) 与 \\( \\lambda_2 \\) 是 \\( n \\) 阶方阵 A 的两个不同的特征值，\\( \\xi, \\eta \\) 是 A 的分别属于 \\( \\lambda_1, \\lambda_2 \\) 的特征向量，则下列结论成立的是______. (A) 对任意 \\( k_1 \\neq 0, k_2 \\neq 0 \\)，\\( k_1 \\xi + k_2 \\eta \\) 都是 A 的特征向量 (B) 存在常数 \\( k_1 \\neq 0, k_2 \\neq 0 \\)，\\( k_1 \\xi + k_2 \\eta \\) 是 A 的特征向量 (C) 当 \\( k_1 \\neq 0, k_2 \\neq 0 \\) 时，\\( k_1 \\xi + k_2 \\eta \\) 不可能是 A 的特征向量 (D) 存在唯一的一组常数 \\( k_1 \\neq 0, k_2 \\neq 0 \\)，使 \\( k_1 \\xi + k_2 \\eta \\) 是 A 的特征向量",
     "options": [
       [
         "A",
@@ -15267,7 +15267,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "calc",
     "no": 3,
-    "stem": "设 A 的特征值为 \\( \\lambda \\)，A 的属于 \\( \\lambda \\) 的特征向量为 x，求 \\( 5A, A^2, A^2 + 5A + E \\) 的特征值和特征向量，并求 \\( A^T \\) 的特征值.",
+    "stem": "设 A 为 n 阶方阵，其特征值为 \\( \\lambda \\)，A 的属于 \\( \\lambda \\) 的特征向量为 x，求 \\( 5A, A^2, A^2 + 5A + E \\) 的特征值和特征向量，并求 \\( A^T \\) 的特征值.",
     "options": null,
     "ans": null,
     "fb": "由已知 \\( Ax = \\lambda x \\)（\\( x \\neq 0 \\)）. 两边乘 5，得 \\( 5Ax = 5\\lambda x \\)，故得 \\( 5\\lambda \\) 是 \\( 5A \\) 的特征值，特征向量不变，仍为 x. 对原式两边左乘 A，得 \\( A^2 x = \\lambda A x = \\lambda^2 x \\)，故得 \\( \\lambda^2 \\) 是 \\( A^2 \\) 的特征值，特征向量不变. 由 \\( 5Ax = 5\\lambda x, A^2 x = \\lambda^2 x, Ex = x \\) 三式相加，得 \\( (A^2 + 5A + E)x = (\\lambda^2 + 5\\lambda + 1)x \\)，故得 \\( \\lambda^2 + 5\\lambda + 1 \\) 是 \\( A^2 + 5A + E \\) 的特征值，特征向量不变. 又 \\( |\\lambda E - A| = |(\\lambda E - A)^T| = |\\lambda E - A^T| \\)，故 \\( A^T \\) 的特征值即为 A 的特征值.",
@@ -15435,7 +15435,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "proof",
     "no": 2,
-    "stem": "设 \\( \\lambda_1,\\lambda_2,\\lambda_3 \\) 是 \\( A \\) 的特征值，\\( \\alpha_1,\\alpha_2,\\alpha_3 \\) 是对应的特征向量。若 \\( \\alpha_1+\\alpha_2+\\alpha_3 \\) 也是 \\( A \\) 的特征向量，则 \\( \\lambda_1=\\lambda_2=\\lambda_3 \\)。",
+    "stem": "设 A 为 n 阶方阵，\\( \\lambda_1,\\lambda_2,\\lambda_3 \\) 是其特征值，\\( \\alpha_1,\\alpha_2,\\alpha_3 \\) 是对应的特征向量。若 \\( \\alpha_1+\\alpha_2+\\alpha_3 \\) 也是 \\( A \\) 的特征向量，则 \\( \\lambda_1=\\lambda_2=\\lambda_3 \\)。",
     "options": null,
     "ans": null,
     "fb": "假设 \\( \\lambda_1\\neq\\lambda_2 \\)，则 \\( \\alpha_1+\\alpha_2 \\) 不是 \\( A \\) 的特征向量。可见，要使 \\( \\alpha_1+\\alpha_2 \\) 是 \\( A \\) 的特征向量，必有 \\( \\lambda_1=\\lambda_2 \\)，且 \\( \\alpha_1+\\alpha_2 \\) 也是特征值 \\( \\lambda_1 \\) 所对应的特征向量。同理，要使 \\( \\beta+\\alpha_3 \\) 为 \\( A \\) 的特征向量，必有 \\( \\lambda_1=\\lambda_3 \\)。于是，要使 \\( \\alpha_1+\\alpha_2+\\alpha_3 \\) 是 \\( A \\) 的特征向量，必有 \\( \\lambda_1=\\lambda_2=\\lambda_3 \\)。",
@@ -15547,7 +15547,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "mc",
     "no": 7,
-    "stem": "设 \\( \\lambda_1,\\lambda_2 \\) 是矩阵 \\( A \\) 的两个不同的特征值，对应的特征向量分别为 \\( \\alpha_1,\\alpha_2 \\)，则 \\( \\alpha_1,\\ A(\\alpha_1+\\alpha_2) \\) 线性无关的充分必要条件是 ______。",
+    "stem": "设 \\( \\lambda_1,\\lambda_2 \\) 是 \\( n \\) 阶方阵 \\( A \\) 的两个不同的特征值，对应的特征向量分别为 \\( \\alpha_1,\\alpha_2 \\)，则 \\( \\alpha_1,\\ A(\\alpha_1+\\alpha_2) \\) 线性无关的充分必要条件是 ______。",
     "options": [
       [
         "A",
@@ -15578,7 +15578,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "mc",
     "no": 8,
-    "stem": "矩阵 \\( A \\) 与 \\( B \\) 相似的充分条件是 ______。",
+    "stem": "设 A、B 为 n 阶方阵，矩阵 \\( A \\) 与 \\( B \\) 相似的充分条件是 ______。",
     "options": [
       [
         "A",
@@ -15609,7 +15609,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "mc",
     "no": 9,
-    "stem": "若 \\( A \\) 与 \\( B \\) 相似，则 ______ 。",
+    "stem": "设 A、B 为 n 阶方阵，若 \\( A \\) 与 \\( B \\) 相似，则 ______ 。",
     "options": [
       [
         "A",
@@ -15682,7 +15682,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "fill",
     "no": 25,
-    "stem": "若矩阵 \\(A\\) 与 \\(B\\) 相似，且 \\(2\\) 是矩阵 \\(B\\) 的一个特征值，则矩阵 \\(3A^2-4A+E\\) 必有一个特征值为 ______ 。",
+    "stem": "若 \\(n\\) 阶方阵 \\(A\\) 与 \\(B\\) 相似，且 \\(2\\) 是矩阵 \\(B\\) 的一个特征值，则矩阵 \\(3A^2-4A+E\\) 必有一个特征值为 ______ 。",
     "options": null,
     "ans": "\\(5\\)",
     "fb": "解析：\\(B\\) 有特征值 \\(2\\)，则 \\(A\\) 有特征值 \\(2\\)；\\(3A^2-4A+E\\) 的对应特征值为 \\(3\\cdot4-4\\cdot2+1=5\\)。故应填 \\(5\\)。",
@@ -16514,7 +16514,7 @@ window.EXAM_QUESTIONS =
     "src": "jingxuan",
     "type": "mc",
     "no": 15,
-    "stem": "设 \\( \\alpha \\) 是 \\( A \\) 的属于特征值 \\( \\lambda \\)的特征向量,则 \\( \\alpha \\) 不是______的特征向量. (A)\\((A+E)^{2}\\) (B)\\(-2A\\) (C)\\( A^{T} \\) (D)\\( A^{*} \\)",
+    "stem": "设 A 为 n 阶方阵，\\( \\alpha \\) 是 \\( A \\) 的属于特征值 \\( \\lambda \\)的特征向量,则 \\( \\alpha \\) 不是______的特征向量. (A)\\((A+E)^{2}\\) (B)\\(-2A\\) (C)\\( A^{T} \\) (D)\\( A^{*} \\)",
     "options": [
       [
         "A",
