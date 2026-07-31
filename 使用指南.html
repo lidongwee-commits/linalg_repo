@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性代数数字教材 · 维护使用指南</title>
+<style>
+  :root{--accent:#0e7c7c;--ink:#1d2733;--muted:#6b7785;--line:#e3e8ee;--soft:#f6f8fa;--warn:#b54708;--warnbg:#fff4e6;}
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,"Microsoft YaHei",sans-serif;color:var(--ink);line-height:1.75;max-width:880px;margin:0 auto;padding:32px 24px 80px;background:#fff}
+  h1{font-size:26px;margin:0 0 4px;color:var(--accent)}
+  .sub{color:var(--muted);margin:0 0 24px;font-size:14px}
+  h2{font-size:20px;margin:36px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--accent);color:var(--accent)}
+  h3{font-size:16px;margin:22px 0 8px}
+  p,li{font-size:15px}
+  code{background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-family:Consolas,Menlo,monospace;font-size:13.5px}
+  pre{background:#1d2733;color:#e6edf3;border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.6}
+  pre code{background:none;border:none;color:inherit;padding:0}
+  .card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0;background:var(--soft)}
+  .step{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+  .num{flex:0 0 28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .warn{background:var(--warnbg);border:1px solid #ffd8a8;color:var(--warn);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14px}
+  .ok{background:#e6fcf5;border:1px solid #99f1d4;color:#0b7a5e;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14px}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--soft)}
+  a{color:var(--accent)}
+  .path{font-family:Consolas,monospace;font-size:13.5px;background:var(--soft);padding:2px 6px;border-radius:4px}
+  .kbd{display:inline-block;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 7px;font-size:13px;background:#fff}
+  @media print{body{max-width:none;padding:0}.noprint{display:none}}
+</style>
+</head>
+<body>
+
+<h1>线性代数数字教材 · 维护使用指南</h1>
+<p class="sub">写给老师自己的"以后怎么改、怎么发"手册 · 无需编程基础</p>
+
+<div class="ok">
+  <b>你的网站工程现在在 <span class="path">D:\linalg</span></b>（已从 WPS 附件搬出，干净清爽）。<br>
+  线上网址：<code>https://d95zb7aj5-linalg-3xam256.maozi.io/</code>　后台：<code>…/admin.html</code>（口令 <code>teacher2026</code>）
+</div>
+
+<div class="card">
+<b>一句话记住日常流程：</b> 改完内容 → 双击 <b>1_构建.bat</b> → 双击 <b>2_部署.bat</b> → 等一两分钟，学生硬刷新就能看到。<br>
+（第一次请先看下方"第零步"，把积压的更新先推上去。）
+</div>
+
+<h2>第零步：网站已上线（日常维护从这里开始）</h2>
+<div class="ok">网站已在帽子云上线：<code>https://d95zb7aj5-linalg-3xam256.maozi.io/</code>。后续每次改完内容，双击 <b>1_构建.bat</b> → <b>2_部署.bat</b> 即可更新，学生硬刷新就能看到。</div>
+<p>如果你做了修改但不确定是否已部署，直接双击 <code>2_部署.bat</code>——它会自动检测有无改动：有则提交推送，无改动则只推送积压内容。</p>
+<div class="warn"><b>推送时弹出账号密码窗口？</b>　用户名 <code>lidongwee-commits</code>，密码填 <b>GitHub 令牌(PAT)</b>，不是 GitHub 登录密码。填一次后电脑通常会记住。</div>
+
+<h2>一、怎么把修改发布到网上（发布流程）</h2>
+<p>无论你改了教材正文还是习题，最后都要"构建+部署"两步让网上生效。</p>
+
+<h3>方法 A：双击两个文件（最推荐，不用记命令）</h3>
+<table>
+<tr><th>顺序</th><th>双击的文件</th><th>它做什么</th></tr>
+<tr><td>①</td><td><code>D:\linalg\1_构建.bat</code></td><td>把源文件"编译"成网页，生成到 <code>教材发布\</code> 文件夹</td></tr>
+<tr><td>②</td><td><code>D:\linalg\2_部署.bat</code></td><td>把网页复制到部署仓库、提交并推送到 GitHub，帽子云自动更新网站</td></tr>
+</table>
+<p>两个窗口最后都会显示"按任意键继续"，说明执行完了。中途弹出的黑色窗口<b>不要手动关</b>，让它自己跑完。</p>
+
+<h3>方法 B：自己敲命令（备用）</h3>
+<p>如果你更习惯命令行，在 <b>CMD</b> 里依次输入：</p>
+<pre><code>cd /d D:\linalg
+REM 1) 构建
+"C:\Users\ldwma\.workbuddy\binaries\python\versions\3.13.12\python.exe" build_chapters.py
+
+REM 2) 部署
+xcopy "D:\linalg\教材发布\*" "C:\Users\ldwma\linalg_repo\" /E /Y /I /Q
+cd /d C:\Users\ldwma\linalg_repo
+git add -A
+git commit -m "更新教材内容"
+git push</code></pre>
+
+<h3>常见问题</h3>
+<div class="warn"><b>推送时弹出账号密码窗口？</b>　用户名 <code>lidongwee-commits</code>，密码填 <b>GitHub 令牌(PAT)</b>，不是你 GitHub 的登录密码。填一次后电脑通常会记住。</div>
+<div class="warn"><b> push 失败/超时？</b>　多为网络波动，关掉窗口重双击一次 <code>2_部署.bat</code> 即可。</div>
+<div class="warn"><b>推送成功但网站没变？</b>　帽子云同步要 1~2 分钟；学生在自己浏览器按 <span class="kbd">Ctrl</span>+<span class="kbd">F5</span> 硬刷新（清缓存）即可。</div>
+
+<h2>二、怎么修改教材正文（讲解 / 案例 / 引例）</h2>
+<p>教材所有<b>文字内容</b>都集中在一个源文件里：</p>
+<div class="card"><b>要改的文件：</b> <span class="path">D:\linalg\线性代数数字教材.html</span><br>
+这是全站<b>唯一</b>的内容源，改它、再构建，五章网页就同步更新。</div>
+
+<div class="step"><div class="num">1</div><div><b>打开它</b>：右键该文件 → 打开方式选「记事本」或「WPS 文字/Word」都行（用 VS Code 更好，但不是必须）。</div></div>
+<div class="step"><div class="num">2</div><div><b>找到要改的地方</b>：按 <span class="kbd">Ctrl</span>+<span class="kbd">F</span> 搜索关键词（比如某道题的题号、某个小节标题），找到后直接改文字。</div></div>
+<div class="step"><div class="num">3</div><div><b>保存</b>文件（<span class="kbd">Ctrl</span>+<span class="kbd">S</span>）。</div></div>
+<div class="step"><div class="num">4</div><div><b>发布</b>：双击 <code>1_构建.bat</code> → 双击 <code>2_部署.bat</code>。</div></div>
+
+<div class="warn"><b>公式别乱拆：</b> 教材里的数学公式用 <code>\( … \)</code>（行内）或 <code>\[ … \]</code>（独立成行）包住。如果你要改公式里的数字，只改数字、<b>不要删掉那两个反斜杠括号</b>。看不懂公式代码时，最好只改文字、不动 <code>\(...\)</code> 内部。</div>
+<div class="warn"><b>别删结构标签：</b> 像 <code>&lt;h2&gt;</code>、<code>&lt;div class="case"&gt;</code>、<code>&lt;details&gt;</code> 这类成对标签是页面骨架，误删可能导致构建报错或某节显示异常。只改"标签之间的文字"最安全。</div>
+
+<h2>三、怎么编辑习题 / 题库（推荐用后台，不用写代码）</h2>
+<p>网站里的选择题、填空题、计算题、证明题、应用题，都存在一个题库文件 <code>exam_data.js</code>（991 题）。改题库<b>最省事的办法是用自带后台</b>，完全不用碰代码。</p>
+
+<h3>方法 A：用 admin.html 后台（强烈推荐）</h3>
+<div class="step"><div class="num">1</div><div><b>打开后台</b>：双击 <span class="path">D:\linalg\admin.html</span>（或在浏览器打开线上 <code>…/admin.html</code>，口令 <code>teacher2026</code>）。</div></div>
+<div class="step"><div class="num">2</div><div><b>找题</b>：用页面上的搜索/筛选，按章节或题型定位。</div></div>
+<div class="step"><div class="num">3</div><div><b>改 / 加题</b>：点某题的「编辑」改内容；或点「新增」加一道新题。选择题填选项 A/B/C/D，填空题/计算题填答案与解析。</div></div>
+<div class="step"><div class="num">4</div><div><b>导出</b>：改完后点页面上的「<b>⬇ 导出 exam_data.js</b>」，浏览器会下载一个文件。</div></div>
+<div class="step"><div class="num">5</div><div><b>覆盖</b>：把下载的 <code>exam_data.js</code> 复制到 <span class="path">D:\linalg\</span>，<b>替换</b>掉原来的同名文件。</div></div>
+<div class="step"><div class="num">6</div><div><b>发布</b>：双击 <code>1_构建.bat</code> → 双击 <code>2_部署.bat</code>。</div></div>
+<div class="ok">后台改的题<b>先存在浏览器缓存</b>里。换电脑、清浏览器缓存前记得及时「导出」并覆盖文件，否则改动会丢。</div>
+<div class="warn"><b>如果双击 admin.html 后题目不显示</b>：某些浏览器对本地文件较严格。改用"本地小服务器"打开——在 <code>D:\linalg</code> 文件夹里双击 <code>1_构建.bat</code> 同目录若没有服务器，可用 CMD 输入 <code>python -m http.server 8000</code>，再浏览器访问 <code>http://localhost:8000/admin.html</code>。线上网址方式则无此问题。</div>
+
+<h3>方法 B：直接改 exam_data.js（进阶，适合小批量微调）</h3>
+<p>题库文件 <code>D:\linalg\exam_data.js</code> 本质是一个大列表，每道题是一段 <code>{ … }</code>。常见字段：</p>
+<table>
+<tr><th>字段</th><th>含义</th><th>示例</th></tr>
+<tr><td><code>"id"</code></td><td>题目唯一编号（不能重复）</td><td><code>"c1-hw-mc-1"</code></td></tr>
+<tr><td><code>"ch"</code></td><td>第几章</td><td><code>1</code></td></tr>
+<tr><td><code>"type"</code></td><td>题型</td><td><code>mc / fill / calc / proof / app</code></td></tr>
+<tr><td><code>"sec"</code></td><td>所属小节（决定"本节练习"里出现哪题）</td><td><code>"s11"</code></td></tr>
+<tr><td><code>"stem"</code></td><td>题干</td><td><code>"设 \\(D=m\\)，则 …"</code></td></tr>
+<tr><td><code>"options"</code></td><td>选择题选项（仅 mc 有）</td><td><code>[["A","\\(2m\\)"],…]</code></td></tr>
+<tr><td><code>"ans"</code></td><td>答案</td><td><code>"A"</code> 或 <code>"\\(2m\\)"</code></td></tr>
+<tr><td><code>"fb"</code></td><td>解析/解题过程</td><td>文字，可含公式</td></tr>
+</table>
+<p><b>加一道题</b>：复制一道同类型题的整段 <code>{ … }</code>，改里面的数字和文字，给一个不重复的 <code>id</code>，粘到列表里（注意前后用逗号分隔）。改完保存 → 双击 <code>1_构建.bat</code> → <code>2_部署.bat</code>。</p>
+<div class="warn"><b>反斜杠铁律：</b> 公式里的 LaTeX 命令在题库文件里必须是<b>双反斜杠</b>。例如要写 <code>\neq</code>，文件里要写成 <code>\\neq</code>；矩阵换行写成 <code>\\[6pt]</code>。少写一个反斜杠，公式会渲染出错。对照已有的题抄最稳妥。</div>
+
+<div class="warn"><b>千万不要：</b> 不要为了"刷新题库"去运行 <code>build_bank.py</code>。那是早期从教材源一次性抽取习题的导入器，和线上题库是两回事；运行它会用教材里那份习题覆盖掉你精心维护的 991 题。日常只用 <code>1_构建.bat</code> 和 <code>2_部署.bat</code>。</div>
+
+<h2>四、哪些入口只有你能进（学生看不到）</h2>
+<p>首页已经隐藏了题库与智能题库入口。但作为老师，你可以用<b>直链</b>直接进入：</p>
+<table>
+<tr><th>功能</th><th>直链（把前缀换成你的域名）</th></tr>
+<tr><td>题库与考试系统</td><td><code>https://d95zb7aj5-linalg-3xam256.maozi.io/exam.html</code></td></tr>
+<tr><td>智能题库（PDF 识别）</td><td><code>https://d95zb7aj5-linalg-3xam256.maozi.io/smart_bank.html</code></td></tr>
+<tr><td>老师后台（编辑题库）</td><td><code>https://d95zb7aj5-linalg-3xam256.maozi.io/admin.html</code>（口令 teacher2026）</td></tr>
+</table>
+<p>这些页面学生从首页点不进去，但知道网址的人能进——所以口令和网址请只发给你信任的同事。</p>
+
+<h2>五、学生端有哪些功能（方便你解答学生疑问）</h2>
+
+<h3>① 恢复码同步——换设备不丢数据</h3>
+<p>学生在考试系统里做完题后，数据（错题本、成绩、能量值、掌握度）默认存在当前浏览器的 localStorage。如果换设备、清缓存，数据会丢失。为此我们做了<b>恢复码同步</b>功能：</p>
+<div class="step"><div class="num">1</div><div>在考试系统页面，点击顶部第 5 个标签「<b>数据同步</b>」。</div></div>
+<div class="step"><div class="num">2</div><div>点「<b>生成恢复码</b>」，系统会把当前学习数据编码成一串以 <code>LAXD1.</code> 开头的文本。</div></div>
+<div class="step"><div class="num">3</div><div>复制这串文本，保存好（发到自己的微信文件传输助手、邮箱草稿箱等）。</div></div>
+<div class="step"><div class="num">4</div><div>在新设备上打开考试系统 →「数据同步」→ 把恢复码粘贴进去 → 点「<b>导入</b>」，数据就会<b>智能合并</b>到新设备。</div></div>
+<div class="ok">恢复码同步是<b>零成本方案</b>，不需要服务器和数据库，学生自己操作即可。能量值也会一并同步，多设备能量条保持一致。</div>
+
+<h3>② 二维码扫码——纸质教材联动数字练习</h3>
+<p>纸质教材每节末尾印有二维码，学生用手机扫码后会自动打开数字教材对应小节，并<b>自动展开「学完就练」练习抽屉</b>，无需手动翻找。每章末尾还有「本章测试」二维码，扫码直接进入在线测试。</p>
+<div class="card">扫码链接格式：<code>网站地址/ch1.html?quiz=auto#s11</code><br>
+<code>?quiz=auto</code> 触发自动展开练习抽屉，<code>#s11</code> 定位到第 1 章第 1 节。</div>
+
+<h3>③ 手机端适配</h3>
+<p>教材章节页和考试系统均已适配手机浏览。学生在手机上打开网站，可以正常阅读教材、做练习、参加考试。考试系统在手机上会自动切换为竖版布局，题目和选项均可正常操作。</p>
+
+<h3>④ 能量柱——学习激励</h3>
+<p>学生完成「学完小节」「学完就练」「考试自测」「连击学习」均可获得能量值，右下角常驻能量柱实时显示。点击能量柱可查看成长详情（各章节掌握度柱状图、能量来源明细）。能量值通过恢复码同步实现多设备一致。</p>
+
+<h2>六、怎么更新纸质教材（生成 PDF）</h2>
+<p>纸质教材用 LaTeX 编写，源文件在 <span class="path">WPS云盘\2026年个人工作\线上线下混合\附件\纸质教材\</span> 目录下。</p>
+
+<h3>文件结构</h3>
+<table>
+<tr><th>文件</th><th>作用</th></tr>
+<tr><td><code>main.tex</code></td><td>主文件（封面、版权页、前言、目录、引入各章）</td></tr>
+<tr><td><code>preamble.tex</code></td><td>公共导言（页面尺寸、颜色、定理盒子、二维码命令定义）</td></tr>
+<tr><td><code>chapters/ch1.tex ~ ch5.tex</code></td><td>五章正文</td></tr>
+</table>
+
+<h3>编译生成 PDF</h3>
+<div class="step"><div class="num">1</div><div>电脑需安装 <b>TeX Live</b> 或 <b>MiKTeX</b>（含 <code>xelatex</code> 引擎和 <code>qrcode</code> 宏包）。</div></div>
+<div class="step"><div class="num">2</div><div>打开 CMD，进入纸质教材目录：</div></div>
+<pre><code>cd /d "C:\Users\ldwma\WPSDrive\727261435\WPS云盘\2026年个人工作\线上线下混合\附件\纸质教材"</code></pre>
+<div class="step"><div class="num">3</div><div>编译（需跑两遍以生成目录）：</div></div>
+<pre><code>xelatex main.tex
+xelatex main.tex</code></pre>
+<div class="step"><div class="num">4</div><div>生成的 <code>main.pdf</code> 即为成品（约 182 页，含 33 个二维码）。</div></div>
+
+<h3>二维码命令</h3>
+<p>纸质教材中通过两个命令插入二维码，扫码后自动跳转到数字教材：</p>
+<table>
+<tr><th>命令</th><th>用法示例</th><th>扫码效果</th></tr>
+<tr><td><code>\practiceqr{章号}{小节号}{标题}</code></td><td><code>\practiceqr{1}{11}{行列式的概念}</code></td><td>打开 ch1.html?quiz=auto#s11，自动展开练习</td></tr>
+<tr><td><code>\testqr{章号}</code></td><td><code>\testqr{1}</code></td><td>打开 exam.html?ch=1，进入本章测试</td></tr>
+</table>
+<div class="warn"><b>小节号不带 <code>s</code> 前缀！</b> 命令模板里已有 <code>s</code>，所以 <code>\practiceqr{1}{11}</code> 生成 <code>#s11</code>。写成 <code>\practiceqr{1}{s11}</code> 会变成 <code>#ss11</code> 导致定位失败。</div>
+<div class="warn"><b>网站域名变了怎么办？</b> 二维码里的网址定义在 <code>preamble.tex</code> 的 <code>\ebookbase</code> 命令里。只需改这一处，全书二维码自动更新。</div>
+
+<h2>附：文件地图</h2>
+<table>
+<tr><th>文件 / 文件夹</th><th>作用</th></tr>
+<tr><td><code>线性代数数字教材.html</code></td><td>教材<b>唯一</b>内容源（正文/案例/习题展示）</td></tr>
+<tr><td><code>build_chapters.py</code></td><td>构建脚本：生成五章网页 + 首页 + 复制题库</td></tr>
+<tr><td><code>exam_data.js</code></td><td><b>题库真相源</b>（991 题），后台导出的就是它</td></tr>
+<tr><td><code>exam.html / exam_app.js</code></td><td>题库与考试系统页面</td></tr>
+<tr><td><code>smart_bank.html / smart_app.js</code></td><td>智能题库（PDF 识别）</td></tr>
+<tr><td><code>admin.html / admin_app.js</code></td><td>老师后台（可视化编辑题库）</td></tr>
+<tr><td><code>energy_bar.js / energy_bar.css</code></td><td>右下角常驻能量条</td></tr>
+<tr><td><code>section_quiz.js</code></td><td>"本节练习"右侧抽屉</td></tr>
+<tr><td><code>katex/</code></td><td>离线公式渲染库</td></tr>
+<tr><td><code>教材发布/</code></td><td>构建<b>输出</b>目录（双击 1_构建.bat 生成，别手改这里）</td></tr>
+<tr><td><code>1_构建.bat / 2_部署.bat</code></td><td>双击即用的"构建 / 发布"工具</td></tr>
+<tr><td><code>verify_build.py / verify_content.py</code></td><td>构建后的自检脚本（一般不用管）</td></tr>
+<tr><td><code>removed/</code></td><td>搬家时隔离出来的杂物（确认不要可删）</td></tr>
+<tr><td><code>附件\纸质教材\</code>（在 WPS 云盘）</td><td>纸质教材 LaTeX 源（main.tex + preamble.tex + chapters/），xelatex 编译生成 PDF</td></tr>
+</table>
+
+<div class="card" style="margin-top:28px">
+<b>最小操作清单（贴墙版）：</b><br>
+改教材 → 编辑 <code>线性代数数字教材.html</code><br>
+改习题 → 打开 <code>admin.html</code> 改完「导出」覆盖 <code>exam_data.js</code><br>
+改纸质教材 → 编辑 WPS 云盘 <code>附件\纸质教材\</code> 下的 .tex → <code>xelatex main.tex</code> 连跑两遍<br>
+发布 → 双击 <code>1_构建.bat</code> → 双击 <code>2_部署.bat</code><br>
+忘了就回看本文件：<code>D:\linalg\使用指南.html</code>
+</div>
+
+</body>
+</html>
