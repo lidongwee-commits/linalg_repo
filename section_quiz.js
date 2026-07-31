@@ -328,6 +328,20 @@
 
   function boot() {
     document.querySelectorAll(".sec-quiz[data-sec]").forEach(initCard);
+    /* 扫码自动打开练习：URL 含 ?quiz=auto#sNN 时自动展开对应小节抽屉 */
+    try {
+      var p = new URLSearchParams(location.search);
+      if (p.get("quiz") === "auto" && location.hash) {
+        var secId = location.hash.slice(1);
+        var card = document.querySelector('.sec-quiz[data-sec="' + secId + '"]');
+        if (card) {
+          var h2 = document.getElementById(secId);
+          if (h2) h2.scrollIntoView({ behavior: "smooth", block: "start" });
+          var btn = card.querySelector(".sq-btn");
+          if (btn) setTimeout(function () { btn.click(); }, 600);
+        }
+      }
+    } catch (e) {}
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
