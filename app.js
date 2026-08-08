@@ -20,41 +20,85 @@ window.addEventListener('DOMContentLoaded',function(){
       {left:'$$',right:'$$',display:true},
       {left:'\\[',right:'\\]',display:true},
       {left:'\\(',right:'\\)',display:false}
-    ],throwOnError:false,macros:{'\\xlongequal':'\\overset{#1}{=\\!=\\!=}'},ignoredClasses:['katex','katex-lazy']};
-    // 折叠块内的**正文**公式延迟到展开时再渲染，避免一次性把全部公式塞进 DOM 导致页面巨大、折叠卡顿；
-    // 但 summary（始终可见的标题）里的公式必须立即渲染，否则会出现「标题里的公式点开才显示」．
+    ],throwOnError:false,macros:{'\\xlongequal':'\\overset{#1}{=\\!=\\!=\\!=}'},ignoredClasses:['katex','katex-lazy']};
+
+    // ===== 折叠块公式懒渲染：预渲染 + 增量展开 =====
+    // 把每个未展开的 details 标记为 katex-lazy：渲染器会忽略它，避免首次加载大量 DOM。
+    var lazyBlocks=[];
     document.querySelectorAll('details:not([open])').forEach(function(d){
       d.classList.add('katex-lazy');
+      // summary 里的公式必须立即渲染，否则标题处公式点开才出现。
       var sm=d.querySelector('summary');
       if(sm){
         d.classList.remove('katex-lazy');
         try{ renderMathInElement(sm,katexOpts); fixVdots(sm); }catch(e){}
         d.classList.add('katex-lazy');
       }
+      lazyBlocks.push(d);
     });
+
+    // 先渲染正文区域中不在折叠块内的公式（已经可见）。
     renderMathInElement(document.body,katexOpts);
     fixVdots(document.body);
-    document.querySelectorAll('details.katex-lazy').forEach(function(d){
+
+    // 用 requestAnimationFrame 把 children 分批渲染，避免单一大块阻塞主线程。
+    function renderChildrenIncremental(root, done){
+      var children=Array.prototype.slice.call(root.children).filter(function(c){ return c.tagName!=='SUMMARY'; });
+      var idx=0, BATCH=2; // 每帧最多处理 2 个直接子元素；实测每子元素通常 <25ms
+      function next(){
+        var start=performance.now();
+        while(idx<children.length){
+          renderMathInElement(children[idx], katexOpts);
+          fixVdots(children[idx]);
+          idx++;
+          // 如果本帧已用掉 >12ms，则让出主线程。
+          if((idx % BATCH)===0 && performance.now()-start>12){
+            requestAnimationFrame(next);
+            return;
+          }
+        }
+        if(done) done();
+      }
+      requestAnimationFrame(next);
+    }
+
+    lazyBlocks.forEach(function(d){
       var rendered=false;
-      function onToggle(){
-        if(!d.open) return;            // 收起：不做任何事，避免界面卡顿
-        if(rendered) return;           // 只渲染一次
+      function ensureRender(){
+        if(rendered) return;
         rendered=true;
         d.classList.remove('katex-lazy');
-        d.removeEventListener('toggle',onToggle);
-        // 展开时一次性渲染本折叠块内的公式（整块渲染，已验证可靠）；
-        // 用 requestIdleCallback（退化 setTimeout）让出主线程，避免大块内容抢占滚动．
-        var sched=window.requestIdleCallback
-          ? function(cb){ return requestIdleCallback(cb,{timeout:200}); }
-          : function(cb){ return setTimeout(cb,16); };
-        sched(function(){
-          try{ renderMathInElement(d,katexOpts); fixVdots(d); }catch(e){}
-        });
+        renderChildrenIncremental(d);
       }
-      d.addEventListener('toggle',onToggle);
+      // 用户点击展开时，若还没预渲染，则分片渲染。
+      d.addEventListener('toggle', function(){
+        if(d.open) ensureRender();
+      });
+      d._ensureRender=ensureRender;
     });
+
+    // 预渲染：页面加载后，当折叠块接近视口 200px 时提前开始渲染，
+    // 这样学生正常滚动到该区域再点开时，公式已经准备好了。
+    var io=('IntersectionObserver' in window)
+      ? new IntersectionObserver(function(entries){
+          entries.forEach(function(e){
+            if(e.isIntersecting && e.target._ensureRender){
+              e.target._ensureRender();
+              io.unobserve(e.target);
+            }
+          });
+        }, {rootMargin:'200px 0px 200px 0px', threshold:0})
+      : null;
+    if(io){
+      lazyBlocks.forEach(function(d){ io.observe(d); });
+    } else {
+      // 回退：不支持 IntersectionObserver 的浏览器在页面完全加载后整体预渲染
+      if('requestIdleCallback' in window){
+        requestIdleCallback(function(){ lazyBlocks.forEach(function(d){ d._ensureRender(); }); }, {timeout:2000});
+      }
+    }
   }
-  if(document.getElementById('cv')){ updateDet(); drawProp(); }
+if(document.getElementById('cv')){ updateDet(); drawProp(); }
 });
 
 /* ---------- ① 二阶行列式几何可视化 ---------- */
@@ -79,7 +123,7 @@ function drawMatrix(a,b,c,d,t){
   ctx.fillStyle='rgba(120,160,190,.18)';ctx.fillRect(ox,oy-s,s,s);
   ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+A*s,oy-C*s);
   ctx.lineTo(ox+(A+B)*s,oy-(C+D)*s);ctx.lineTo(ox+B*s,oy-D*s);ctx.closePath();
-  ctx.fillStyle='rgba(45,212,191,.28)';ctx.strokeStyle='#2dd4bf';ctx.lineWidth=2;ctx.fill();ctx.stroke();
+  ctx.fillStyle='rgba(45,212,191,.28)';ctx.strokeStyle='#5b9bd5';ctx.lineWidth=2;ctx.fill();ctx.stroke();
   arrow(ox,oy,ox+A*s,oy-C*s,'#fbbf24');arrow(ox,oy,ox+B*s,oy-D*s,'#f472b6');
 }
 function arrow(x1,y1,x2,y2,col){

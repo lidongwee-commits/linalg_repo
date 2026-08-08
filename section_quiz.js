@@ -304,12 +304,8 @@
     var secTitle = "";
     var h2 = document.getElementById(sec);
     if (h2) secTitle = (h2.textContent || "").replace(/\s+/g, " ").trim();
-    var subtxt = nSec >= BATCH
-      ? "本节 " + nSec + " 道客观题 · 每批 " + BATCH + " 道 · 即时判分"
-      : "本节 " + nSec + " 道客观题 · 同章补足至 " + BATCH + " 道 · 即时判分";
     card.innerHTML = '<div class="sq-head">' +
       '<span class="sq-title">⚡ 学完就练 · 本节小练</span>' +
-      '<span class="sq-sub">' + subtxt + "（练习在右侧展开，不离开教材）</span>" +
       '<button class="sq-btn">开始练习 ▶</button></div>';
     var btn = card.querySelector(".sq-btn");
     btn.addEventListener("click", function () {

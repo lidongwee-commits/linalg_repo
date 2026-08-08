@@ -74,17 +74,17 @@
 
 <h3>一、引例：直流电阻网络的节点电压分析</h3>
 <div class="ex"><div class="lab">引例　新能源微电网的节点电压（基尔霍夫电流定律）</div>
-  <p class="stmt">在电气工程里，求电路中各节点的对地电压是最基础的问题之一．如图 4-1 所示的三节点直流电阻网络：节点①、②经电阻与参考地（0 V）相连，并有电流源向节点①注入电流 \(I=3\,\mathrm{A}\)．设节点①、②对地电压分别为 \(v_1,v_2\)（单位 V）．由<b>基尔霍夫电流定律（KCL，流入 = 流出）</b>，对每个节点列写电流平衡方程：</p>
+  <p class="stmt">在电气工程里，求电路中各节点的对地电压是最基础的问题之一。如图 4-1 所示的三节点直流电阻网络：节点①、②经电阻与参考地（0 V）相连，并有电流源向节点①注入电流 \(I=3\,\mathrm{A}\)。设节点①、②对地电压分别为 \(v_1,v_2\)（单位 V）。由<b>基尔霍夫电流定律（KCL，流入 = 流出）</b>，对每个节点列写电流平衡方程：</p>
   <figure class="px">
     <svg viewBox="0 0 360 200" width="320" role="img" aria-label="三节点直流电阻网络示意">
       <line x1="90" y1="150" x2="270" y2="150" stroke="#6b7c8f" stroke-width="2"/>
       <line x1="120" y1="150" x2="120" y2="158" stroke="#6b7c8f" stroke-width="2"/>
       <line x1="240" y1="150" x2="240" y2="158" stroke="#6b7c8f" stroke-width="2"/>
       <text x="150" y="172" font-size="12" fill="#6b7c8f">参考地 0 V</text>
-      <circle cx="120" cy="70" r="6" fill="#0e7c7c"/>
-      <text x="132" y="66" font-size="13" fill="#0e7c7c" font-weight="700">v₁</text>
-      <circle cx="240" cy="70" r="6" fill="#0e7c7c"/>
-      <text x="252" y="66" font-size="13" fill="#0e7c7c" font-weight="700">v₂</text>
+      <circle cx="120" cy="70" r="6" fill="#1e5aa8"/>
+      <text x="132" y="66" font-size="13" fill="#1e5aa8" font-weight="700">v₁</text>
+      <circle cx="240" cy="70" r="6" fill="#1e5aa8"/>
+      <text x="252" y="66" font-size="13" fill="#1e5aa8" font-weight="700">v₂</text>
       <line x1="120" y1="22" x2="120" y2="64" stroke="#444" stroke-width="1.5"/>
       <circle cx="120" cy="43" r="11" fill="#fff" stroke="#444" stroke-width="1.5"/>
       <text x="120" y="47" font-size="13" fill="#444" text-anchor="middle">I</text>
@@ -99,15 +99,15 @@
       <rect x="232" y="100" width="16" height="9" fill="#fff" stroke="#444"/>
       <text x="262" y="108" font-size="12" fill="#444">1 Ω</text>
     </svg>
-    <div class="px-cap">图 4-1　三节点直流电阻网络：节点①、②经电阻接地，电流源向节点①注入 3 A．</div>
+    <div class="px-cap">图 4-1　三节点直流电阻网络：节点①、②经电阻接地，电流源向节点①注入 3 A。</div>
   </figure>
-  <div class="sol"><span class="mk">列</span>节点①：\(\dfrac{v_1}{2}+\dfrac{v_1-v_2}{1}=3\)，节点②：\(\dfrac{v_2}{1}+\dfrac{v_2-v_1}{1}=0\)．化简得二元一次方程组
+  <div class="sol"><span class="mk">列</span>节点①：\(\dfrac{v_1}{2}+\dfrac{v_1-v_2}{1}=3\)，节点②：\(\dfrac{v_2}{1}+\dfrac{v_2-v_1}{1}=0\)。化简得二元一次方程组
   \[\begin{cases}1.5v_1-v_2=3,\\ -v_1+2v_2=0.\end{cases}\]
   用消元法解得
   \[v_1=3\ \mathrm{V},\quad v_2=1.5\ \mathrm{V}.\]
   若电路中不含任何独立电源（把右端常数项全部置为 \(0\)），方程退化为
   \[\begin{cases}1.5v_1-v_2=0,\\ -v_1+2v_2=0,\end{cases}\]
-  这就是本节的研究对象——常数项全为 \(0\) 的<b>齐次线性方程组</b>：它必有零解 \(v_1=v_2=0\)，而是否有非零解取决于系数矩阵的秩．从《九章算术》以算筹分行布列系数、按行相消，到今天用完全相同的线性代数分析电网与芯片供电，方法一脉相承．</p>
+  这就是本节的研究对象——常数项全为 \(0\) 的<b>齐次线性方程组</b>：它必有零解 \(v_1=v_2=0\)，而是否有非零解取决于系数矩阵的秩。从《九章算术》以算筹分行布列系数、按行相消，到今天用完全相同的线性代数分析电网与芯片供电，方法一脉相承。</p>
 </div></div>
 
 <h3>二、齐次线性方程组的表示形式</h3>
@@ -189,7 +189,7 @@
 <div class="ex"><div class="lab">例 4.1</div>
   <div class="stmt">求齐次线性方程组
   \[\begin{cases}x_1+x_2-x_3-x_4=0,\\ 2x_1-5x_2+3x_3+2x_4=0,\\ 7x_1-7x_2+3x_3+x_4=0\end{cases}\]
-  的基础解系与通解．</div>
+  的基础解系与通解。</div>
   <div class="sol"><span class="mk">解</span>对系数矩阵 \(A\) 作初等行变换化为行最简形：
   \[A=\begin{pmatrix}1&1&-1&-1\\ 2&-5&3&2\\ 7&-7&3&1\end{pmatrix}
   \xrightarrow{r_2-2r_1,\ r_3-7r_1}
@@ -200,34 +200,34 @@
   \begin{pmatrix}1&1&-1&-1\\ 0&1&-\frac57&-\frac47\\ 0&0&0&0\end{pmatrix}
   \xrightarrow{r_1-r_2}
   \begin{pmatrix}1&0&-\frac27&-\frac37\\ 0&1&-\frac57&-\frac47\\ 0&0&0&0\end{pmatrix}.\]
-  \(R(A)=2\lt 4\)，故 \(n-R(A)=2\)，基础解系含 \(2\) 个解向量．同解方程组为
+  \(R(A)=2\lt 4\)，故 \(n-R(A)=2\)，基础解系含 \(2\) 个解向量。同解方程组为
   \[\begin{cases}x_1=\frac27x_3+\frac37x_4,\\[2pt] x_2=\frac57x_3+\frac47x_4.\end{cases}\]
   取 \(x_3,x_4\) 为自由未知量，分别令 \((x_3,x_4)^T=(1,0)^T,\ (0,1)^T\)，得基础解系
   \[\xi_1=\begin{pmatrix}\frac27\\[2pt]\frac57\\[2pt]1\\[2pt]0\end{pmatrix},\qquad \xi_2=\begin{pmatrix}\frac37\\[2pt]\frac47\\[2pt]0\\[2pt]1\end{pmatrix}.\]
-  通解为 \(x=k_1\xi_1+k_2\xi_2\)，\(k_1,k_2\) 为任意常数．（代回验证：\(A\xi_1=0,\ A\xi_2=0\) 均成立．）</div>
+  通解为 \(x=k_1\xi_1+k_2\xi_2\)，\(k_1,k_2\) 为任意常数。（代回验证：\(A\xi_1=0,\ A\xi_2=0\) 均成立。）</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.2（考研真题）</div>
-  <div class="stmt">设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)．</div>
-  <div class="sol"><span class="mk">证</span>将 \(B\) 按列分块为 \(B=(\beta_1,\beta_2,\dots,\beta_s)\)．由 \(AB=O\) 得
+  <div class="stmt">设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)。</div>
+  <div class="sol"><span class="mk">证</span>将 \(B\) 按列分块为 \(B=(\beta_1,\beta_2,\dots,\beta_s)\)。由 \(AB=O\) 得
   \[A\beta_j=0\quad (j=1,2,\dots,s),\]
-  即 \(B\) 的每个列向量都是齐次方程组 \(Ax=0\) 的解向量．</div>
-  <p class="sol">若 \(B=O\)，则显然 \(R(A)+R(B)=R(A)\le n\)．若 \(B\neq O\)，则 \(Ax=0\) 有非零解，解空间维数为 \(n-R(A)\)．又
+  即 \(B\) 的每个列向量都是齐次方程组 \(Ax=0\) 的解向量。</div>
+  <p class="sol">若 \(B=O\)，则显然 \(R(A)+R(B)=R(A)\le n\)。若 \(B\neq O\)，则 \(Ax=0\) 有非零解，解空间维数为 \(n-R(A)\)。又
   \[R(B)=R(\beta_1,\dots,\beta_s)\le n-R(A),\]
-  故 \(R(A)+R(B)\le n\)．</p>
+  故 \(R(A)+R(B)\le n\)。</p>
 </div>
 
 <div class="ex"><div class="lab">例 4.3（含参数）</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}1&2&-2\\ 4&\lambda&3\\ 3&-1&1\end{pmatrix}\)，\(B\) 为 \(3\) 阶非零矩阵，且 \(AB=O\)，求 \(\lambda\)．</div>
-  <div class="sol"><span class="mk">解</span>由 \(AB=O\) 且 \(B\neq O\)，知齐次方程组 \(Ax=0\) 有非零解．\(A\) 为 \(3\) 阶方阵，由推论 4.2，有非零解 \(\iff |A|=0\)．计算
+  <div class="stmt">设 \(A=\begin{pmatrix}1&2&-2\\ 4&\lambda&3\\ 3&-1&1\end{pmatrix}\)，\(B\) 为 \(3\) 阶非零矩阵，且 \(AB=O\)，求 \(\lambda\)。</div>
+  <div class="sol"><span class="mk">解</span>由 \(AB=O\) 且 \(B\neq O\)，知齐次方程组 \(Ax=0\) 有非零解。\(A\) 为 \(3\) 阶方阵，由推论 4.2，有非零解 \(\iff |A|=0\)。计算
   \[|A|=\begin{vmatrix}1&2&-2\\ 4&\lambda&3\\ 3&-1&1\end{vmatrix}=7\lambda+21.\]
-  令 \(7\lambda+21=0\)，得 \(\lambda=-3\)．</div>
+  令 \(7\lambda+21=0\)，得 \(\lambda=-3\)。</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.4（期末真题）</div>
   <div class="stmt">求齐次线性方程组
   \[\begin{cases}x_1-2x_2+4x_3-7x_4=0,\\ 2x_1+x_2-2x_3+x_4=0,\\ 3x_1-x_2+2x_3-4x_4=0\end{cases}\]
-  的基础解系与通解．</div>
+  的基础解系与通解。</div>
   <div class="sol"><span class="mk">解</span>
   \[A=\begin{pmatrix}1&-2&4&-7\\ 2&1&-2&1\\ 3&-1&2&-4\end{pmatrix}
   \xrightarrow{r_2-2r_1,\ r_3-3r_1}
@@ -240,17 +240,17 @@
   \begin{pmatrix}1&-2&4&0\\ 0&1&-2&0\\ 0&0&0&1\end{pmatrix}
   \xrightarrow{r_1+2r_2}
   \begin{pmatrix}1&0&0&0\\ 0&1&-2&0\\ 0&0&0&1\end{pmatrix}.\]
-  \(R(A)=3\lt 4\)，\(n-R(A)=1\)．同解方程组为 \(x_1=0,\ x_2=2x_3,\ x_4=0\)．取自由未知量 \(x_3=1\)，得基础解系
+  \(R(A)=3\lt 4\)，\(n-R(A)=1\)。同解方程组为 \(x_1=0,\ x_2=2x_3,\ x_4=0\)。取自由未知量 \(x_3=1\)，得基础解系
   \[\xi=\begin{pmatrix}0\\2\\1\\0\end{pmatrix}.\]
-  通解为 \(x=k\xi\)（\(k\) 为任意常数）．</div>
+  通解为 \(x=k\xi\)（\(k\) 为任意常数）。</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.5</div>
-  <div class="stmt">设 \(A\) 为 \(m\times n\) 矩阵，证明 \(R(A^TA)=R(A)\)．</div>
+  <div class="stmt">设 \(A\) 为 \(m\times n\) 矩阵，证明 \(R(A^TA)=R(A)\)。</div>
   <div class="sol"><span class="mk">证</span>考察齐次方程组 \(Ax=0\) 与 \(A^TAx=0\) 同解：</div>
-  <p class="sol">若 \(Ax=0\)，则 \(A^TAx=A^T\cdot0=0\)．若 \(A^TAx=0\)，两边左乘 \(x^T\) 得
+  <p class="sol">若 \(Ax=0\)，则 \(A^TAx=A^T\cdot0=0\)。若 \(A^TAx=0\)，两边左乘 \(x^T\) 得
   \[x^TA^TAx=0\ \Longrightarrow\ (Ax)^T(Ax)=0\ \Longrightarrow\ Ax=0.\]
-  故两方程组同解，从而系数矩阵的秩相等，即 \(R(A^TA)=R(A)\)．</p>
+  故两方程组同解，从而系数矩阵的秩相等，即 \(R(A^TA)=R(A)\)。</p>
 </div>
 
 <div class="hist"><div class="lab">数学家与消元法小史</div>
@@ -264,11 +264,11 @@
 
 <h3>一、引例：交通流量守恒</h3>
 <div class="ex"><div class="lab">引例　智慧交通与无人驾驶车流：哪个路口会堵</div>
-  <p class="stmt">某街区有两个相邻路口，车辆流入流出（单位：辆/小时）满足“进=出”的守恒律．设四条路段上的流量为 \(x_1,x_2,x_3,x_4\)，得到联立方程
+  <p class="stmt">某街区有两个相邻路口，车辆流入流出（单位：辆/小时）满足“进=出”的守恒律。设四条路段上的流量为 \(x_1,x_2,x_3,x_4\)，得到联立方程
   \[\begin{cases}x_1-x_2-x_3=-400,\\ x_2+x_3-x_4=500.\end{cases}\]
-  这是<b>非齐次</b>方程组（常数项不全为 \(0\)）．它一般有解吗？解是否唯一？这正是本节要回答的问题．经消元可得同解方程组
+  这是<b>非齐次</b>方程组（常数项不全为 \(0\)）。它一般有解吗？解是否唯一？这正是本节要回答的问题。经消元可得同解方程组
   \[\begin{cases}x_1=100+x_4,\\ x_2=500-x_3+x_4,\end{cases}\]
-  取 \(x_3=s,\ x_4=t\) 得无穷多组解——说明网络流量存在自由调配空间．</p>
+  取 \(x_3=s,\ x_4=t\) 得无穷多组解——说明网络流量存在自由调配空间。</p>
 </div>
 
 <h3>二、表示形式与增广矩阵</h3>
@@ -341,18 +341,18 @@
 
 <h3>六、例题</h3>
 <div class="ex"><div class="lab">例 4.6（抽象题）</div>
-  <div class="stmt">已知非齐次方程组 \(Ax=b\) 有三个特解 \(\eta_1=(1,0,2)^T,\ \eta_2=(-1,2,-1)^T,\ \eta_3=(1,0,0)^T\)，且 \(R(A)=1\)．求 \(Ax=b\) 的通解．</div>
-  <div class="sol"><span class="mk">解</span>由 \(R(A)=1\) 知对应齐次方程组 \(Ax=0\) 的基础解系含 \(n-R(A)=3-1=2\) 个线性无关的解．取
+  <div class="stmt">已知非齐次方程组 \(Ax=b\) 有三个特解 \(\eta_1=(1,0,2)^T,\ \eta_2=(-1,2,-1)^T,\ \eta_3=(1,0,0)^T\)，且 \(R(A)=1\)。求 \(Ax=b\) 的通解。</div>
+  <div class="sol"><span class="mk">解</span>由 \(R(A)=1\) 知对应齐次方程组 \(Ax=0\) 的基础解系含 \(n-R(A)=3-1=2\) 个线性无关的解。取
   \[\xi_1=\eta_1-\eta_3=(0,0,2)^T,\qquad \xi_2=\eta_2-\eta_3=(-2,2,-1)^T,\]
-  由性质 4.3，\(\xi_1,\xi_2\) 均是 \(Ax=0\) 的解；它们显然线性无关，故可作为基础解系．于是通解为
+  由性质 4.3，\(\xi_1,\xi_2\) 均是 \(Ax=0\) 的解；它们显然线性无关，故可作为基础解系。于是通解为
   \[x=\eta_3+k_1\xi_1+k_2\xi_2=\begin{pmatrix}1\\0\\0\end{pmatrix}+k_1\begin{pmatrix}0\\0\\2\end{pmatrix}+k_2\begin{pmatrix}-2\\2\\-1\end{pmatrix}.\]
-  （验证：\(\eta_3\) 与 \(\eta_1=\eta_3+\xi_1\)、\(\eta_2=\eta_3+\xi_2\) 均为已知特解，自洽．）</div>
+  （验证：\(\eta_3\) 与 \(\eta_1=\eta_3+\xi_1\)、\(\eta_2=\eta_3+\xi_2\) 均为已知特解，自洽。）</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.7</div>
   <div class="stmt">求非齐次线性方程组
   \[\begin{cases}x_1-x_2-x_3+x_4=0,\\ x_1-x_2+x_3-3x_4=1,\\ x_1-x_2-2x_3+3x_4=-\frac12\end{cases}\]
-  的通解．</div>
+  的通解。</div>
   <div class="sol"><span class="mk">解</span>对增广矩阵作初等行变换化为行最简形：
   \[\left(\begin{array}{cccc|c}1&-1&-1&1&0\\ 1&-1&1&-3&1\\ 1&-1&-2&3&-\frac12\end{array}\right)
   \xrightarrow{r_2-r_1,\ r_3-r_1}
@@ -361,19 +361,19 @@
   \left(\begin{array}{cccc|c}1&-1&-1&1&0\\ 0&0&0&0&0\\ 0&0&-1&2&-\frac12\end{array}\right)
   \xrightarrow{-r_3,\ \text{换行}}
   \left(\begin{array}{cccc|c}1&-1&0&-1&\frac12\\ 0&0&1&-2&\frac12\\ 0&0&0&0&0\end{array}\right).\]
-  \(R(A)=R(A,b)=2\lt 4\)，故有无穷多解．同解方程组为
+  \(R(A)=R(A,b)=2\lt 4\)，故有无穷多解。同解方程组为
   \[\begin{cases}x_1=x_2+x_4+\frac12,\\[2pt] x_3=2x_4+\frac12.\end{cases}\]
-  取自由未知量 \(x_2=0,\ x_4=0\)，得一个特解 \(\eta^*=\left(\frac12,0,\frac12,0\right)^T\)．对应齐次方程组的基础解系可取
+  取自由未知量 \(x_2=0,\ x_4=0\)，得一个特解 \(\eta^*=\left(\frac12,0,\frac12,0\right)^T\)。对应齐次方程组的基础解系可取
   \[\xi_1=\begin{pmatrix}1\\1\\0\\0\end{pmatrix},\qquad \xi_2=\begin{pmatrix}1\\0\\2\\1\end{pmatrix}\]
-  （分别令 \((x_2,x_4)^T=(1,0)^T,\ (0,1)^T\) 得到）．故通解为
+  （分别令 \((x_2,x_4)^T=(1,0)^T,\ (0,1)^T\) 得到）。故通解为
   \[x=\eta^*+k_1\xi_1+k_2\xi_2,\quad k_1,k_2\in\mathbb{R}.\]
-  （代回验证：\(A\eta^*=b,\ A\xi_1=0,\ A\xi_2=0\) 均成立．）</div>
+  （代回验证：\(A\eta^*=b,\ A\xi_1=0,\ A\xi_2=0\) 均成立。）</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.8（含参数）</div>
   <div class="stmt">问 \(a\) 取何值时，非齐次方程组
   \[\begin{cases}ax_1+x_2+x_3=a-3,\\ x_1+ax_2+x_3=-2,\\ x_1+x_2+ax_3=-2\end{cases}\]
-  有唯一解？无解？有无穷多解？并在有无穷多解时求其通解．</div>
+  有唯一解？无解？有无穷多解？并在有无穷多解时求其通解。</div>
   <div class="sol"><span class="mk">解一</span>（增广矩阵消元）对增广矩阵作行变换：
   \[\left(\begin{array}{ccc|c}a&1&1&a-3\\ 1&a&1&-2\\ 1&1&a&-2\end{array}\right)
   \xrightarrow{r_1\leftrightarrow r_2}
@@ -390,30 +390,656 @@
   \(R(A)=2\neq R(A,b)=3\)，方程组<b>无解</b>；</p>
   <p class="sol">（3）当 \(a=1\) 时，
   \[\left(\begin{array}{ccc|c}1&1&1&-2\\ 1&1&1&-2\\ 1&1&1&-2\end{array}\right)\xrightarrow{}\left(\begin{array}{ccc|c}1&1&1&-2\\ 0&0&0&0\\ 0&0&0&0\end{array}\right),\]
-  \(R(A)=R(A,b)=1\lt 3\)，方程组<b>无穷多解</b>．同解方程组为 \(x_1+x_2+x_3=-2\)，取特解 \(\eta^*=(-2,0,0)^T\)，对应齐次基础解系 \(\xi_1=(-1,1,0)^T,\ \xi_2=(-1,0,1)^T\)，通解为
+  \(R(A)=R(A,b)=1\lt 3\)，方程组<b>无穷多解</b>。同解方程组为 \(x_1+x_2+x_3=-2\)，取特解 \(\eta^*=(-2,0,0)^T\)，对应齐次基础解系 \(\xi_1=(-1,1,0)^T,\ \xi_2=(-1,0,1)^T\)，通解为
   \[x=\eta^*+k_1\xi_1+k_2\xi_2,\quad k_1,k_2\in\mathbb{R}.\]</p>
 </div>
 
 <div class="ex"><div class="lab">例 4.9（期末真题）</div>
-  <div class="stmt">设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)．已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值．</div>
-  <div class="sol"><span class="mk">解</span>\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，等价于向量方程 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\beta\)（即 \(Ax=b\)）无解，即 \(R(\alpha_1,\alpha_2,\alpha_3)\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)\)．对矩阵 \((\alpha_1,\alpha_2,\alpha_3,\beta)\) 作行变换：
+  <div class="stmt">设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)。已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值。</div>
+  <div class="sol"><span class="mk">解</span>\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，等价于向量方程 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\beta\)（即 \(Ax=b\)）无解，即 \(R(\alpha_1,\alpha_2,\alpha_3)\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)\)。对矩阵 \((\alpha_1,\alpha_2,\alpha_3,\beta)\) 作行变换：
   \[\begin{pmatrix}1&2&3&4\\ 0&-1&1&-1\\ -1&-2&t&-5\\ 2&6&4&10\end{pmatrix}
   \xrightarrow{\substack{r_3+r_1\\ r_4-2r_1}}
   \begin{pmatrix}1&2&3&4\\ 0&-1&1&-1\\ 0&0&t+3&-1\\ 0&2&-2&2\end{pmatrix}
   \xrightarrow{r_4+2r_2}
   \begin{pmatrix}1&2&3&4\\ 0&-1&1&-1\\ 0&0&t+3&-1\\ 0&0&0&0\end{pmatrix}.\]
-  当 \(t=-3\) 时，\(R(\alpha_1,\alpha_2,\alpha_3)=2\) 而 \(R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，两者不等，\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，故 \(t=-3\)．</div>
+  当 \(t=-3\) 时，\(R(\alpha_1,\alpha_2,\alpha_3)=2\) 而 \(R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，两者不等，\(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，故 \(t=-3\)。</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.10（考研真题）</div>
-  <div class="stmt">设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1+\alpha_2+\alpha_3+\alpha_4\)．求 \(Ax=\beta\) 的通解．</div>
-  <div class="sol"><span class="mk">解</span>由 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关且 \(\alpha_1=2\alpha_2-\alpha_3\)，知 \(R(A)=3\)，故 \(Ax=0\) 的基础解系含 \(4-3=1\) 个向量．因
+  <div class="stmt">设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1+\alpha_2+\alpha_3+\alpha_4\)。求 \(Ax=\beta\) 的通解。</div>
+  <div class="sol"><span class="mk">解</span>由 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关且 \(\alpha_1=2\alpha_2-\alpha_3\)，知 \(R(A)=3\)，故 \(Ax=0\) 的基础解系含 \(4-3=1\) 个向量。因
   \[\alpha_1-2\alpha_2+\alpha_3+0\alpha_4=0,\]
-  故 \(\xi=(1,-2,1,0)^T\) 是 \(Ax=0\) 的一个基础解系．又
+  故 \(\xi=(1,-2,1,0)^T\) 是 \(Ax=0\) 的一个基础解系。又
   \[A\begin{pmatrix}1\\1\\1\\1\end{pmatrix}=\alpha_1+\alpha_2+\alpha_3+\alpha_4=\beta,\]
-  故 \(\eta^*=(1,1,1,1)^T\) 是 \(Ax=\beta\) 的一个特解．于是通解为
+  故 \(\eta^*=(1,1,1,1)^T\) 是 \(Ax=\beta\) 的一个特解。于是通解为
   \[x=\eta^*+k\xi=\begin{pmatrix}1\\1\\1\\1\end{pmatrix}+k\begin{pmatrix}1\\-2\\1\\0\end{pmatrix},\quad k\in\mathbb{R}.\]</div>
 </div>
+
+
+      
+      <div class="case"><div class="lab">应用探微 · CT 断层扫描：医院那台机器，解的就是你正在学的方程组</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+      <p><b>一个看不见内部的难题。</b>1967 年，英国 EMI 公司的工程师 Hounsfield 想做一件当时被认为不可能的事：<b>在不切开人体的前提下，看清体内任意一个横截面。</b>普通 X 光片做不到——它把整条射线路径上的所有组织压成一张重叠的影子，骨头挡住了后面的一切。</p>
+
+      <p>Hounsfield 的想法是：既然一条射线只能告诉我们"沿途一共衰减了多少"，那就<b>换很多个角度反复地照</b>，再从这一大堆"总和"里，把每一点的密度反解出来。1971 年，第一台 CT 在伦敦 Atkinson Morley 医院扫描了第一位病人；1979 年，Hounsfield 与理论物理学家 Cormack 共获诺贝尔生理学或医学奖。</p>
+
+      <p>而这个"从一堆总和反解出每一点"的过程，用的就是本节刚学的<b>非齐次线性方程组</b>。</p>
+
+      <div class="ct-step">第一步　把物理问题翻译成方程</div>
+
+      <p>把待观察的横截面划分成若干小方块（像素），第 \(j\) 个小方块的<b>衰减系数</b>记为 \(x_j\)，它由该处的组织密度决定（骨骼大、软组织小、空气近于零），这就是我们要求的未知量。</p>
+
+      <p>一束 X 射线从人体一侧射入、另一侧射出，探测器测到的强度衰减量，等于<b>该射线穿过的所有小方块的衰减系数之和</b>（这里忽略路径长度差异，取等权简化）。于是</p>
+
+      <p class="ct-key">一条射线 ⟶ 一个线性方程；一次扫描的上百万条射线 ⟶ 一个巨大的线性方程组 \(A\boldsymbol{x}=\boldsymbol{b}\)</p>
+
+      <p>系数矩阵 \(A\) 的每一行对应一条射线：射线穿过的像素处填 \(1\)，没穿过的填 \(0\)；\(\boldsymbol{b}\) 是探测器读出的测量值；\(\boldsymbol{x}\) 就是我们想要的那张断层图像。<b>重建图像，就是解这个方程组。</b>
+<!-- ===== 图1 分辨率阶梯 ===== -->
+<figure class="ct-fig">
+<svg class="ctfig" viewBox="0 0 624 194" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CT 断面从连续到离散的分辨率阶梯">
+  <g transform="translate(0,22)">
+    <text class="ctfig-t" x="69" y="-7" text-anchor="middle">连续断面</text>
+    <rect x="0" y="0" width="138" height="138" fill="#0f0f0f"/>
+    <ellipse cx="69.0" cy="69.0" rx="47.6" ry="63.5" fill="#f0f0f0"/>
+      <ellipse cx="69.0" cy="70.3" rx="45.7" ry="60.3" fill="#626262"/>
+      <ellipse cx="84.2" cy="69.0" rx="7.6" ry="21.4" fill="#0f0f0f" transform="rotate(18 84.2 69.0)"/>
+      <ellipse cx="53.8" cy="69.0" rx="11.0" ry="28.3" fill="#0f0f0f" transform="rotate(-18 53.8 69.0)"/>
+      <ellipse cx="69.0" cy="44.9" rx="14.5" ry="17.2" fill="#7a7a7a"/>
+      <ellipse cx="69.0" cy="62.1" rx="3.2" ry="3.2" fill="#7a7a7a"/>
+      <ellipse cx="69.0" cy="75.9" rx="3.2" ry="3.2" fill="#7a7a7a"/>
+      <ellipse cx="63.5" cy="110.7" rx="3.2" ry="1.6" fill="#7a7a7a"/>
+      <ellipse cx="69.0" cy="110.8" rx="1.6" ry="1.6" fill="#7a7a7a"/>
+      <ellipse cx="73.1" cy="110.7" rx="1.6" ry="3.2" fill="#7a7a7a"/>
+    <rect x="0" y="0" width="138" height="138" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <text class="ctfig-s" x="69" y="155" text-anchor="middle">标准测试图像的连续密度</text>
+  </g>
+  <g class="ctfig-ar"><path d="M144,91 h12" marker-end="url(#ctArrow)"/></g>
+  <g transform="translate(162,22)">
+    <text class="ctfig-t" x="69" y="-7" text-anchor="middle">16×16 网格</text>
+    <rect x="0" y="0" width="138" height="138" fill="#0f0f0f"/>
+    <image x="0" y="0" width="138" height="138" style="image-rendering:pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAA40lEQVR42jXPPUtCURyA8ef8L4eOXfJI5CWcjOAavSzZLg6OLSE0O7T1BfosDs7N0SQRLUEvNFWb3GtGhOVScAlO99igrb/peZQFoHXIaR8AZYHVs+iB3fH++xz0/dUbUGnsuRl0fRKs8JmvyREI6FriSmFYIqlpCAzHpN2dZX5HBVe9QSBOs5/zXN1ekMYgAIs83b32QwAEcmyFl49JFXIQyFB1xt/ROmQgMCyysRVG7QWKQ1AW3XvETwNgu+MQcAODLBkwg3mp7j17xMtmx0FgwF8flCfT2J58/d9Cq8nlbP8PJvRExA/NH2QAAAAASUVORK5CYII="/>
+    <rect x="0" y="0" width="138" height="138" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <text class="ctfig-s" x="69" y="155" text-anchor="middle">256 个未知数</text>
+  </g>
+  <g class="ctfig-ar"><path d="M306,91 h12" marker-end="url(#ctArrow)"/></g>
+  <g transform="translate(324,22)">
+    <text class="ctfig-t" x="69" y="-7" text-anchor="middle">8×8 网格</text>
+    <rect x="0" y="0" width="138" height="138" fill="#0f0f0f"/>
+    <rect x="0.00" y="0.00" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="0.00" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="34.50" y="0.00" width="17.25" height="17.25" fill="#888888"/>
+      <rect x="51.75" y="0.00" width="17.25" height="17.25" fill="#f0f0f0"/>
+      <rect x="69.00" y="0.00" width="17.25" height="17.25" fill="#f0f0f0"/>
+      <rect x="86.25" y="0.00" width="17.25" height="17.25" fill="#888888"/>
+      <rect x="103.50" y="0.00" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="120.75" y="0.00" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="17.25" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="17.25" width="17.25" height="17.25" fill="#6a6a6a"/>
+      <rect x="34.50" y="17.25" width="17.25" height="17.25" fill="#ebebeb"/>
+      <rect x="51.75" y="17.25" width="17.25" height="17.25" fill="#bebebe"/>
+      <rect x="69.00" y="17.25" width="17.25" height="17.25" fill="#bebebe"/>
+      <rect x="86.25" y="17.25" width="17.25" height="17.25" fill="#ebebeb"/>
+      <rect x="103.50" y="17.25" width="17.25" height="17.25" fill="#6a6a6a"/>
+      <rect x="120.75" y="17.25" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="34.50" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="34.50" width="17.25" height="17.25" fill="#c2c2c2"/>
+      <rect x="34.50" y="34.50" width="17.25" height="17.25" fill="#929292"/>
+      <rect x="51.75" y="34.50" width="17.25" height="17.25" fill="#d3d3d3"/>
+      <rect x="69.00" y="34.50" width="17.25" height="17.25" fill="#dbdbdb"/>
+      <rect x="86.25" y="34.50" width="17.25" height="17.25" fill="#afafaf"/>
+      <rect x="103.50" y="34.50" width="17.25" height="17.25" fill="#c2c2c2"/>
+      <rect x="120.75" y="34.50" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="51.75" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="51.75" width="17.25" height="17.25" fill="#c9c9c9"/>
+      <rect x="34.50" y="51.75" width="17.25" height="17.25" fill="#686868"/>
+      <rect x="51.75" y="51.75" width="17.25" height="17.25" fill="#878787"/>
+      <rect x="69.00" y="51.75" width="17.25" height="17.25" fill="#a1a1a1"/>
+      <rect x="86.25" y="51.75" width="17.25" height="17.25" fill="#868686"/>
+      <rect x="103.50" y="51.75" width="17.25" height="17.25" fill="#c9c9c9"/>
+      <rect x="120.75" y="51.75" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="69.00" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="69.00" width="17.25" height="17.25" fill="#c3c3c3"/>
+      <rect x="34.50" y="69.00" width="17.25" height="17.25" fill="#8d8d8d"/>
+      <rect x="51.75" y="69.00" width="17.25" height="17.25" fill="#434343"/>
+      <rect x="69.00" y="69.00" width="17.25" height="17.25" fill="#6b6b6b"/>
+      <rect x="86.25" y="69.00" width="17.25" height="17.25" fill="#a5a5a5"/>
+      <rect x="103.50" y="69.00" width="17.25" height="17.25" fill="#c3c3c3"/>
+      <rect x="120.75" y="69.00" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="86.25" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="86.25" width="17.25" height="17.25" fill="#acacac"/>
+      <rect x="34.50" y="86.25" width="17.25" height="17.25" fill="#b4b4b4"/>
+      <rect x="51.75" y="86.25" width="17.25" height="17.25" fill="#898989"/>
+      <rect x="69.00" y="86.25" width="17.25" height="17.25" fill="#aeaeae"/>
+      <rect x="86.25" y="86.25" width="17.25" height="17.25" fill="#b5b5b5"/>
+      <rect x="103.50" y="86.25" width="17.25" height="17.25" fill="#acacac"/>
+      <rect x="120.75" y="86.25" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="103.50" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="103.50" width="17.25" height="17.25" fill="#5b5b5b"/>
+      <rect x="34.50" y="103.50" width="17.25" height="17.25" fill="#c8c8c8"/>
+      <rect x="51.75" y="103.50" width="17.25" height="17.25" fill="#b8b8b8"/>
+      <rect x="69.00" y="103.50" width="17.25" height="17.25" fill="#b8b8b8"/>
+      <rect x="86.25" y="103.50" width="17.25" height="17.25" fill="#c8c8c8"/>
+      <rect x="103.50" y="103.50" width="17.25" height="17.25" fill="#5b5b5b"/>
+      <rect x="120.75" y="103.50" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="0.00" y="120.75" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="17.25" y="120.75" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="34.50" y="120.75" width="17.25" height="17.25" fill="#6c6c6c"/>
+      <rect x="51.75" y="120.75" width="17.25" height="17.25" fill="#b9b9b9"/>
+      <rect x="69.00" y="120.75" width="17.25" height="17.25" fill="#b9b9b9"/>
+      <rect x="86.25" y="120.75" width="17.25" height="17.25" fill="#6c6c6c"/>
+      <rect x="103.50" y="120.75" width="17.25" height="17.25" fill="#0f0f0f"/>
+      <rect x="120.75" y="120.75" width="17.25" height="17.25" fill="#0f0f0f"/>
+    <g stroke="#1e5aa8" stroke-width="0.8" opacity="0.55"><line x1="17.25" y1="0" x2="17.25" y2="138"/><line x1="0" y1="17.25" x2="138" y2="17.25"/><line x1="34.50" y1="0" x2="34.50" y2="138"/><line x1="0" y1="34.50" x2="138" y2="34.50"/><line x1="51.75" y1="0" x2="51.75" y2="138"/><line x1="0" y1="51.75" x2="138" y2="51.75"/><line x1="69.00" y1="0" x2="69.00" y2="138"/><line x1="0" y1="69.00" x2="138" y2="69.00"/><line x1="86.25" y1="0" x2="86.25" y2="138"/><line x1="0" y1="86.25" x2="138" y2="86.25"/><line x1="103.50" y1="0" x2="103.50" y2="138"/><line x1="0" y1="103.50" x2="138" y2="103.50"/><line x1="120.75" y1="0" x2="120.75" y2="138"/><line x1="0" y1="120.75" x2="138" y2="120.75"/></g>
+    <rect x="0" y="0" width="138" height="138" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <text class="ctfig-s" x="69" y="155" text-anchor="middle">64 个未知数</text>
+  </g>
+  <g class="ctfig-ar"><path d="M468,91 h12" marker-end="url(#ctArrow)"/></g>
+  <g transform="translate(486,22)">
+    <text class="ctfig-t" x="69" y="-7" text-anchor="middle">4×4 网格</text>
+    <rect x="0" y="0" width="138" height="138" fill="#0f0f0f"/>
+    <rect x="0.00" y="0.00" width="34.50" height="34.50" fill="#242424"/>
+      <rect x="34.50" y="0.00" width="34.50" height="34.50" fill="#f0f0f0"/>
+      <rect x="69.00" y="0.00" width="34.50" height="34.50" fill="#f0f0f0"/>
+      <rect x="103.50" y="0.00" width="34.50" height="34.50" fill="#242424"/>
+      <rect x="0.00" y="34.50" width="34.50" height="34.50" fill="#979797"/>
+      <rect x="34.50" y="34.50" width="34.50" height="34.50" fill="#afafaf"/>
+      <rect x="69.00" y="34.50" width="34.50" height="34.50" fill="#cbcbcb"/>
+      <rect x="103.50" y="34.50" width="34.50" height="34.50" fill="#979797"/>
+      <rect x="0.00" y="69.00" width="34.50" height="34.50" fill="#8b8b8b"/>
+      <rect x="34.50" y="69.00" width="34.50" height="34.50" fill="#999999"/>
+      <rect x="69.00" y="69.00" width="34.50" height="34.50" fill="#b7b7b7"/>
+      <rect x="103.50" y="69.00" width="34.50" height="34.50" fill="#8b8b8b"/>
+      <rect x="0.00" y="103.50" width="34.50" height="34.50" fill="#0f0f0f"/>
+      <rect x="34.50" y="103.50" width="34.50" height="34.50" fill="#c8c8c8"/>
+      <rect x="69.00" y="103.50" width="34.50" height="34.50" fill="#c8c8c8"/>
+      <rect x="103.50" y="103.50" width="34.50" height="34.50" fill="#0f0f0f"/>
+    <g stroke="#1e5aa8" stroke-width="0.8" opacity="0.55"><line x1="34.50" y1="0" x2="34.50" y2="138"/><line x1="0" y1="34.50" x2="138" y2="34.50"/><line x1="69.00" y1="0" x2="69.00" y2="138"/><line x1="0" y1="69.00" x2="138" y2="69.00"/><line x1="103.50" y1="0" x2="103.50" y2="138"/><line x1="0" y1="103.50" x2="138" y2="103.50"/></g>
+    <rect x="0" y="0" width="138" height="138" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <text class="ctfig-s" x="69" y="155" text-anchor="middle">16 个未知数</text>
+  </g>
+  <defs><marker id="ctArrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1e5aa8"/></marker></defs>
+</svg>
+<figcaption><b>图 1　从人体到未知数。</b>最左是 CT 重建出的连续断面（这里用 Shepp-Logan 头部体模——1974 年提出、至今仍是全世界检验 CT 重建算法的标准测试图像）。向右每一步都把断面切得更粗：网格越粗，未知数越少、越容易解，但图像也越模糊。教材里为了能手算，用的是最右边的 <span class="ct-hl">4×4</span>；医院那台机器用的是 512×512。</figcaption>
+</figure>
+
+
+<!-- ===== 图2 射线成方程 ===== -->
+<figure class="ct-fig">
+<svg class="ctfig" viewBox="-18 0 572 218" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三种方向的射线各自给出一个线性方程">
+  <defs><marker id="ctRay" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#e11d48"/></marker></defs>
+  <g transform="translate(0,20)">
+    <text class="ctfig-t" x="76" y="-6" text-anchor="middle">水平射线</text>
+    <rect x="0.0" y="0.0" width="38.0" height="38.0" fill="#242424"/>
+      <rect x="38.0" y="0.0" width="38.0" height="38.0" fill="#f0f0f0"/>
+      <rect x="76.0" y="0.0" width="38.0" height="38.0" fill="#f0f0f0"/>
+      <rect x="114.0" y="0.0" width="38.0" height="38.0" fill="#242424"/>
+      <rect x="0.0" y="38.0" width="38.0" height="38.0" fill="#979797"/>
+      <rect x="38.0" y="38.0" width="38.0" height="38.0" fill="#afafaf"/>
+      <rect x="76.0" y="38.0" width="38.0" height="38.0" fill="#cbcbcb"/>
+      <rect x="114.0" y="38.0" width="38.0" height="38.0" fill="#979797"/>
+      <rect x="0.0" y="76.0" width="38.0" height="38.0" fill="#8b8b8b"/>
+      <rect x="38.0" y="76.0" width="38.0" height="38.0" fill="#999999"/>
+      <rect x="76.0" y="76.0" width="38.0" height="38.0" fill="#b7b7b7"/>
+      <rect x="114.0" y="76.0" width="38.0" height="38.0" fill="#8b8b8b"/>
+      <rect x="0.0" y="114.0" width="38.0" height="38.0" fill="#0f0f0f"/>
+      <rect x="38.0" y="114.0" width="38.0" height="38.0" fill="#c8c8c8"/>
+      <rect x="76.0" y="114.0" width="38.0" height="38.0" fill="#c8c8c8"/>
+      <rect x="114.0" y="114.0" width="38.0" height="38.0" fill="#0f0f0f"/>
+      <line x1="38.0" y1="0" x2="38.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="38.0" x2="152" y2="38.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="76.0" y1="0" x2="76.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="76.0" x2="152" y2="76.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="114.0" y1="0" x2="114.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="114.0" x2="152" y2="114.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <text class="ctfig-x" x="19.0" y="23.0" text-anchor="middle">1</text>
+      <text class="ctfig-x" x="57.0" y="23.0" text-anchor="middle">2</text>
+      <text class="ctfig-x" x="95.0" y="23.0" text-anchor="middle">3</text>
+      <text class="ctfig-x" x="133.0" y="23.0" text-anchor="middle">4</text>
+      <text class="ctfig-x" x="19.0" y="61.0" text-anchor="middle">5</text>
+      <text class="ctfig-x" x="57.0" y="61.0" text-anchor="middle">6</text>
+      <text class="ctfig-x" x="95.0" y="61.0" text-anchor="middle">7</text>
+      <text class="ctfig-x" x="133.0" y="61.0" text-anchor="middle">8</text>
+      <text class="ctfig-x" x="19.0" y="99.0" text-anchor="middle">9</text>
+      <text class="ctfig-x" x="57.0" y="99.0" text-anchor="middle">10</text>
+      <text class="ctfig-x" x="95.0" y="99.0" text-anchor="middle">11</text>
+      <text class="ctfig-x" x="133.0" y="99.0" text-anchor="middle">12</text>
+      <text class="ctfig-x" x="19.0" y="137.0" text-anchor="middle">13</text>
+      <text class="ctfig-x" x="57.0" y="137.0" text-anchor="middle">14</text>
+      <text class="ctfig-x" x="95.0" y="137.0" text-anchor="middle">15</text>
+      <text class="ctfig-x" x="133.0" y="137.0" text-anchor="middle">16</text>
+    <rect x="0.0" y="0.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="38.0" y="0.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="76.0" y="0.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="114.0" y="0.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="0" y="0" width="152" height="152" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <path d="M-14,57.0 H166" stroke="#e11d48" stroke-width="2.2" fill="none" marker-end="url(#ctRay)"/>
+    <text class="ctfig-e" x="76" y="178" text-anchor="middle">读数 = x1+x2+x3+x4</text>
+  </g>
+  <g transform="translate(192,20)">
+    <text class="ctfig-t" x="76" y="-6" text-anchor="middle">竖直射线</text>
+    <rect x="0.0" y="0.0" width="38.0" height="38.0" fill="#242424"/>
+      <rect x="38.0" y="0.0" width="38.0" height="38.0" fill="#f0f0f0"/>
+      <rect x="76.0" y="0.0" width="38.0" height="38.0" fill="#f0f0f0"/>
+      <rect x="114.0" y="0.0" width="38.0" height="38.0" fill="#242424"/>
+      <rect x="0.0" y="38.0" width="38.0" height="38.0" fill="#979797"/>
+      <rect x="38.0" y="38.0" width="38.0" height="38.0" fill="#afafaf"/>
+      <rect x="76.0" y="38.0" width="38.0" height="38.0" fill="#cbcbcb"/>
+      <rect x="114.0" y="38.0" width="38.0" height="38.0" fill="#979797"/>
+      <rect x="0.0" y="76.0" width="38.0" height="38.0" fill="#8b8b8b"/>
+      <rect x="38.0" y="76.0" width="38.0" height="38.0" fill="#999999"/>
+      <rect x="76.0" y="76.0" width="38.0" height="38.0" fill="#b7b7b7"/>
+      <rect x="114.0" y="76.0" width="38.0" height="38.0" fill="#8b8b8b"/>
+      <rect x="0.0" y="114.0" width="38.0" height="38.0" fill="#0f0f0f"/>
+      <rect x="38.0" y="114.0" width="38.0" height="38.0" fill="#c8c8c8"/>
+      <rect x="76.0" y="114.0" width="38.0" height="38.0" fill="#c8c8c8"/>
+      <rect x="114.0" y="114.0" width="38.0" height="38.0" fill="#0f0f0f"/>
+      <line x1="38.0" y1="0" x2="38.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="38.0" x2="152" y2="38.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="76.0" y1="0" x2="76.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="76.0" x2="152" y2="76.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="114.0" y1="0" x2="114.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="114.0" x2="152" y2="114.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <text class="ctfig-x" x="19.0" y="23.0" text-anchor="middle">1</text>
+      <text class="ctfig-x" x="57.0" y="23.0" text-anchor="middle">2</text>
+      <text class="ctfig-x" x="95.0" y="23.0" text-anchor="middle">3</text>
+      <text class="ctfig-x" x="133.0" y="23.0" text-anchor="middle">4</text>
+      <text class="ctfig-x" x="19.0" y="61.0" text-anchor="middle">5</text>
+      <text class="ctfig-x" x="57.0" y="61.0" text-anchor="middle">6</text>
+      <text class="ctfig-x" x="95.0" y="61.0" text-anchor="middle">7</text>
+      <text class="ctfig-x" x="133.0" y="61.0" text-anchor="middle">8</text>
+      <text class="ctfig-x" x="19.0" y="99.0" text-anchor="middle">9</text>
+      <text class="ctfig-x" x="57.0" y="99.0" text-anchor="middle">10</text>
+      <text class="ctfig-x" x="95.0" y="99.0" text-anchor="middle">11</text>
+      <text class="ctfig-x" x="133.0" y="99.0" text-anchor="middle">12</text>
+      <text class="ctfig-x" x="19.0" y="137.0" text-anchor="middle">13</text>
+      <text class="ctfig-x" x="57.0" y="137.0" text-anchor="middle">14</text>
+      <text class="ctfig-x" x="95.0" y="137.0" text-anchor="middle">15</text>
+      <text class="ctfig-x" x="133.0" y="137.0" text-anchor="middle">16</text>
+    <rect x="38.0" y="0.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="38.0" y="38.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="38.0" y="76.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="38.0" y="114.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="0" y="0" width="152" height="152" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <path d="M57.0,-14 V166" stroke="#e11d48" stroke-width="2.2" fill="none" marker-end="url(#ctRay)"/>
+    <text class="ctfig-e" x="76" y="178" text-anchor="middle">读数 = x2+x6+x10+x14</text>
+  </g>
+  <g transform="translate(384,20)">
+    <text class="ctfig-t" x="76" y="-6" text-anchor="middle">对角射线</text>
+    <rect x="0.0" y="0.0" width="38.0" height="38.0" fill="#242424"/>
+      <rect x="38.0" y="0.0" width="38.0" height="38.0" fill="#f0f0f0"/>
+      <rect x="76.0" y="0.0" width="38.0" height="38.0" fill="#f0f0f0"/>
+      <rect x="114.0" y="0.0" width="38.0" height="38.0" fill="#242424"/>
+      <rect x="0.0" y="38.0" width="38.0" height="38.0" fill="#979797"/>
+      <rect x="38.0" y="38.0" width="38.0" height="38.0" fill="#afafaf"/>
+      <rect x="76.0" y="38.0" width="38.0" height="38.0" fill="#cbcbcb"/>
+      <rect x="114.0" y="38.0" width="38.0" height="38.0" fill="#979797"/>
+      <rect x="0.0" y="76.0" width="38.0" height="38.0" fill="#8b8b8b"/>
+      <rect x="38.0" y="76.0" width="38.0" height="38.0" fill="#999999"/>
+      <rect x="76.0" y="76.0" width="38.0" height="38.0" fill="#b7b7b7"/>
+      <rect x="114.0" y="76.0" width="38.0" height="38.0" fill="#8b8b8b"/>
+      <rect x="0.0" y="114.0" width="38.0" height="38.0" fill="#0f0f0f"/>
+      <rect x="38.0" y="114.0" width="38.0" height="38.0" fill="#c8c8c8"/>
+      <rect x="76.0" y="114.0" width="38.0" height="38.0" fill="#c8c8c8"/>
+      <rect x="114.0" y="114.0" width="38.0" height="38.0" fill="#0f0f0f"/>
+      <line x1="38.0" y1="0" x2="38.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="38.0" x2="152" y2="38.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="76.0" y1="0" x2="76.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="76.0" x2="152" y2="76.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="114.0" y1="0" x2="114.0" y2="152" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <line x1="0" y1="114.0" x2="152" y2="114.0" stroke="#1e5aa8" stroke-width="0.8" opacity="0.6"/>
+      <text class="ctfig-x" x="19.0" y="23.0" text-anchor="middle">1</text>
+      <text class="ctfig-x" x="57.0" y="23.0" text-anchor="middle">2</text>
+      <text class="ctfig-x" x="95.0" y="23.0" text-anchor="middle">3</text>
+      <text class="ctfig-x" x="133.0" y="23.0" text-anchor="middle">4</text>
+      <text class="ctfig-x" x="19.0" y="61.0" text-anchor="middle">5</text>
+      <text class="ctfig-x" x="57.0" y="61.0" text-anchor="middle">6</text>
+      <text class="ctfig-x" x="95.0" y="61.0" text-anchor="middle">7</text>
+      <text class="ctfig-x" x="133.0" y="61.0" text-anchor="middle">8</text>
+      <text class="ctfig-x" x="19.0" y="99.0" text-anchor="middle">9</text>
+      <text class="ctfig-x" x="57.0" y="99.0" text-anchor="middle">10</text>
+      <text class="ctfig-x" x="95.0" y="99.0" text-anchor="middle">11</text>
+      <text class="ctfig-x" x="133.0" y="99.0" text-anchor="middle">12</text>
+      <text class="ctfig-x" x="19.0" y="137.0" text-anchor="middle">13</text>
+      <text class="ctfig-x" x="57.0" y="137.0" text-anchor="middle">14</text>
+      <text class="ctfig-x" x="95.0" y="137.0" text-anchor="middle">15</text>
+      <text class="ctfig-x" x="133.0" y="137.0" text-anchor="middle">16</text>
+    <rect x="0.0" y="0.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="38.0" y="38.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="76.0" y="76.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="114.0" y="114.0" width="38.0" height="38.0" fill="#e11d48" opacity="0.18"/>
+    <rect x="0" y="0" width="152" height="152" fill="none" stroke="#1e5aa8" stroke-width="1.4"/>
+    <path d="M-10,-10 L162,162" stroke="#e11d48" stroke-width="2.2" fill="none" marker-end="url(#ctRay)"/>
+    <text class="ctfig-e" x="76" y="178" text-anchor="middle">读数 = x1+x6+x11+x16</text>
+  </g>
+</svg>
+<figcaption><b>图 2　一条射线 = 一个方程。</b>X 射线穿过断面时，探测器测到的衰减量就是它<b>途经的所有方块密度之和</b>。射线打在哪些格子上，方程里就出现哪些未知数——所以换一个角度扫描，就等于多列一个方程。图中格内数字是该方块的编号 <span class="ct-hl">i</span>，对应未知数 <span class="ct-hl">x<sub>i</sub></span>。</figcaption>
+</figure>
+
+
+
+      <div class="ct-step">第二步　先造一台 \(2\times2\) 的"迷你 CT"，用手算</div>
+
+      <p>把断面划成 \(2\times 2\) 共四个小方块，未知的衰减系数按下面的位置记为 \(x_1,x_2,x_3,x_4\)：</p>
+
+      \[\begin{array}{|c|c|}\hline x_1 & x_2\\\hline x_3 & x_4\\\hline\end{array}\]
+
+      <p>先按最自然的方式扫描：<b>两条水平射线</b>（分别横穿上、下两行）与<b>两条竖直射线</b>（分别纵穿左、右两列）。设探测器给出的四个读数依次是 \(5,\,3,\,3,\,5\)，则</p>
+
+      \[\begin{cases}
+      x_1+x_2=5 & (\text{上行})\\
+      x_3+x_4=3 & (\text{下行})\\
+      x_1+x_3=3 & (\text{左列})\\
+      x_2+x_4=5 & (\text{右列})
+      \end{cases}\]
+
+      <p><b>四个方程、四个未知数</b>——按直觉，应该恰好定出唯一的一张图像。我们实际算一下。写出增广矩阵并作初等行变换：</p>
+
+      \[\left(\begin{array}{cccc|c}
+      1&1&0&0&5\\ 0&0&1&1&3\\ 1&0&1&0&3\\ 0&1&0&1&5
+      \end{array}\right)
+      \xrightarrow{r_3-r_1}
+      \left(\begin{array}{cccc|c}
+      1&1&0&0&5\\ 0&0&1&1&3\\ 0&-1&1&0&-2\\ 0&1&0&1&5
+      \end{array}\right)
+      \xrightarrow[\text{换行}]{r_4+r_3}
+      \left(\begin{array}{cccc|c}
+      1&1&0&0&5\\ 0&-1&1&0&-2\\ 0&0&1&1&3\\ 0&0&0&0&0
+      \end{array}\right)\]
+
+      <p>最后一行整行化为零，也就是</p>
+
+      \[r(A)=r(A,\boldsymbol{b})=3\lt 4=n\]
+
+      <p>方程组<b>有解，但有无穷多解</b>，自由未知量个数为 \(n-r=1\)。令 \(x_4=t\) 回代，得通解</p>
+
+      \[\boldsymbol{x}=\begin{pmatrix}0\\5\\3\\0\end{pmatrix}
+      +t\begin{pmatrix}1\\-1\\-1\\1\end{pmatrix},\qquad t\in\mathbb{R}\]
+
+      <div class="ct-step">第三步　这个结果意味着什么——"不同的人体，相同的读数"</div>
+
+      <p>把 \(t\) 取几个具体值，看看得到的都是些什么图像：</p>
+
+      <div class="ct-tbl-wrap"><table class="ct-tbl">
+        <tr><th>\(t\)</th><th>重建出的断面</th><th>四条射线的读数</th><th>与仪器实测一致？</th></tr>
+        <tr><td>\(0\)</td><td>\(\begin{smallmatrix}0&5\\3&0\end{smallmatrix}\)</td><td>\(5,\,3,\,3,\,5\)</td><td>完全一致</td></tr>
+        <tr><td>\(1\)</td><td>\(\begin{smallmatrix}1&4\\2&1\end{smallmatrix}\)</td><td>\(5,\,3,\,3,\,5\)</td><td>完全一致</td></tr>
+        <tr><td>\(2\)</td><td>\(\begin{smallmatrix}2&3\\1&2\end{smallmatrix}\)</td><td>\(5,\,3,\,3,\,5\)</td><td>完全一致</td></tr>
+        <tr><td>\(3\)</td><td>\(\begin{smallmatrix}3&2\\0&3\end{smallmatrix}\)</td><td>\(5,\,3,\,3,\,5\)</td><td>完全一致</td></tr>
+      </table></div>
+
+<!-- ===== 图3 棋盘伪影 ===== -->
+<figure class="ct-fig">
+<svg class="ctfig" viewBox="-6 0 476 176" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="两个不同的断面给出完全相同的四条读数">
+  <g transform="translate(0,20)">
+    <text class="ctfig-t" x="58" y="-6" text-anchor="middle">真相 t=0</text>
+    <rect x="0" y="0" width="58" height="58" fill="#1a1a1a"/>
+      <text class="ctfig-cv" x="29" y="35" text-anchor="middle" fill="#ffffff">1</text>
+      <rect x="58" y="0" width="58" height="58" fill="#f2f2f2"/>
+      <text class="ctfig-cv" x="87" y="35" text-anchor="middle">4</text>
+      <rect x="0" y="58" width="58" height="58" fill="#797979"/>
+      <text class="ctfig-cv" x="29" y="93" text-anchor="middle" fill="#ffffff">2</text>
+      <rect x="58" y="58" width="58" height="58" fill="#1a1a1a"/>
+      <text class="ctfig-cv" x="87" y="93" text-anchor="middle" fill="#ffffff">1</text>
+  </g>
+  <g transform="translate(174,20)">
+    <text class="ctfig-t" x="58" y="-6" text-anchor="middle">另一个解 t=1</text>
+    <rect x="0" y="0" width="58" height="58" fill="#797979"/>
+      <text class="ctfig-cv" x="29" y="35" text-anchor="middle" fill="#ffffff">2</text>
+      <rect x="58" y="0" width="58" height="58" fill="#b9b9b9"/>
+      <text class="ctfig-cv" x="87" y="35" text-anchor="middle">3</text>
+      <rect x="0" y="58" width="58" height="58" fill="#1a1a1a"/>
+      <text class="ctfig-cv" x="29" y="93" text-anchor="middle" fill="#ffffff">1</text>
+      <rect x="58" y="58" width="58" height="58" fill="#797979"/>
+      <text class="ctfig-cv" x="87" y="93" text-anchor="middle" fill="#ffffff">2</text>
+  </g>
+  <g transform="translate(348,20)">
+    <text class="ctfig-t" x="58" y="-6" text-anchor="middle">差值：棋盘格</text>
+    <rect x="0" y="0" width="58" height="58" fill="#1a1a1a"/>
+      <text class="ctfig-dv" x="29" y="35" text-anchor="middle" fill="#ffffff">+1</text>
+      <rect x="58" y="0" width="58" height="58" fill="#f2f2f2"/>
+      <text class="ctfig-dv" x="87" y="35" text-anchor="middle" fill="#000000">−1</text>
+      <rect x="0" y="58" width="58" height="58" fill="#f2f2f2"/>
+      <text class="ctfig-dv" x="29" y="93" text-anchor="middle" fill="#000000">−1</text>
+      <rect x="58" y="58" width="58" height="58" fill="#1a1a1a"/>
+      <text class="ctfig-dv" x="87" y="93" text-anchor="middle" fill="#ffffff">+1</text>
+  </g>
+  <text class="ctfig-op" x="145" y="85" text-anchor="middle">≠</text>
+  <text class="ctfig-op2" x="145" y="104" text-anchor="middle">图像不同</text>
+  <text class="ctfig-op" x="319" y="85" text-anchor="middle">−</text>
+  <text class="ctfig-s" x="58" y="158" text-anchor="middle">行和 5, 3　列和 3, 5</text>
+  <text class="ctfig-s" x="232" y="158" text-anchor="middle">行和 5, 3　列和 3, 5</text>
+  <text class="ctfig-s2" x="406" y="158" text-anchor="middle">行和 0, 0　列和 0, 0</text>
+</svg>
+<figcaption><b>图 3　"不同的人体，相同的读数"。</b>左、中两个断面明明不一样，可它们的四条读数（两个行和、两个列和）完全相同——CT 机没有任何办法区分这两个人。二者之差（右）恰好是 <span class="ct-hl">+1 / −1 交替的棋盘格</span>，它正是齐次方程组 <span class="ct-hl">Ax = 0</span> 的非零解。真实 CT 图像上出现的<b>棋盘状伪影</b>，根源就在这里。</figcaption>
+</figure>
+
+
+      <p>这是一个必须停下来想清楚的结论：<b>这四张断面图彼此完全不同，但它们在仪器上产生的读数一模一样。</b>仅凭水平与竖直两个方向的扫描，机器<b>没有任何办法</b>分辨究竟哪一张才是病人真实的解剖结构——在数学上它们是同一个方程组的不同解，地位完全平等。</p>
+      <p style="margin-top:6px"><b>把四个解画出来，差异一目了然：</b>它们的颜色深浅完全不同，但每行的和、每列的和都分别是 5,3 和 3,5。</p>
+<div class="ct-fig">
+<svg class="ctfig" viewBox="0 0 620 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四个不同的 2x2 断面图像产生完全相同的水平和竖直读数">
+  <style>
+    .fgrid{stroke:none}
+    .fg-title{font-size:13.5px;font-weight:700;fill:#1e5aa8}
+    .fg-label{font-size:11.5px;fill:#5b6b7c}
+    .fg-read{font-size:10.5px;fill:#64748b}
+    .fg-cell{font-size:18px;font-weight:700;font-family:"SF Mono",Consolas,monospace}
+  </style>
+  <text x="310" y="22" text-anchor="middle" class="fg-title">四个截然不同的断面，仪器读数却完全相同</text>
+  <text x="310" y="40" text-anchor="middle" class="fg-label">只看水平与竖直两个方向，机器无法判断病人到底是哪一种</text>
+  <rect x="38" y="60" width="92" height="92" fill="#dbeafe" rx="4"/>
+  <rect x="38" y="60" width="46" height="46" class="fgrid" fill="rgb(212,212,212)"/>
+  <text x="61.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">1</text>
+  <rect x="84" y="60" width="46" height="46" class="fgrid" fill="rgb(83,83,83)"/>
+  <text x="107.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#ffffff">4</text>
+  <rect x="38" y="106" width="46" height="46" class="fgrid" fill="rgb(169,169,169)"/>
+  <text x="61.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">2</text>
+  <rect x="84" y="106" width="46" height="46" class="fgrid" fill="rgb(212,212,212)"/>
+  <text x="107.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">1</text>
+  <text x="84.0" y="50" text-anchor="middle" class="fg-label">t = 0（真相）</text>
+  <text x="84.0" y="168" text-anchor="middle" class="fg-read">行和：5，3</text>
+  <text x="84.0" y="182" text-anchor="middle" class="fg-read">列和：3，5</text>
+  <rect x="164" y="60" width="92" height="92" fill="#f3e8ff" rx="4"/>
+  <rect x="164" y="60" width="46" height="46" class="fgrid" fill="rgb(169,169,169)"/>
+  <text x="187.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">2</text>
+  <rect x="210" y="60" width="46" height="46" class="fgrid" fill="rgb(126,126,126)"/>
+  <text x="233.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#ffffff">3</text>
+  <rect x="164" y="106" width="46" height="46" class="fgrid" fill="rgb(212,212,212)"/>
+  <text x="187.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">1</text>
+  <rect x="210" y="106" width="46" height="46" class="fgrid" fill="rgb(169,169,169)"/>
+  <text x="233.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">2</text>
+  <text x="210.0" y="50" text-anchor="middle" class="fg-label">t = 1</text>
+  <text x="210.0" y="168" text-anchor="middle" class="fg-read">行和：5，3</text>
+  <text x="210.0" y="182" text-anchor="middle" class="fg-read">列和：3，5</text>
+  <rect x="290" y="60" width="92" height="92" fill="#f3e8ff" rx="4"/>
+  <rect x="290" y="60" width="46" height="46" class="fgrid" fill="rgb(255,255,255)"/>
+  <text x="313.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">0</text>
+  <rect x="336" y="60" width="46" height="46" class="fgrid" fill="rgb(40,40,40)"/>
+  <text x="359.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#ffffff">5</text>
+  <rect x="290" y="106" width="46" height="46" class="fgrid" fill="rgb(126,126,126)"/>
+  <text x="313.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#ffffff">3</text>
+  <rect x="336" y="106" width="46" height="46" class="fgrid" fill="rgb(255,255,255)"/>
+  <text x="359.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">0</text>
+  <text x="336.0" y="50" text-anchor="middle" class="fg-label">t = -1</text>
+  <text x="336.0" y="168" text-anchor="middle" class="fg-read">行和：5，3</text>
+  <text x="336.0" y="182" text-anchor="middle" class="fg-read">列和：3，5</text>
+  <rect x="416" y="60" width="92" height="92" fill="#dbeafe" rx="4"/>
+  <rect x="416" y="60" width="46" height="46" class="fgrid" fill="rgb(126,126,126)"/>
+  <text x="439.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#ffffff">3</text>
+  <rect x="462" y="60" width="46" height="46" class="fgrid" fill="rgb(169,169,169)"/>
+  <text x="485.0" y="84.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">2</text>
+  <rect x="416" y="106" width="46" height="46" class="fgrid" fill="rgb(255,255,255)"/>
+  <text x="439.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#1f2937">0</text>
+  <rect x="462" y="106" width="46" height="46" class="fgrid" fill="rgb(126,126,126)"/>
+  <text x="485.0" y="130.0" text-anchor="middle" dominant-baseline="middle" class="fg-cell" fill="#ffffff">3</text>
+  <text x="462.0" y="50" text-anchor="middle" class="fg-label">t = 2</text>
+  <text x="462.0" y="168" text-anchor="middle" class="fg-read">行和：5，3</text>
+  <text x="462.0" y="182" text-anchor="middle" class="fg-read">列和：3，5</text>
+</svg></div>
+
+      <p>差别集中在通解里的那个自由项</p>
+
+      \[\boldsymbol{\xi}=\begin{pmatrix}1\\-1\\-1\\1\end{pmatrix}
+      \;\longleftrightarrow\;
+      \begin{array}{|c|c|}\hline +&-\\\hline -&+\\\hline\end{array}\]
+
+      <p>它是导出组 \(A\boldsymbol{x}=\boldsymbol{0}\) 的基础解系，排成图像恰好是一个<b>黑白相间的棋盘格</b>。往任何一张合法的重建图上叠加它的任意倍，行和与列和都不变——加一个 \(+t\) 必配一个 \(-t\)。</p>
+
+      <p>这正是 CT 图像中真实存在、并且有专门名称的<b>棋盘伪影（checkerboard artifact）</b>。它不是程序 bug，也不是探测器不准，而是<b>方程组的解不唯一在图像上的直接显形</b>：齐次方程组的非零解，就是那些"照不出来的幽灵结构"。</p>
+
+      <div class="ct-step">第四步　补一条斜射线，把秩提上去</div>
+
+      <p>问题出在 \(r(A)=3\lt 4\)：四个方程里存在冗余，因为</p>
+
+      \[\underbrace{(x_1+x_2)}_{\text{上行}}+\underbrace{(x_3+x_4)}_{\text{下行}}
+      =\underbrace{(x_1+x_3)}_{\text{左列}}+\underbrace{(x_2+x_4)}_{\text{右列}}\]
+
+      <p>两边都等于四块之和，所以第四个方程可由前三个推出，实际只提供了三条独立信息。<b>要想唯一，必须补一个与已有方程线性无关的新方程。</b></p>
+
+      <p>让 X 射线管转到 \(45^\circ\)，沿主对角线照一次，测得 \(x_1+x_4=2\)。添进去：</p>
+      <p style="margin-top:4px">所谓“主对角线”，就是下面这条从左上方射入、穿过 \(x_1\) 与 \(x_4\) 后到达右下方探测器的绿色射线：</p>
+<div class="ct-fig">
+<svg class="ctfig" viewBox="0 0 320 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="45度主对角线射线穿过 x1 和 x4，得到方程 x1+x4=2">
+  <style>
+    .rgrid{stroke:#1e5aa8;stroke-width:2;fill:#f8fafc}
+    .r-title{font-size:14px;font-weight:700;fill:#1e5aa8}
+    .r-label{font-size:12.5px;fill:#334155;font-weight:700}
+    .r-eq{font-size:13.5px;fill:#16a34a;font-weight:700}
+    .r-ray{stroke:#16a34a;stroke-width:3.5;stroke-linecap:round;opacity:.85}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <text x="160" y="24" text-anchor="middle" class="r-title">补一条 45° 斜射线，测量主对角线之和</text>
+  <rect x="86" y="54" width="152" height="152" class="rgrid" rx="3"/>
+  <rect x="86" y="54" width="76" height="76" fill="rgb(212,212,212)" stroke="#1e5aa8" stroke-width="1.5"/>
+  <rect x="162" y="54" width="76" height="76" fill="rgb(83,83,83)" stroke="#1e5aa8" stroke-width="1.5"/>
+  <rect x="86" y="130" width="76" height="76" fill="rgb(169,169,169)" stroke="#1e5aa8" stroke-width="1.5"/>
+  <rect x="162" y="130" width="76" height="76" fill="rgb(212,212,212)" stroke="#1e5aa8" stroke-width="1.5"/>
+  <line x1="68" y1="36" x2="256" y2="224" class="r-ray" marker-end="url(#arrow)"/>
+  <text x="124.0" y="94.0" text-anchor="middle" dominant-baseline="middle" class="r-label" fill="#1f2937">x₁</text>
+  <text x="200.0" y="94.0" text-anchor="middle" dominant-baseline="middle" class="r-label" fill="#f8fafc">x₂</text>
+  <text x="124.0" y="170.0" text-anchor="middle" dominant-baseline="middle" class="r-label" fill="#1f2937">x₃</text>
+  <text x="200.0" y="170.0" text-anchor="middle" dominant-baseline="middle" class="r-label" fill="#1f2937">x₄</text>
+  <text x="62" y="48" text-anchor="end" class="r-label" style="fill:#16a34a;font-size:11px">X射线入射</text>
+  <text x="262" y="222" text-anchor="start" class="r-label" style="fill:#16a34a;font-size:11px">探测器</text>
+  <text x="160" y="251" text-anchor="middle" class="r-eq">x₁ + x₄ = 1 + 1 = 2</text>
+</svg></div>
+
+      \[\left(\begin{array}{cccc|c}
+      1&1&0&0&5\\ 0&0&1&1&3\\ 1&0&1&0&3\\ 0&1&0&1&5\\ 1&0&0&1&2
+      \end{array}\right),\qquad r(A)=r(A,\boldsymbol{b})=4=n\]
+
+      <p>此时方程组<b>有唯一解</b>。事实上新方程给出 \(t+t=2\)，即 \(t=1\)，于是</p>
+
+      \[\boldsymbol{x}=(1,\,4,\,2,\,1)^{\mathrm T}
+      \;\longleftrightarrow\;
+      \begin{array}{|c|c|}\hline 1&4\\\hline 2&1\\\hline\end{array}\]
+
+      <p>读出来就是：左上是软组织，右上有一块致密的骨，左下是稍密的组织，右下又是软组织。这才是病人体内真实的样子。</p>
+
+      <p><b>请注意这里发生了什么。</b>我们没有换更贵的探测器，没有提高 X 射线剂量，只是<b>多转了一个角度</b>，把矩阵的秩从 \(3\) 提到了 \(4\)，图像就从"四张都可能"变成了"唯一确定"。</p>
+
+      <p class="ct-key">医学影像里说的"扫描角度不够"，在数学上说的就是"系数矩阵秩亏"</p>
+
+      <div class="ct-step">第五步　亲手试一试：\(4\times4\) 断面，16 个未知数</div>
+
+      <p>下面这个程序把同样的推理搬到 \(4\times 4\) 的断面上。左边是真实断面（你可以把它当作病人的"金标准"，机器并不知道它）；勾选启用哪些扫描方向后，程序会<b>实时对系数矩阵作高斯消元</b>，报出方程数 \(m\)、未知数 \(n\)、秩 \(r(A)\) 与自由度 \(n-r\)；只要 \(n-r\gt 0\)，就会出现一个滑块 \(t\)，拖动它，中间那张重建图会明显改变，而<b>最右侧的读数残差始终是 0</b>——所有射线的测量值分毫不动。</p>
+
+  <div class="ctd-demo" id="ctdDemo">
+    <div class="ctd-bar">
+      <span class="ctd-bar-lab">扫描方向</span>
+      <label><input type="checkbox" id="ctdH" checked> 水平 0°</label>
+      <label><input type="checkbox" id="ctdV" checked> 竖直 90°</label>
+      <label><input type="checkbox" id="ctdD1"> 主对角 45°</label>
+      <label><input type="checkbox" id="ctdD2"> 副对角 135°</label>
+      <label><input type="checkbox" id="ctdK"> 斜向 ≈26.6°</label>
+      <button type="button" id="ctdReset">恢复默认</button>
+    </div>
+    <canvas class="ctd-canvas" id="ctdCanvas" width="760" height="270"></canvas>
+    <div class="ctd-slider-wrap" id="ctdSliderWrap">
+      <span class="ctd-slider-lab">沿基础解系移动　\(t=\)&nbsp;<b id="ctdTVal">0.0</b></span>
+      <input type="range" id="ctdT" min="-30" max="30" value="0" step="1">
+      <button type="button" id="ctdGhost">换一个幽灵方向 <span id="ctdGhostNum">1/9</span></button>
+    </div>
+    <div class="ctd-panel">
+      <div class="ctd-row"><span>射线条数（方程数）\(m\)</span><b id="ctdM">—</b></div>
+      <div class="ctd-row"><span>像素个数（未知数）\(n\)</span><b id="ctdN">16</b></div>
+      <div class="ctd-row"><span>系数矩阵的秩 \(r(A)\)</span><b id="ctdR">—</b></div>
+      <div class="ctd-row"><span>自由度 \(n-r\)</span><b id="ctdF">—</b></div>
+      <div class="ctd-row"><span>读数残差</span><b id="ctdRes">—</b></div>
+      <div class="ctd-row ctd-verdict"><span>解的判定</span><b id="ctdVerdict">—</b></div>
+    </div>
+  </div>
+
+      <p><b>按这个顺序做四次实验，你会看到一条完整的逻辑链：</b></p>
+
+      <div class="ct-tbl-wrap"><table class="ct-tbl ct-tbl-exp">
+        <tr><th>勾选的方向</th><th>\(m\)</th><th>\(r(A)\)</th><th>\(n-r\)</th><th>你应该看到什么</th></tr>
+        <tr><td>水平 + 竖直</td><td>8</td><td>7</td><td>9</td><td>8 个方程解 16 个未知数，当然不够。重建图与真相相差极远，读数却完全对得上</td></tr>
+        <tr><td>再加主对角</td><td>15</td><td>12</td><td>4</td><td>方程数逼近未知数，重建图开始像样，但仍有 4 个幽灵方向</td></tr>
+        <tr><td class="ct-hl">四个方向全开</td><td class="ct-hl">22</td><td class="ct-hl">15</td><td class="ct-hl">1</td><td class="ct-hl">方程数比未知数还多 6 个，居然仍不唯一</td></tr>
+        <tr><td>再加斜向 26.6°</td><td>32</td><td>16</td><td>0</td><td>唯一解，重建图与真实断面逐格相同，幽灵图全灰</td></tr>
+      </table></div>
+
+      <p>第三行是整个案例最值得琢磨的地方，也是很多人的直觉盲区：<b>\(m=22\gt n=16\)，方程数比未知数多出 6 个，方程组却依然有无穷多解。</b>原因是这 22 个方程里只有 15 个是线性无关的，其余 7 个都能由它们线性表出——比如"四条水平射线之和"与"四条竖直射线之和"必然相等，这类恒等式一条也没给出新信息。</p>
+
+      <p>把它写成一句可以带走的话：</p>
+
+      <p class="ct-key">决定解是否唯一的，从来不是方程的<b>数量</b> \(m\)，而是方程的<b>秩</b> \(r(A)\)</p>
+
+      <p>再看那个残差栏：无论你把滑块拖到哪里，\(\max_i\lvert (A\boldsymbol{x})_i-b_i\rvert\) 始终是 \(0\)。这说明中间那张明显失真的图像，<b>在测量意义上和真实断面无法区分</b>。机器不是"算错了"，而是<b>信息本身就不够</b>——它面对的是一整条解的直线（自由度为 1 时）或一整张解的超平面（自由度更高时），从中挑哪一个都同样"正确"。</p>
+
+      <div class="ct-step">第六步　从 4 个像素到 26 万个像素</div>
+
+      <p>你刚才手算的是 \(2\times2=4\) 个未知数，在程序里玩的是 \(4\times4=16\) 个。临床 CT 的常规重建矩阵是 \(512\times512\)，也就是</p>
+
+      \[n=512\times512=262\,144\ \text{个未知数}\]
+
+      <p>探测器一排约 900 个通道，X 射线管转一圈采集约 1000 个角度，于是</p>
+
+      \[m\approx 900\times 1000=9\times 10^{5}\ \text{个方程}\]
+
+      <p><b>建模思路与判定准则一字未改，只是规模变了。</b>但规模一变，解法就得换：高斯消元的运算量约为 \(\tfrac{2}{3}n^{3}\)，代入 \(n=262\,144\) 得约 \(1.2\times10^{16}\) 次浮点运算，即便用每秒万亿次的处理器也要跑上几个小时——而临床要求几秒钟出图。所以实际重建改用两类办法：</p>
+
+      <ul>
+        <li><b>滤波反投影（FBP）</b>：利用 Radon 变换的解析反演公式，不显式解方程组，速度极快，是几十年来的临床主力。</li>
+        <li><b>迭代重建（ART / SIRT / 统计迭代）</b>：仍然把它当作方程组，但用逐次逼近代替直接消元，每次只用一部分方程去修正当前图像。这类方法抗噪好、能配合更低剂量，是近十余年各大厂商主推的方向。</li>
+      </ul>
+
+      <p>无论用哪一种，<b>"方程够不够、秩满不满"这个判断逻辑丝毫没有变</b>。而且它还在继续发挥作用：</p>
+
+      <p><b>低剂量 CT 的数学困境。</b>X 射线有电离辐射，儿童与需要反复复查的病人尤其需要减少剂量。降剂量最直接的办法就是<b>少转几个角度</b>——但角度一少，独立方程就少，\(r(A)\) 掉下去，解重新变得不唯一，图像上就会重新爬出条纹状和棋盘状的伪影。这正是你刚才拖动滑块时亲眼看到的现象，只不过发生在 26 万维的空间里。</p>
+
+      <p>现代低剂量 CT 的对策，是给方程组补上<b>额外的先验条件</b>（例如"真实的人体断面在某种变换下是稀疏的"），用它把无穷多解里那些不像人体的解筛掉。这套理论叫<b>压缩感知</b>，是本世纪初数学界最重要的成果之一，如今已写进各大厂商的商用重建算法。</p>
+
+      <p>说到底，它要处理的仍然是你在本节学到的那件事：<b>当 \(r(A)\lt n\) 时，方程组给不出唯一答案；想要唯一，就得再补进线性无关的新信息。</b>只不过在医院里，这个结论关系到辐射剂量、诊断准确率，以及病人能不能被查出那个几毫米的病灶。</p>
+
+      <div class="ct-step">想一想</div>
+
+      <details class="ct-q"><summary><b>思考 1</b>　迷你 CT 里，若把补充的那条射线由主对角线 \(x_1+x_4\) 换成副对角线 \(x_2+x_3\)，还能唯一确定图像吗？</summary>
+      <p>能。此时新方程为 \(x_2+x_3=9\)。由通解 \(\boldsymbol{x}=(t,\,5-t,\,3-t,\,t)^{\mathrm T}\) 代入得 \((5-t)+(3-t)=9\)，即 \(t=-\tfrac12\)。因为 \(\boldsymbol{\xi}=(1,-1,-1,1)^{\mathrm T}\) 在这条新方程左端的取值为 \(-1-1=-2\neq 0\)，说明新方程与原来三个线性无关，故 \(r(A)=4=n\)，解唯一。</p>
+      <p><b>一般判据：</b>一条新射线能否提升秩，只看它对基础解系 \(\boldsymbol{\xi}\) 的读数是否为零。若为零，这条射线"看不见"幽灵结构，白照。</p>
+      </details>
+
+      <details class="ct-q"><summary><b>思考 2</b>　在迷你 CT 中，能不能找到一条<b>穿过两个方块</b>的射线，加进去以后秩仍然是 3（即白照一次）？</summary>
+      <p>可以。取"反主对角"以外的组合：射线 \(x_1+x_2\)（上行，本来就有）自然无用；更有意思的是任何满足 \(\boldsymbol{\xi}\) 读数为零的组合，例如同时穿过 \(x_1\) 与 \(x_2\)、或同时穿过 \(x_1\) 与 \(x_3\) 的射线，其在 \(\boldsymbol{\xi}=(1,-1,-1,1)^{\mathrm T}\) 上的读数分别是 \(1+(-1)=0\)、\(1+(-1)=0\)，都为零，因此都不能提升秩。</p>
+      <p>换句话说：<b>只有"同号配对"的射线（\(x_1\) 与 \(x_4\)，或 \(x_2\) 与 \(x_3\)）才有效</b>，而它们恰好就是两条对角线。这解释了为什么真实 CT 必须转出斜角度——正射方向永远看不见棋盘伪影。</p>
+      </details>
+
+      <details class="ct-q"><summary><b>思考 3</b>　\(4\times4\) 的实验里，四个方向共给出 22 个方程却只有 15 的秩。请指出至少两条显然的线性相关关系。</summary>
+      <p>（1）四条水平射线之和 \(=\) 四条竖直射线之和 \(=\) 全部 16 格之和，故这 8 个方程之间至少有一条相关关系。</p>
+      <p>（2）七条主对角射线之和同样等于全部 16 格之和；七条副对角射线之和也等于全部 16 格之和。于是"每一组方向的总和"都给出同一个数，四组之间共产生 3 条独立的相关关系。</p>
+      <p>把这些以及更隐蔽的关系合起来，恰好使 \(22-r(A)=7\)。这也从另一个角度说明：<b>增加方程时，真正稀缺的资源是"线性无关"，而不是"数量"。</b></p>
+      </details>
+
+  </div></details></div>
+
+<script src="ct-scan.js"></script>
 
 <!-- ============ §4.3 ============ -->
 
@@ -422,7 +1048,7 @@
 
 <h3>一、引例：投入产出模型</h3>
 <div class="ex"><div class="lab">引例　国产新能源汽车产业链（列昂惕夫模型）</div>
-  <p class="stmt">设经济中有两个生产部门，直接消耗系数矩阵 \(A\) 表示各部门单位产出对其他部门的消耗．若外部最终需求为 \(d\)，则总产出 \(x\) 满足 \((E-A)x=d\)，即一个矩阵方程．这正是矩阵方程 \(AX=B\) 的典型背景：把多个右端项并成矩阵 \(B\)，一次性求解．</p>
+  <p class="stmt">设经济中有两个生产部门，直接消耗系数矩阵 \(A\) 表示各部门单位产出对其他部门的消耗。若外部最终需求为 \(d\)，则总产出 \(x\) 满足 \((E-A)x=d\)，即一个矩阵方程。这正是矩阵方程 \(AX=B\) 的典型背景：把多个右端项并成矩阵 \(B\)，一次性求解。</p>
 </div>
 
 <h3>二、矩阵方程 \(AX=B\) 的解</h3>
@@ -441,18 +1067,18 @@
   \[R(A)=R(B)=R(A,B).\]</p></div>
 
 <div class="ex"><div class="lab">例 4.11</div>
-  <div class="stmt">证明向量组 \(\alpha_1=(1,0,0,1)^T,\ \alpha_2=(0,1,0,2)^T,\ \alpha_3=(0,0,1,3)^T\) 与向量组 \(\beta_1=(1,-1,2,5)^T,\ \beta_2=(2,2,-3,-3)^T,\ \beta_3=(-1,1,0,1)^T,\ \beta_4=(0,-1,1,1)^T\) 等价．</div>
-  <div class="sol"><span class="mk">证</span>记 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(B=(\beta_1,\beta_2,\beta_3,\beta_4)\)．由推论 4.8，只需证 \(R(A)=R(B)=R(A,B)\)．将 \((A,B)\) 化为行阶梯形：
+  <div class="stmt">证明向量组 \(\alpha_1=(1,0,0,1)^T,\ \alpha_2=(0,1,0,2)^T,\ \alpha_3=(0,0,1,3)^T\) 与向量组 \(\beta_1=(1,-1,2,5)^T,\ \beta_2=(2,2,-3,-3)^T,\ \beta_3=(-1,1,0,1)^T,\ \beta_4=(0,-1,1,1)^T\) 等价。</div>
+  <div class="sol"><span class="mk">证</span>记 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(B=(\beta_1,\beta_2,\beta_3,\beta_4)\)。由推论 4.8，只需证 \(R(A)=R(B)=R(A,B)\)。将 \((A,B)\) 化为行阶梯形：
   \[(A,B)=\begin{pmatrix}1&0&0&1&2&-1&0\\ 0&1&0&-1&2&1&-1\\ 0&0&1&2&-3&0&1\\ 1&2&3&5&-3&1&1\end{pmatrix}
   \xrightarrow{r_4-r_1-2r_2-3r_3}
   \begin{pmatrix}1&0&0&1&2&-1&0\\ 0&1&0&-1&2&1&-1\\ 0&0&1&2&-3&0&1\\ 0&0&0&0&0&0&0\end{pmatrix}.\]
-  由此得 \(R(A)=R(A,B)=3\)；同理可算得 \(R(B)=3\)．故 \(R(A)=R(B)=R(A,B)=3\)，两向量组等价．</div>
+  由此得 \(R(A)=R(A,B)=3\)；同理可算得 \(R(B)=3\)。故 \(R(A)=R(B)=R(A,B)=3\)，两向量组等价。</div>
 </div>
 
 <div class="ex"><div class="lab">例 4.12（考研真题）</div>
-  <div class="stmt">设非齐次方程组 \(Ax=b\) 有三个线性无关的解 \(\eta_1,\eta_2,\eta_3\)．证明 \(R(A)\le n-2\)（其中 \(n\) 为未知数个数）．</div>
-  <div class="sol"><span class="mk">证</span>由性质 4.3，\(\xi_1=\eta_1-\eta_3,\ \xi_2=\eta_2-\eta_3\) 都是 \(Ax=0\) 的解．因 \(\eta_1,\eta_2,\eta_3\) 线性无关，易证 \(\xi_1,\xi_2\) 线性无关（若 \(c_1\xi_1+c_2\xi_2=0\)，即 \(c_1\eta_1+c_2\eta_2-(c_1+c_2)\eta_3=0\)，由 \(\eta_i\) 无关得 \(c_1=c_2=0\)）．故 \(Ax=0\) 至少有两个线性无关解，解空间维数 \(n-R(A)\ge2\)，即 \(R(A)\le n-2\)．</div>
-  <p class="muted">注：例如当 \(R(A)=2,\ n=4\) 时，恰有三个线性无关的特解——这与推论 4.4 完全一致．</p>
+  <div class="stmt">设非齐次方程组 \(Ax=b\) 有三个线性无关的解 \(\eta_1,\eta_2,\eta_3\)。证明 \(R(A)\le n-2\)（其中 \(n\) 为未知数个数）。</div>
+  <div class="sol"><span class="mk">证</span>由性质 4.3，\(\xi_1=\eta_1-\eta_3,\ \xi_2=\eta_2-\eta_3\) 都是 \(Ax=0\) 的解。因 \(\eta_1,\eta_2,\eta_3\) 线性无关，易证 \(\xi_1,\xi_2\) 线性无关（若 \(c_1\xi_1+c_2\xi_2=0\)，即 \(c_1\eta_1+c_2\eta_2-(c_1+c_2)\eta_3=0\)，由 \(\eta_i\) 无关得 \(c_1=c_2=0\)）。故 \(Ax=0\) 至少有两个线性无关解，解空间维数 \(n-R(A)\ge2\)，即 \(R(A)\le n-2\)。</div>
+  <p class="muted">注：例如当 \(R(A)=2,\ n=4\) 时，恰有三个线性无关的特解——这与推论 4.4 完全一致。</p>
 </div>
 
 <!-- ============ §4.4 ============ -->
@@ -460,10 +1086,10 @@
 <div class="sec-quiz" data-sec="s43" data-ch="4" data-n="28"></div>
 <h2 id="s44"><span class="num">§4.4</span>综合应用与软件实现</h2>
 <div class="ex"><div class="lab">引例　让机械臂"够到"目标：解线性方程组求关节角</div>
-  <p class="stmt">六轴<b>工业机器人</b>要把末端送到某空间点，每个关节转角 \(\theta_i\) 需满足一组方程；在目标点附近线性化后，得到 \(A\theta=b\)．于是"能否够到"（解是否存在）、"有几种姿态"（解是否唯一）、"多余自由度怎么分配"（无穷多解如何选），正好对应本章的全部结论：齐次看零空间、非齐次看增广矩阵秩、矩阵方程看 \(R(A)=R(A,B)\)．</p>
+  <p class="stmt">六轴<b>工业机器人</b>要把末端送到某空间点，每个关节转角 \(\theta_i\) 需满足一组方程；在目标点附近线性化后，得到 \(A\theta=b\)。于是"能否够到"（解是否存在）、"有几种姿态"（解是否唯一）、"多余自由度怎么分配"（无穷多解如何选），正好对应本章的全部结论：齐次看零空间、非齐次看增广矩阵秩、矩阵方程看 \(R(A)=R(A,B)\)。</p>
   <p><b>探索：</b>一个 2 轴简化模型给出
   \(\begin{cases}2\theta_1+\theta_2=5\\ \theta_1+2\theta_2=4\end{cases}\)，
-  学完本节你就能判定它有唯一解，并直接解出 \(\theta_1=2,\ \theta_2=1\)——真实机械臂只是把这套方程放大到六维．</p>
+  学完本节你就能判定它有唯一解，并直接解出 \(\theta_1=2,\ \theta_2=1\)——真实机械臂只是把这套方程放大到六维。</p>
 </div>
 
 <h3>一、应用案例</h3>
@@ -490,21 +1116,21 @@
 <line x1="58" y1="20.0" x2="442" y2="20.0" stroke="#eef2f4"/>
 <text x="52.0" y="23.0" font-size="9" fill="#8a949e" text-anchor="end">801</text>
 <line x1="58.0" y1="219.8" x2="442.0" y2="12.2" stroke="#6d28d9" stroke-width="2"/>
-<circle cx="70.2" cy="220.9" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="70.2" cy="220.9" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="70.2" y="212.9" font-size="8.5" fill="#4a5560" text-anchor="middle">五菱宏光MINI</text>
-<circle cx="136.7" cy="177.9" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="136.7" cy="177.9" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="136.7" y="169.9" font-size="8.5" fill="#4a5560" text-anchor="middle">比亚迪海鸥</text>
-<circle cx="197.0" cy="141.3" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="197.0" cy="141.3" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="197.0" y="133.3" font-size="8.5" fill="#4a5560" text-anchor="middle">比亚迪海豚</text>
-<circle cx="274.5" cy="112.6" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="274.5" cy="112.6" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="274.5" y="104.6" font-size="8.5" fill="#4a5560" text-anchor="middle">广汽埃安Y</text>
-<circle cx="258.6" cy="98.0" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="258.6" cy="98.0" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="258.6" y="90.0" font-size="8.5" fill="#4a5560" text-anchor="middle">特斯拉Model3</text>
-<circle cx="319.7" cy="76.0" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="319.7" cy="76.0" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="319.7" y="68.0" font-size="8.5" fill="#4a5560" text-anchor="middle">蔚来ES6</text>
-<circle cx="343.8" cy="50.2" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="343.8" cy="50.2" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="343.8" y="42.2" font-size="8.5" fill="#4a5560" text-anchor="middle">小鹏P7</text>
-<circle cx="421.6" cy="39.1" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="421.6" cy="39.1" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="421.6" y="31.1" font-size="8.5" fill="#4a5560" text-anchor="middle">极氪001</text>
 <text x="250.0" y="312" font-size="11" fill="#4a5560" text-anchor="middle">电池容量 C (kWh)</text>
 <text x="14" y="147.5" font-size="11" fill="#4a5560" text-anchor="middle" transform="rotate(-90 14 147.5)">续航 R (km)</text>
@@ -543,12 +1169,12 @@
 <line x1="210" y1="160" x2="210" y2="250" stroke="#64748b" stroke-width="1.5"/>
 <rect x="198.0" y="196.0" width="24" height="16" fill="#fff" stroke="none"/>
 <text x="210.0" y="208.0" font-size="9" fill="#4a5560" text-anchor="middle">4Ω</text>
-<circle cx="120" cy="70" r="17" fill="#e8f5f5" stroke="#0e7c7c" stroke-width="1.5"/>
-<text x="120" y="74.0" font-size="12" fill="#0e7c7c" text-anchor="middle" font-weight="700">v1</text>
-<circle cx="300" cy="70" r="17" fill="#e8f5f5" stroke="#0e7c7c" stroke-width="1.5"/>
-<text x="300" y="74.0" font-size="12" fill="#0e7c7c" text-anchor="middle" font-weight="700">v2</text>
-<circle cx="210" cy="160" r="17" fill="#e8f5f5" stroke="#0e7c7c" stroke-width="1.5"/>
-<text x="210" y="164.0" font-size="12" fill="#0e7c7c" text-anchor="middle" font-weight="700">v3</text>
+<circle cx="120" cy="70" r="17" fill="#e8f0fb" stroke="#1e5aa8" stroke-width="1.5"/>
+<text x="120" y="74.0" font-size="12" fill="#1e5aa8" text-anchor="middle" font-weight="700">v1</text>
+<circle cx="300" cy="70" r="17" fill="#e8f0fb" stroke="#1e5aa8" stroke-width="1.5"/>
+<text x="300" y="74.0" font-size="12" fill="#1e5aa8" text-anchor="middle" font-weight="700">v2</text>
+<circle cx="210" cy="160" r="17" fill="#e8f0fb" stroke="#1e5aa8" stroke-width="1.5"/>
+<text x="210" y="164.0" font-size="12" fill="#1e5aa8" text-anchor="middle" font-weight="700">v3</text>
 <line x1="192" y1="250" x2="228" y2="250" stroke="#64748b" stroke-width="1.5"/>
 <line x1="192" y1="244" x2="192" y2="256" stroke="#64748b" stroke-width="1.5"/>
 <line x1="201" y1="244" x2="201" y2="256" stroke="#64748b" stroke-width="1.5"/>
@@ -577,16 +1203,16 @@
   <tr><td>绕行径路能力</td><td>\(x_2+2x_3=150\)</td></tr></tbody></table>
   <div class="figrow"><svg viewBox="0 0 470 250" width="470" role="img" aria-label="高铁网络客流径路">
 <rect x="0" y="0" width="470" height="250" fill="#fff" stroke="#e7ebef"/>
-<path d="M60,125 C 150,125 200,125 410,125" fill="none" stroke="#0e7c7c" stroke-width="2.5"/>
+<path d="M60,125 C 150,125 200,125 410,125" fill="none" stroke="#1e5aa8" stroke-width="2.5"/>
 <path d="M60,125 L 235,60 L 410,125" fill="none" stroke="#6d28d9" stroke-width="2.5"/>
 <path d="M60,125 C 180,210 300,210 410,125" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-dasharray="6 4"/>
-<circle cx="60" cy="125" r="15" fill="#e8f5f5" stroke="#0e7c7c" stroke-width="1.5"/>
+<circle cx="60" cy="125" r="15" fill="#e8f0fb" stroke="#1e5aa8" stroke-width="1.5"/>
 <text x="60" y="129.0" font-size="11" fill="#10202c" text-anchor="middle" font-weight="700">O 出发</text>
-<circle cx="410" cy="125" r="15" fill="#e8f5f5" stroke="#0e7c7c" stroke-width="1.5"/>
+<circle cx="410" cy="125" r="15" fill="#e8f0fb" stroke="#1e5aa8" stroke-width="1.5"/>
 <text x="410" y="129.0" font-size="11" fill="#10202c" text-anchor="middle" font-weight="700">D 到达</text>
-<circle cx="235" cy="60" r="15" fill="#e8f5f5" stroke="#0e7c7c" stroke-width="1.5"/>
+<circle cx="235" cy="60" r="15" fill="#e8f0fb" stroke="#1e5aa8" stroke-width="1.5"/>
 <text x="235" y="64.0" font-size="11" fill="#4a5560" text-anchor="middle" font-weight="700">H 枢纽</text>
-<text x="200" y="140" font-size="10" fill="#0e7c7c" text-anchor="middle">径路1 x1</text>
+<text x="200" y="140" font-size="10" fill="#1e5aa8" text-anchor="middle">径路1 x1</text>
 <text x="250" y="40" font-size="10" fill="#6d28d9" text-anchor="middle">径路2 x2</text>
 <text x="235" y="232" font-size="10" fill="#9a3412" text-anchor="middle">径路3 x3</text>
 </svg></div>
@@ -619,7 +1245,7 @@
     <div class="ex"><div class="lab">选讲 1　（2019 · 考研数学一）</div>
       <p class="stmt">讨论 \(a,b\) 使方程组
       \(\begin{cases}x_1+x_2+x_3=1,\\ x_1+2x_2+3x_3=2,\\ x_1+3x_2+a x_3=b\end{cases}\)
-      有唯一解、无穷多解、无解；并在唯一解时给出通解表达式．</p>
+      有唯一解、无穷多解、无解；并在唯一解时给出通解表达式。</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　对增广矩阵作行变换：
@@ -629,63 +1255,63 @@
             \xrightarrow{r_3-2r_2}
             \left(\begin{array}{ccc|c}1&1&1&1\\0&1&2&1\\0&0&a-5&b-3\end{array}\right).\]
           由最后一行分情况：</p>
-          <p>(i) \(a\neq5\)：系数矩阵满秩，有唯一解．由 \((a-5)x_3=b-3\) 得 \(x_3=\dfrac{b-3}{a-5}\)，回代 \(x_2=1-2x_3\)，\(x_1=1-x_2-x_3\)．例如取 \(a=3,b=0\)：得 \(x_3=\dfrac32,\ x_2=-2,\ x_1=\dfrac32\)．</p>
-          <p>(ii) \(a=5\) 且 \(b=3\)：出现自由未知量，无穷多解．</p>
-          <p>(iii) \(a=5\) 且 \(b\neq3\)：出现 \(0=\text{非零}\)，无解．</p>
-          <p><b>方法提炼：</b>先化阶梯形，再看"主元是否齐全、是否出现 \(0=d\)"——这是 §4.1/§4.2 的总纲．</p>
+          <p>(i) \(a\neq5\)：系数矩阵满秩，有唯一解。由 \((a-5)x_3=b-3\) 得 \(x_3=\dfrac{b-3}{a-5}\)，回代 \(x_2=1-2x_3\)，\(x_1=1-x_2-x_3\)。例如取 \(a=3,b=0\)：得 \(x_3=\dfrac32,\ x_2=-2,\ x_1=\dfrac32\)。</p>
+          <p>(ii) \(a=5\) 且 \(b=3\)：出现自由未知量，无穷多解。</p>
+          <p>(iii) \(a=5\) 且 \(b\neq3\)：出现 \(0=\text{非零}\)，无解。</p>
+          <p><b>方法提炼：</b>先化阶梯形，再看"主元是否齐全、是否出现 \(0=d\)"——这是 §4.1/§4.2 的总纲。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 2　（2017 · 考研数学二）</div>
-      <p class="stmt">求齐次方程组 \(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+2x_2+x_3=0\end{cases}\) 的基础解系．</p>
+      <p class="stmt">求齐次方程组 \(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+2x_2+x_3=0\end{cases}\) 的基础解系。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　系数矩阵 \(\begin{pmatrix}1&2&3\\2&2&1\end{pmatrix}\) 的秩为 \(2\)（两行不成比例），未知数 \(3\) 个 \(\Rightarrow\) 解空间维数为 \(1\)，只需找一个非零解向量．</p>
-          <p>化阶梯：\(r_2-2r_1\to(0,-2,-5)\)．令 \(x_3=2\)，则 \(-2x_2-10=0\Rightarrow x_2=-5\)；由第一行 \(x_1+2(-5)+3\cdot2=0\Rightarrow x_1=4\)．
-          故一个基础解系为 \(\xi=(4,-5,2)^T\)，通解 \(x=k\xi\)．</p>
-          <p><b>方法提炼：</b>基础解系 = 解空间的一组基；取自由未知量赋值、回代即可，不必死背公式．</p>
+          <p><span style="font-weight:700">解</span>　系数矩阵 \(\begin{pmatrix}1&2&3\\2&2&1\end{pmatrix}\) 的秩为 \(2\)（两行不成比例），未知数 \(3\) 个 \(\Rightarrow\) 解空间维数为 \(1\)，只需找一个非零解向量。</p>
+          <p>化阶梯：\(r_2-2r_1\to(0,-2,-5)\)。令 \(x_3=2\)，则 \(-2x_2-10=0\Rightarrow x_2=-5\)；由第一行 \(x_1+2(-5)+3\cdot2=0\Rightarrow x_1=4\)。
+          故一个基础解系为 \(\xi=(4,-5,2)^T\)，通解 \(x=k\xi\)。</p>
+          <p><b>方法提炼：</b>基础解系 = 解空间的一组基；取自由未知量赋值、回代即可，不必死背公式。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 3　（2020 · 考研数学一）</div>
-      <p class="stmt">求方程组 \(\begin{cases}x_1+x_2+x_3+x_4=1,\\ x_1+x_2-x_3-x_4=1\end{cases}\) 的通解．</p>
+      <p class="stmt">求方程组 \(\begin{cases}x_1+x_2+x_3+x_4=1,\\ x_1+x_2-x_3-x_4=1\end{cases}\) 的通解。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　两式相加得 \(2(x_1+x_2)=2\Rightarrow x_1+x_2=1\)；两式相减得 \(2(x_3+x_4)=0\Rightarrow x_3+x_4=0\)．
-          令 \(x_2=s,\ x_4=t\)（自由未知量），则 \(x_1=1-s,\ x_3=-t\)．写成向量形式：
+          <p><span style="font-weight:700">解</span>　两式相加得 \(2(x_1+x_2)=2\Rightarrow x_1+x_2=1\)；两式相减得 \(2(x_3+x_4)=0\Rightarrow x_3+x_4=0\)。
+          令 \(x_2=s,\ x_4=t\)（自由未知量），则 \(x_1=1-s,\ x_3=-t\)。写成向量形式：
           \[x=\begin{pmatrix}1\\0\\0\\0\end{pmatrix}
             +s\begin{pmatrix}1\\-1\\0\\0\end{pmatrix}
             +t\begin{pmatrix}0\\0\\-1\\1\end{pmatrix}.\]
-          其中 \((1,0,0,0)^T\) 是一个特解，\(\{(1,-1,0,0)^T,(0,0,-1,1)^T\}\) 是导出齐次方程组的基础解系．</p>
-          <p><b>方法提炼：</b>这正是 §4.2 的"通解结构定理"——解集合 = 一个点（特解）+ 一个子空间（齐次通解）．</p>
+          其中 \((1,0,0,0)^T\) 是一个特解，\(\{(1,-1,0,0)^T,(0,0,-1,1)^T\}\) 是导出齐次方程组的基础解系。</p>
+          <p><b>方法提炼：</b>这正是 §4.2 的"通解结构定理"——解集合 = 一个点（特解）+ 一个子空间（齐次通解）。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 4　（2018 · 考研数学二）</div>
-      <p class="stmt">设 \(A=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)，\(B=E\)（二阶单位阵），求矩阵 \(X\) 使 \(AX=B\)．</p>
+      <p class="stmt">设 \(A=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)，\(B=E\)（二阶单位阵），求矩阵 \(X\) 使 \(AX=B\)。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　因 \(|A|=-2\neq0\)，\(A\) 可逆，故 \(X=A^{-1}B=A^{-1}\)．
+          <p><span style="font-weight:700">解</span>　因 \(|A|=-2\neq0\)，\(A\) 可逆，故 \(X=A^{-1}B=A^{-1}\)。
           \[A^{-1}=-\frac12\begin{pmatrix}4&-2\\-3&1\end{pmatrix}
             =\begin{pmatrix}-2&1\\[2pt]\tfrac32&-\tfrac12\end{pmatrix}.\]
           检验：\(AX=\begin{pmatrix}1&2\\3&4\end{pmatrix}
           \begin{pmatrix}-2&1\\\tfrac32&-\tfrac12\end{pmatrix}
-          =\begin{pmatrix}1&0\\0&1\end{pmatrix}=E\)，正确．</p>
-          <p><b>方法提炼：</b>矩阵方程先判断可逆性；左乘 \(A^{-1}\) 要"贴着 \(A\) 乘"，方向不能反（\(AXB=C\) 型需用 \(A^{-1}\) 左乘、\(B^{-1}\) 右乘）．</p>
+          =\begin{pmatrix}1&0\\0&1\end{pmatrix}=E\)，正确。</p>
+          <p><b>方法提炼：</b>矩阵方程先判断可逆性；左乘 \(A^{-1}\) 要"贴着 \(A\) 乘"，方向不能反（\(AXB=C\) 型需用 \(A^{-1}\) 左乘、\(B^{-1}\) 右乘）。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 5　（2021 · 考研数学一）</div>
-      <p class="stmt">求下列两个齐次方程组的公共解：\(\text{(I)}\ x_1+x_2+x_3=0\)；\(\text{(II)}\ x_1+2x_2+3x_3=0\)．</p>
+      <p class="stmt">求下列两个齐次方程组的公共解：\(\text{(I)}\ x_1+x_2+x_3=0\)；\(\text{(II)}\ x_1+2x_2+3x_3=0\)。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　公共解须同时满足两式．两式相减得 \(x_2+2x_3=0\Rightarrow x_2=-2x_3\)；代入 (I)：\(x_1+(-2x_3)+x_3=0\Rightarrow x_1=x_3\)．
-          令 \(x_3=k\)，则公共解为 \((k,-2k,k)^T=k(1,-2,1)^T\)，\(k\) 任意．</p>
-          <p><b>方法提炼：</b>求"公共解"就是联立两个方程组再求解；它体现了子空间交（§3.4 的 \(V\cap W\)）的齐次版本．</p>
+          <p><span style="font-weight:700">解</span>　公共解须同时满足两式。两式相减得 \(x_2+2x_3=0\Rightarrow x_2=-2x_3\)；代入 (I)：\(x_1+(-2x_3)+x_3=0\Rightarrow x_1=x_3\)。
+          令 \(x_3=k\)，则公共解为 \((k,-2k,k)^T=k(1,-2,1)^T\)，\(k\) 任意。</p>
+          <p><b>方法提炼：</b>求"公共解"就是联立两个方程组再求解；它体现了子空间交（§3.4 的 \(V\cap W\)）的齐次版本。</p>
         </div>
       </details>
     </div>
@@ -761,35 +1387,35 @@ print(sol)                         # 输出通解的参数形式
 
   <div class="grp">一、选择题（15 题）</div>
   <ol>
-    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)\gt n\)</span><span>D. \(|A|\neq0\)</span></div>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解的充分必要条件是（　）．</li>
-    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)=R(A,b)\)</span><span>D. \(R(A)\neq R(A,b)\)</span></div>非齐次线性方程组 \(Ax=b\) 有解的充分必要条件是（　）．</li>
-    <li><div class="qopts"><span>A. \(n\)</span><span>B. \(R(A)\)</span><span>C. \(n-R(A)\)</span><span>D. \(R(A)-n\)</span></div>当 \(R(A)=r\lt n\) 时，齐次方程组 \(Ax=0\) 的基础解系含有（　）个解向量．</li>
-    <li><div class="qopts"><span>A. 一个特解</span><span>B. 齐次通解</span><span>C. 特解 \(+\) 齐次通解</span><span>D. 齐次方程组的特解</span></div>非齐次方程组 \(Ax=b\) 的通解结构是（　）．</li>
-    <li><div class="qopts"><span>A. 只有零解</span><span>B. 有非零解</span><span>C. 无解</span><span>D. 有唯一解</span></div>设 \(A\) 为 \(3\) 阶方阵且 \(|A|=0\)，则齐次方程组 \(Ax=0\)（　）．</li>
-    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 不确定</span></div>方程组 \(\begin{cases}x+y=1,\\ 2x+2y=2\end{cases}\) 的解的情况是（　）．</li>
-    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 确定有解</span></div>方程组 \(\begin{cases}x+y=1,\\ x+y=2\end{cases}\) 的解的情况是（　）．</li>
-    <li><div class="qopts"><span>A. 必无解</span><span>B. 必有解</span><span>C. 必唯一</span><span>D. 必无穷多</span></div>（考研真题）若 \(A\) 为 \(m\times n\) 矩阵且 \(R(A)=m\)，则 \(Ax=b\)（　）．</li>
-    <li><div class="qopts"><span>A. \(1\)</span><span>B. \(2\)</span><span>C. \(3\)</span><span>D. \(4\)</span></div>设 \(A\) 为 \(4\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含（　）个向量．</li>
-    <li><div class="qopts"><span>A. \(\xi+\eta\)</span><span>B. \(\xi-\eta\)</span><span>C. \(2\xi\)</span><span>D. \(2\eta\)</span></div>设 \(\xi\) 是 \(Ax=0\) 的解，\(\eta\) 是 \(Ax=b\) 的解，则下列向量中一定是 \(Ax=b\) 的解的是（　）．</li>
-    <li><div class="qopts"><span>A. 数域</span><span>B. 向量空间</span><span>C. 群</span><span>D. 环</span></div>齐次线性方程组 \(Ax=0\) 的全部解向量构成的集合，对加法和数乘封闭，称为（　）．</li>
-    <li><div class="qopts"><span>A. 方程数等于未知数且 \(|A|\neq0\)</span><span>B. \(m\lt n\)</span><span>C. 方程组齐次</span><span>D. 任意情形</span></div>克莱姆法则能够直接使用的条件是（　）．</li>
-    <li><div class="qopts"><span>A. \(A\) 可逆</span><span>B. \(R(A)=n\)</span><span>C. \(R(A)\lt n\)</span><span>D. \(R(B)=0\)</span></div>（期末真题）设 \(A,B\) 为 \(n\) 阶方阵且 \(AB=O,\ B\neq O\)，则（　）．</li>
-    <li><div class="qopts"><span>A. 无解</span><span>B. 有解，特解为 \((1,2,3)^T\)</span><span>C. 只有零解</span><span>D. 解不唯一</span></div>设 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(\beta=\alpha_1+2\alpha_2+3\alpha_3\)，则 \(Ax=\beta\)（　）．</li>
-    <li><div class="qopts"><span>A. 全体解构成向量空间</span><span>B. 解集必含零向量</span><span>C. 解集不构成向量空间</span><span>D. 解集只有一点</span></div>非齐次线性方程组 \(Ax=b\ (b\neq0)\) 的解集（　）．</li>
+    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)\gt n\)</span><span>D. \(|A|\neq0\)</span></div>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解的充分必要条件是（　）。</li>
+    <li><div class="qopts"><span>A. \(R(A)=n\)</span><span>B. \(R(A)\lt n\)</span><span>C. \(R(A)=R(A,b)\)</span><span>D. \(R(A)\neq R(A,b)\)</span></div>非齐次线性方程组 \(Ax=b\) 有解的充分必要条件是（　）。</li>
+    <li><div class="qopts"><span>A. \(n\)</span><span>B. \(R(A)\)</span><span>C. \(n-R(A)\)</span><span>D. \(R(A)-n\)</span></div>当 \(R(A)=r\lt n\) 时，齐次方程组 \(Ax=0\) 的基础解系含有（　）个解向量。</li>
+    <li><div class="qopts"><span>A. 一个特解</span><span>B. 齐次通解</span><span>C. 特解 \(+\) 齐次通解</span><span>D. 齐次方程组的特解</span></div>非齐次方程组 \(Ax=b\) 的通解结构是（　）。</li>
+    <li><div class="qopts"><span>A. 只有零解</span><span>B. 有非零解</span><span>C. 无解</span><span>D. 有唯一解</span></div>设 \(A\) 为 \(3\) 阶方阵且 \(|A|=0\)，则齐次方程组 \(Ax=0\)（　）。</li>
+    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 不确定</span></div>方程组 \(\begin{cases}x+y=1,\\ 2x+2y=2\end{cases}\) 的解的情况是（　）。</li>
+    <li><div class="qopts"><span>A. 唯一解</span><span>B. 无穷多解</span><span>C. 无解</span><span>D. 确定有解</span></div>方程组 \(\begin{cases}x+y=1,\\ x+y=2\end{cases}\) 的解的情况是（　）。</li>
+    <li><div class="qopts"><span>A. 必无解</span><span>B. 必有解</span><span>C. 必唯一</span><span>D. 必无穷多</span></div>（考研真题）若 \(A\) 为 \(m\times n\) 矩阵且 \(R(A)=m\)，则 \(Ax=b\)（　）。</li>
+    <li><div class="qopts"><span>A. \(1\)</span><span>B. \(2\)</span><span>C. \(3\)</span><span>D. \(4\)</span></div>设 \(A\) 为 \(4\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含（　）个向量。</li>
+    <li><div class="qopts"><span>A. \(\xi+\eta\)</span><span>B. \(\xi-\eta\)</span><span>C. \(2\xi\)</span><span>D. \(2\eta\)</span></div>设 \(\xi\) 是 \(Ax=0\) 的解，\(\eta\) 是 \(Ax=b\) 的解，则下列向量中一定是 \(Ax=b\) 的解的是（　）。</li>
+    <li><div class="qopts"><span>A. 数域</span><span>B. 向量空间</span><span>C. 群</span><span>D. 环</span></div>齐次线性方程组 \(Ax=0\) 的全部解向量构成的集合，对加法和数乘封闭，称为（　）。</li>
+    <li><div class="qopts"><span>A. 方程数等于未知数且 \(|A|\neq0\)</span><span>B. \(m\lt n\)</span><span>C. 方程组齐次</span><span>D. 任意情形</span></div>克莱姆法则能够直接使用的条件是（　）。</li>
+    <li><div class="qopts"><span>A. \(A\) 可逆</span><span>B. \(R(A)=n\)</span><span>C. \(R(A)\lt n\)</span><span>D. \(R(B)=0\)</span></div>（期末真题）设 \(A,B\) 为 \(n\) 阶方阵且 \(AB=O,\ B\neq O\)，则（　）。</li>
+    <li><div class="qopts"><span>A. 无解</span><span>B. 有解，特解为 \((1,2,3)^T\)</span><span>C. 只有零解</span><span>D. 解不唯一</span></div>设 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(\beta=\alpha_1+2\alpha_2+3\alpha_3\)，则 \(Ax=\beta\)（　）。</li>
+    <li><div class="qopts"><span>A. 全体解构成向量空间</span><span>B. 解集必含零向量</span><span>C. 解集不构成向量空间</span><span>D. 解集只有一点</span></div>非齐次线性方程组 \(Ax=b\ (b\neq0)\) 的解集（　）。</li>
   </ol>
 
   <div class="grp">二、填空题（10 题）</div>
   <ol>
-    <li>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\) ______ \(n\)（填“\(\lt\)”或“\(=\)”或“\(\gt\)”）．</li>
-    <li>设 \(A\) 为 \(5\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量．</li>
-    <li>非齐次方程组 \(Ax=b\) 有唯一解的充要条件是 \(R(A)=R(A,b)=\) ______．</li>
-    <li>设 \(\xi_1,\xi_2\) 是 \(Ax=0\) 的基础解系，则 \(Ax=b\) 的通解可写为 \(x=\eta^*+k_1\xi_1+\) ______．</li>
-    <li>设 \(A\) 为 \(4\times3\) 矩阵且 \(R(A)=2\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量．</li>
-    <li>矩阵方程 \(AX=B\) 有解的充要条件是 \(R(A)=R(\) ______\()\)（填增广矩阵记号）．</li>
-    <li>若 \(R(A)=R(A,b)=1\lt n\)，则非齐次方程组 \(Ax=b\) ______（填“有唯一解”或“有无穷多解”）．</li>
-    <li>齐次线性方程组总是有解，至少存在 ______ 解（填“零”或“非零”）．</li>
-    <li>由克莱姆法则，当 \(|A|\neq0\) 时，未知数 \(x_j=\dfrac{D_j}{D}\)，其中 \(D_j\) 是将 \(D=|A|\) 的第 \(j\) 列换为 ______ 所得的行列式．</li>
-    <li>设 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 ______ 的解．</li>
+    <li>\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\) ______ \(n\)（填“\(\lt\)”或“\(=\)”或“\(\gt\)”）。</li>
+    <li>设 \(A\) 为 \(5\) 阶方阵且 \(R(A)=3\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量。</li>
+    <li>非齐次方程组 \(Ax=b\) 有唯一解的充要条件是 \(R(A)=R(A,b)=\) ______。</li>
+    <li>设 \(\xi_1,\xi_2\) 是 \(Ax=0\) 的基础解系，则 \(Ax=b\) 的通解可写为 \(x=\eta^*+k_1\xi_1+\) ______。</li>
+    <li>设 \(A\) 为 \(4\times3\) 矩阵且 \(R(A)=2\)，则 \(Ax=0\) 的基础解系含 ______ 个解向量。</li>
+    <li>矩阵方程 \(AX=B\) 有解的充要条件是 \(R(A)=R(\) ______\()\)（填增广矩阵记号）。</li>
+    <li>若 \(R(A)=R(A,b)=1\lt n\)，则非齐次方程组 \(Ax=b\) ______（填“有唯一解”或“有无穷多解”）。</li>
+    <li>齐次线性方程组总是有解，至少存在 ______ 解（填“零”或“非零”）。</li>
+    <li>由克莱姆法则，当 \(|A|\neq0\) 时，未知数 \(x_j=\dfrac{D_j}{D}\)，其中 \(D_j\) 是将 \(D=|A|\) 的第 \(j\) 列换为 ______ 所得的行列式。</li>
+    <li>设 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 ______ 的解。</li>
   </ol>
 
   <div class="grp">三、计算题（12 题）</div>
@@ -797,73 +1423,73 @@ print(sol)                         # 输出通解的参数形式
     <li>求下列齐次线性方程组的基础解系与通解：
       <p class="stmt">（1）\(\begin{cases}x_1-2x_2+4x_3-7x_4=0,\\ 2x_1+x_2-2x_3+x_4=0,\\ 3x_1-x_2+2x_3-4x_4=0;\end{cases}\)</p>
       <p class="stmt">（2）\(\begin{cases}x_1-8x_2+10x_3+2x_4=0,\\ 2x_1+4x_2+5x_3-x_4=0,\\ 3x_1+8x_2+6x_3-2x_4=0.\end{cases}\)</p></li>
-    <li>已知齐次方程组（Ⅰ）\(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+3x_2+5x_3=0,\\ x_1+x_2+ax_3=0\end{cases}\) 与（Ⅱ）\(\begin{cases}x_1+bx_2+cx_3=0,\\ 2x_1+b^2x_2+(c+1)x_3=0\end{cases}\) 同解，求 \(a,b,c\) 的值．</li>
-    <li>设 \(4\) 元齐次方程组 \(Ax=0\) 的通解为 \(x=k_1(1,0,2,3)^T+k_2(0,1,-1,1)^T\)，求原方程组（写出一组系数矩阵即可）．</li>
+    <li>已知齐次方程组（Ⅰ）\(\begin{cases}x_1+2x_2+3x_3=0,\\ 2x_1+3x_2+5x_3=0,\\ x_1+x_2+ax_3=0\end{cases}\) 与（Ⅱ）\(\begin{cases}x_1+bx_2+cx_3=0,\\ 2x_1+b^2x_2+(c+1)x_3=0\end{cases}\) 同解，求 \(a,b,c\) 的值。</li>
+    <li>设 \(4\) 元齐次方程组 \(Ax=0\) 的通解为 \(x=k_1(1,0,2,3)^T+k_2(0,1,-1,1)^T\)，求原方程组（写出一组系数矩阵即可）。</li>
     <li>解下列非齐次线性方程组：
       <p class="stmt">（1）\(\begin{cases}2x_1+x_2-x_3-x_4=1,\\ 2x_1+x_2+x_3-x_4=1,\\ 4x_1+2x_2+x_3-2x_4=2;\end{cases}\)</p>
       <p class="stmt">（2）\(\begin{cases}3x_1-x_2+2x_3=10,\\ 4x_1+2x_2-x_3=2,\\ 11x_1+3x_2=8.\end{cases}\)</p></li>
-    <li>已知 \(A\) 为 \(4\) 阶方阵，\(A^*\) 为伴随矩阵，\(|A|=0\) 且 \(A^*\neq O\)．若 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\)（其中 \(\eta_1,\eta_2,\eta_3\) 是 \(Ax=b\) 的解），求 \(Ax=b\) 的通解．</li>
-    <li>已知 \(\eta_1=(1,-1,0,2)^T,\ \eta_2=(2,1,-1,4)^T,\ \eta_3=(4,5,-3,1)^T\) 是某线性方程组的三个解，且该方程组系数矩阵 \(A\) 的秩 \(R(A)=2\)，求其通解．</li>
+    <li>已知 \(A\) 为 \(4\) 阶方阵，\(A^*\) 为伴随矩阵，\(|A|=0\) 且 \(A^*\neq O\)。若 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\)（其中 \(\eta_1,\eta_2,\eta_3\) 是 \(Ax=b\) 的解），求 \(Ax=b\) 的通解。</li>
+    <li>已知 \(\eta_1=(1,-1,0,2)^T,\ \eta_2=(2,1,-1,4)^T,\ \eta_3=(4,5,-3,1)^T\) 是某线性方程组的三个解，且该方程组系数矩阵 \(A\) 的秩 \(R(A)=2\)，求其通解。</li>
     <li>讨论 \(a\) 的取值，使非齐次方程组
       \(\begin{cases}x_1+x_2+ax_3=-1,\\ x_1-x_2+2x_3=-1,\\ -x_1+ax_2+x_3=a^2\end{cases}\)
-      有无穷多解，并求其通解．</li>
+      有无穷多解，并求其通解。</li>
     <li>讨论线性方程组
       \(\begin{cases}\lambda x_1+x_2=1,\\ x_1+\lambda x_2=1\end{cases}\)
-      的解，并在有解时求出其解．</li>
+      的解，并在有解时求出其解。</li>
     <li>设有线性方程组
       \(\begin{cases}x_1+x_2-2x_3+3x_4=0,\\ 2x_1+x_2-6x_3+4x_4=-1,\\ 3x_1+2x_2+px_3+7x_4=-1,\\ x_1-x_2-6x_3-x_4=t+2,\end{cases}\)
-      问 \(p,t\) 取何值时方程组无解？有解？并在有解时求全部解．</li>
-    <li>设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)．已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值．</li>
-    <li>设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1-\alpha_2+3\alpha_4\)，求 \(Ax=\beta\) 的通解．</li>
+      问 \(p,t\) 取何值时方程组无解？有解？并在有解时求全部解。</li>
+    <li>设 \(\alpha_1=(1,0,-1,2)^T,\ \alpha_2=(2,-1,-2,6)^T,\ \alpha_3=(3,1,t,4)^T,\ \beta=(4,-1,-5,10)^T\)。已知 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，求 \(t\) 的值。</li>
+    <li>设 \(A=(\alpha_1,\alpha_2,\alpha_3,\alpha_4)\)，其中 \(\alpha_1,\alpha_2,\alpha_3,\alpha_4\) 均为四维列向量，且 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，\(\alpha_1=2\alpha_2-\alpha_3\)，而 \(\beta=\alpha_1-\alpha_2+3\alpha_4\)，求 \(Ax=\beta\) 的通解。</li>
     <li>用高斯—约当消元（手算或借助本页“通解求解器”）求齐次方程组
       \(\begin{cases}x_1+x_2-x_3-x_4=0,\\ 2x_1-5x_2+3x_3+2x_4=0,\\ 7x_1-7x_2+3x_3+x_4=0\end{cases}\)
-      的基础解系，并写出通解．</li>
+      的基础解系，并写出通解。</li>
   </ol>
 
   <div class="grp">四、证明题（8 题）</div>
   <ol>
-    <li>证明：齐次线性方程组 \(Ax=0\) 的解集合 \(S=\{x\mid Ax=0\}\) 关于向量加法与数乘封闭，因而是向量空间（解空间）．</li>
-    <li>证明定理 4.1：\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\lt n\)．</li>
-    <li>证明推论 4.2：设 \(A\) 为 \(n\) 阶方阵，则 \(Ax=0\) 有非零解 \(\iff |A|=0\)．</li>
-    <li>证明性质 4.3：若 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 \(Ax=0\) 的解．</li>
-    <li>证明定理 4.7（非齐次通解结构）：当 \(R(A)=R(A,b)=r\lt n\) 时，\(Ax=b\) 的通解为 \(x=\eta^*+\) 对应齐次基础解系的线性组合．</li>
-    <li>设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)．</li>
-    <li>证明定理 4.8：矩阵方程 \(AX=B\) 有解 \(\iff R(A)=R(A,B)\)．</li>
-    <li>设 \(A\) 为 \(m\times n\) 实矩阵，证明 \(R(A^TA)=R(A)\)．</li>
+    <li>证明：齐次线性方程组 \(Ax=0\) 的解集合 \(S=\{x\mid Ax=0\}\) 关于向量加法与数乘封闭，因而是向量空间（解空间）。</li>
+    <li>证明定理 4.1：\(n\) 元齐次线性方程组 \(Ax=0\) 有非零解 \(\iff R(A)\lt n\)。</li>
+    <li>证明推论 4.2：设 \(A\) 为 \(n\) 阶方阵，则 \(Ax=0\) 有非零解 \(\iff |A|=0\)。</li>
+    <li>证明性质 4.3：若 \(\eta_1,\eta_2\) 都是 \(Ax=b\) 的解，则 \(\eta_1-\eta_2\) 是 \(Ax=0\) 的解。</li>
+    <li>证明定理 4.7（非齐次通解结构）：当 \(R(A)=R(A,b)=r\lt n\) 时，\(Ax=b\) 的通解为 \(x=\eta^*+\) 对应齐次基础解系的线性组合。</li>
+    <li>设 \(A_{m\times n},\ B_{n\times s}\) 满足 \(AB=O\)，证明 \(R(A)+R(B)\le n\)。</li>
+    <li>证明定理 4.8：矩阵方程 \(AX=B\) 有解 \(\iff R(A)=R(A,B)\)。</li>
+    <li>设 \(A\) 为 \(m\times n\) 实矩阵，证明 \(R(A^TA)=R(A)\)。</li>
   </ol>
 
   <div class="grp">五、应用与拓展（5 题）</div>
   <ol>
-    <li>人工智能（线性回归）：用最小二乘法拟合直线 \(y=a+bx\) 于数据点 \((2,3),(3,5),(4,6),(5,8)\)．写出正规方程 \(\begin{cases}4a+14b=22,\\ 14a+54b=85\end{cases}\) 并求解 \(a,b\)．</li>
+    <li>人工智能（线性回归）：用最小二乘法拟合直线 \(y=a+bx\) 于数据点 \((2,3),(3,5),(4,6),(5,8)\)。写出正规方程 \(\begin{cases}4a+14b=22,\\ 14a+54b=85\end{cases}\) 并求解 \(a,b\)。</li>
     <li>电气工程：某直流电路两节点对地电压 \(v_1,v_2\) 满足
       \(\begin{cases}v_1+v_2=5,\\ 2v_1-v_2=1,\end{cases}\)
-      求 \(v_1,v_2\)．</li>
+      求 \(v_1,v_2\)。</li>
     <li>高铁运营：三条路径客流量 \(f_1,f_2,f_3\) 满足
       \(\begin{cases}f_1+f_2+f_3=6000,\\ f_1-2f_2=0,\\ f_2+f_3=3500,\end{cases}\)
-      求各路径流量．</li>
-    <li>现代产业链：设两部门直接消耗系数矩阵 \(A=\begin{pmatrix}0.2&0.3\\ 0&0.1\end{pmatrix}\)，最终需求 \(d=\begin{pmatrix}50\\90\end{pmatrix}\)，求解 \((E-A)x=d\) 得到总产出 \(x\)．</li>
-    <li>结合案例 3 的客流方程组，说明：若该枢纽的客流分配存在“自由变量”，在实际运营调度中意味着什么？并以案例 3 原数据验证其解是否唯一．</li>
+      求各路径流量。</li>
+    <li>现代产业链：设两部门直接消耗系数矩阵 \(A=\begin{pmatrix}0.2&0.3\\ 0&0.1\end{pmatrix}\)，最终需求 \(d=\begin{pmatrix}50\\90\end{pmatrix}\)，求解 \((E-A)x=d\) 得到总产出 \(x\)。</li>
+    <li>结合案例 3 的客流方程组，说明：若该枢纽的客流分配存在“自由变量”，在实际运营调度中意味着什么？并以案例 3 原数据验证其解是否唯一。</li>
   </ol>
 
   <details><summary>参考答案（详细）</summary><div class="body">
-    <p><b>一、选择题</b>　1.B（\(R(A)\lt n\) 才有非零解）　2.C（定理 4.5）　3.C（\(n-R(A)\)）　4.C　5.B（\(|A|=0\Rightarrow R(A)\lt 3\)，有非零解）　6.B（\(R(A)=R(A,b)=1\lt 2\)，无穷多解）　7.C（\(R(A)=1\neq R(A,b)=2\)，无解）　8.B（行满秩必相容，推论 4.5）　9.A（\(4-3=1\)）　10.A（\(A(\xi+\eta)=0+b=b\)）　11.B（解空间是向量空间）　12.A（方程数=未知数且 \(|A|\neq0\)）　13.C（\(B\neq O\Rightarrow Ax=0\) 有非零解 \(\Rightarrow R(A)\lt n\)）　14.B（\(\beta\) 可由列线性表示，故有解，特解 \((1,2,3)^T\)）　15.C（非齐次解集不含零向量，不构成向量空间）．</p>
-    <p><b>二、填空题</b>　1. \(\lt\)　2. \(2\)（\(5-3=2\)）　3. \(n\)　4. \(k_2\xi_2\)　5. \(1\)（\(3-2=1\)）　6. \((A,B)\)　7. 有无穷多解　8. 零　9. \(|A|\)；常数项向量 \(b\)　10. 对应齐次方程组 \(Ax=0\)．</p>
+    <p><b>一、选择题</b>　1.B（\(R(A)\lt n\) 才有非零解）　2.C（定理 4.5）　3.C（\(n-R(A)\)）　4.C　5.B（\(|A|=0\Rightarrow R(A)\lt 3\)，有非零解）　6.B（\(R(A)=R(A,b)=1\lt 2\)，无穷多解）　7.C（\(R(A)=1\neq R(A,b)=2\)，无解）　8.B（行满秩必相容，推论 4.5）　9.A（\(4-3=1\)）　10.A（\(A(\xi+\eta)=0+b=b\)）　11.B（解空间是向量空间）　12.A（方程数=未知数且 \(|A|\neq0\)）　13.C（\(B\neq O\Rightarrow Ax=0\) 有非零解 \(\Rightarrow R(A)\lt n\)）　14.B（\(\beta\) 可由列线性表示，故有解，特解 \((1,2,3)^T\)）　15.C（非齐次解集不含零向量，不构成向量空间）。</p>
+    <p><b>二、填空题</b>　1. \(\lt\)　2. \(2\)（\(5-3=2\)）　3. \(n\)　4. \(k_2\xi_2\)　5. \(1\)（\(3-2=1\)）　6. \((A,B)\)　7. 有无穷多解　8. 零　9. \(|A|\)；常数项向量 \(b\)　10. 对应齐次方程组 \(Ax=0\)。</p>
     <p><b>三、计算题</b></p>
-    <p>1.（1）行最简形为 \(\operatorname{diag}(1,1,-2,1)\) 型（见例 4.4），基础解系 \(\xi=(0,2,1,0)^T\)，通解 \(x=k\xi\)．<br>（2）行最简形 \(\begin{pmatrix}1&0&4&0\\0&1&-\frac34&-\frac14\\0&0&0&0\end{pmatrix}\)，自由未知量 \(x_3,x_4\)；取 \((x_3,x_4)=(1,0),(0,1)\) 得基础解系 \(\xi_1=(-16,3,4,0)^T,\ \xi_2=(0,1,0,4)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)．</p>
-    <p>2. 由消元知（Ⅰ）当且仅当 \(a=2\) 时有非零解，其解空间为 \(\operatorname{span}\{(-1,-1,1)^T\}\)．（Ⅱ）中令其解向量满足两式，得 \(b=1,\ c=2\)，此时（Ⅱ）化为 \(x_1+x_2+2x_3=0,\ 2x_1+x_2+3x_3=0\)，其解空间同为 \(\operatorname{span}\{(-1,-1,1)^T\}\)．故两方程组同解当且仅当 \(a=2,\ b=1,\ c=2\)．</p>
-    <p>3. 由通解知基础解系为 \(\xi_1=(1,0,2,3)^T,\ \xi_2=(0,1,-1,1)^T\)．所求矩阵 \(A\) 的每行须与 \(\xi_1,\xi_2\) 都正交，即满足 \(a+2c+3d=0,\ b-c+d=0\)．取两个线性无关解 \(r_1=(-3,-1,0,1),\ r_2=(-2,1,1,0)\)，例如
+    <p>1.（1）行最简形为 \(\operatorname{diag}(1,1,-2,1)\) 型（见例 4.4），基础解系 \(\xi=(0,2,1,0)^T\)，通解 \(x=k\xi\)。<br>（2）行最简形 \(\begin{pmatrix}1&0&4&0\\0&1&-\frac34&-\frac14\\0&0&0&0\end{pmatrix}\)，自由未知量 \(x_3,x_4\)；取 \((x_3,x_4)=(1,0),(0,1)\) 得基础解系 \(\xi_1=(-16,3,4,0)^T,\ \xi_2=(0,1,0,4)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)。</p>
+    <p>2. 由消元知（Ⅰ）当且仅当 \(a=2\) 时有非零解，其解空间为 \(\operatorname{span}\{(-1,-1,1)^T\}\)。（Ⅱ）中令其解向量满足两式，得 \(b=1,\ c=2\)，此时（Ⅱ）化为 \(x_1+x_2+2x_3=0,\ 2x_1+x_2+3x_3=0\)，其解空间同为 \(\operatorname{span}\{(-1,-1,1)^T\}\)。故两方程组同解当且仅当 \(a=2,\ b=1,\ c=2\)。</p>
+    <p>3. 由通解知基础解系为 \(\xi_1=(1,0,2,3)^T,\ \xi_2=(0,1,-1,1)^T\)。所求矩阵 \(A\) 的每行须与 \(\xi_1,\xi_2\) 都正交，即满足 \(a+2c+3d=0,\ b-c+d=0\)。取两个线性无关解 \(r_1=(-3,-1,0,1),\ r_2=(-2,1,1,0)\)，例如
       \[A=\begin{pmatrix}-3&-1&0&1\\ -2&1&1&0\\ 0&0&0&0\\ 0&0&0&0\end{pmatrix}\]
-      （前两行线性无关，秩为 \(2\)，解空间维数恰为 \(4-2=2\)）．</p>
-    <p>4.（1）增广矩阵行最简形为 \(\begin{pmatrix}1&\frac12&0&-\frac12&\frac12\\0&0&1&0&0\\0&0&0&0&0\end{pmatrix}\)，特解 \(\eta^*=(\frac12,0,0,0)^T\)，基础解系 \(\xi_1=(-1,2,0,0)^T,\ \xi_2=(1,0,0,2)^T\)，通解 \(x=\eta^*+k_1\xi_1+k_2\xi_2\)．<br>（2）第三式与第一、二式消元后出现矛盾 \(0=1\)，故<b>无解</b>．</p>
-    <p>5. 由 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\) 得 \(\eta_1-\eta_3=(1,0,0,1)^T\) 是 \(Ax=0\) 的解；又 \(|A|=0,\ A^*\neq O\Rightarrow R(A)=n-1=3\)，故基础解系只含 \(1\) 个向量，取 \(\xi=(1,0,0,1)^T\)．取特解 \(\eta^*=\frac12(\eta_1+\eta_2)=(1,0,0,4)^T\)，通解 \(x=\eta^*+k\xi\)．</p>
-    <p>6. 因 \(R(A)=2\)，齐次基础解系含 \(2\) 个向量．\(\xi_1=\eta_1-\eta_2=(-1,-2,1,-2)^T,\ \xi_2=\eta_1-\eta_3=(-3,-6,3,1)^T\) 均为齐次解且线性无关，作为基础解系；取特解 \(\eta_1\)，通解 \(x=\eta_1+k_1\xi_1+k_2\xi_2\)．</p>
-    <p>7. 系数行列式 \(|A|=(a-4)(a+1)\)．当 \(a=-1\) 时 \(R(A)=R(A,b)=2\lt 3\)，无穷多解，特解可取 \((-1,0,0)^T\)，基础解系 \((-1,3,2)^T\)，通解 \(x=(-1,0,0)^T+k(-1,3,2)^T\)；当 \(a=4\) 时 \(R(A)=2\neq R(A,b)=3\) 无解；其余 \(a\)（即 \(a\neq4,-1\)）有唯一解．</p>
-    <p>8. 系数行列式 \(|A|=\lambda^2-1=(\lambda-1)(\lambda+1)\)．当 \(\lambda\neq\pm1\) 时唯一解，由克莱姆法则得 \(x_1=x_2=\dfrac{1}{\lambda+1}\)；当 \(\lambda=1\) 时两方程同为 \(x_1+x_2=1\)，\(R(A)=R(A,b)=1\lt 2\)，无穷多解，通解 \(x_1=1-k,\ x_2=k\)；当 \(\lambda=-1\) 时两方程为 \(-x_1+x_2=1,\ x_1-x_2=1\)，相加得 \(0=2\) 矛盾，无解．</p>
-    <p>9. 系数矩阵恒有 \(\det A=0\)（秩为 \(3\)），第 4 个方程是前两式的线性组合：\(r_4=-3r_1+2r_2\)．故相容当且仅当常数项也满足该关系：\(b_4=-3b_1+2b_2=-3\cdot0+2\cdot(-1)=-2\)，即 \(t+2=-2\Rightarrow t=-4\)（与 \(p\) 无关）．当 \(t=-4\) 时 \(R(A)=R(A,b)=3\lt 4\)，有无穷多解，基础解系为 \((-1,-2,0,1)^T\)（对应自由未知量 \(x_4\)），特解可取 \((-1,1,0,0)^T\)，通解 \(x=(-1,1,0,0)^T+k(-1,-2,0,1)^T\)．当 \(t\neq-4\) 时 \(R(A)=3\neq R(A,b)=4\)，无解．</p>
-    <p>10. 由例 4.9 的消元结果，当 \(t=-3\) 时 \(R(\alpha_1,\alpha_2,\alpha_3)=2\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，故 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，即 \(t=-3\)．</p>
-    <p>11. 同例 4.1，基础解系 \(\xi_1=(\frac27,\frac57,1,0)^T,\ \xi_2=(\frac37,\frac47,0,1)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)．</p>
-    <p><b>四、证明题</b>　均见正文定理证明（定理 4.1、4.5、4.7、4.8 及性质 4.3、4.1、4.2 等），按正文给出的完整证明过程书写即可．第 6 题即例 4.2 结论，第 8 题即例 4.5 结论．</p>
-    <p><b>五、应用与拓展</b>　1. 正规方程解得 \(a=-0.1,\ b=1.6\)，拟合直线 \(y=-0.1+1.6x\)（验证：\(4(-0.1)+14(1.6)=22,\ 14(-0.1)+54(1.6)=85\)）．　2. 解得 \(v_1=2,\ v_2=3\)（V）．　3. 由 \(f_1=2f_2,\ f_3=3500-f_2\)，代入第一式得 \(2f_2+3500=6000\Rightarrow f_2=1250\)，故 \(f_1=2500,\ f_3=2250\)（人/小时）．　4. \((E-A)x=d\) 即 \(\begin{cases}0.8x_1-0.3x_2=50,\\ 0.9x_2=90,\end{cases}\) 解得 \(x_2=100,\ x_1=100\)，总产出 \((100,100)^T\)．　5. 案例 3 为 3 方程 3 未知，系数行列式非零，解唯一（\(f_1=2000,f_2=1000,f_3=2000\)），无自由变量，说明各路径客流被 OD 需求唯一确定；若存在自由变量，则表示有多组可行分配方案，调度具有冗余余量．</p>
+      （前两行线性无关，秩为 \(2\)，解空间维数恰为 \(4-2=2\)）。</p>
+    <p>4.（1）增广矩阵行最简形为 \(\begin{pmatrix}1&\frac12&0&-\frac12&\frac12\\0&0&1&0&0\\0&0&0&0&0\end{pmatrix}\)，特解 \(\eta^*=(\frac12,0,0,0)^T\)，基础解系 \(\xi_1=(-1,2,0,0)^T,\ \xi_2=(1,0,0,2)^T\)，通解 \(x=\eta^*+k_1\xi_1+k_2\xi_2\)。<br>（2）第三式与第一、二式消元后出现矛盾 \(0=1\)，故<b>无解</b>。</p>
+    <p>5. 由 \(\eta_1+\eta_2=(2,0,0,8)^T,\ \eta_2+\eta_3=(1,0,0,7)^T\) 得 \(\eta_1-\eta_3=(1,0,0,1)^T\) 是 \(Ax=0\) 的解；又 \(|A|=0,\ A^*\neq O\Rightarrow R(A)=n-1=3\)，故基础解系只含 \(1\) 个向量，取 \(\xi=(1,0,0,1)^T\)。取特解 \(\eta^*=\frac12(\eta_1+\eta_2)=(1,0,0,4)^T\)，通解 \(x=\eta^*+k\xi\)。</p>
+    <p>6. 因 \(R(A)=2\)，齐次基础解系含 \(2\) 个向量。\(\xi_1=\eta_1-\eta_2=(-1,-2,1,-2)^T,\ \xi_2=\eta_1-\eta_3=(-3,-6,3,1)^T\) 均为齐次解且线性无关，作为基础解系；取特解 \(\eta_1\)，通解 \(x=\eta_1+k_1\xi_1+k_2\xi_2\)。</p>
+    <p>7. 系数行列式 \(|A|=(a-4)(a+1)\)。当 \(a=-1\) 时 \(R(A)=R(A,b)=2\lt 3\)，无穷多解，特解可取 \((-1,0,0)^T\)，基础解系 \((-1,3,2)^T\)，通解 \(x=(-1,0,0)^T+k(-1,3,2)^T\)；当 \(a=4\) 时 \(R(A)=2\neq R(A,b)=3\) 无解；其余 \(a\)（即 \(a\neq4,-1\)）有唯一解。</p>
+    <p>8. 系数行列式 \(|A|=\lambda^2-1=(\lambda-1)(\lambda+1)\)。当 \(\lambda\neq\pm1\) 时唯一解，由克莱姆法则得 \(x_1=x_2=\dfrac{1}{\lambda+1}\)；当 \(\lambda=1\) 时两方程同为 \(x_1+x_2=1\)，\(R(A)=R(A,b)=1\lt 2\)，无穷多解，通解 \(x_1=1-k,\ x_2=k\)；当 \(\lambda=-1\) 时两方程为 \(-x_1+x_2=1,\ x_1-x_2=1\)，相加得 \(0=2\) 矛盾，无解。</p>
+    <p>9. 系数矩阵恒有 \(\det A=0\)（秩为 \(3\)），第 4 个方程是前两式的线性组合：\(r_4=-3r_1+2r_2\)。故相容当且仅当常数项也满足该关系：\(b_4=-3b_1+2b_2=-3\cdot0+2\cdot(-1)=-2\)，即 \(t+2=-2\Rightarrow t=-4\)（与 \(p\) 无关）。当 \(t=-4\) 时 \(R(A)=R(A,b)=3\lt 4\)，有无穷多解，基础解系为 \((-1,-2,0,1)^T\)（对应自由未知量 \(x_4\)），特解可取 \((-1,1,0,0)^T\)，通解 \(x=(-1,1,0,0)^T+k(-1,-2,0,1)^T\)。当 \(t\neq-4\) 时 \(R(A)=3\neq R(A,b)=4\)，无解。</p>
+    <p>10. 由例 4.9 的消元结果，当 \(t=-3\) 时 \(R(\alpha_1,\alpha_2,\alpha_3)=2\neq R(\alpha_1,\alpha_2,\alpha_3,\beta)=3\)，故 \(\beta\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，即 \(t=-3\)。</p>
+    <p>11. 同例 4.1，基础解系 \(\xi_1=(\frac27,\frac57,1,0)^T,\ \xi_2=(\frac37,\frac47,0,1)^T\)，通解 \(x=k_1\xi_1+k_2\xi_2\)。</p>
+    <p><b>四、证明题</b>　均见正文定理证明（定理 4.1、4.5、4.7、4.8 及性质 4.3、4.1、4.2 等），按正文给出的完整证明过程书写即可。第 6 题即例 4.2 结论，第 8 题即例 4.5 结论。</p>
+    <p><b>五、应用与拓展</b>　1. 正规方程解得 \(a=-0.1,\ b=1.6\)，拟合直线 \(y=-0.1+1.6x\)（验证：\(4(-0.1)+14(1.6)=22,\ 14(-0.1)+54(1.6)=85\)）。　2. 解得 \(v_1=2,\ v_2=3\)（V）。　3. 由 \(f_1=2f_2,\ f_3=3500-f_2\)，代入第一式得 \(2f_2+3500=6000\Rightarrow f_2=1250\)，故 \(f_1=2500,\ f_3=2250\)（人/小时）。　4. \((E-A)x=d\) 即 \(\begin{cases}0.8x_1-0.3x_2=50,\\ 0.9x_2=90,\end{cases}\) 解得 \(x_2=100,\ x_1=100\)，总产出 \((100,100)^T\)。　5. 案例 3 为 3 方程 3 未知，系数行列式非零，解唯一（\(f_1=2000,f_2=1000,f_3=2000\)），无自由变量，说明各路径客流被 OD 需求唯一确定；若存在自由变量，则表示有多组可行分配方案，调度具有冗余余量。</p>
   </div></details>
 </div>
 
@@ -886,5 +1512,7 @@ print(sol)                         # 输出通解的参数形式
 <script src="app.js"></script>
 <script src="energy_bar.js"></script>
 <script src="section_quiz.js"></script>
+<script src="msgboard.js"></script>
+<script src="ux-enhancer.js"></script>
 </body>
 </html>

@@ -1,16 +1,19 @@
 /* 全局成长能量条 · Energy Bar（v2：嵌入侧栏/顶栏，不打扰阅读，机制更贴合实际）
- * 数据存本机 localStorage(study_v1)，零后端，跨页面一致．
+ * 数据存本机 localStorage(study_v1)，并匿名自动云端备份到 Cloudflare
+ * （同一浏览器 / 同一「同步码」跨设备自动同步，学生无需手动导数据）。
  *
  * 能量代表“学习投入”，靠真实学习行为累积：
  *   - 认真学完一个小节（滚动到该节并停留数秒）→ 阅读积分（每日封顶，防空刷）
  *   - 做「学完就练」每题 → 努力分；答对再 + 正确分
  *   - 完成一次考试/自测 → 按正确率给分
  *   - 连续每天学习 → 连击奖励
- * 能量满 100 升级，开启新的成长周期．
+ * 能量满 100 升级，开启新的成长周期。
  */
 (function () {
   'use strict';
   var LS_KEY = 'study_v1';
+  var LS_UID = 'eb_uid';
+  var CLOUD_ENERGY_URL = 'https://old-tree-dc24.ldwmath.workers.dev/energy';
   var ENERGY_MAX = 100;
   var SEED_ENERGY = 8;
 
@@ -46,7 +49,64 @@
     catch (e) {}
     return defaultState();
   }
-  function save(s) { try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {} }
+  function save(s) { try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {} schedulePush(); }
+
+  // 持久「同步码」：随机生成一次，存本机；它即是云端备份的 key
+  function getUid() {
+    var u = '';
+    try { u = localStorage.getItem(LS_UID) || ''; } catch (e) {}
+    if (!u) {
+      u = 'linalg-' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+      try { localStorage.setItem(LS_UID, u); } catch (e) {}
+    }
+    return u;
+  }
+  var _pushTimer = null;
+  function schedulePush() {           // 防抖：频繁加分时合并上传
+    if (_pushTimer) clearTimeout(_pushTimer);
+    _pushTimer = setTimeout(cloudPush, 1500);
+  }
+  function cloudPush() {              // 把完整 study 状态写回 Cloudflare
+    _pushTimer = null;
+    try {
+      var s = load();
+      fetch(CLOUD_ENERGY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid: getUid(), data: JSON.stringify(s) })
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  function cloudPull() {              // 从 Cloudflare 拉取并合并（取各自更优进度）
+    try {
+      fetch(CLOUD_ENERGY_URL + '?uid=' + encodeURIComponent(getUid()))
+        .then(function (r) { return r && r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (j && j.data) { try { mergeStudy(JSON.parse(j.data)); } catch (e) {} }
+        }).catch(function () {});
+    } catch (e) {}
+  }
+
+  // 跨来源合并：取能量/等级/连击/掌握度各自更优值（本地与云端会收敛）
+  function mergeStudy(d) {
+    if (!d) return;
+    var cur = load();
+    if (d.energy !== undefined) cur.energy = Math.max(cur.energy || 0, d.energy || 0);
+    if (d.level !== undefined) cur.level = Math.max(cur.level || 1, d.level || 1);
+    if (d.streak !== undefined) cur.streak = Math.max(cur.streak || 0, d.streak || 0);
+    if (d.mastery) {
+      if (!cur.mastery) cur.mastery = {};
+      Object.keys(d.mastery).forEach(function (ch) {
+        var a = cur.mastery[ch], b = d.mastery[ch];
+        if (!a || (b.total || 0) > (a.total || 0)) cur.mastery[ch] = b;
+      });
+    }
+    ['lastDay', 'streakBonusDay', 'lastGainDay', 'todayGain'].forEach(function (k) {
+      if (d[k] !== undefined && (!cur[k] || d[k] > cur[k])) cur[k] = d[k];
+    });
+    save(cur);
+    render();
+  }
 
   function currentStage(e) { var c = STAGES[0]; for (var i = 0; i < STAGES.length; i++) if (e >= STAGES[i].at) c = STAGES[i]; return c; }
   function nextStage(e) { for (var i = 0; i < STAGES.length; i++) if (e < STAGES[i].at) return STAGES[i]; return null; }
@@ -171,22 +231,32 @@
         '<div class="eb-gh-grid">' +
           '<div class="eb-gh-card"><span class="eb-gh-ico">📖</span><span class="eb-gh-lbl">学完<br>小节</span><span class="eb-gh-pts">+3</span></div>' +
           '<div class="eb-gh-card"><span class="eb-gh-ico">✍️</span><span class="eb-gh-lbl">学完<br>就练</span><span class="eb-gh-pts">+1~2</span></div>' +
-          '<div class="eb-gh-card"><span class="eb-gh-ico">📝</span><span class="eb-gh-lbl">考试<br>自测</span><span class="eb-gh-pts">按正确率</span></div>' +
+          '<div class="eb-gh-card"><span class="eb-gh-ico">📝</span><span class="eb-gh-lbl">考试<br>自查</span><span class="eb-gh-pts">按正<br>确率</span></div>' +
           '<div class="eb-gh-card"><span class="eb-gh-ico">🔥</span><span class="eb-gh-lbl">连击<br>学习</span><span class="eb-gh-pts">+5</span></div>' +
         '</div>' +
       '</div>' +
       '<div class="eb-chs" id="eb-chs"></div>' +
       '<div class="eb-sync">' +
-        '<div class="eb-gh-title">数据同步</div>' +
-        '<p class="eb-sync-tip">换设备、换浏览器时，用恢复码把能量与掌握度带走．</p>' +
+        '<div class="eb-gh-title">云端同步</div>' +
+        '<p class="eb-sync-tip">进度已自动云端同步。换设备 / 换浏览器时，用「同步码」一键带走能量与掌握度。</p>' +
         '<div class="eb-sync-row">' +
-          '<button class="eb-btn" id="eb-sync-gen" type="button">生成恢复码</button>' +
+          '<button class="eb-btn" id="eb-sync-gen" type="button">我的同步码</button>' +
           '<button class="eb-btn" id="eb-sync-copy" type="button" hidden>复制</button>' +
         '</div>' +
         '<textarea id="eb-sync-out" readonly hidden></textarea>' +
-        '<textarea id="eb-sync-in" placeholder="粘贴另一台设备的恢复码"></textarea>' +
-        '<button class="eb-btn" id="eb-sync-imp" type="button">导入恢复</button>' +
+        '<textarea id="eb-sync-in" placeholder="粘贴另一台设备的同步码"></textarea>' +
+        '<button class="eb-btn" id="eb-sync-imp" type="button">导入同步码</button>' +
         '<div class="eb-sync-msg" id="eb-sync-msg"></div>' +
+        '<div class="eb-gh-title" style="margin-top:14px">离线备份</div>' +
+        '<p class="eb-sync-tip">无网络时，也可导出「备份码」用微信文件传输助手发给另一台设备，再导入恢复（与云端同步并存）。</p>' +
+        '<div class="eb-sync-row">' +
+          '<button class="eb-btn" id="eb-off-gen" type="button">导出备份码</button>' +
+          '<button class="eb-btn" id="eb-off-copy" type="button" hidden>复制</button>' +
+        '</div>' +
+        '<textarea id="eb-off-out" readonly hidden></textarea>' +
+        '<textarea id="eb-off-in" placeholder="粘贴备份码"></textarea>' +
+        '<button class="eb-btn" id="eb-off-imp" type="button">导入备份</button>' +
+        '<div class="eb-sync-msg" id="eb-off-msg"></div>' +
       '</div>';
     document.body.appendChild(detail);
 
@@ -200,37 +270,8 @@
       e.stopPropagation(); detailOpen = false; detail.hidden = true;
     });
 
-    // 能量数据同步（仅 study_v1：能量、等级、掌握度）
+    // 能量数据同步：平时自动云端同步；跨设备用「同步码」一键拉取
     (function () {
-      var SYNC_MAGIC = 'EBS1.';
-      function encodeStudy() {
-        var s = load();
-        return SYNC_MAGIC + btoa(unescape(encodeURIComponent(JSON.stringify(s))));
-      }
-      function decodeStudy(code) {
-        code = (code || '').trim();
-        if (code.indexOf(SYNC_MAGIC) !== 0) throw new Error('格式不对，请检查恢复码');
-        return JSON.parse(decodeURIComponent(escape(atob(code.slice(SYNC_MAGIC.length)))));
-      }
-      function mergeStudy(d) {
-        var cur = load();
-        if (d.energy !== undefined) cur.energy = Math.max(cur.energy || 0, d.energy || 0);
-        if (d.level !== undefined) cur.level = Math.max(cur.level || 1, d.level || 1);
-        if (d.pts !== undefined) cur.pts = Math.max(cur.pts || 0, d.pts || 0);
-        if (d.streak !== undefined) cur.streak = Math.max(cur.streak || 0, d.streak || 0);
-        if (d.mastery) {
-          if (!cur.mastery) cur.mastery = {};
-          Object.keys(d.mastery).forEach(function (ch) {
-            var a = cur.mastery[ch], b = d.mastery[ch];
-            if (!a || (b.total || 0) > (a.total || 0)) cur.mastery[ch] = b;
-          });
-        }
-        ['lastDay', 'streakBonusDay', 'lastGainDay', 'todayGain'].forEach(function (k) {
-          if (d[k] !== undefined && (!cur[k] || d[k] > cur[k])) cur[k] = d[k];
-        });
-        save(cur);
-        render();
-      }
       var genBtn = document.getElementById('eb-sync-gen');
       var copyBtn = document.getElementById('eb-sync-copy');
       var outTa = document.getElementById('eb-sync-out');
@@ -239,8 +280,8 @@
       var msg = document.getElementById('eb-sync-msg');
       if (genBtn) {
         genBtn.addEventListener('click', function () {
-          outTa.value = encodeStudy(); outTa.hidden = false; copyBtn.hidden = false;
-          if (msg) msg.textContent = '复制后通过微信「文件传输助手」发给另一台设备';
+          outTa.value = getUid(); outTa.hidden = false; copyBtn.hidden = false;
+          if (msg) msg.textContent = '这是你的「同步码」。在另一台设备粘贴此码即可自动同步能量与掌握度（无需手动导数据）。';
         });
       }
       if (copyBtn) {
@@ -252,10 +293,45 @@
       }
       if (impBtn) {
         impBtn.addEventListener('click', function () {
-          try { mergeStudy(decodeStudy(inTa.value)); if (msg) msg.textContent = '能量与掌握度已同步'; }
-          catch (e) { if (msg) msg.textContent = e.message || '导入失败'; }
+          var code = (inTa.value || '').trim();
+          if (!code) { if (msg) msg.textContent = '请先粘贴另一台设备的同步码'; return; }
+          try { localStorage.setItem(LS_UID, code); } catch (e) {}
+          cloudPull();
+          if (msg) msg.textContent = '同步码已生效，正在从云端拉取进度…';
         });
       }
+    })();
+
+    // 离线备份码（base64，无网络也可带走数据）—— 严格超过高数版（高数仅有云端同步）
+    (function () {
+      function encodeStudyLocal() {
+        try { return 'EBS1.' + btoa(unescape(encodeURIComponent(JSON.stringify(load())))); }
+        catch (e) { return ''; }
+      }
+      function decodeStudyLocal(code) {
+        code = (code || '').trim();
+        if (code.indexOf('EBS1.') !== 0) throw new Error('格式不对，请检查备份码');
+        return JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));
+      }
+      var genBtn = document.getElementById('eb-off-gen');
+      var copyBtn = document.getElementById('eb-off-copy');
+      var outTa = document.getElementById('eb-off-out');
+      var inTa = document.getElementById('eb-off-in');
+      var impBtn = document.getElementById('eb-off-imp');
+      var msg = document.getElementById('eb-off-msg');
+      if (genBtn) genBtn.addEventListener('click', function () {
+        outTa.value = encodeStudyLocal(); outTa.hidden = false; copyBtn.hidden = false;
+        if (msg) msg.textContent = '复制后通过微信「文件传输助手」发给另一台设备，或手动保存。';
+      });
+      if (copyBtn) copyBtn.addEventListener('click', function () {
+        outTa.select();
+        try { document.execCommand('copy'); if (msg) msg.textContent = '已复制到剪贴板'; }
+        catch (e) { if (msg) msg.textContent = '复制失败，请手动复制上方文本框'; }
+      });
+      if (impBtn) impBtn.addEventListener('click', function () {
+        try { mergeStudy(decodeStudyLocal(inTa.value)); if (msg) msg.textContent = '能量与掌握度已合并导入'; }
+        catch (e) { if (msg) msg.textContent = e.message || '导入失败'; }
+      });
     })();
   }
 
@@ -277,9 +353,9 @@
     var ns = nextStage(s.energy);
     var hint = document.getElementById('eb-hint');
     if (hint) {
-      if (s.energy >= ENERGY_MAX - 0.001) hint.textContent = '这一成长周期已圆满，新旅程正开始．';
-      else if (ns) hint.textContent = '距离「' + ns.name + '」还差 ' + (ns.at - s.energy) + ' 点能量．';
-      else hint.textContent = '继续前进，让成长看得见．';
+      if (s.energy >= ENERGY_MAX - 0.001) hint.textContent = '这一成长周期已圆满，新旅程正开始。';
+      else if (ns) hint.textContent = '距离「' + ns.name + '」还差 ' + (ns.at - s.energy) + ' 点能量。';
+      else hint.textContent = '继续前进，让成长看得见。';
     }
     var chs = document.getElementById('eb-chs');
     if (chs) {
@@ -348,6 +424,7 @@
   function init() {
     buildUI();
     setupReadingObserver();
+    cloudPull();          // 进入页面即从云端拉回该浏览器/同步码的进度
     render();
     window.addEventListener('resize', relocateIfNeeded);
     window.addEventListener('storage', function (e) { if (e.key === LS_KEY) render(); });

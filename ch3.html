@@ -72,21 +72,21 @@
 <h2 id="s31"><span class="num">§3.1</span>向量组的线性表示</h2>
 
 <div class="ex"><div class="lab">引例 1　RGB 调色：颜色是向量的线性组合</div>
-  <p class="stmt">屏幕上的每一个像素颜色，都可以由红(R)、绿(G)、蓝(B)三种"原色光"按不同强度叠加而成．从代数角度看，这恰好是把三个原色光当作三个"基向量"：纯红、纯绿、纯蓝分别记作
+  <p class="stmt">屏幕上的每一个像素颜色，都可以由红(R)、绿(G)、蓝(B)三种"原色光"按不同强度叠加而成。从代数角度看，这恰好是把三个原色光当作三个"基向量"：纯红、纯绿、纯蓝分别记作
   \[\alpha_1=\begin{pmatrix}1\\0\\0\end{pmatrix},\quad \alpha_2=\begin{pmatrix}0\\1\\0\end{pmatrix},\quad \alpha_3=\begin{pmatrix}0\\0\\1\end{pmatrix}.\]
-  任意颜色就是这三个基向量的一个线性组合，组合系数就是该颜色在 R、G、B 三个通道上的相对强度．</p>
-  <p>例如常见的"杏色"在 8 位色深下取值为 \((255,204,153)\)．要得到它的<b>归一化系数</b>，操作方法是：把每个通道的 8 位取值（取值范围 \(0\sim255\)）都除以该色深的最大值 \(255\)，即
+  任意颜色就是这三个基向量的一个线性组合，组合系数就是该颜色在 R、G、B 三个通道上的相对强度。</p>
+  <p>例如常见的"杏色"在 8 位色深下取值为 \((255,204,153)\)。要得到它的<b>归一化系数</b>，操作方法是：把每个通道的 8 位取值（取值范围 \(0\sim255\)）都除以该色深的最大值 \(255\)，即
   \[\frac1{255}(255,204,153)\approx(1.0,0.8,0.6),\]
   于是
   \[1.0\,\alpha_1+0.8\,\alpha_2+0.6\,\alpha_3=\begin{pmatrix}1.0\\0.8\\0.6\end{pmatrix}=\begin{pmatrix}255\\204\\153\end{pmatrix}\times\frac1{255}.\]
-  这揭示了一件重要的事：一个颜色"能不能被调出来"，等价于向量组 \(\alpha_1,\alpha_2,\alpha_3\) <b>能否线性表示</b>该颜色向量；而"有几种调法"等价于这种表示是否<b>唯一</b>．由于这里三个基向量线性无关（它们互相垂直、互不冗余），每个颜色的表示法唯一．若再加入"白色"——而白色本就是 R、G、B 的等强度叠加——基向量组就出现了冗余，表示便不再唯一．这正是第三章要研究的"线性表示"与"线性相关"的雏形：向量之间的"可表示"与"冗余"，决定着解的存在性与唯一性．</p>
+  这揭示了一件重要的事：一个颜色"能不能被调出来"，等价于向量组 \(\alpha_1,\alpha_2,\alpha_3\) <b>能否线性表示</b>该颜色向量；而"有几种调法"等价于这种表示是否<b>唯一</b>。由于这里三个基向量线性无关（它们互相垂直、互不冗余），每个颜色的表示法唯一。若再加入"白色"——而白色本就是 R、G、B 的等强度叠加——基向量组就出现了冗余，表示便不再唯一。这正是第三章要研究的"线性表示"与"线性相关"的雏形：向量之间的"可表示"与"冗余"，决定着解的存在性与唯一性。</p>
   <figure style="margin:1.2em 0;text-align:center;">
     <svg viewBox="0 0 520 300" style="max-width:560px;width:96%;height:auto;">
       <defs>
         <marker id="arR" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e2554e"/></marker>
         <marker id="arG" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#2e9e5b"/></marker>
         <marker id="arB" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#2f6fd0"/></marker>
-        <marker id="arM" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0e7c7c"/></marker>
+        <marker id="arM" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1e5aa8"/></marker>
       </defs>
       <rect x="30" y="30" width="460" height="240" fill="#f8fafc" stroke="#cbd5e1"/>
       <g stroke="#eef2f6" stroke-width="1">
@@ -94,7 +94,7 @@
         <line x1="30" y1="90" x2="490" y2="90"/><line x1="30" y1="150" x2="490" y2="150"/><line x1="30" y1="210" x2="490" y2="210"/>
       </g>
       <!-- 原点 -->
-      <circle cx="110" cy="230" r="3.5" fill="#0e7c7c"/>
+      <circle cx="110" cy="230" r="3.5" fill="#1e5aa8"/>
       <text x="100" y="248" font-size="12" fill="#475569" text-anchor="middle" font-family="-apple-system,'Microsoft YaHei',sans-serif">O</text>
       <!-- 三个基向量（原色轴） -->
       <line x1="110" y1="230" x2="250" y2="230" stroke="#e2554e" stroke-width="2.5" marker-end="url(#arR)"/>
@@ -104,14 +104,14 @@
       <text x="104" y="72" font-size="13" fill="#2e9e5b" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₂(G)</text>
       <text x="226" y="116" font-size="13" fill="#2f6fd0" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₃(B)</text>
       <!-- 混合色点（线性组合） -->
-      <line x1="222" y1="148" x2="110" y2="230" stroke="#0e7c7c" stroke-width="2.5" stroke-dasharray="5,4" marker-end="url(#arM)"/>
-      <circle cx="222" cy="148" r="5" fill="#0e7c7c"/>
-      <text x="232" y="144" font-size="13" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">杏色 1.0α₁+0.8α₂+0.6α₃</text>
+      <line x1="222" y1="148" x2="110" y2="230" stroke="#1e5aa8" stroke-width="2.5" stroke-dasharray="5,4" marker-end="url(#arM)"/>
+      <circle cx="222" cy="148" r="5" fill="#1e5aa8"/>
+      <text x="232" y="144" font-size="13" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">杏色 1.0α₁+0.8α₂+0.6α₃</text>
       <!-- 分解参考线 -->
       <line x1="222" y1="148" x2="222" y2="230" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
       <line x1="222" y1="148" x2="110" y2="148" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
     </svg>
-    <div class="px-cap">图 3-1　R、G、B 三个原色光对应三个互相线性无关的单位向量；任意颜色都是它们的线性组合，组合系数即各通道强度．</div>
+    <div class="px-cap">图 3-1　R、G、B 三个原色光对应三个互相线性无关的单位向量；任意颜色都是它们的线性组合，组合系数即各通道强度。</div>
   </figure>
   <div class="rgb-mix" id="rgbMix">
     <div class="rgb-swatch" id="rgbSwatch"></div>
@@ -120,7 +120,7 @@
       <div class="rgb-row"><span class="rgb-tag" style="--c:#2e9e5b">G 绿</span><input type="range" id="rgbG" min="0" max="255" value="204" oninput="rgbMix()"><output id="rgbGv">204</output></div>
       <div class="rgb-row"><span class="rgb-tag" style="--c:#2f6fd0">B 蓝</span><input type="range" id="rgbB" min="0" max="255" value="153" oninput="rgbMix()"><output id="rgbBv">153</output></div>
       <div class="rgb-expr" id="rgbExpr"></div>
-      <div class="rgb-note">系数算法：把每个通道的 8 位取值（0~255）除以最大值 255，即得该通道的相对强度系数，上方组合式随之实时更新．</div>
+      <div class="rgb-note">系数算法：把每个通道的 8 位取值（0~255）除以最大值 255，即得该通道的相对强度系数，上方组合式随之实时更新。</div>
       <div class="rgb-presets">
         <button type="button" class="chip" onclick="rgbPreset(255,0,0)">纯红</button>
         <button type="button" class="chip" onclick="rgbPreset(0,255,0)">纯绿</button>
@@ -130,18 +130,18 @@
       </div>
     </div>
   </div>
-  <p class="muted">拖动滑块调整三个通道的<b>系数</b>（即各原色光的相对强度），右侧色块实时显示对应的线性组合 \(r\alpha_1+g\alpha_2+b\alpha_3\)．你会发现：任意颜色都落在红、绿、蓝三个基向量张成的“颜色空间”中；而一旦把“白色”也加入基向量组，基之间便出现冗余——这正是第三章要研究的<b>线性相关</b>与<b>线性表示</b>的几何直觉．</p>
+  <p class="muted">拖动滑块调整三个通道的<b>系数</b>（即各原色光的相对强度），右侧色块实时显示对应的线性组合 \(r\alpha_1+g\alpha_2+b\alpha_3\)。你会发现：任意颜色都落在红、绿、蓝三个基向量张成的“颜色空间”中；而一旦把“白色”也加入基向量组，基之间便出现冗余——这正是第三章要研究的<b>线性相关</b>与<b>线性表示</b>的几何直觉。</p>
 </div>
 
 <div class="ex"><div class="lab">引例 2　用户评分向量：消费偏好的"画像"</div>
-  <p class="stmt">在某电商平台上，用户对商品的评分天然就是一个向量．取三位用户 \(A,B,C\) 对两种商品 \(P_1,P_2\) 的评分：</p>
+  <p class="stmt">在某电商平台上，用户对商品的评分天然就是一个向量。取三位用户 \(A,B,C\) 对两种商品 \(P_1,P_2\) 的评分：</p>
   <p>\[A=(4,1)^T,\qquad B=(1,4)^T,\qquad C=(2,\tfrac12)^T.\]
-  每位用户对应一个二维"评分向量"；把三位用户并成一个矩阵，则<b>每行</b>是一个用户的评分向量（行向量视角），<b>每列</b>是一种商品被各用户评分的向量（列向量视角）——同一个矩阵，横读竖读得到两类向量．</p>
-  <p>关键在于：向量 \(C=(2,\tfrac12)^T\) 恰好是 \(A=(4,1)^T\) 的一半，即 \(C=\tfrac12 A\)，二者<b>共线、线性相关</b>，说明用户 \(A,C\) 的偏好高度相似、可互相替代；而 \(B\) 的方向与之不同（\(B\) 不落在 \(A\) 所在的直线上），故 \(A,B\) <b>线性无关</b>，分属不同消费群体．把"谁能被谁线性表示、谁冗余"翻译成数学语言，正是本章向量组<b>线性表示与线性相关</b>的研究对象；当商品种类增多（如 \(n\) 种），评分向量升到 \(n\) 维，第一章的行列式（二维时其绝对值等于两向量张成的平行四边形面积，面积越大差异越大）便成为衡量用户相似度的工具．</p>
+  每位用户对应一个二维"评分向量"；把三位用户并成一个矩阵，则<b>每行</b>是一个用户的评分向量（行向量视角），<b>每列</b>是一种商品被各用户评分的向量（列向量视角）——同一个矩阵，横读竖读得到两类向量。</p>
+  <p>关键在于：向量 \(C=(2,\tfrac12)^T\) 恰好是 \(A=(4,1)^T\) 的一半，即 \(C=\tfrac12 A\)，二者<b>共线、线性相关</b>，说明用户 \(A,C\) 的偏好高度相似、可互相替代；而 \(B\) 的方向与之不同（\(B\) 不落在 \(A\) 所在的直线上），故 \(A,B\) <b>线性无关</b>，分属不同消费群体。把"谁能被谁线性表示、谁冗余"翻译成数学语言，正是本章向量组<b>线性表示与线性相关</b>的研究对象；当商品种类增多（如 \(n\) 种），评分向量升到 \(n\) 维，第一章的行列式（二维时其绝对值等于两向量张成的平行四边形面积，面积越大差异越大）便成为衡量用户相似度的工具。</p>
   <figure style="margin:1.2em 0;text-align:center;">
     <svg viewBox="0 0 520 300" style="max-width:560px;width:96%;height:auto;">
       <defs>
-        <marker id="rP" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0e7c7c"/></marker>
+        <marker id="rP" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1e5aa8"/></marker>
         <marker id="rR" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#dc2626"/></marker>
       </defs>
       <rect x="20" y="20" width="480" height="260" fill="#f8fafc" stroke="#cbd5e1"/>
@@ -150,14 +150,14 @@
       <text x="462" y="268" font-size="12" fill="#64748b" text-anchor="end" font-family="-apple-system,'Microsoft YaHei',sans-serif">商品 P₁ 评分</text>
       <text x="80" y="48" font-size="12" fill="#64748b" text-anchor="end" font-family="-apple-system,'Microsoft YaHei',sans-serif">商品 P₂ 评分</text>
       <line x1="90" y1="250" x2="360" y2="183" stroke="#cbd5e1" stroke-width="1.6" stroke-dasharray="6,4"/>
-      <line x1="90" y1="250" x2="250" y2="210" stroke="#0e7c7c" stroke-width="3" marker-end="url(#rP)"/>
+      <line x1="90" y1="250" x2="250" y2="210" stroke="#1e5aa8" stroke-width="3" marker-end="url(#rP)"/>
       <line x1="90" y1="250" x2="170" y2="230" stroke="#dc2626" stroke-width="3" marker-end="url(#rR)"/>
-      <line x1="90" y1="250" x2="130" y2="90" stroke="#0e7c7c" stroke-width="3" marker-end="url(#rP)"/>
-      <text x="240" y="200" font-size="13" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">A=(4,1)</text>
+      <line x1="90" y1="250" x2="130" y2="90" stroke="#1e5aa8" stroke-width="3" marker-end="url(#rP)"/>
+      <text x="240" y="200" font-size="13" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">A=(4,1)</text>
       <text x="150" y="248" font-size="13" fill="#dc2626" font-family="-apple-system,'Microsoft YaHei',sans-serif">C=½A=(2,½)</text>
-      <text x="118" y="80" font-size="13" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">B=(1,4)</text>
+      <text x="118" y="80" font-size="13" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">B=(1,4)</text>
     </svg>
-    <div class="px-cap">图 3-2　评分向量图：用户 A 与 C 落在同一条过原点的直线上（\(C=\tfrac12 A\)），线性相关、偏好相似；用户 B 偏离该直线，与 A 线性无关．把用户并成矩阵，行是用户向量、列是商品向量，即可从"向量之间的关系"研究消费群体．</div>
+    <div class="px-cap">图 3-2　评分向量图：用户 A 与 C 落在同一条过原点的直线上（\(C=\tfrac12 A\)），线性相关、偏好相似；用户 B 偏离该直线，与 A 线性无关。把用户并成矩阵，行是用户向量、列是商品向量，即可从"向量之间的关系"研究消费群体。</div>
   </figure>
 </div>
 
@@ -186,7 +186,7 @@
 <p class="muted">n 维单位坐标向量组 \(\varepsilon_1=(1,0,\dots,0)^T,\ \varepsilon_2=(0,1,\dots,0)^T,\ \dots,\ \varepsilon_n=(0,0,\dots,1)^T\) 可作为"基向量"：任一 n 维向量 \(\alpha=(a_1,\dots,a_n)^T\) 显然都有 \(\alpha=a_1\varepsilon_1+\cdots+a_n\varepsilon_n\)．</p>
 
 <div class="ex"><div class="lab">例 3.1</div>
-  <div class="stmt">设 \(\alpha=\begin{pmatrix}1\\2\\3\end{pmatrix},\ \beta=\begin{pmatrix}-1\\0\\2\end{pmatrix}\)，计算 \(2\alpha-3\beta\)．</div>
+  <div class="stmt">设 \(\alpha=\begin{pmatrix}1\\2\\3\end{pmatrix},\ \beta=\begin{pmatrix}-1\\0\\2\end{pmatrix}\)，计算 \(2\alpha-3\beta\)。</div>
   <div class="sol"><span class="mk">解</span>
   \[2\alpha-3\beta=2\begin{pmatrix}1\\2\\3\end{pmatrix}-3\begin{pmatrix}-1\\0\\2\end{pmatrix}
   =\begin{pmatrix}2\\4\\6\end{pmatrix}+\begin{pmatrix}3\\0\\-6\end{pmatrix}
@@ -198,44 +198,44 @@
 <p class="muted">等价关系满足：自反性（任一向量组与自身等价）、对称性（\(A\sim B\Rightarrow B\sim A\)）、传递性（\(A\sim B,\ B\sim C\Rightarrow A\sim C\)）．</p>
 
 <div class="ex"><div class="lab">例 3.2　（矩阵乘法的列向量视角）</div>
-  <div class="stmt">设 \(A\) 为 \(m\times l\) 矩阵，\(B\) 为 \(l\times n\) 矩阵，且 \(AB=C\)．证明：矩阵 \(C\) 的列向量组可由矩阵 \(A\) 的列向量组线性表示．</div>
-  <div class="sol"><span class="mk">解</span>把 \(A\) 按列分块为 \(A=(\alpha_1,\alpha_2,\dots,\alpha_l)\)，把 \(C\) 按列分块为 \(C=(\gamma_1,\gamma_2,\dots,\gamma_n)\)，设 \(B=(b_{ij})_{l\times n}\)．由 \(AB=C\) 得
+  <div class="stmt">设 \(A\) 为 \(m\times l\) 矩阵，\(B\) 为 \(l\times n\) 矩阵，且 \(AB=C\)。证明：矩阵 \(C\) 的列向量组可由矩阵 \(A\) 的列向量组线性表示。</div>
+  <div class="sol"><span class="mk">解</span>把 \(A\) 按列分块为 \(A=(\alpha_1,\alpha_2,\dots,\alpha_l)\)，把 \(C\) 按列分块为 \(C=(\gamma_1,\gamma_2,\dots,\gamma_n)\)，设 \(B=(b_{ij})_{l\times n}\)。由 \(AB=C\) 得
   \[(\gamma_1,\dots,\gamma_n)=(\alpha_1,\dots,\alpha_l)\begin{pmatrix}b_{11}&\cdots&b_{1n}\\\vdots&&\vdots\\b_{l1}&\cdots&b_{ln}\end{pmatrix},\]
-  即 \(\gamma_j=b_{1j}\alpha_1+b_{2j}\alpha_2+\cdots+b_{lj}\alpha_l\ (j=1,2,\dots,n)\)．所以 \(C\) 的每一列都是 \(A\) 的列向量的线性组合，即 \(C\) 的列向量组可由 \(A\) 的列向量组线性表示．</div>
+  即 \(\gamma_j=b_{1j}\alpha_1+b_{2j}\alpha_2+\cdots+b_{lj}\alpha_l\ (j=1,2,\dots,n)\)。所以 \(C\) 的每一列都是 \(A\) 的列向量的线性组合，即 \(C\) 的列向量组可由 \(A\) 的列向量组线性表示。</div>
 </div>
 
 <div class="ex"><div class="lab">例 3.3</div>
-  <div class="stmt">设 \(\beta_1=\alpha_2+\alpha_3,\ \beta_2=\alpha_1+\alpha_3,\ \beta_3=\alpha_1+\alpha_2\)．证明向量组 \(\alpha_1,\alpha_2,\alpha_3\) 与 \(\beta_1,\beta_2,\beta_3\) 等价．</div>
-  <div class="sol"><span class="mk">解</span>显然 \(\beta_1,\beta_2,\beta_3\) 都可由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示．由题设联立解得
+  <div class="stmt">设 \(\beta_1=\alpha_2+\alpha_3,\ \beta_2=\alpha_1+\alpha_3,\ \beta_3=\alpha_1+\alpha_2\)。证明向量组 \(\alpha_1,\alpha_2,\alpha_3\) 与 \(\beta_1,\beta_2,\beta_3\) 等价。</div>
+  <div class="sol"><span class="mk">解</span>显然 \(\beta_1,\beta_2,\beta_3\) 都可由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示。由题设联立解得
   \[\alpha_1=-\tfrac12\beta_1+\tfrac12\beta_2+\tfrac12\beta_3,\quad
     \alpha_2=\tfrac12\beta_1-\tfrac12\beta_2+\tfrac12\beta_3,\quad
     \alpha_3=\tfrac12\beta_1+\tfrac12\beta_2-\tfrac12\beta_3,\]
-  即 \(\alpha_1,\alpha_2,\alpha_3\) 也可由 \(\beta_1,\beta_2,\beta_3\) 线性表示，故两向量组等价．
-  <details><summary>几何直观</summary><div class="body"><p>在二维中，"共线"的两条向量 \(\alpha,\beta\) 满足 \(\beta=k\alpha\)，即一个向量是另一个的线性表示；在三维中，三个向量 \(\alpha_1,\alpha_2,\alpha_3\) 若满足 \(\alpha_3=k_1\alpha_1+k_2\alpha_2\)，则它们"共面"．线性表示把这种几何关系推广到了任意维数：\(\beta\) 能由 \(\alpha_1,\dots,\alpha_m\) 表示，等价于 \(\beta\) 落在这些向量"张成"的平面（或超平面、直线）上．</p>
+  即 \(\alpha_1,\alpha_2,\alpha_3\) 也可由 \(\beta_1,\beta_2,\beta_3\) 线性表示，故两向量组等价。
+  <details><summary>几何直观</summary><div class="body"><p>在二维中，"共线"的两条向量 \(\alpha,\beta\) 满足 \(\beta=k\alpha\)，即一个向量是另一个的线性表示；在三维中，三个向量 \(\alpha_1,\alpha_2,\alpha_3\) 若满足 \(\alpha_3=k_1\alpha_1+k_2\alpha_2\)，则它们"共面"。线性表示把这种几何关系推广到了任意维数：\(\beta\) 能由 \(\alpha_1,\dots,\alpha_m\) 表示，等价于 \(\beta\) 落在这些向量"张成"的平面（或超平面、直线）上。</p>
   <figure style="margin:1.2em 0;text-align:center;">
     <svg viewBox="0 0 520 300" style="max-width:560px;width:96%;height:auto;">
       <defs>
-        <marker id="gA" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0e7c7c"/></marker>
+        <marker id="gA" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1e5aa8"/></marker>
         <marker id="gB" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e08a00"/></marker>
       </defs>
       <rect x="20" y="20" width="480" height="260" fill="#f8fafc" stroke="#cbd5e1"/>
-      <polygon points="260,150 340,150 340,70 260,70" fill="#0e7c7c" fill-opacity="0.06"/>
+      <polygon points="260,150 340,150 340,70 260,70" fill="#1e5aa8" fill-opacity="0.06"/>
       <line x1="60" y1="150" x2="460" y2="150" stroke="#e2e8f0" stroke-width="1"/>
       <line x1="260" y1="40" x2="260" y2="270" stroke="#e2e8f0" stroke-width="1"/>
-      <line x1="260" y1="150" x2="340" y2="150" stroke="#0e7c7c" stroke-width="2.6" marker-end="url(#gA)"/>
-      <line x1="260" y1="150" x2="260" y2="70" stroke="#0e7c7c" stroke-width="2.6" marker-end="url(#gA)"/>
-      <line x1="260" y1="150" x2="300" y2="110" stroke="#0e7c7c" stroke-width="2.6" marker-end="url(#gA)"/>
+      <line x1="260" y1="150" x2="340" y2="150" stroke="#1e5aa8" stroke-width="2.6" marker-end="url(#gA)"/>
+      <line x1="260" y1="150" x2="260" y2="70" stroke="#1e5aa8" stroke-width="2.6" marker-end="url(#gA)"/>
+      <line x1="260" y1="150" x2="300" y2="110" stroke="#1e5aa8" stroke-width="2.6" marker-end="url(#gA)"/>
       <line x1="260" y1="150" x2="300" y2="30" stroke="#e08a00" stroke-width="2.6" marker-end="url(#gB)"/>
       <line x1="260" y1="150" x2="380" y2="110" stroke="#e08a00" stroke-width="2.6" marker-end="url(#gB)"/>
       <line x1="260" y1="150" x2="340" y2="70" stroke="#e08a00" stroke-width="2.6" marker-end="url(#gB)"/>
-      <text x="344" y="146" font-size="12" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₁</text>
-      <text x="244" y="62" font-size="12" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₂</text>
-      <text x="302" y="128" font-size="12" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₃</text>
+      <text x="344" y="146" font-size="12" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₁</text>
+      <text x="244" y="62" font-size="12" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₂</text>
+      <text x="302" y="128" font-size="12" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₃</text>
       <text x="300" y="22" font-size="12" fill="#e08a00" font-family="-apple-system,'Microsoft YaHei',sans-serif">β₁=α₂+α₃</text>
       <text x="384" y="106" font-size="12" fill="#e08a00" font-family="-apple-system,'Microsoft YaHei',sans-serif">β₂=α₁+α₃</text>
       <text x="344" y="66" font-size="12" fill="#e08a00" font-family="-apple-system,'Microsoft YaHei',sans-serif">β₃=α₁+α₂</text>
     </svg>
-    <div class="px-cap">图　α 组（青）与 β 组（橙）都落在由 α₁,α₂ 张成的同一平行四边形区域内（同一张成空间）；两组向量组可相互线性表示，故等价．等价向量组的几何本质，就是"张成同一个子空间"．</div>
+    <div class="px-cap">图　α 组（青）与 β 组（橙）都落在由 α₁,α₂ 张成的同一平行四边形区域内（同一张成空间）；两组向量组可相互线性表示，故等价。等价向量组的几何本质，就是"张成同一个子空间"。</div>
   </figure>
 </div></details>
   </div>
@@ -249,9 +249,9 @@
 <h2 id="s32"><span class="num">§3.2</span>向量组的线性相关性</h2>
 
 <div class="ex"><div class="lab">引例 3　协作机器人的"多余自由度"：为什么要丢一个关节</div>
-  <p class="stmt">一台<b>协作机器人</b>常有 7 个关节，比完成任务必需的 6 个多 1 个，称为"<b>冗余自由度</b>"．当控制器给它一个末端受力指令时，7 个关节力矩向量中，总有一个可以被其余 6 个<b>线性组合</b>出来——这正说明它们<b>线性相关</b>．丢掉这个冗余关节，既不影响完成任务，又让控制更简单．可见，"线性相关"就是"存在多余约束 / 冗余自由度"的代数表述．</p>
-  <p>判断一组力（或一组运动方向）是否相关，是机器人标定与运动规划的第一步．下面先用平面上最直观的力来讲清这个道理．</p>
-  <p><b>探索：</b>给出三个力向量 \(\vec F_1=(1,0),\ \vec F_2=(0,1),\ \vec F_3=(-1,-1)\)，你立刻能验证 \(\vec F_1+\vec F_2+\vec F_3=0\)，所以它们<b>线性相关</b>；而 \(\vec e_1=(1,0),\ \vec e_2=(0,1)\) 无论如何加权都不可能凑出零（除非系数全为 \(0\)），所以<b>线性无关</b>．学完本节，你将掌握对任意维、任意个数的向量组做这种判定的通法．</p>
+  <p class="stmt">一台<b>协作机器人</b>常有 7 个关节，比完成任务必需的 6 个多 1 个，称为"<b>冗余自由度</b>"。当控制器给它一个末端受力指令时，7 个关节力矩向量中，总有一个可以被其余 6 个<b>线性组合</b>出来——这正说明它们<b>线性相关</b>。丢掉这个冗余关节，既不影响完成任务，又让控制更简单。可见，"线性相关"就是"存在多余约束 / 冗余自由度"的代数表述。</p>
+  <p>判断一组力（或一组运动方向）是否相关，是机器人标定与运动规划的第一步。下面先用平面上最直观的力来讲清这个道理。</p>
+  <p><b>探索：</b>给出三个力向量 \(\vec F_1=(1,0),\ \vec F_2=(0,1),\ \vec F_3=(-1,-1)\)，你立刻能验证 \(\vec F_1+\vec F_2+\vec F_3=0\)，所以它们<b>线性相关</b>；而 \(\vec e_1=(1,0),\ \vec e_2=(0,1)\) 无论如何加权都不可能凑出零（除非系数全为 \(0\)），所以<b>线性无关</b>。学完本节，你将掌握对任意维、任意个数的向量组做这种判定的通法。</p>
 </div>
 
 <h3>一、线性相关与线性无关的概念</h3>
@@ -262,8 +262,8 @@
 <p class="muted">特例：含有零向量的向量组必线性相关；单个向量 \(\alpha\) 线性相关 \(\iff\alpha=0\)；两个向量线性相关 \(\iff\) 它们的分量对应成比例．</p>
 
 <div class="ex"><div class="lab">例 3.4</div>
-  <div class="stmt">证明 n 维单位坐标向量组 \(\varepsilon_1,\varepsilon_2,\dots,\varepsilon_n\) 线性无关．</div>
-  <div class="sol"><span class="mk">解</span>由 \(x_1\varepsilon_1+\cdots+x_n\varepsilon_n=0\) 得 \((x_1,x_2,\dots,x_n)^T=(0,0,\dots,0)^T\)，即 \(x_1=x_2=\cdots=x_n=0\)，故它们线性无关．</div>
+  <div class="stmt">证明 n 维单位坐标向量组 \(\varepsilon_1,\varepsilon_2,\dots,\varepsilon_n\) 线性无关。</div>
+  <div class="sol"><span class="mk">解</span>由 \(x_1\varepsilon_1+\cdots+x_n\varepsilon_n=0\) 得 \((x_1,x_2,\dots,x_n)^T=(0,0,\dots,0)^T\)，即 \(x_1=x_2=\cdots=x_n=0\)，故它们线性无关。</div>
 </div>
 
 <h3>二、线性相关性的核心性质</h3>
@@ -341,7 +341,7 @@
 <div class="ex"><div class="lab">例 3.5</div>
   <div class="stmt">已知向量组 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关，令
   \[\beta_1=\alpha_1+\alpha_2,\quad \beta_2=\alpha_1+\alpha_3,\quad \beta_3=\alpha_2-\alpha_3.\]
-  讨论 \(\beta_1,\beta_2,\beta_3\) 的线性相关性．</div>
+  讨论 \(\beta_1,\beta_2,\beta_3\) 的线性相关性。</div>
   <div class="sol"><span class="mk">解</span>设 \(x_1\beta_1+x_2\beta_2+x_3\beta_3=0\)，代入得
   \[x_1(\alpha_1+\alpha_2)+x_2(\alpha_1+\alpha_3)+x_3(\alpha_2-\alpha_3)=0,
   \]
@@ -349,32 +349,32 @@
   \[(x_1+x_2)\alpha_1+(x_1+x_3)\alpha_2+(-x_2+x_3)\alpha_3=0.\]
   因 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关，故
   \[\begin{cases}x_1+x_2=0,\\ x_1+x_3=0,\\ -x_2+x_3=0.\end{cases}\]
-  取一组非零解 \(x_1=-1,\ x_2=1,\ x_3=1\)（满足：\(-1+1=0,\ -1+1=0,\ -1+1=0\)），故 \(\beta_1,\beta_2,\beta_3\) 线性相关．</div>
+  取一组非零解 \(x_1=-1,\ x_2=1,\ x_3=1\)（满足：\(-1+1=0,\ -1+1=0,\ -1+1=0\)），故 \(\beta_1,\beta_2,\beta_3\) 线性相关。</div>
 </div>
 
 <div class="ex"><div class="lab">例 3.6　（考研真题）</div>
-  <div class="stmt">设 \(\alpha_1,\alpha_2,\alpha_3\) 线性相关，而 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关．证明：(1) \(\alpha_1\) 可由 \(\alpha_2,\alpha_3\) 线性表示；(2) \(\alpha_4\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示．</div>
+  <div class="stmt">设 \(\alpha_1,\alpha_2,\alpha_3\) 线性相关，而 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关。证明：(1) \(\alpha_1\) 可由 \(\alpha_2,\alpha_3\) 线性表示；(2) \(\alpha_4\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示。</div>
   <div class="sol"><span class="mk">解</span>
-  <p><b>(1)</b> 由 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，知其中任意部分组 \(\alpha_2,\alpha_3\) 也线性无关（性质 3.2）．又 \(\alpha_1,\alpha_2,\alpha_3\) 线性相关，由性质 3.3 知 \(\alpha_1\) 可由 \(\alpha_2,\alpha_3\) 线性表示．</p>
-  <p><b>(2)</b> 反证法：若 \(\alpha_4\) 能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，由 (1) 又可将 \(\alpha_1\) 代换成 \(\alpha_2,\alpha_3\) 的组合，从而 \(\alpha_4\) 可由 \(\alpha_2,\alpha_3\) 线性表示．这会导致 \(\alpha_2,\alpha_3,\alpha_4\) 线性相关，与题设矛盾．故 \(\alpha_4\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示．</p></div>
+  <p><b>(1)</b> 由 \(\alpha_2,\alpha_3,\alpha_4\) 线性无关，知其中任意部分组 \(\alpha_2,\alpha_3\) 也线性无关（性质 3.2）。又 \(\alpha_1,\alpha_2,\alpha_3\) 线性相关，由性质 3.3 知 \(\alpha_1\) 可由 \(\alpha_2,\alpha_3\) 线性表示。</p>
+  <p><b>(2)</b> 反证法：若 \(\alpha_4\) 能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示，由 (1) 又可将 \(\alpha_1\) 代换成 \(\alpha_2,\alpha_3\) 的组合，从而 \(\alpha_4\) 可由 \(\alpha_2,\alpha_3\) 线性表示。这会导致 \(\alpha_2,\alpha_3,\alpha_4\) 线性相关，与题设矛盾。故 \(\alpha_4\) 不能由 \(\alpha_1,\alpha_2,\alpha_3\) 线性表示。</p></div>
 </div>
   <figure style="margin:1.2em 0;text-align:center;">
     <svg viewBox="0 0 520 300" style="max-width:560px;width:96%;height:auto;">
       <defs>
-        <marker id="hT" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0e7c7c"/></marker>
+        <marker id="hT" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1e5aa8"/></marker>
         <marker id="hR" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#dc2626"/></marker>
         <marker id="hO" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e08a00"/></marker>
       </defs>
       <rect x="20" y="20" width="480" height="260" fill="#f8fafc" stroke="#cbd5e1"/>
-      <polygon points="220,180 350,150 390,70 260,100" fill="#0e7c7c" fill-opacity="0.07" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,4"/>
+      <polygon points="220,180 350,150 390,70 260,100" fill="#1e5aa8" fill-opacity="0.07" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,4"/>
       <text x="370" y="120" font-size="12" fill="#64748b" font-family="-apple-system,'Microsoft YaHei',sans-serif">平面 Π=span{α₂,α₃}</text>
-      <line x1="220" y1="180" x2="350" y2="150" stroke="#0e7c7c" stroke-width="2.8" marker-end="url(#hT)"/>
-      <line x1="220" y1="180" x2="260" y2="100" stroke="#0e7c7c" stroke-width="2.8" marker-end="url(#hT)"/>
+      <line x1="220" y1="180" x2="350" y2="150" stroke="#1e5aa8" stroke-width="2.8" marker-end="url(#hT)"/>
+      <line x1="220" y1="180" x2="260" y2="100" stroke="#1e5aa8" stroke-width="2.8" marker-end="url(#hT)"/>
       <line x1="220" y1="180" x2="284" y2="144" stroke="#dc2626" stroke-width="2.8" marker-end="url(#hR)"/>
       <line x1="220" y1="180" x2="284" y2="80" stroke="#e08a00" stroke-width="2.8" marker-end="url(#hO)"/>
       <line x1="284" y1="80" x2="284" y2="144" stroke="#e08a00" stroke-width="1.4" stroke-dasharray="4,3"/>
-      <text x="354" y="146" font-size="12" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₂</text>
-      <text x="248" y="94" font-size="12" fill="#0e7c7c" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₃</text>
+      <text x="354" y="146" font-size="12" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₂</text>
+      <text x="248" y="94" font-size="12" fill="#1e5aa8" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₃</text>
       <text x="288" y="142" font-size="12" fill="#dc2626" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₁∈Π</text>
       <text x="288" y="74" font-size="12" fill="#e08a00" font-family="-apple-system,'Microsoft YaHei',sans-serif">α₄∉Π</text>
     </svg>
@@ -394,11 +394,11 @@
 <h2 id="s33"><span class="num">§3.3</span>向量组的秩与极大无关组</h2>
 
 <div class="ex"><div class="lab">引例 4　用最少的传感器"看住"全场：基站布点的极小生成集</div>
-  <p class="stmt"><b>智慧工厂</b>要监测一块区域的 4 项指标：温度 \(G\)、湿度 \(M\)、振动 \(D\)、噪声 \(K\)．有 4 个候选传感器 \(P_1\sim P_4\)，每个能测若干指标，把"一个传感器能覆盖的指标"看作一个 4 维向量．问题是：选哪几个传感器，就能覆盖全部 4 项指标、又不浪费？这等价于——这些"指标向量"中，挑出"人数最少的一组"，使其余都能被这组<b>线性表示</b>．这组就是向量组的<b>极大无关组</b>，其人数就是<b>秩</b>．</p>
-  <p>关键现象是：极大无关组<b>往往不唯一</b>，但不同极大无关组的人数一定相同．这正是秩最有价值的性质：表示法可换，规模恒定．</p>
+  <p class="stmt"><b>智慧工厂</b>要监测一块区域的 4 项指标：温度 \(G\)、湿度 \(M\)、振动 \(D\)、噪声 \(K\)。有 4 个候选传感器 \(P_1\sim P_4\)，每个能测若干指标，把"一个传感器能覆盖的指标"看作一个 4 维向量。问题是：选哪几个传感器，就能覆盖全部 4 项指标、又不浪费？这等价于——这些"指标向量"中，挑出"人数最少的一组"，使其余都能被这组<b>线性表示</b>。这组就是向量组的<b>极大无关组</b>，其人数就是<b>秩</b>。</p>
+  <p>关键现象是：极大无关组<b>往往不唯一</b>，但不同极大无关组的人数一定相同。这正是秩最有价值的性质：表示法可换，规模恒定。</p>
   <p><b>探索：</b>设四个传感器的指标向量为
-  \(P_1=(1,1,0,0),\ P_2=(0,1,1,0),\ P_3=(1,0,0,1),\ P_4=(0,0,1,1)\)．
-  学完本节你就能求出它们张成空间的维数（秩 \(=3\)），并找出像 \(\{P_1,P_2,P_3\}\) 这样"最省"的覆盖组——这恰是 5G 基站布点与物联网传感器选址的核心数学．</p>
+  \(P_1=(1,1,0,0),\ P_2=(0,1,1,0),\ P_3=(1,0,0,1),\ P_4=(0,0,1,1)\)。
+  学完本节你就能求出它们张成空间的维数（秩 \(=3\)），并找出像 \(\{P_1,P_2,P_3\}\) 这样"最省"的覆盖组——这恰是 5G 基站布点与物联网传感器选址的核心数学。</p>
 </div>
 
 <h3>一、极大线性无关组与向量组的秩</h3>
@@ -410,8 +410,8 @@
 <p class="muted">只含零向量的向量组没有极大无关组，规定其秩为 \(0\)．任一线性无关的向量组，其极大无关组就是它本身．等价地：若 \(\alpha_{i_1},\dots,\alpha_{i_r}\) 线性无关，且 \(A\) 中任一向量都可被它表示，则它即极大无关组．</p>
 
 <div class="ex"><div class="lab">例 3.7</div>
-  <div class="stmt">求向量组 \(\alpha_1=(1,-2,4)^T,\ \alpha_2=(-1,5,1)^T,\ \alpha_3=(0,3,5)^T\) 的极大无关组与秩．</div>
-  <div class="sol"><span class="mk">解</span>先观察：\(\alpha_1+\alpha_2=(1-1,\,-2+5,\,4+1)=(0,3,5)=\alpha_3\)，故 \(\alpha_3\) 可由 \(\alpha_1,\alpha_2\) 表示．又显然 \(\alpha_1,\alpha_2\) 不成比例，线性无关．因此 \(\alpha_1,\alpha_2\) 是一个极大无关组，秩 \(R=2\)．同理可验证 \(\alpha_1,\alpha_3\) 与 \(\alpha_2,\alpha_3\) 也都是极大无关组（极大无关组不唯一，但个数都为 2）．</div>
+  <div class="stmt">求向量组 \(\alpha_1=(1,-2,4)^T,\ \alpha_2=(-1,5,1)^T,\ \alpha_3=(0,3,5)^T\) 的极大无关组与秩。</div>
+  <div class="sol"><span class="mk">解</span>先观察：\(\alpha_1+\alpha_2=(1-1,\,-2+5,\,4+1)=(0,3,5)=\alpha_3\)，故 \(\alpha_3\) 可由 \(\alpha_1,\alpha_2\) 表示。又显然 \(\alpha_1,\alpha_2\) 不成比例，线性无关。因此 \(\alpha_1,\alpha_2\) 是一个极大无关组，秩 \(R=2\)。同理可验证 \(\alpha_1,\alpha_3\) 与 \(\alpha_2,\alpha_3\) 也都是极大无关组（极大无关组不唯一，但个数都为 2）。</div>
 </div>
 
 <div class="note">同一向量组的不同极大无关组所含向量个数相同，都等于秩．这是因为每个极大无关组都与原向量组等价，而等价的向量组秩相等（见下一定理）．</div>
@@ -458,7 +458,7 @@
 <p>(1) 线性相关 \(\iff |A|=0\)；　(2) 线性无关 \(\iff |A|\neq0\)．</p></div>
 
 <div class="ex"><div class="lab">例 3.8　（含参数 · 考研真题）</div>
-  <div class="stmt">已知向量组 \(\alpha_1=(1,-1,-1)^T,\ \alpha_2=(-2,t+1,2t)^T,\ \alpha_3=(3,2,t)^T\) 线性相关，求 \(t\)．</div>
+  <div class="stmt">已知向量组 \(\alpha_1=(1,-1,-1)^T,\ \alpha_2=(-2,t+1,2t)^T,\ \alpha_3=(3,2,t)^T\) 线性相关，求 \(t\)。</div>
   <div class="sol"><span class="mk">解</span>三个三维向量相关，由推论 3.2 其行列式为零：
   \[\begin{vmatrix}1&-2&3\\-1&t+1&2\\-1&2t&t\end{vmatrix}=0.\]
   展开：
@@ -468,7 +468,7 @@
   &=(t^2-3t)+(4-2t)+3(1-t)\\
   &=t^2-8t+7=(t-1)(t-7).
   \end{aligned}\]
-  故 \((t-1)(t-7)=0\)，解得 \(t=1\) 或 \(t=7\)．</div>
+  故 \((t-1)(t-7)=0\)，解得 \(t=1\) 或 \(t=7\)。</div>
 </div>
 
 <div class="ex"><div class="lab">例 3.9　求极大无关组并表示其余向量</div>
@@ -478,13 +478,13 @@
   \alpha_3=\begin{pmatrix}-1\\2\\0\\3\end{pmatrix},\
   \alpha_4=\begin{pmatrix}0\\6\\2\\3\end{pmatrix},\
   \alpha_5=\begin{pmatrix}2\\-6\\3\\4\end{pmatrix}\]
-  的一个极大无关组，并用它表示其余向量．</div>
+  的一个极大无关组，并用它表示其余向量。</div>
   <div class="sol"><span class="mk">解</span>以 \(\alpha_1,\dots,\alpha_5\) 为列作矩阵 \(A\)，初等行变换化为行最简形：
   \[A=\begin{pmatrix}1&-2&-1&0&2\\-2&4&2&6&-6\\2&-1&0&2&3\\3&3&3&3&4\end{pmatrix}
   \xrightarrow{r}\begin{pmatrix}1&0&\tfrac13&0&\tfrac{16}{9}\\[2pt]0&1&\tfrac23&0&-\tfrac19\\[2pt]0&0&0&1&-\tfrac13\\[2pt]0&0&0&0&0\end{pmatrix}.\]
-  非零行的首非零元分别在第 1、2、4 列，故 \(\alpha_1,\alpha_2,\alpha_4\) 构成极大无关组（向量组的秩为 3）．由行最简形第 3、5 列的系数直接读出：
+  非零行的首非零元分别在第 1、2、4 列，故 \(\alpha_1,\alpha_2,\alpha_4\) 构成极大无关组（向量组的秩为 3）。由行最简形第 3、5 列的系数直接读出：
   \[\alpha_3=\tfrac13\alpha_1+\tfrac23\alpha_2,\qquad \alpha_5=\tfrac{16}{9}\alpha_1-\tfrac19\alpha_2-\tfrac13\alpha_4.\]
-  <p class="muted">（可代回验证：如第 1 个分量 \(\tfrac{16}{9}\cdot 1-\tfrac19\cdot(-2)-\tfrac13\cdot 0=\tfrac{16}{9}+\tfrac29=2\)，与 \(\alpha_5\) 的第 1 个分量一致．）</p></div>
+  <p class="muted">（可代回验证：如第 1 个分量 \(\tfrac{16}{9}\cdot 1-\tfrac19\cdot(-2)-\tfrac13\cdot 0=\tfrac{16}{9}+\tfrac29=2\)，与 \(\alpha_5\) 的第 1 个分量一致。）</p></div>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定理 3.4</span>秩的不等式</div>
@@ -505,14 +505,14 @@
   <figure style="margin:1.2em 0;text-align:center;">
     <svg viewBox="0 0 520 300" style="max-width:560px;width:96%;height:auto;">
       <defs>
-        <marker id="tT" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0e7c7c"/></marker>
+        <marker id="tT" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1e5aa8"/></marker>
         <marker id="tO" markerWidth="9" markerHeight="9" refX="6.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#e08a00"/></marker>
       </defs>
       <rect x="20" y="20" width="480" height="260" fill="#f8fafc" stroke="#cbd5e1"/>
-      <polygon points="160,180 320,160 380,80 220,100" fill="#0e7c7c" fill-opacity="0.07" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,4"/>
+      <polygon points="160,180 320,160 380,80 220,100" fill="#1e5aa8" fill-opacity="0.07" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,4"/>
       <text x="330" y="130" font-size="12" fill="#64748b" font-family="-apple-system,'Microsoft YaHei',sans-serif">U=span{A组}，dim=2（平面）</text>
-      <line x1="160" y1="180" x2="320" y2="160" stroke="#0e7c7c" stroke-width="2.8" marker-end="url(#tT)"/>
-      <line x1="160" y1="180" x2="220" y2="100" stroke="#0e7c7c" stroke-width="2.8" marker-end="url(#tT)"/>
+      <line x1="160" y1="180" x2="320" y2="160" stroke="#1e5aa8" stroke-width="2.8" marker-end="url(#tT)"/>
+      <line x1="160" y1="180" x2="220" y2="100" stroke="#1e5aa8" stroke-width="2.8" marker-end="url(#tT)"/>
       <line x1="160" y1="180" x2="120" y2="60" stroke="#e08a00" stroke-width="2.8" marker-end="url(#tO)"/>
       <text x="92" y="52" font-size="12" fill="#e08a00" font-family="-apple-system,'Microsoft YaHei',sans-serif">W=span{B组}，dim=1</text>
       <text x="60" y="250" font-size="12" fill="#334155" font-family="-apple-system,'Microsoft YaHei',sans-serif">U+W 的维数 ≤ dim U + dim W = 2+1 = 3</text>
@@ -527,9 +527,9 @@
 <h2 id="s34"><span class="num">§3.4</span>向量空间与基</h2>
 
 <div class="ex"><div class="lab">引例 5　无人机的"可达姿态"构成一个向量空间</div>
-  <p class="stmt">一架<b>无人机</b>在某一高度可朝任意水平方向移动、可任意转向——它的"可达姿态"对两种运算封闭：① <b>加法封闭</b>：两个姿态叠加仍是合法姿态；② <b>数乘封闭</b>：把某个姿态"拉长 \(k\) 倍"仍是合法姿态．既然任意两个姿态的线性组合仍是姿态，那么"全体可达姿态"就对这个空间的<b>所有线性运算</b>封闭——这正是<b>向量空间</b>的直观原型：对加法与数乘封闭、因而容纳一切线性组合的集合．</p>
-  <p>而描述它所需的最少独立运动方向，就是这组空间的<b>基</b>，其个数称为<b>维数</b>．机器人学里"构型空间（configuration space）"正是这样定义的．</p>
-  <p><b>探索：</b>平面上的所有位移显然构成一个二维空间，基可取 \(\vec e_1=(1,0),\ \vec e_2=(0,1)\)．学完本节你就能严格证明"为什么是二维"、并理解更高维（如机械臂构型）空间的基与维数从何而来．</p>
+  <p class="stmt">一架<b>无人机</b>在某一高度可朝任意水平方向移动、可任意转向——它的"可达姿态"对两种运算封闭：① <b>加法封闭</b>：两个姿态叠加仍是合法姿态；② <b>数乘封闭</b>：把某个姿态"拉长 \(k\) 倍"仍是合法姿态。既然任意两个姿态的线性组合仍是姿态，那么"全体可达姿态"就对这个空间的<b>所有线性运算</b>封闭——这正是<b>向量空间</b>的直观原型：对加法与数乘封闭、因而容纳一切线性组合的集合。</p>
+  <p>而描述它所需的最少独立运动方向，就是这组空间的<b>基</b>，其个数称为<b>维数</b>。机器人学里"构型空间（configuration space）"正是这样定义的。</p>
+  <p><b>探索：</b>平面上的所有位移显然构成一个二维空间，基可取 \(\vec e_1=(1,0),\ \vec e_2=(0,1)\)。学完本节你就能严格证明"为什么是二维"、并理解更高维（如机械臂构型）空间的基与维数从何而来。</p>
 </div>
 
 <h3>一、向量空间的概念</h3>
@@ -540,8 +540,8 @@
 <p class="muted">全体 n 维实向量 \(\mathbb R^n\) 构成向量空间；只含零向量的集合 \(\{0\}\) 也是向量空间（零空间）．</p>
 
 <div class="ex"><div class="lab">例 3.10</div>
-  <div class="stmt">判断 \(V_1=\{(0,x)^T\mid x\in\mathbb R\}\) 与 \(V_2=\{(1,x)^T\mid x\in\mathbb R\}\) 是否为向量空间．</div>
-  <div class="sol"><span class="mk">解</span>对 \(V_1\)：任意 \((0,x)^T+(0,y)^T=(0,x+y)^T\in V_1\)，\(\lambda(0,x)^T=(0,\lambda x)^T\in V_1\)，故 \(V_1\) 是向量空间．对 \(V_2\)：\((1,0)^T\in V_2\)，但 \(2(1,0)^T=(2,0)^T\notin V_2\)（第一个分量不是 1），对数乘不封闭，故 \(V_2\) 不是向量空间．</div>
+  <div class="stmt">判断 \(V_1=\{(0,x)^T\mid x\in\mathbb R\}\) 与 \(V_2=\{(1,x)^T\mid x\in\mathbb R\}\) 是否为向量空间。</div>
+  <div class="sol"><span class="mk">解</span>对 \(V_1\)：任意 \((0,x)^T+(0,y)^T=(0,x+y)^T\in V_1\)，\(\lambda(0,x)^T=(0,\lambda x)^T\in V_1\)，故 \(V_1\) 是向量空间。对 \(V_2\)：\((1,0)^T\in V_2\)，但 \(2(1,0)^T=(2,0)^T\notin V_2\)（第一个分量不是 1），对数乘不封闭，故 \(V_2\) 不是向量空间。</div>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定义 3.8</span>由向量组生成的向量空间</div>
@@ -577,11 +577,11 @@
 <div class="ex"><div class="lab">例 3.11</div>
   <div class="stmt">设
   \[\alpha_1=\begin{pmatrix}0\\1\\1\end{pmatrix},\ \alpha_2=\begin{pmatrix}1\\0\\1\end{pmatrix},\ \alpha_3=\begin{pmatrix}1\\1\\0\end{pmatrix}.\]
-  (1) 证明 \(\alpha_1,\alpha_2,\alpha_3\) 是 \(\mathbb R^3\) 的基；(2) 求 \(\alpha=(1,-1,0)^T\) 在该基下的坐标．</div>
+  (1) 证明 \(\alpha_1,\alpha_2,\alpha_3\) 是 \(\mathbb R^3\) 的基；(2) 求 \(\alpha=(1,-1,0)^T\) 在该基下的坐标。</div>
   <div class="sol"><span class="mk">解</span>
   <p><b>(1)</b> 计算行列式
   \[|\alpha_1,\alpha_2,\alpha_3|=\begin{vmatrix}0&1&1\\1&0&1\\1&1&0\end{vmatrix}=2\neq0,\]
-  故 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关．又 \(\dim\mathbb R^3=3\)，三个线性无关的三维向量必为 \(\mathbb R^3\) 的基．</p>
+  故 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关。又 \(\dim\mathbb R^3=3\)，三个线性无关的三维向量必为 \(\mathbb R^3\) 的基。</p>
   <p><b>(2)</b> 设坐标为 \((x_1,x_2,x_3)^T\)，则
   \[(\alpha_1,\alpha_2,\alpha_3)\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}
   =\begin{pmatrix}0&1&1\\1&0&1\\1&1&0\end{pmatrix}\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}
@@ -590,7 +590,7 @@
   \[\begin{pmatrix}x_1\\x_2\\x_3\end{pmatrix}
   =\frac12\begin{pmatrix}-1&1&1\\1&-1&1\\1&1&-1\end{pmatrix}\begin{pmatrix}1\\-1\\0\end{pmatrix}
   =\begin{pmatrix}-1\\1\\0\end{pmatrix}.\]
-  故坐标为 \((-1,1,0)^T\)（可验证：\(-(0,1,1)^T+(1,0,1)^T=(1,-1,0)^T\)）．</p></div>
+  故坐标为 \((-1,1,0)^T\)（可验证：\(-(0,1,1)^T+(1,0,1)^T=(1,-1,0)^T\)）。</p></div>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定义 3.11</span>基变换公式</div>
@@ -613,7 +613,7 @@
   注意这里的 \(C\) 是"从 \(\alpha\) 到 \(\beta\)"的过渡矩阵；反过来若从 \(\beta\) 到 \(\alpha\)，过渡矩阵就是 \(C^{-1}\)．</p></div></details></div>
 
 <div class="ex"><div class="lab">例 3.12　Schmidt 正交化（标准正交基的构造）</div>
-  <div class="note">在向量空间中引入<b>内积</b> \(\langle\alpha,\beta\rangle=\alpha^T\beta\)，可定义向量长度 \(\|\alpha\|=\sqrt{\langle\alpha,\alpha\rangle}\) 与正交（\(\langle\alpha,\beta\rangle=0\) 记作 \(\alpha\perp\beta\)）．一组两两正交且非零的向量称为<b>正交向量组</b>；再单位化即得<b>标准正交基</b>．把任意线性无关组化为标准正交组的方法叫 <b>Schmidt 正交化</b>：
+  <div class="note">在向量空间中引入<b>内积</b> \(\langle\alpha,\beta\rangle=\alpha^T\beta\)，可定义向量长度 \(\|\alpha\|=\sqrt{\langle\alpha,\alpha\rangle}\) 与正交（\(\langle\alpha,\beta\rangle=0\) 记作 \(\alpha\perp\beta\)）。一组两两正交且非零的向量称为<b>正交向量组</b>；再单位化即得<b>标准正交基</b>。把任意线性无关组化为标准正交组的方法叫 <b>Schmidt 正交化</b>：
   \[\begin{aligned}
   \beta_1&=\alpha_1,\\
   \beta_2&=\alpha_2-\frac{\langle\alpha_2,\beta_1\rangle}{\langle\beta_1,\beta_1\rangle}\beta_1,\\
@@ -621,57 +621,57 @@
   &\ \vdots\\
   e_k&=\frac{\beta_k}{\|\beta_k\|}\quad(k=1,2,3,\dots).
   \end{aligned}\]
-  其本质是从后一个向量中不断"减去它在已正交化向量上的投影"，从而逐个消去除垂直分量．</div>
+  其本质是从后一个向量中不断"减去它在已正交化向量上的投影"，从而逐个消去除垂直分量。</div>
   <div class="stmt">已知 \(\mathbb R^3\) 中
   \[\alpha_1=\begin{pmatrix}1\\1\\0\end{pmatrix},\quad \alpha_2=\begin{pmatrix}1\\0\\1\end{pmatrix},\quad \alpha_3=\begin{pmatrix}0\\1\\1\end{pmatrix},\]
-  用 Schmidt 正交化把它们化为 \(\mathbb R^3\) 的一组标准正交基．</div>
+  用 Schmidt 正交化把它们化为 \(\mathbb R^3\) 的一组标准正交基。</div>
   <div class="sol"><span class="mk">解</span>
-  <p><b>正交化．</b>取
+  <p><b>正交化。</b>取
   \[\beta_1=\alpha_1=\begin{pmatrix}1\\1\\0\end{pmatrix}.\]
   计算内积 \(\langle\alpha_2,\beta_1\rangle=1\cdot1+0\cdot1+1\cdot0=1\)，\(\langle\beta_1,\beta_1\rangle=1^2+1^2+0^2=2\)，故
   \[\beta_2=\alpha_2-\frac1{2}\beta_1=\begin{pmatrix}1\\0\\1\end{pmatrix}-\frac12\begin{pmatrix}1\\1\\0\end{pmatrix}=\begin{pmatrix}\tfrac12\\-\tfrac12\\1\end{pmatrix}.\]
   再算 \(\langle\alpha_3,\beta_1\rangle=0\cdot1+1\cdot1+1\cdot0=1\)，\(\langle\alpha_3,\beta_2\rangle=0\cdot\tfrac12+1\cdot(-\tfrac12)+1\cdot1=\tfrac12\)，\(\langle\beta_2,\beta_2\rangle=(\tfrac12)^2+(-\tfrac12)^2+1^2=\tfrac32\)，于是
   \[\beta_3=\alpha_3-\frac1{2}\beta_1-\frac{\,1/2\,}{3/2}\beta_2=\begin{pmatrix}0\\1\\1\end{pmatrix}-\frac12\begin{pmatrix}1\\1\\0\end{pmatrix}-\frac13\begin{pmatrix}\tfrac12\\-\tfrac12\\1\end{pmatrix}=\begin{pmatrix}-\tfrac23\\\tfrac23\\\tfrac23\end{pmatrix}.\]
-  容易验证 \(\langle\beta_1,\beta_2\rangle=\langle\beta_1,\beta_3\rangle=\langle\beta_2,\beta_3\rangle=0\)，三向量确两两正交．</p>
-  <p><b>单位化．</b>由 \(\|\beta_1\|=\sqrt2,\ \|\beta_2\|=\sqrt{3/2},\ \|\beta_3\|=2/\sqrt3\)，得标准正交基
+  容易验证 \(\langle\beta_1,\beta_2\rangle=\langle\beta_1,\beta_3\rangle=\langle\beta_2,\beta_3\rangle=0\)，三向量确两两正交。</p>
+  <p><b>单位化。</b>由 \(\|\beta_1\|=\sqrt2,\ \|\beta_2\|=\sqrt{3/2},\ \|\beta_3\|=2/\sqrt3\)，得标准正交基
   \[e_1=\begin{pmatrix}\tfrac1{\sqrt2}\\\tfrac1{\sqrt2}\\0\end{pmatrix},\quad
     e_2=\begin{pmatrix}\tfrac1{\sqrt6}\\-\tfrac1{\sqrt6}\\\tfrac2{\sqrt6}\end{pmatrix},\quad
     e_3=\begin{pmatrix}-\tfrac1{\sqrt3}\\\tfrac1{\sqrt3}\\\tfrac1{\sqrt3}\end{pmatrix}.\]
-  它们满足 \(e_i^T e_j=\delta_{ij}\)，故确为 \(\mathbb R^3\) 的一组标准正交基．</p></div>
+  它们满足 \(e_i^T e_j=\delta_{ij}\)，故确为 \(\mathbb R^3\) 的一组标准正交基。</p></div>
 </div>
 
 <div class="ex"><div class="lab">例 3.13　过渡矩阵与坐标变换（考研真题）</div>
   <div class="stmt">已知 \(\mathbb R^3\) 中两组基
   \[\alpha_1=\begin{pmatrix}1\\0\\0\end{pmatrix},\ \alpha_2=\begin{pmatrix}1\\1\\0\end{pmatrix},\ \alpha_3=\begin{pmatrix}1\\1\\1\end{pmatrix};\quad
     \beta_1=\begin{pmatrix}1\\0\\0\end{pmatrix},\ \beta_2=\begin{pmatrix}2\\1\\0\end{pmatrix},\ \beta_3=\begin{pmatrix}3\\2\\1\end{pmatrix}.\]
-  (1) 求从基 \(\alpha\) 到基 \(\beta\) 的过渡矩阵 \(P\)；(2) 已知向量 \(\xi\) 在基 \(\beta\) 下的坐标为 \((1,1,1)^T\)，求 \(\xi\) 在基 \(\alpha\) 下的坐标及 \(\xi\) 本身．</div>
+  (1) 求从基 \(\alpha\) 到基 \(\beta\) 的过渡矩阵 \(P\)；(2) 已知向量 \(\xi\) 在基 \(\beta\) 下的坐标为 \((1,1,1)^T\)，求 \(\xi\) 在基 \(\alpha\) 下的坐标及 \(\xi\) 本身。</div>
   <div class="sol"><span class="mk">解</span>
-  <p><b>(1)</b> 由基变换公式 \((\beta_1,\beta_2,\beta_3)=(\alpha_1,\alpha_2,\alpha_3)P\)，记 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(B=(\beta_1,\beta_2,\beta_3)\)，则 \(P=A^{-1}B\)．计算得
+  <p><b>(1)</b> 由基变换公式 \((\beta_1,\beta_2,\beta_3)=(\alpha_1,\alpha_2,\alpha_3)P\)，记 \(A=(\alpha_1,\alpha_2,\alpha_3)\)，\(B=(\beta_1,\beta_2,\beta_3)\)，则 \(P=A^{-1}B\)。计算得
   \[A=\begin{pmatrix}1&1&1\\0&1&1\\0&0&1\end{pmatrix},\quad A^{-1}=\begin{pmatrix}1&-1&0\\0&1&-1\\0&0&1\end{pmatrix},\quad B=\begin{pmatrix}1&2&3\\0&1&2\\0&0&1\end{pmatrix},\]
   故
   \[P=A^{-1}B=\begin{pmatrix}1&1&1\\0&1&1\\0&0&1\end{pmatrix}.\]</p>
-  <p><b>(2)</b> 设 \(\xi\) 在基 \(\alpha\) 下的坐标为 \(x\)，在基 \(\beta\) 下的坐标为 \(y=(1,1,1)^T\)．由坐标变换公式 \(x=Py\)，
+  <p><b>(2)</b> 设 \(\xi\) 在基 \(\alpha\) 下的坐标为 \(x\)，在基 \(\beta\) 下的坐标为 \(y=(1,1,1)^T\)。由坐标变换公式 \(x=Py\)，
   \[x=\begin{pmatrix}1&1&1\\0&1&1\\0&0&1\end{pmatrix}\begin{pmatrix}1\\1\\1\end{pmatrix}=\begin{pmatrix}3\\2\\1\end{pmatrix}.\]
   于是 \(\xi\) 在基 \(\alpha\) 下的坐标为 \((3,2,1)^T\)，且其本身
   \[\xi=\beta_1+\beta_2+\beta_3=\begin{pmatrix}1\\0\\0\end{pmatrix}+\begin{pmatrix}2\\1\\0\end{pmatrix}+\begin{pmatrix}3\\2\\1\end{pmatrix}=\begin{pmatrix}6\\3\\1\end{pmatrix}.
   \]
-  也可验证 \(\xi=(\alpha_1,\alpha_2,\alpha_3)x=(1,0,0)^T+2(1,1,0)^T+(1,1,1)^T=(6,3,1)^T\)，二者一致．</p></div>
+  也可验证 \(\xi=(\alpha_1,\alpha_2,\alpha_3)x=(1,0,0)^T+2(1,1,0)^T+(1,1,1)^T=(6,3,1)^T\)，二者一致。</p></div>
 </div>
 
 <div class="ex"><div class="lab">例 3.14　秩的不等式及其矩阵应用</div>
   <div class="stmt">设
   \[A=\begin{pmatrix}-1&-1&-1\\-1&-1&-1\\-1&-1&0\end{pmatrix},\quad B=\begin{pmatrix}-1&-1&-1\\-1&0&-1\\-1&-1&-1\end{pmatrix}.\]
-  计算 \(R(A),R(B),R(A+B),R(AB)\)，并验证秩的不等式．</div>
+  计算 \(R(A),R(B),R(A+B),R(AB)\)，并验证秩的不等式。</div>
   <div class="sol"><span class="mk">解</span>
-  <p>\(A\) 的第 1、2 行相同，故秩 \(\le2\)；又第 3 行 \((-1,-1,0)\) 与第 1 行不成比例（例如左上 \(2\times2\) 子式 \(\begin{vmatrix}-1&-1\\-1&0\end{vmatrix}=-1\neq0\)），所以 \(R(A)=2\)．同理 \(B\) 的第 1、3 行相同且第 2 行与之不成比例，故 \(R(B)=2\)．</p>
+  <p>\(A\) 的第 1、2 行相同，故秩 \(\le2\)；又第 3 行 \((-1,-1,0)\) 与第 1 行不成比例（例如左上 \(2\times2\) 子式 \(\begin{vmatrix}-1&-1\\-1&0\end{vmatrix}=-1\neq0\)），所以 \(R(A)=2\)。同理 \(B\) 的第 1、3 行相同且第 2 行与之不成比例，故 \(R(B)=2\)。</p>
   <p>计算得
   \[A+B=\begin{pmatrix}-2&-2&-2\\-2&-1&-2\\-2&-2&-1\end{pmatrix},\quad R(A+B)=3;\]
   \[AB=\begin{pmatrix}3&2&3\\3&2&3\\2&1&2\end{pmatrix},\quad R(AB)=2\quad(\text{第 1、2 行相同，且第 3 行与之不成比例}).\]
   于是
   \[R(A+B)=3\le R(A)+R(B)=4,\qquad R(AB)=2\le\min\{R(A),R(B)\}=2.\]
   这两个不等式具有普遍性，证明如下：</p>
-  <p><b>①</b> \(R(A+B)\le R(A)+R(B)\)：把 \(A,B\) 左右并列成 \((A,B)\)，则 \(A+B\) 的每一列都是 \((A,B)\) 的列的线性组合，故 \(R(A+B)\le R(A,B)\le R(A)+R(B)\)（定理 3.4）．</p>
-  <p><b>②</b> \(R(AB)\le\min\{R(A),R(B)\}\)：\(AB\) 的每一列都是 \(A\) 的列的线性组合，故 \(R(AB)\le R(A)\)；又 \(R(AB)=R((AB)^T)=R(B^T A^T)\le R(B^T)=R(B)\)，故 \(R(AB)\le R(B)\)．两式合并即得．</p></div>
+  <p><b>①</b> \(R(A+B)\le R(A)+R(B)\)：把 \(A,B\) 左右并列成 \((A,B)\)，则 \(A+B\) 的每一列都是 \((A,B)\) 的列的线性组合，故 \(R(A+B)\le R(A,B)\le R(A)+R(B)\)（定理 3.4）。</p>
+  <p><b>②</b> \(R(AB)\le\min\{R(A),R(B)\}\)：\(AB\) 的每一列都是 \(A\) 的列的线性组合，故 \(R(AB)\le R(A)\)；又 \(R(AB)=R((AB)^T)=R(B^T A^T)\le R(B^T)=R(B)\)，故 \(R(AB)\le R(B)\)。两式合并即得。</p></div>
 </div>
 
 <div class="hist"><div class="lab">Hermann Grassmann 与向量空间公理化</div>
@@ -683,8 +683,8 @@
 <div class="sec-quiz" data-sec="s34" data-ch="3" data-n="18"></div>
 <h2 id="s35"><span class="num">§3.5</span>综合应用与软件实现</h2>
 <div class="ex"><div class="lab">引例　刷脸解锁：你的人脸是一万个数字组成的向量</div>
-  <p class="stmt">一张 \(100\times100\) 的人脸灰度图，展开后就是一个 \(10000\) 维向量．所有"正常人脸"构成的集合，对加法和数乘封闭——它是一个<b>向量空间</b>；而压缩存储、快速比对用的"主成分（PCA）"，本质是用一组互相正交的基去逼近这个空间．人脸识别、语音识别、乃至大模型的词向量嵌入，背后都是本章的向量空间、基、秩与正交化．</p>
-  <p><b>探索：</b>把 3 张简化人脸（每张用 4 维向量表示）排成矩阵，学完本节你就能求出它们张成空间的维数（秩），并挑出一组"最省"的基——这正是降维算法的第一步．</p>
+  <p class="stmt">一张 \(100\times100\) 的人脸灰度图，展开后就是一个 \(10000\) 维向量。所有"正常人脸"构成的集合，对加法和数乘封闭——它是一个<b>向量空间</b>；而压缩存储、快速比对用的"主成分（PCA）"，本质是用一组互相正交的基去逼近这个空间。人脸识别、语音识别、乃至大模型的词向量嵌入，背后都是本章的向量空间、基、秩与正交化。</p>
+  <p><b>探索：</b>把 3 张简化人脸（每张用 4 维向量表示）排成矩阵，学完本节你就能求出它们张成空间的维数（秩），并挑出一组"最省"的基——这正是降维算法的第一步。</p>
 </div>
 
 <div class="case"><div class="lab">应用 1 · 化学方程式配平：齐次方程与零空间</div>
@@ -761,29 +761,29 @@
 <line x1="55" y1="275.0" x2="450" y2="275.0" stroke="#eef2f4"/>
 <line x1="55" y1="146.5" x2="450" y2="146.5" stroke="#9aa6ad"/>
 <line x1="256.8" y1="20" x2="256.8" y2="275" stroke="#9aa6ad"/>
-<circle cx="55.0" cy="172.3" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="55.0" cy="172.3" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="55.0" y="165.3" font-size="9" fill="#4a5560" text-anchor="middle">01</text>
-<circle cx="150.9" cy="77.0" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="150.9" cy="77.0" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="150.9" y="70.0" font-size="9" fill="#4a5560" text-anchor="middle">02</text>
-<circle cx="116.3" cy="275.0" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="116.3" cy="275.0" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="116.3" y="268.0" font-size="9" fill="#4a5560" text-anchor="middle">03</text>
-<circle cx="277.3" cy="20.0" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="277.3" cy="20.0" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="277.3" y="13.0" font-size="9" fill="#4a5560" text-anchor="middle">04</text>
-<circle cx="261.4" cy="172.3" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="261.4" cy="172.3" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="261.4" y="165.3" font-size="9" fill="#4a5560" text-anchor="middle">05</text>
-<circle cx="349.0" cy="127.0" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="349.0" cy="127.0" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="349.0" y="120.0" font-size="9" fill="#4a5560" text-anchor="middle">06</text>
-<circle cx="342.4" cy="256.5" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="342.4" cy="256.5" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="342.4" y="249.5" font-size="9" fill="#4a5560" text-anchor="middle">07</text>
-<circle cx="447.4" cy="112.1" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="447.4" cy="112.1" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="447.4" y="105.1" font-size="9" fill="#4a5560" text-anchor="middle">08</text>
-<circle cx="450.0" cy="218.8" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="450.0" cy="218.8" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="450.0" y="211.8" font-size="9" fill="#4a5560" text-anchor="middle">09</text>
-<circle cx="103.0" cy="137.8" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="103.0" cy="137.8" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="103.0" y="130.8" font-size="9" fill="#4a5560" text-anchor="middle">10</text>
-<circle cx="229.3" cy="54.5" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="229.3" cy="54.5" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="229.3" y="47.5" font-size="9" fill="#4a5560" text-anchor="middle">11</text>
-<circle cx="299.9" cy="134.4" r="4.5" fill="#0e7c7c" stroke="#fff" stroke-width="1"/>
+<circle cx="299.9" cy="134.4" r="4.5" fill="#1e5aa8" stroke="#fff" stroke-width="1"/>
 <text x="299.9" y="127.4" font-size="9" fill="#4a5560" text-anchor="middle">12</text>
 <text x="252.5" y="312" font-size="11" fill="#4a5560" text-anchor="middle">主成分 1 (PC1)</text>
 <text x="14" y="147.5" font-size="11" fill="#4a5560" text-anchor="middle" transform="rotate(-90 14 147.5)">主成分 2 (PC2)</text>
@@ -801,7 +801,7 @@
 <text x="44.0" y="83.0" font-size="9" fill="#8a949e" text-anchor="end">75</text>
 <line x1="50" y1="20.0" x2="450" y2="20.0" stroke="#eef2f4"/>
 <text x="44.0" y="23.0" font-size="9" fill="#8a949e" text-anchor="end">100</text>
-<rect x="76.7" y="85.3" width="80.0" height="174.7" fill="#0e7c7c" opacity="0.85"/>
+<rect x="76.7" y="85.3" width="80.0" height="174.7" fill="#1e5aa8" opacity="0.85"/>
 <text x="116.7" y="80.3" font-size="10" fill="#232a31" text-anchor="middle">72.8%</text>
 <text x="116.7" y="275.0" font-size="10" fill="#4a5560" text-anchor="middle">PC1</text>
 <text x="116.7" y="288.0" font-size="8.5" fill="#8a949e" text-anchor="middle">累计 72.8%</text>
@@ -820,6 +820,25 @@
 <p><b>结论解释：</b>PC1 的载荷在 T、R 上很大、在 V 上很小，说明它抓住的是“温度—内阻”这一耦合模式；PC2 主要反映电压维的波动．由于前两个主成分已解释 99.9% 的信息，工程上完全可用二维得分 \((PC_1,PC_2)\) 替代原三维数据做聚类、异常检测或可视化——这就是“降维”．若某电芯的 PC 得分明显偏离同类群体（如图中散点离群），BMS 即可预警．从向量组的秩、基，到协方差阵的特征值分解，线性代数把“压缩数据、提取特征”这件事讲得明明白白，也是人脸识别、语音降噪乃至大模型维度压缩的共同底座．</p>
   </div></details>
 </div>
+
+<div class="labx">
+    <div class="lab">交互实验 · 换一组数据，看主成分轴如何转动</div>
+    <div class="desc">选择不同形态的数据集，实时计算均值与<b>协方差矩阵</b>并做特征值分解，画出方差最大的主轴（红）与正交的副轴（灰）。当数据呈细长条（强相关）时，PC1 几乎解释全部方差，二维可被压成一维——这就是 PCA 降维的本质；当数据近圆形时，两个方向“一样重要”，降维就没什么可压的。</div>
+    <div class="xv-wrap" id="pcaDemo">
+      <canvas id="pcaCanvas" width="760" height="320"></canvas>
+      <div class="xv-ctrls">
+        <div class="xv-ctrl">数据集
+          <select id="pcaData">
+            <option value="corr">强相关（细长条）</option>
+            <option value="tall">竖直分布</option>
+            <option value="circle">近似圆形</option>
+          </select></div>
+      </div>
+      <div class="xv-out" id="pcaOut"></div>
+    </div>
+    <div class="xv-note">协方差矩阵 \(C\) 是对称阵，它的特征向量就是一组“互不相关、方差递减”的正交基，特征值 \(\lambda_i\) 是各主成分解释的方差。人脸识别、语音降噪乃至大模型维度压缩，用的都是这同一个“对协方差阵做特征分解”的操作。</div>
+  </div>
+<script src="pca.js"></script>
 
 <div class="case"><div class="lab">软件实现 · Python 工具箱（软件实践）</div>
   <details><summary>展开完整工具箱</summary><div class="body">
@@ -885,19 +904,19 @@ print("线性相关?", r < A.cols)
     <p class="muted">本栏目选取历年考研真题，展示向量组秩、相关性、坐标与子空间的综合运用．建议先独立思考，再展开解答．</p>
 
     <div class="ex"><div class="lab">选讲 1　（2018 · 考研数学一）</div>
-      <p class="stmt">向量组 \(\alpha_1=(1,1,1)\)，\(\alpha_2=(1,2,4)\)，\(\alpha_3=(1,t,t^2)\)．问 \(t\) 取何值时该向量组线性相关？</p>
+      <p class="stmt">向量组 \(\alpha_1=(1,1,1)\)，\(\alpha_2=(1,2,4)\)，\(\alpha_3=(1,t,t^2)\)。问 \(t\) 取何值时该向量组线性相关？</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　以 \(\alpha_1,\alpha_2,\alpha_3\) 为行的行列式恰为范德蒙德型：
           \[D=\begin{vmatrix}1&1&1\\1&2&4\\1&t&t^2\end{vmatrix}=(2-1)(t-1)(t-2)=(t-1)(t-2).\]
-          向量组线性相关 \(\iff D=0\iff t=1\) 或 \(t=2\)．此时 \(\alpha_3\) 分别退化为 \(\alpha_1\) 或 \(\alpha_2\)．</p>
-          <p><b>方法提炼：</b>当向量组呈现 \((1,x,x^2)\) 形态时，直接套范德蒙德行列式，比硬展开快得多．</p>
+          向量组线性相关 \(\iff D=0\iff t=1\) 或 \(t=2\)。此时 \(\alpha_3\) 分别退化为 \(\alpha_1\) 或 \(\alpha_2\)。</p>
+          <p><b>方法提炼：</b>当向量组呈现 \((1,x,x^2)\) 形态时，直接套范德蒙德行列式，比硬展开快得多。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 2　（2016 · 考研数学二）</div>
-      <p class="stmt">设 \(\alpha_1=(1,0,1)\)，\(\alpha_2=(1,1,0)\)，\(\alpha_3=(2,1,1)\)，\(\alpha_4=(0,1,-1)\)．求一个极大无关组，并把其余向量用它线性表示．</p>
+      <p class="stmt">设 \(\alpha_1=(1,0,1)\)，\(\alpha_2=(1,1,0)\)，\(\alpha_3=(2,1,1)\)，\(\alpha_4=(0,1,-1)\)。求一个极大无关组，并把其余向量用它线性表示。</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　以 \(\alpha_1,\dots,\alpha_4\) 为列构造矩阵，作初等行变换化阶梯形：
@@ -906,50 +925,50 @@ print("线性相关?", r < A.cols)
             \begin{pmatrix}1&1&2&0\\0&1&1&1\\0&-1&-1&-1\end{pmatrix}
             \xrightarrow{r_3+r_2}
             \begin{pmatrix}1&0&1&-1\\0&1&1&1\\0&0&0&0\end{pmatrix}.\]
-          两非零行 \(\Rightarrow\) 秩为 \(2\)；主元位于第 \(1,2\) 列，故 \(\alpha_1,\alpha_2\) 是一个极大无关组．由阶梯行读出：
-          \(\alpha_3=\alpha_1+\alpha_2\)，\(\alpha_4=-\alpha_1+\alpha_2\)．</p>
-          <p><b>方法提炼：</b>把向量按列排、做行变换——与 §3.3"秩 = 阶梯形非零行数"完全对应，务必滚瓜烂熟．</p>
+          两非零行 \(\Rightarrow\) 秩为 \(2\)；主元位于第 \(1,2\) 列，故 \(\alpha_1,\alpha_2\) 是一个极大无关组。由阶梯行读出：
+          \(\alpha_3=\alpha_1+\alpha_2\)，\(\alpha_4=-\alpha_1+\alpha_2\)。</p>
+          <p><b>方法提炼：</b>把向量按列排、做行变换——与 §3.3"秩 = 阶梯形非零行数"完全对应，务必滚瓜烂熟。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 3　</div>
-      <p class="stmt">在 \(\mathbb R^2\) 中，\(\alpha_1=(1,2)\)，\(\alpha_2=(3,4)\) 构成一组基．求 \(\beta=(5,6)\) 在该基下的坐标．</p>
+      <p class="stmt">在 \(\mathbb R^2\) 中，\(\alpha_1=(1,2)\)，\(\alpha_2=(3,4)\) 构成一组基。求 \(\beta=(5,6)\) 在该基下的坐标。</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　设 \(\beta=c_1\alpha_1+c_2\alpha_2\)，即
-          \(\begin{pmatrix}1&3\\2&4\end{pmatrix}\begin{pmatrix}c_1\\c_2\end{pmatrix}=\begin{pmatrix}5\\6\end{pmatrix}\)．
-          系数矩阵行列式 \(\begin{vmatrix}1&3\\2&4\end{vmatrix}=4-6=-2\neq0\)，基有效．解得 \((c_1,c_2)=(-1,2)\)．</p>
-          <p><b>方法提炼：</b>坐标就是"用基向量线性组合表出目标向量"时的系数；基不同，坐标不同．</p>
+          \(\begin{pmatrix}1&3\\2&4\end{pmatrix}\begin{pmatrix}c_1\\c_2\end{pmatrix}=\begin{pmatrix}5\\6\end{pmatrix}\)。
+          系数矩阵行列式 \(\begin{vmatrix}1&3\\2&4\end{vmatrix}=4-6=-2\neq0\)，基有效。解得 \((c_1,c_2)=(-1,2)\)。</p>
+          <p><b>方法提炼：</b>坐标就是"用基向量线性组合表出目标向量"时的系数；基不同，坐标不同。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 4　（2022 · 考研数学一）</div>
-      <p class="stmt">\(\mathbb R^2\) 的旧基为 \(\varepsilon_1,\varepsilon_2\)，新基为 \(\beta_1=(1,1)\)，\(\beta_2=(1,-1)\)．(1) 求从旧基到新基的过渡矩阵 \(P\)；(2) 向量 \(\xi\) 在旧基下坐标为 \((3,1)\)，求它在新基下的坐标．</p>
+      <p class="stmt">\(\mathbb R^2\) 的旧基为 \(\varepsilon_1,\varepsilon_2\)，新基为 \(\beta_1=(1,1)\)，\(\beta_2=(1,-1)\)。(1) 求从旧基到新基的过渡矩阵 \(P\)；(2) 向量 \(\xi\) 在旧基下坐标为 \((3,1)\)，求它在新基下的坐标。</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　(1) 由 \((\beta_1,\beta_2)=(\varepsilon_1,\varepsilon_2)P\)，即
-          \(P=\begin{pmatrix}1&1\\1&-1\end{pmatrix}\)．</p>
+          \(P=\begin{pmatrix}1&1\\1&-1\end{pmatrix}\)。</p>
           <p>(2) 设 \(\xi\) 在新基坐标为 \((y_1,y_2)\)，则旧坐标 \(=P\cdot(y_1,y_2)^T\)，故
-          \((y_1,y_2)^T=P^{-1}(3,1)^T\)．而
+          \((y_1,y_2)^T=P^{-1}(3,1)^T\)。而
           \(P^{-1}=\dfrac1{-2}\begin{pmatrix}-1&-1\\-1&1\end{pmatrix}
           =\begin{pmatrix}\tfrac12&\tfrac12\\[2pt]\tfrac12&-\tfrac12\end{pmatrix}\)，
-          得 \((y_1,y_2)=(2,1)\)．</p>
-          <p><b>方法提炼：</b>基变换是"换坐标系"，过渡矩阵就是坐标系统的换算因子——这是 §3.4 的精要．</p>
+          得 \((y_1,y_2)=(2,1)\)。</p>
+          <p><b>方法提炼：</b>基变换是"换坐标系"，过渡矩阵就是坐标系统的换算因子——这是 §3.4 的精要。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 5　（2015 · 考研数学一）</div>
-      <p class="stmt">在 \(\mathbb R^4\) 中，\(V=\operatorname{span}\{\alpha_1,\alpha_2,\alpha_3\}\)，\(W=\operatorname{span}\{\beta_1,\beta_2\}\)，其中 \(\alpha_1=(1,0,0,0),\alpha_2=(0,1,0,0),\alpha_3=(0,0,1,0)\)，\(\beta_1=(1,1,0,0),\beta_2=(0,0,0,1)\)．已知 \(\dim(V\cap W)=1\)，求 \(\dim(V+W)\)．</p>
+      <p class="stmt">在 \(\mathbb R^4\) 中，\(V=\operatorname{span}\{\alpha_1,\alpha_2,\alpha_3\}\)，\(W=\operatorname{span}\{\beta_1,\beta_2\}\)，其中 \(\alpha_1=(1,0,0,0),\alpha_2=(0,1,0,0),\alpha_3=(0,0,1,0)\)，\(\beta_1=(1,1,0,0),\beta_2=(0,0,0,1)\)。已知 \(\dim(V\cap W)=1\)，求 \(\dim(V+W)\)。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　易见 \(V=\operatorname{span}(e_1,e_2,e_3)\)，故 \(\dim V=3\)；\(W=\operatorname{span}((1,1,0,0),(0,0,0,1))\)，故 \(\dim W=2\)．
+          <p><span style="font-weight:700">解</span>　易见 \(V=\operatorname{span}(e_1,e_2,e_3)\)，故 \(\dim V=3\)；\(W=\operatorname{span}((1,1,0,0),(0,0,0,1))\)，故 \(\dim W=2\)。
           由维数公式
           \[\dim(V+W)=\dim V+\dim W-\dim(V\cap W)=3+2-1=4.\]
-          事实上 \(V+W\) 恰为整个 \(\mathbb R^4\)，而 \(V\cap W=\operatorname{span}(1,1,0,0)\) 为一维，与公式吻合．</p>
-          <p><b>方法提炼：</b>维数公式是"并集维数 = 各自维数和 − 交维数"，把子空间的复杂关系量化成加减法．</p>
+          事实上 \(V+W\) 恰为整个 \(\mathbb R^4\)，而 \(V\cap W=\operatorname{span}(1,1,0,0)\) 为一维，与公式吻合。</p>
+          <p><b>方法提炼：</b>维数公式是"并集维数 = 各自维数和 − 交维数"，把子空间的复杂关系量化成加减法。</p>
         </div>
       </details>
     </div>
@@ -959,91 +978,91 @@ print("线性相关?", r < A.cols)
 
   <div class="grp">一、选择题（15 题）</div>
   <ol>
-        <li><div class="qt">n 维向量组 \(\alpha_1,\dots,\alpha_m\) 线性相关的充要条件是（　）．</div>
+        <li><div class="qt">n 维向量组 \(\alpha_1,\dots,\alpha_m\) 线性相关的充要条件是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q1" value="A"> \(m>1\)</label>
       <label><b>B.</b> <input type="radio" name="hw3q1" value="B"> 存在不全为零的数使线性组合为零</label>
       <label><b>C.</b> <input type="radio" name="hw3q1" value="C"> 其中有两个向量相等</label>
       <label><b>D.</b> <input type="radio" name="hw3q1" value="D"> 向量个数大于维数</label>
     </li>
-        <li><div class="qt">若向量组 \(\alpha_1,\alpha_2\) 线性相关，则（　）．</div>
+        <li><div class="qt">若向量组 \(\alpha_1,\alpha_2\) 线性相关，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q2" value="A"> 它们分量对应成比例</label>
       <label><b>B.</b> <input type="radio" name="hw3q2" value="B"> 其中一个必为零</label>
       <label><b>C.</b> <input type="radio" name="hw3q2" value="C"> 它们必相等</label>
       <label><b>D.</b> <input type="radio" name="hw3q2" value="D"> 它们的秩为 2</label>
     </li>
-        <li><div class="qt">单个向量 \(\alpha\) 线性相关当且仅当（　）．</div>
+        <li><div class="qt">单个向量 \(\alpha\) 线性相关当且仅当（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q3" value="A"> \(\alpha\neq0\)</label>
       <label><b>B.</b> <input type="radio" name="hw3q3" value="B"> \(\alpha=0\)</label>
       <label><b>C.</b> <input type="radio" name="hw3q3" value="C"> \(\alpha\) 是单位向量</label>
       <label><b>D.</b> <input type="radio" name="hw3q3" value="D"> 以上都不对</label>
     </li>
-        <li><div class="qt">向量组 \(\alpha_1,\dots,\alpha_m\) 线性无关的充要条件是（　）．</div>
+        <li><div class="qt">向量组 \(\alpha_1,\dots,\alpha_m\) 线性无关的充要条件是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q4" value="A"> 任意两个不成比例</label>
       <label><b>B.</b> <input type="radio" name="hw3q4" value="B"> 部分组无关</label>
       <label><b>C.</b> <input type="radio" name="hw3q4" value="C"> 只有全零系数才使组合为零</label>
       <label><b>D.</b> <input type="radio" name="hw3q4" value="D"> 向量个数不超过维数</label>
     </li>
-        <li><div class="qt">若 \(\alpha_1,\alpha_2\) 线性无关，则 \(\alpha_1+\alpha_2,\ \alpha_1-\alpha_2\)（　）．</div>
+        <li><div class="qt">若 \(\alpha_1,\alpha_2\) 线性无关，则 \(\alpha_1+\alpha_2,\ \alpha_1-\alpha_2\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q5" value="A"> 线性相关</label>
       <label><b>B.</b> <input type="radio" name="hw3q5" value="B"> 线性无关</label>
       <label><b>C.</b> <input type="radio" name="hw3q5" value="C"> 必含零向量</label>
       <label><b>D.</b> <input type="radio" name="hw3q5" value="D"> 秩为 1</label>
     </li>
-        <li><div class="qt">"部分相关则整体相关"的等价逆否表述是（　）．</div>
+        <li><div class="qt">"部分相关则整体相关"的等价逆否表述是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q6" value="A"> 整体相关则部分相关</label>
       <label><b>B.</b> <input type="radio" name="hw3q6" value="B"> 无关组中任一部分都无关</label>
       <label><b>C.</b> <input type="radio" name="hw3q6" value="C"> 整体无关则部分无关</label>
       <label><b>D.</b> <input type="radio" name="hw3q6" value="D"> 相关组任一部分都相关</label>
     </li>
-        <li><div class="qt">若向量组可由 2 个向量线性表示且自身含 3 个向量，则它（　）．</div>
+        <li><div class="qt">若向量组可由 2 个向量线性表示且自身含 3 个向量，则它（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q7" value="A"> 必线性无关</label>
       <label><b>B.</b> <input type="radio" name="hw3q7" value="B"> 必线性相关</label>
       <label><b>C.</b> <input type="radio" name="hw3q7" value="C"> 秩为 3</label>
       <label><b>D.</b> <input type="radio" name="hw3q7" value="D"> 无法确定</label>
     </li>
-        <li><div class="qt">\(n+1\) 个 \(n\) 维向量（　）．</div>
+        <li><div class="qt">\(n+1\) 个 \(n\) 维向量（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q8" value="A"> 必线性无关</label>
       <label><b>B.</b> <input type="radio" name="hw3q8" value="B"> 必线性相关</label>
       <label><b>C.</b> <input type="radio" name="hw3q8" value="C"> 秩为 \(n+1\)</label>
       <label><b>D.</b> <input type="radio" name="hw3q8" value="D"> 可能无关</label>
     </li>
-        <li><div class="qt">向量组 \(\alpha_1,\alpha_2,\alpha_3\) 的秩为 2，则（　）．</div>
+        <li><div class="qt">向量组 \(\alpha_1,\alpha_2,\alpha_3\) 的秩为 2，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q9" value="A"> 必含零向量</label>
       <label><b>B.</b> <input type="radio" name="hw3q9" value="B"> 其中任意两个都相关</label>
       <label><b>C.</b> <input type="radio" name="hw3q9" value="C"> 极大无关组含 2 个向量</label>
       <label><b>D.</b> <input type="radio" name="hw3q9" value="D"> 三个向量都无关</label>
     </li>
-        <li><div class="qt">等价的向量组（　）．</div>
+        <li><div class="qt">等价的向量组（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q10" value="A"> 必含相同向量</label>
       <label><b>B.</b> <input type="radio" name="hw3q10" value="B"> 秩相同</label>
       <label><b>C.</b> <input type="radio" name="hw3q10" value="C"> 个数相同</label>
       <label><b>D.</b> <input type="radio" name="hw3q10" value="D"> 必线性无关</label>
     </li>
-        <li><div class="qt">矩阵 \(A\) 的秩（　）．</div>
+        <li><div class="qt">矩阵 \(A\) 的秩（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q11" value="A"> 等于 \(A\) 的行数</label>
       <label><b>B.</b> <input type="radio" name="hw3q11" value="B"> 等于 \(A\) 的列数</label>
       <label><b>C.</b> <input type="radio" name="hw3q11" value="C"> 等于 \(A\) 的列向量组的秩</label>
       <label><b>D.</b> <input type="radio" name="hw3q11" value="D"> 等于 \(A\) 的阶数</label>
     </li>
-        <li><div class="qt">设 \(A\) 为 3 阶且 \(|A|\neq0\)，则（　）．</div>
+        <li><div class="qt">设 \(A\) 为 3 阶且 \(|A|\neq0\)，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q12" value="A"> \(A\) 的列向量组线性相关</label>
       <label><b>B.</b> <input type="radio" name="hw3q12" value="B"> \(A\) 的列向量组线性无关</label>
       <label><b>C.</b> <input type="radio" name="hw3q12" value="C"> \(R(A)\lt 3\)</label>
       <label><b>D.</b> <input type="radio" name="hw3q12" value="D"> 以上都不对</label>
     </li>
-        <li><div class="qt">设 \(\alpha_1=(1,0,0)^T,\alpha_2=(0,1,0)^T,\alpha_3=(1,1,0)^T\)，则（　）．</div>
+        <li><div class="qt">设 \(\alpha_1=(1,0,0)^T,\alpha_2=(0,1,0)^T,\alpha_3=(1,1,0)^T\)，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q13" value="A"> 三者无关</label>
       <label><b>B.</b> <input type="radio" name="hw3q13" value="B"> 秩为 3</label>
       <label><b>C.</b> <input type="radio" name="hw3q13" value="C"> 相关，秩为 2</label>
       <label><b>D.</b> <input type="radio" name="hw3q13" value="D"> 含零向量</label>
     </li>
-        <li><div class="qt">（考研真题）若向量组 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关，则（　）．</div>
+        <li><div class="qt">（考研真题）若向量组 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q14" value="A"> \(\alpha_1+\alpha_2,\alpha_2+\alpha_3,\alpha_3+\alpha_1\) 无关</label>
       <label><b>B.</b> <input type="radio" name="hw3q14" value="B"> \(\alpha_1+\alpha_2,\alpha_2+\alpha_3,\alpha_1+2\alpha_2+\alpha_3\) 无关</label>
       <label><b>C.</b> <input type="radio" name="hw3q14" value="C"> 必含单位向量</label>
       <label><b>D.</b> <input type="radio" name="hw3q14" value="D"> 其转置相关</label>
     </li>
-        <li><div class="qt">（期末真题）向量空间 \(V=\{(x,0,0)^T\mid x\in\mathbb R\}\)（　）．</div>
+        <li><div class="qt">（期末真题）向量空间 \(V=\{(x,0,0)^T\mid x\in\mathbb R\}\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw3q15" value="A"> 不是向量空间</label>
       <label><b>B.</b> <input type="radio" name="hw3q15" value="B"> 是向量空间且维数为 1</label>
       <label><b>C.</b> <input type="radio" name="hw3q15" value="C"> 维数为 3</label>
@@ -1053,73 +1072,73 @@ print("线性相关?", r < A.cols)
 
   <div class="grp">二、填空题（10 题）</div>
   <ol>
-    <li>若 \(\alpha=(1,2,3)^T,\ \beta=(4,5,6)^T\)，则 \(3\alpha-2\beta=\) ______．</li>
-    <li>向量组 \(\alpha_1=(1,1,1)^T,\ \alpha_2=(1,2,3)^T,\ \alpha_3=(1,3,6)^T\) 线性 ______（填"相关"或"无关"）．</li>
-    <li>\(n+1\) 个 \(n\) 维向量必 ______（填"相关"或"无关"）．</li>
-    <li>若 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关，则 \(\alpha_1+\alpha_2,\ \alpha_2+\alpha_3,\ \alpha_3+\alpha_1\) 线性 ______（填"相关"或"无关"）．</li>
-    <li>等价向量组的 ______ 相同（填"秩"或"个数"）．</li>
-    <li>矩阵 \(A\) 的秩等于其列向量组的 ______．</li>
-    <li>向量空间 \(\mathbb R^n\) 的维数是 ______．</li>
-    <li>若 \(\beta\) 可由 \(\alpha_1,\alpha_2,\alpha_3\) 唯一表示，则 \(\alpha_1,\alpha_2,\alpha_3\) 必 ______（填"相关"或"无关"）．</li>
-    <li>向量组 \(\alpha_1=(1,2),\ \alpha_2=(2,4)\) 的秩为 ______．</li>
-    <li>设 \(\alpha\) 在基 \(\varepsilon_1,\varepsilon_2,\varepsilon_3\) 下的坐标为 \((1,2,3)^T\)，则 \(\alpha=\) ______．</li>
+    <li>若 \(\alpha=(1,2,3)^T,\ \beta=(4,5,6)^T\)，则 \(3\alpha-2\beta=\) ______。</li>
+    <li>向量组 \(\alpha_1=(1,1,1)^T,\ \alpha_2=(1,2,3)^T,\ \alpha_3=(1,3,6)^T\) 线性 ______（填"相关"或"无关"）。</li>
+    <li>\(n+1\) 个 \(n\) 维向量必 ______（填"相关"或"无关"）。</li>
+    <li>若 \(\alpha_1,\alpha_2,\alpha_3\) 线性无关，则 \(\alpha_1+\alpha_2,\ \alpha_2+\alpha_3,\ \alpha_3+\alpha_1\) 线性 ______（填"相关"或"无关"）。</li>
+    <li>等价向量组的 ______ 相同（填"秩"或"个数"）。</li>
+    <li>矩阵 \(A\) 的秩等于其列向量组的 ______。</li>
+    <li>向量空间 \(\mathbb R^n\) 的维数是 ______。</li>
+    <li>若 \(\beta\) 可由 \(\alpha_1,\alpha_2,\alpha_3\) 唯一表示，则 \(\alpha_1,\alpha_2,\alpha_3\) 必 ______（填"相关"或"无关"）。</li>
+    <li>向量组 \(\alpha_1=(1,2),\ \alpha_2=(2,4)\) 的秩为 ______。</li>
+    <li>设 \(\alpha\) 在基 \(\varepsilon_1,\varepsilon_2,\varepsilon_3\) 下的坐标为 \((1,2,3)^T\)，则 \(\alpha=\) ______。</li>
   </ol>
 
   <div class="grp">三、计算题（12 题）</div>
   <ol>
-    <li>设 \(\alpha=(1,2,3)^T,\ \beta=(2,-1,0)^T\)，求 \(2\alpha-\beta\) 与 \(3\alpha+\beta\)．</li>
-    <li>判定 \(\beta=(1,2,3)^T\) 能否由 \(\alpha_1=(1,0,1)^T,\ \alpha_2=(0,1,1)^T,\ \alpha_3=(1,1,0)^T\) 线性表示；若能，写出表示式．</li>
-    <li>求向量组 \(\alpha_1=(1,2,-1)^T,\ \alpha_2=(2,4,-2)^T,\ \alpha_3=(1,0,1)^T\) 的一个极大无关组与秩．</li>
-    <li>判定 \(\alpha_1=(1,1,1)^T,\ \alpha_2=(1,2,3)^T,\ \alpha_3=(2,3,4)^T\) 是否线性相关，并写出它们之间的线性关系．</li>
-    <li>求矩阵 \(A=\begin{pmatrix}1&2&3\\2&4&6\\1&2&1\end{pmatrix}\) 的秩．</li>
-    <li>判定 \(\alpha_1=(1,-1,0)^T,\ \alpha_2=(2,1,1)^T,\ \alpha_3=(1,2,1)^T\) 的线性相关性，并写出相关关系（若相关）．</li>
-    <li>向量组 \(\alpha_1=(1,1,1)^T,\ \alpha_2=(1,2,3)^T,\ \alpha_3=(1,t,3)^T\) 何时线性相关？求 \(t\)．</li>
-    <li>设 \(A\) 为 3 阶矩阵且 \(R(A)=2\)，求 \(R(A^T)\) 与 \(R(2A)\)．</li>
-    <li>判定集合 \(V=\{x=(x_1,x_2,x_3)^T\mid x_1+x_2+x_3=0\}\) 是否为向量空间，并说明理由．</li>
-    <li>在基 \(\alpha_1=(1,1)^T,\ \alpha_2=(1,-1)^T\) 下，求 \(\beta=(3,1)^T\) 的坐标．</li>
-    <li>将矩阵 \(A=\begin{pmatrix}1&1&1\\1&2&3\\1&3&6\end{pmatrix}\) 化为行阶梯形，并求其秩．</li>
-    <li>判定 \(\alpha_1=(1,0,0)^T,\ \alpha_2=(1,1,0)^T,\ \alpha_3=(1,1,1)^T\) 是否为 \(\mathbb R^3\) 的一组基．</li>
+    <li>设 \(\alpha=(1,2,3)^T,\ \beta=(2,-1,0)^T\)，求 \(2\alpha-\beta\) 与 \(3\alpha+\beta\)。</li>
+    <li>判定 \(\beta=(1,2,3)^T\) 能否由 \(\alpha_1=(1,0,1)^T,\ \alpha_2=(0,1,1)^T,\ \alpha_3=(1,1,0)^T\) 线性表示；若能，写出表示式。</li>
+    <li>求向量组 \(\alpha_1=(1,2,-1)^T,\ \alpha_2=(2,4,-2)^T,\ \alpha_3=(1,0,1)^T\) 的一个极大无关组与秩。</li>
+    <li>判定 \(\alpha_1=(1,1,1)^T,\ \alpha_2=(1,2,3)^T,\ \alpha_3=(2,3,4)^T\) 是否线性相关，并写出它们之间的线性关系。</li>
+    <li>求矩阵 \(A=\begin{pmatrix}1&2&3\\2&4&6\\1&2&1\end{pmatrix}\) 的秩。</li>
+    <li>判定 \(\alpha_1=(1,-1,0)^T,\ \alpha_2=(2,1,1)^T,\ \alpha_3=(1,2,1)^T\) 的线性相关性，并写出相关关系（若相关）。</li>
+    <li>向量组 \(\alpha_1=(1,1,1)^T,\ \alpha_2=(1,2,3)^T,\ \alpha_3=(1,t,3)^T\) 何时线性相关？求 \(t\)。</li>
+    <li>设 \(A\) 为 3 阶矩阵且 \(R(A)=2\)，求 \(R(A^T)\) 与 \(R(2A)\)。</li>
+    <li>判定集合 \(V=\{x=(x_1,x_2,x_3)^T\mid x_1+x_2+x_3=0\}\) 是否为向量空间，并说明理由。</li>
+    <li>在基 \(\alpha_1=(1,1)^T,\ \alpha_2=(1,-1)^T\) 下，求 \(\beta=(3,1)^T\) 的坐标。</li>
+    <li>将矩阵 \(A=\begin{pmatrix}1&1&1\\1&2&3\\1&3&6\end{pmatrix}\) 化为行阶梯形，并求其秩。</li>
+    <li>判定 \(\alpha_1=(1,0,0)^T,\ \alpha_2=(1,1,0)^T,\ \alpha_3=(1,1,1)^T\) 是否为 \(\mathbb R^3\) 的一组基。</li>
   </ol>
 
   <div class="grp">四、证明题（8 题）</div>
   <ol>
-    <li>证明：单个向量 \(\alpha\) 线性相关 \(\iff\alpha=0\)．</li>
-    <li>证明：两个向量 \(\alpha_1,\alpha_2\) 线性相关 \(\iff\) 它们的对应分量成比例．</li>
-    <li>证明：若 \(\alpha_1,\alpha_2\) 线性无关，则 \(\alpha_1+\alpha_2,\ \alpha_1-\alpha_2\) 也线性无关．</li>
-    <li>证明：若部分组线性相关，则整体组也线性相关；若整体组线性无关，则任意部分组也线性无关．</li>
-    <li>证明（性质 3.5(1)）：若向量组 \(\alpha_1,\dots,\alpha_m\) 可由 \(\beta_1,\dots,\beta_l\) 线性表示，且 \(m>l\)，则 \(\alpha_1,\dots,\alpha_m\) 线性相关．</li>
-    <li>证明：等价的向量组具有相同的秩．</li>
-    <li>证明：对任意矩阵 \(A\)，有 \(R(A)=R(A^T)\)．</li>
-    <li>证明：向量组 \(\alpha_1,\dots,\alpha_m\) 线性无关 \(\iff R(\alpha_1,\dots,\alpha_m)=m\)．</li>
+    <li>证明：单个向量 \(\alpha\) 线性相关 \(\iff\alpha=0\)。</li>
+    <li>证明：两个向量 \(\alpha_1,\alpha_2\) 线性相关 \(\iff\) 它们的对应分量成比例。</li>
+    <li>证明：若 \(\alpha_1,\alpha_2\) 线性无关，则 \(\alpha_1+\alpha_2,\ \alpha_1-\alpha_2\) 也线性无关。</li>
+    <li>证明：若部分组线性相关，则整体组也线性相关；若整体组线性无关，则任意部分组也线性无关。</li>
+    <li>证明（性质 3.5(1)）：若向量组 \(\alpha_1,\dots,\alpha_m\) 可由 \(\beta_1,\dots,\beta_l\) 线性表示，且 \(m>l\)，则 \(\alpha_1,\dots,\alpha_m\) 线性相关。</li>
+    <li>证明：等价的向量组具有相同的秩。</li>
+    <li>证明：对任意矩阵 \(A\)，有 \(R(A)=R(A^T)\)。</li>
+    <li>证明：向量组 \(\alpha_1,\dots,\alpha_m\) 线性无关 \(\iff R(\alpha_1,\dots,\alpha_m)=m\)。</li>
   </ol>
 
   <div class="grp">五、应用与拓展（5 题）</div>
   <ol>
-    <li>用三原色向量 \(R=(1,0,0)^T,\ G=(0,1,0)^T,\ B=(0,0,1)^T\)，把杏色 \((1.0,0.8,0.6)^T\) 表示为它们的线性组合．</li>
-    <li>配平化学反应 \(a\,\mathrm{H_2}+b\,\mathrm{O_2}\to c\,\mathrm{H_2O}\)，用向量组的语言说明其代数本质，并写出最小整数解．</li>
-    <li>给出三个数据点 \((1,2),(2,4),(3,6)\)，把它们看作二维向量，求其向量组的秩，并说明这组数据在几何上的特征．</li>
-    <li>GPS 定位中，接收机到卫星的距离差可转化为位置向量的线性函数．试用"向量空间中的坐标"概念，简述为何最少需要 3 颗卫星（平面）或 4 颗卫星（空间）才能唯一确定位置．</li>
+    <li>用三原色向量 \(R=(1,0,0)^T,\ G=(0,1,0)^T,\ B=(0,0,1)^T\)，把杏色 \((1.0,0.8,0.6)^T\) 表示为它们的线性组合。</li>
+    <li>配平化学反应 \(a\,\mathrm{H_2}+b\,\mathrm{O_2}\to c\,\mathrm{H_2O}\)，用向量组的语言说明其代数本质，并写出最小整数解。</li>
+    <li>给出三个数据点 \((1,2),(2,4),(3,6)\)，把它们看作二维向量，求其向量组的秩，并说明这组数据在几何上的特征。</li>
+    <li>GPS 定位中，接收机到卫星的距离差可转化为位置向量的线性函数。试用"向量空间中的坐标"概念，简述为何最少需要 3 颗卫星（平面）或 4 颗卫星（空间）才能唯一确定位置。</li>
     <li>向量组 \(\alpha_1=(1,1)^T,\ \alpha_2=(2,2)^T\) 张成的向量空间 \(L=\{\lambda_1\alpha_1+\lambda_2\alpha_2\}\) 的维数是多少？它是什么几何图形？</li>
   </ol>
 
   <details><summary>参考答案（详细）</summary><div class="body">
-  <p><b>一、选择题</b>　1.B　2.A（两个向量相关 ⟺ 分量成比例）　3.B　4.C　5.B（变换矩阵 \(\begin{pmatrix}1&1\\1&-1\end{pmatrix}\) 行列式 \(-2\neq0\)）　6.C　7.B（性质 3.5，\(m>l\) 必相关）　8.B（个数大于维数）　9.C　10.B　11.C（定理 3.3）　12.B（\(|A|\neq0\Rightarrow\) 列无关）　13.C（三维向量落在 \(z=0\) 平面，秩 2）　14.A（变换矩阵行列式 \(2\neq0\)）　15.B．</p>
-  <p><b>二、填空题</b>　1. \((-5,-4,-3)^T\)　2. 无关（行列式 \(=1\neq0\)）　3. 相关　4. 无关（变换行列式 \(2\neq0\)）　5. 秩　6. 秩　7. \(n\)　8. 无关（唯一表示要求表示组无关，见性质 3.3）　9. \(1\)（两向量成比例）　10. \(\varepsilon_1+2\varepsilon_2+3\varepsilon_3\)．</p>
+  <p><b>一、选择题</b>　1.B　2.A（两个向量相关 ⟺ 分量成比例）　3.B　4.C　5.B（变换矩阵 \(\begin{pmatrix}1&1\\1&-1\end{pmatrix}\) 行列式 \(-2\neq0\)）　6.C　7.B（性质 3.5，\(m>l\) 必相关）　8.B（个数大于维数）　9.C　10.B　11.C（定理 3.3）　12.B（\(|A|\neq0\Rightarrow\) 列无关）　13.C（三维向量落在 \(z=0\) 平面，秩 2）　14.A（变换矩阵行列式 \(2\neq0\)）　15.B。</p>
+  <p><b>二、填空题</b>　1. \((-5,-4,-3)^T\)　2. 无关（行列式 \(=1\neq0\)）　3. 相关　4. 无关（变换行列式 \(2\neq0\)）　5. 秩　6. 秩　7. \(n\)　8. 无关（唯一表示要求表示组无关，见性质 3.3）　9. \(1\)（两向量成比例）　10. \(\varepsilon_1+2\varepsilon_2+3\varepsilon_3\)。</p>
   <p><b>三、计算题</b></p>
-  <p>1. \(2\alpha-\beta=(2-2,\,4+1,\,6-0)^T=(0,5,6)^T\)；\(3\alpha+\beta=(3+2,\,6-1,\,9+0)^T=(5,5,9)^T\)．</p>
-  <p>2. 设 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\beta\)，得方程组 \(x_1+x_3=1,\ x_2+x_3=2,\ x_1+x_2=3\)，解得 \(x_3=0,\ x_1=1,\ x_2=2\)，故 \(\beta=\alpha_1+2\alpha_2\)（能表示）．</p>
-  <p>3. \(\alpha_2=2\alpha_1\)，故 \(\alpha_1,\alpha_3\) 线性无关（不成比例），秩为 \(2\)；极大无关组可取 \(\{\alpha_1,\alpha_3\}\)（或 \(\{\alpha_2,\alpha_3\}\)）．</p>
-  <p>4. 计算 \(\begin{vmatrix}1&1&2\\1&2&3\\1&3&4\end{vmatrix}=1(8-9)-1(4-3)+2(3-2)=-1-1+2=0\)，故相关；且 \(\alpha_3=\alpha_1+\alpha_2\)．</p>
-  <p>5. 第二行是第一行的 2 倍，第三行与第一行不成比例，故 \(R(A)=2\)．</p>
-  <p>6. 相关（秩 2）．由 \(\alpha_3=-\alpha_1+\alpha_2\) 验证：\(-(1,-1,0)+(2,1,1)=(1,2,1)=\alpha_3\)．</p>
-  <p>7. 行列式 \(\begin{vmatrix}1&1&1\\1&2&t\\1&3&3\end{vmatrix}=4-2t\)，令为零，故 \(t=2\) 时相关．</p>
-  <p>8. \(R(A^T)=R(A)=2\)；数乘不改变秩，\(R(2A)=2\)．</p>
-  <p>9. 是向量空间（\(\mathbb R^3\) 的子空间）：设 \(x,y\) 满足分量和为 0，则 \(x+y\)、\(\lambda x\) 的分量和仍为 0，封闭性成立．</p>
-  <p>10. 解 \(x_1(1,1)+x_2(1,-1)=(3,1)\) 得 \(x_1+x_2=3,\ x_1-x_2=1\)，故 \(x_1=2,\ x_2=1\)，坐标为 \((2,1)^T\)．</p>
-  <p>11. 行变换：\(R_2-R_1\to(0,1,2),\ R_3-R_1\to(0,2,5)\)；再 \(R_3-2R_2\to(0,0,1)\)，得行阶梯形 \(\begin{pmatrix}1&1&1\\0&1&2\\0&0&1\end{pmatrix}\)，秩为 \(3\)．</p>
-  <p>12. 以三向量为列行列式 \(\begin{vmatrix}1&1&1\\0&1&1\\0&0&1\end{vmatrix}=1\neq0\)，故三个三维向量线性无关，是 \(\mathbb R^3\) 的一组基．</p>
-  <p><b>四、证明题</b>　均用定义：第 1 题 \(k\alpha=0\) 有非零解 \(k\) 当且仅当 \(\alpha=0\)；第 2 题 \(k_1\alpha_1+k_2\alpha_2=0\) 化为分量比例；第 3 题设 \(x_1(\alpha_1+\alpha_2)+x_2(\alpha_1-\alpha_2)=0\Rightarrow(x_1+x_2)\alpha_1+(x_1-x_2)\alpha_2=0\)，由无关得 \(x_1+x_2=0,x_1-x_2=0\Rightarrow x_1=x_2=0\)；第 4、5、6、7、8 题分别见正文性质 3.2、3.5、定理 3.1、定理 3.3、推论 3.1 的证明框架．</p>
-  <p><b>五、应用与拓展</b>　1. \((1.0,0.8,0.6)^T=1.0R+0.8G+0.6B\)．　2. 原子守恒向量法：\(a(2,0)+b(0,2)=c(2,1)\)，得 \(2a=2c,\ 2b=c\)，取 \(c=2\) 得 \(a=2,b=1\)，即 \(2\mathrm{H_2}+\mathrm{O_2}\to2\mathrm{H_2O}\)；本质是求零空间中的最小正整数解．　3. 三向量 \((1,2),(2,4),(3,6)\) 两两成比例，秩为 \(1\)，几何上三点共线（落在过原点、斜率 2 的直线上）．　4. 位置是坐标向量，需在被卫星方向张成的基下解出唯一坐标；平面 2 维需 2 个独立方向（至少 3 颗卫星消去钟差），空间 3 维需 3 个独立方向（至少 4 颗卫星）．　5. \(\alpha_2=2\alpha_1\)，张成空间维数为 \(1\)，几何上是一条过原点的直线．</p>
+  <p>1. \(2\alpha-\beta=(2-2,\,4+1,\,6-0)^T=(0,5,6)^T\)；\(3\alpha+\beta=(3+2,\,6-1,\,9+0)^T=(5,5,9)^T\)。</p>
+  <p>2. 设 \(x_1\alpha_1+x_2\alpha_2+x_3\alpha_3=\beta\)，得方程组 \(x_1+x_3=1,\ x_2+x_3=2,\ x_1+x_2=3\)，解得 \(x_3=0,\ x_1=1,\ x_2=2\)，故 \(\beta=\alpha_1+2\alpha_2\)（能表示）。</p>
+  <p>3. \(\alpha_2=2\alpha_1\)，故 \(\alpha_1,\alpha_3\) 线性无关（不成比例），秩为 \(2\)；极大无关组可取 \(\{\alpha_1,\alpha_3\}\)（或 \(\{\alpha_2,\alpha_3\}\)）。</p>
+  <p>4. 计算 \(\begin{vmatrix}1&1&2\\1&2&3\\1&3&4\end{vmatrix}=1(8-9)-1(4-3)+2(3-2)=-1-1+2=0\)，故相关；且 \(\alpha_3=\alpha_1+\alpha_2\)。</p>
+  <p>5. 第二行是第一行的 2 倍，第三行与第一行不成比例，故 \(R(A)=2\)。</p>
+  <p>6. 相关（秩 2）。由 \(\alpha_3=-\alpha_1+\alpha_2\) 验证：\(-(1,-1,0)+(2,1,1)=(1,2,1)=\alpha_3\)。</p>
+  <p>7. 行列式 \(\begin{vmatrix}1&1&1\\1&2&t\\1&3&3\end{vmatrix}=4-2t\)，令为零，故 \(t=2\) 时相关。</p>
+  <p>8. \(R(A^T)=R(A)=2\)；数乘不改变秩，\(R(2A)=2\)。</p>
+  <p>9. 是向量空间（\(\mathbb R^3\) 的子空间）：设 \(x,y\) 满足分量和为 0，则 \(x+y\)、\(\lambda x\) 的分量和仍为 0，封闭性成立。</p>
+  <p>10. 解 \(x_1(1,1)+x_2(1,-1)=(3,1)\) 得 \(x_1+x_2=3,\ x_1-x_2=1\)，故 \(x_1=2,\ x_2=1\)，坐标为 \((2,1)^T\)。</p>
+  <p>11. 行变换：\(R_2-R_1\to(0,1,2),\ R_3-R_1\to(0,2,5)\)；再 \(R_3-2R_2\to(0,0,1)\)，得行阶梯形 \(\begin{pmatrix}1&1&1\\0&1&2\\0&0&1\end{pmatrix}\)，秩为 \(3\)。</p>
+  <p>12. 以三向量为列行列式 \(\begin{vmatrix}1&1&1\\0&1&1\\0&0&1\end{vmatrix}=1\neq0\)，故三个三维向量线性无关，是 \(\mathbb R^3\) 的一组基。</p>
+  <p><b>四、证明题</b>　均用定义：第 1 题 \(k\alpha=0\) 有非零解 \(k\) 当且仅当 \(\alpha=0\)；第 2 题 \(k_1\alpha_1+k_2\alpha_2=0\) 化为分量比例；第 3 题设 \(x_1(\alpha_1+\alpha_2)+x_2(\alpha_1-\alpha_2)=0\Rightarrow(x_1+x_2)\alpha_1+(x_1-x_2)\alpha_2=0\)，由无关得 \(x_1+x_2=0,x_1-x_2=0\Rightarrow x_1=x_2=0\)；第 4、5、6、7、8 题分别见正文性质 3.2、3.5、定理 3.1、定理 3.3、推论 3.1 的证明框架。</p>
+  <p><b>五、应用与拓展</b>　1. \((1.0,0.8,0.6)^T=1.0R+0.8G+0.6B\)。　2. 原子守恒向量法：\(a(2,0)+b(0,2)=c(2,1)\)，得 \(2a=2c,\ 2b=c\)，取 \(c=2\) 得 \(a=2,b=1\)，即 \(2\mathrm{H_2}+\mathrm{O_2}\to2\mathrm{H_2O}\)；本质是求零空间中的最小正整数解。　3. 三向量 \((1,2),(2,4),(3,6)\) 两两成比例，秩为 \(1\)，几何上三点共线（落在过原点、斜率 2 的直线上）。　4. 位置是坐标向量，需在被卫星方向张成的基下解出唯一坐标；平面 2 维需 2 个独立方向（至少 3 颗卫星消去钟差），空间 3 维需 3 个独立方向（至少 4 颗卫星）。　5. \(\alpha_2=2\alpha_1\)，张成空间维数为 \(1\)，几何上是一条过原点的直线。</p>
   </div></details>
 </div>
 
@@ -1140,5 +1159,7 @@ print("线性相关?", r < A.cols)
 <script src="app.js"></script>
 <script src="energy_bar.js"></script>
 <script src="section_quiz.js"></script>
+<script src="msgboard.js"></script>
+<script src="ux-enhancer.js"></script>
 </body>
 </html>

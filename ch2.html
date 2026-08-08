@@ -85,14 +85,14 @@
 <h3>一、引例：矩阵从哪里来</h3>
 
 <div class="ex"><div class="lab">引例 1　从《九章算术》的"方程"到今天的大模型参数矩阵</div>
-  <p class="stmt">《九章算术》卷八"方程"章记载了线性方程组问题，例如"今有上禾三秉、中禾二秉、下禾一秉，实三十九斗……"，求解时把各方程的系数与常数项用算筹分行布列，形如一张数表．下面把三个方程的未知量系数与常数项摆成增广矩阵（竖线左为系数、右为常数项）：</p>
+  <p class="stmt">《九章算术》卷八"方程"章记载了线性方程组问题，例如"今有上禾三秉、中禾二秉、下禾一秉，实三十九斗……"，求解时把各方程的系数与常数项用算筹分行布列，形如一张数表。下面把三个方程的未知量系数与常数项摆成增广矩阵（竖线左为系数、右为常数项）：</p>
   <p style="text-align:center">\[\begin{pmatrix}3&2&1&39\\[6pt]2&3&1&34\\[6pt]1&2&3&26\end{pmatrix}\]</p>
   <p class="px-cap" style="text-align:center">增广矩阵 \(\bigl(A\mid b\bigr)\)：前三列为未知量系数，末列为常数项（即现代意义下的线性方程组系数阵列）</p>
-  <p>这张"数表"本质上就是一个 \(3\times4\) 的矩阵（含常数项列）．用算筹摆放系数阵列、再按行消去求解的方法，与现代高斯消元的思想一脉相承，比西方同类记载早了一千多年．</p>
+  <p>这张"数表"本质上就是一个 \(3\times4\) 的矩阵（含常数项列）。用算筹摆放系数阵列、再按行消去求解的方法，与现代高斯消元的思想一脉相承，比西方同类记载早了一千多年。</p>
 </div>
 
 <div class="ex"><div class="lab">引例 2　图像与二维码：矩阵即数据</div>
-  <p class="stmt">一张灰度图像可以离散为一个像素矩阵，每个元素取 \(0\sim255\) 的整数，<b>数值越大代表该点越亮</b>．下面是一个 \(4\times4\) 的微小"图像"及其像素矩阵：</p>
+  <p class="stmt">一张灰度图像可以离散为一个像素矩阵，每个元素取 \(0\sim255\) 的整数，<b>数值越大代表该点越亮</b>。下面是一个 \(4\times4\) 的微小"图像"及其像素矩阵：</p>
   <div class="px-flex">
     <div>
       \[\begin{pmatrix}30&60&90&120\\[6pt] 60&90&120&150\\[6pt] 90&120&150&180\\[6pt] 120&150&180&210\end{pmatrix}\]
@@ -120,7 +120,7 @@
       <div class="px-cap">像素网格图：颜色越浅越亮</div>
     </div>
   </div>
-  <p>左上角较暗（30）、右下角最亮（210）．二维码、音频频谱、气温网格等，本质上都是用矩阵来"编码"结构化的数据——矩阵是信息时代的通用容器．</p>
+  <p>左上角较暗（30）、右下角最亮（210）。二维码、音频频谱、气温网格等，本质上都是用矩阵来"编码"结构化的数据——矩阵是信息时代的通用容器。</p>
 </div>
 
 <div class="ex"><div class="lab">引例 3　线性方程组</div>
@@ -128,7 +128,7 @@
   \[\begin{cases}x_1+x_2-2x_3=1,\\[6pt] 2x_1-x_2+2x_3=3,\\[6pt] 4x_1+x_2-3x_3=2\end{cases}\]
   的解完全由未知量前面的系数与常数项决定，因此可整体记作 \(Ax=b\)，其中
   \[A=\begin{pmatrix}1&1&-2\\[6pt]2&-1&2\\[6pt]4&1&-3\end{pmatrix},\quad x=\begin{pmatrix}x_1\\[6pt]x_2\\[6pt]x_3\end{pmatrix},\quad b=\begin{pmatrix}1\\[6pt]3\\[6pt]2\end{pmatrix}.\]
-  系数、未知量与常数项被分装进矩阵与向量，方程的组合运算就转化为矩阵运算——这正是矩阵被发明的根本动力．</p>
+  系数、未知量与常数项被分装进矩阵与向量，方程的组合运算就转化为矩阵运算——这正是矩阵被发明的根本动力。</p>
 </div>
 
 <h3>二、矩阵的定义</h3>
@@ -207,7 +207,7 @@
 
 <h3>一、引例：图像的明暗调整</h3>
 <div class="ex"><div class="lab">引例　像素矩阵的加法与数乘——图像的明暗调整</div>
-  <p class="stmt">设一幅小图用像素矩阵 \(A\) 表示（元素为亮度 \(0\sim255\)，整数）．下面是一张 \(4\times4\) 的灰度图（左）及其像素矩阵（右）：</p>
+  <p class="stmt">设一幅小图用像素矩阵 \(A\) 表示（元素为亮度 \(0\sim255\)，整数）。下面是一张 \(4\times4\) 的灰度图（左）及其像素矩阵（右）：</p>
   <div class="px-flex">
     <div>
       <div class="px-wrap">
@@ -234,10 +234,10 @@
       \[\begin{pmatrix}40&80&120&160\\[6pt] 60&100&140&180\\[6pt] 80&120&160&200\\[6pt] 100&140&180&220\end{pmatrix}\]
     </div>
   </div>
-  <p><b>亮度偏移 \(b\)：</b>给每个像素加同一常数 \(b\)，即 \(A+b\)．若某个像素变为负数，说明该点本应"全黑"却还被压暗，称为<b>欠曝</b>（细节丢失，取下限 0）；若超过 255，则高光被"刷白"、细节丢失，称为<b>溢出</b>（取上限 255）．</p>
-  <p><b>对比度 \(k\)：</b>把每个像素乘以系数 \(k\gt0\)，即 \(kA\)．\(k\gt1\) 拉大明暗差、增强对比；\(0\lt k\lt 1\) 压缩明暗差、画面发灰．两种操作最后都要<b>截断到 \([0,255]\)</b>（clamp）：</p>
+  <p><b>亮度偏移 \(b\)：</b>给每个像素加同一常数 \(b\)，即 \(A+b\)。若某个像素变为负数，说明该点本应"全黑"却还被压暗，称为<b>欠曝</b>（细节丢失，取下限 0）；若超过 255，则高光被"刷白"、细节丢失，称为<b>溢出</b>（取上限 255）。</p>
+  <p><b>对比度 \(k\)：</b>把每个像素乘以系数 \(k\gt0\)，即 \(kA\)。\(k\gt1\) 拉大明暗差、增强对比；\(0\lt k\lt 1\) 压缩明暗差、画面发灰。两种操作最后都要<b>截断到 \([0,255]\)</b>（clamp）：</p>
   <p style="text-align:center">\(\displaystyle \operatorname{clamp}(x)=\begin{cases}0,&x\lt 0,\\[6pt] x,&0\le x\le255,\\[6pt] 255,&x\gt255.\end{cases}\)</p>
-  <p>例如对左上角像素 40 先施对比度 \(k=1.2\) 得 \(48\)，再加亮度偏移 \(b=+60\) 得 \(108\)（在范围内，正常变亮）；若 \(b=-60\)，则 \(48-60=-12\lt 0\)，发生<b>欠曝</b>，截断为 0．两幅同尺寸图像叠合（双重曝光）对应矩阵相加 \(A+B\)．这些操作都建立在矩阵的加法与数乘之上．</p>
+  <p>例如对左上角像素 40 先施对比度 \(k=1.2\) 得 \(48\)，再加亮度偏移 \(b=+60\) 得 \(108\)（在范围内，正常变亮）；若 \(b=-60\)，则 \(48-60=-12\lt 0\)，发生<b>欠曝</b>，截断为 0。两幅同尺寸图像叠合（双重曝光）对应矩阵相加 \(A+B\)。这些操作都建立在矩阵的加法与数乘之上。</p>
 </div>
 
 <h3>二、加法与数乘（线性运算）</h3>
@@ -268,7 +268,7 @@
 </div>
 
 <div class="ex"><div class="lab">例 2.1</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}1&7&5\\[6pt]3&-1&2\end{pmatrix}\)，\(B=\begin{pmatrix}2&4&2\\[6pt]0&3&-1\end{pmatrix}\)，求 \(A+B\) 与 \(2A-3B\)．</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}1&7&5\\[6pt]3&-1&2\end{pmatrix}\)，\(B=\begin{pmatrix}2&4&2\\[6pt]0&3&-1\end{pmatrix}\)，求 \(A+B\) 与 \(2A-3B\)。</div>
   <div class="sol"><span class="mk">解</span>
   \[A+B=\begin{pmatrix}1+2&7+4&5+2\\[6pt]3+0&-1+3&2-1\end{pmatrix}=\begin{pmatrix}3&11&7\\[6pt]3&2&1\end{pmatrix},\]
   \[2A-3B=\begin{pmatrix}2-6&14-12&10-6\\[6pt]6-0&-2-9&4+3\end{pmatrix}=\begin{pmatrix}-4&2&4\\[6pt]6&-11&7\end{pmatrix}.\]</div>
@@ -294,13 +294,13 @@
 
 <h3>三、矩阵乘法</h3>
 <div class="ex"><div class="lab">引例　神经网络的一层与"行乘列"</div>
-  <p class="stmt">人工智能中最基本的运算之一是全连接层的前向传播：输入特征向量 \(x\) 与权重矩阵 \(W\) 相乘，得到神经元激活前的输出 \(z=Wx+b\)．它本质上就是"行乘列"的批量加权求和．</p>
+  <p class="stmt">人工智能中最基本的运算之一是全连接层的前向传播：输入特征向量 \(x\) 与权重矩阵 \(W\) 相乘，得到神经元激活前的输出 \(z=Wx+b\)。它本质上就是"行乘列"的批量加权求和。</p>
   <div class="sol"><span class="mk">解</span>
   设输入 \(x=\begin{pmatrix}1\\[6pt]0\\[6pt]2\end{pmatrix}\)，权重矩阵
   \[W=\begin{pmatrix}0.2&0.5&-0.1\\[6pt]-0.3&0.1&0.4\end{pmatrix},\]
   则
   \[Wx=\begin{pmatrix}0.2\times1+0.5\times0+(-0.1)\times2\\[6pt]-0.3\times1+0.1\times0+0.4\times2\end{pmatrix}=\begin{pmatrix}0\\[6pt]0.5\end{pmatrix}.\]
-  第一行与 \(x\) 相乘得到第一个神经元的输入 \(0\)，第二行与 \(x\) 相乘得到第二个神经元的输入 \(0.5\)——矩阵乘法把"每个神经元对所有输入加权求和"一次性完成．在计算机视觉、自然语言处理等大模型中，这种矩阵乘法是 GPU 每秒执行的亿万次核心运算．</p>
+  第一行与 \(x\) 相乘得到第一个神经元的输入 \(0\)，第二行与 \(x\) 相乘得到第二个神经元的输入 \(0.5\)——矩阵乘法把"每个神经元对所有输入加权求和"一次性完成。在计算机视觉、自然语言处理等大模型中，这种矩阵乘法是 GPU 每秒执行的亿万次核心运算。</p>
   </div>
 </div>
 
@@ -328,17 +328,17 @@
 </div>
 
 <div class="ex"><div class="lab">例 2.2　乘法不可交换</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}3&-2\\[6pt]2&4\\[6pt]1&-3\end{pmatrix}\)，\(B=\begin{pmatrix}-2&1&3\\[6pt]4&1&6\end{pmatrix}\)，求 \(AB\) 与 \(BA\)．</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}3&-2\\[6pt]2&4\\[6pt]1&-3\end{pmatrix}\)，\(B=\begin{pmatrix}-2&1&3\\[6pt]4&1&6\end{pmatrix}\)，求 \(AB\) 与 \(BA\)。</div>
   <div class="sol"><span class="mk">解</span>
   \[AB=\begin{pmatrix}-14&1&-3\\[6pt]12&6&30\\[6pt]-14&-2&-15\end{pmatrix},\quad
   BA=\begin{pmatrix}-1&-1\\[6pt]20&-22\end{pmatrix}.\]
-  显然 \(AB\) 是 \(3\times3\)、\(BA\) 是 \(2\times2\)，连形状都不同，自然 \(AB\neq BA\)．</div>
+  显然 \(AB\) 是 \(3\times3\)、\(BA\) 是 \(2\times2\)，连形状都不同，自然 \(AB\neq BA\)。</div>
 </div>
 <div class="ex"><div class="lab">例 2.3　非零的"零因子"</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}2&4\\[6pt]1&2\end{pmatrix}\)，\(B=\begin{pmatrix}2&-2\\[6pt]-1&1\end{pmatrix}\)，求 \(AB\) 与 \(BA\)．</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}2&4\\[6pt]1&2\end{pmatrix}\)，\(B=\begin{pmatrix}2&-2\\[6pt]-1&1\end{pmatrix}\)，求 \(AB\) 与 \(BA\)。</div>
   <div class="sol"><span class="mk">解</span>
   \[AB=\begin{pmatrix}0&0\\[6pt]0&0\end{pmatrix}=O,\quad BA=\begin{pmatrix}2&4\\[6pt]-1&-2\end{pmatrix}.\]
-  两个非零矩阵的乘积却可以是零矩阵，因此由 \(AB=O\) 不能推出 \(A=O\) 或 \(B=O\)，矩阵乘法没有消去律．</div>
+  两个非零矩阵的乘积却可以是零矩阵，因此由 \(AB=O\) 不能推出 \(A=O\) 或 \(B=O\)，矩阵乘法没有消去律。</div>
 </div>
 
 <div class="labx">
@@ -362,6 +362,67 @@
 <h3>四、线性方程组的矩阵表示</h3>
 <p>由引例 3，方程组 \(Ax=b\) 把系数、未知量与常数项分别封装．更进一步，若有线性变换 \(y=Ax\) 与 \(z=By\)，则复合变换 \(z=B(Ax)=(BA)x\)，对应矩阵恰为 \(BA\)——这表明<b>矩阵乘法对应于线性变换的复合</b>．</p>
 
+<div class="case"><div class="lab">应用探微 · 仿射变换：旋转、缩放、斜切、平移，背后都是同一个矩阵乘法</div>
+  <p><b>一个你每天都在用、却从没把它和矩阵联系起来的操作．</b>打开手机修图，把一张照片"旋转 30°""放大 1.5 倍""压扁一点（斜切）""拖到画面右上角（平移）"——每一步都是一次<b>仿射变换</b>；连做几步，就是几次变换的复合。更"硬核"的场景是自动驾驶与机器人：摄像头看到车道线在"像素坐标"里，而决策模块需要它在"车身坐标"里，二者之间差的正是一个刚体仿射变换（旋转 + 平移）。也就是说，你刚才学的"矩阵乘法 = 线性变换的复合"，就是这些软件每一帧都在做的事。</p>
+
+  <h4>① 先手算最小实例：旋转一个点</h4>
+  <p>把平面绕原点逆时针旋转角 \(\theta\)，对应矩阵为
+  \[R(\theta)=\begin{pmatrix}\cos\theta&-\sin\theta\\[6pt]\sin\theta&\cos\theta\end{pmatrix}.\]
+  要把点 \((1,0)\) 旋转 \(30^\circ\)，就是把它写成列向量左乘 \(R(30^\circ)\)：
+  \[\begin{pmatrix}\cos30^\circ&-\sin30^\circ\\[6pt]\sin30^\circ&\cos30^\circ\end{pmatrix}
+    \begin{pmatrix}1\\[6pt]0\end{pmatrix}
+    =\begin{pmatrix}\cos30^\circ\\[6pt]\sin30^\circ\end{pmatrix}
+    =\begin{pmatrix}0.87\\[6pt]0.50\end{pmatrix}.\]
+  这正是单位向量沿 \(x\) 轴"抬起" \(30^\circ\) 后的位置——旋转矩阵把基向量 \(e_1=(1,0)\) 送到了 \((\cos30^\circ,\sin30^\circ)\)。</p>
+  <p>如果再"放大 1.5 倍"，也就是再左乘一个缩放矩阵 \(S(1.5,1.5)=\operatorname{diag}(1.5,1.5)\)。注意顺序：先旋转后放大是 \(S\cdot R\)，先放大后旋转是 \(R\cdot S\)，结果一般<b>不同</b>（详见下文"不可交换"）。复合变换 = 矩阵连乘，这就是 §2.2 性质 2.2 里"乘法不交换"第一次有了直观含义。</p>
+
+  <h4>② 一般仿射变换的统一写法</h4>
+  <p>二维仿射变换 = 一个线性部分（旋转 / 缩放 / 错切）再加上一个平移。为了把"平移"也写进矩阵乘法，数学家引入<b>齐次坐标</b>：把点 \((x,y)\) 写成列向量 \((x,y,1)^T\)，于是任意仿射变换都能写成一个 \(3\times3\) 矩阵左乘：
+  \[\begin{pmatrix}x'\\[6pt]y'\\[6pt]1\end{pmatrix}
+    =\begin{pmatrix}a&b&t_x\\[6pt]c&d&t_y\\[6pt]0&0&1\end{pmatrix}
+     \begin{pmatrix}x\\[6pt]y\\[6pt]1\end{pmatrix}.\]
+  左上角 \(2\times2\) 块 \(\begin{pmatrix}a&b\\c&d\end{pmatrix}\) 负责旋转、缩放、错切（线性部分），右下角的 \((t_x,t_y)\) 负责平移。下面这个互动程序让你亲手拨动每个参数，实时看到矩阵和变换后的图形：</p>
+
+  <div class="aff-wrap" id="affDemo">
+    <canvas id="affCanvas" width="760" height="340"></canvas>
+    <div class="aff-ctrls">
+      <div class="aff-slider">旋转 θ　<b><span id="affRotV">30°</span></b><input type="range" id="affRot" min="-180" max="180" value="30" step="1"></div>
+      <div class="aff-slider">缩放 \(s_x\)　<b><span id="affSxV">1.00</span></b><input type="range" id="affSx" min="0.3" max="2" value="1" step="0.05"></div>
+      <div class="aff-slider">缩放 \(s_y\)　<b><span id="affSyV">1.00</span></b><input type="range" id="affSy" min="0.3" max="2" value="1" step="0.05"></div>
+      <div class="aff-slider">错切 \(k_x\)　<b><span id="affShxV">0.00</span></b><input type="range" id="affShx" min="-1" max="1" value="0" step="0.05"></div>
+      <div class="aff-slider">错切 \(k_y\)　<b><span id="affShyV">0.00</span></b><input type="range" id="affShy" min="-1" max="1" value="0" step="0.05"></div>
+      <div class="aff-slider">平移 \(t_x\)　<b><span id="affTxV">0.00</span></b><input type="range" id="affTx" min="-3" max="3" value="0" step="0.1"></div>
+      <div class="aff-slider">平移 \(t_y\)　<b><span id="affTyV">0.00</span></b><input type="range" id="affTy" min="-3" max="3" value="0" step="0.1"></div>
+    </div>
+    <div class="aff-opts">
+      <label><input type="checkbox" id="affShowGrid" checked> 网格</label>
+      <label><input type="checkbox" id="affShowBasis" checked> 基向量 \(e_1,e_2\)</label>
+      <label><input type="checkbox" id="affShowShape" checked> 形状</label>
+      <button class="btn" id="affReset">重置</button>
+      <button class="btn ghost" id="affRand">随机变换</button>
+    </div>
+    <div class="aff-matrix" id="affMatrix"></div>
+    <div class="aff-basis" id="affBasis"></div>
+    <div class="aff-note">看点：左栏是单位网格上的箭头；右栏是同一矩阵作用后的结果。勾选"基向量"，看红色 \(e_1\)、蓝色 \(e_2\) 箭头在右栏落到的位置——它们恰好等于上面矩阵第 1、2 列的两个数。矩阵的"列"告诉你每个基向量被送到了哪里。</div>
+  </div>
+
+  <h4>③ 洞见：矩阵的列 = 基向量的落点</h4>
+  <p>这是整个线性代数最重要的几何直觉之一。对上面的 \(3\times3\) 仿射矩阵 \(M\)，记它的列向量为 \(M_{\bullet1},M_{\bullet2},M_{\bullet3}\)，则
+  \[T(e_1)=M_{\bullet1},\quad T(e_2)=M_{\bullet2},\quad T(0,0)=M_{\bullet3},\]
+  其中 \(T\) 是该矩阵代表的变换。换句话说：<b>你只要读出矩阵的列，就知道 \(e_1,e_2\) 和原点分别被搬到了何处</b>。这个"列即落点"的视角，后面学特征值、学相似对角化时还会反复用到。</p>
+
+  <h4>④ 为什么顺序不能乱：矩阵乘法不交换</h4>
+  <p>回到前面"旋转 45° 再放大"的例子。取旋转 \(R(45^\circ)\)（其中 \(\cos45^\circ=\sin45^\circ=\frac{\sqrt2}{2}\approx0.7071\)）与缩放 \(S=\operatorname{diag}(2,0.5)\)：
+  \[R(45^\circ)S=\begin{pmatrix}1.41&-0.35\\[6pt]1.41&0.35\end{pmatrix},\qquad
+    SR(45^\circ)=\begin{pmatrix}1.41&-1.41\\[6pt]0.35&0.35\end{pmatrix}.\]
+  两个结果明显不同——<b>先旋转后缩放 ≠ 先缩放后旋转</b>。这正是 §2.2 性质 2.2 中"一般 \(AB\neq BA\)"的几何源头：变换有先后，而矩阵乘法的顺序就编码了这个先后。在互动程序里把"旋转"和"缩放"两个滑条随便拨两下，你也会看到右栏图形随顺序不同而大不一样。</p>
+
+  <h4>⑤ 规模跃迁：从一支箭头到两百万像素</h4>
+  <p>上面我们只变了一个箭头。真实世界里，一张 \(1920\times1080\) 的照片有约 <b>200 万个像素点</b>，把整张图旋转、缩放、斜切，本质是对每一个顶点施加同一个 \(3\times3\) 矩阵——这个活儿由 GPU 的"顶点着色器"在硬件层面并行完成，一帧之内处理千万次矩阵乘法。游戏、AR、医学影像配准、卫星地图拼接，底层都是同一套仿射（及其更一般的"透视"）变换。你今天在滑条上拨动的，正是工程师在显卡里每秒钟跑亿万次的东西。</p>
+</div>
+
+<script src="affine.js"></script>
+
 <h3>五、方阵的幂、转置与行列式</h3>
 <div class="note"><b>方阵的幂．</b>设 \(A\) 为 \(n\) 阶方阵，规定 \(A^0=E,\ A^{k+1}=AA^k\ (k\in\mathbb{N}^+)\)．若 \(AB=BA\)，则 \((AB)^k=A^kB^k\)；一般不可交换时该式不成立．</div>
 <div class="def"><div class="lab"><span class="n">定义 2.15</span>转置矩阵</div>
@@ -380,40 +441,40 @@
   （按前 \(n\) 行展开即得）．把 \(D\) 的第 \(j\) 列乘 \(b_{1j},b_{2j},\dots,b_{nj}\) 分别加到第 \(n+1,\dots,2n\) 列，左上块不变、右上块变为 \(AB\)；再将第 \(i\) 行与第 \(n+i\) 行对换，得到 \(\begin{vmatrix}-E&O\\[6pt]A&AB\end{vmatrix}=(-1)^n|AB|\) 的等价形式，整理可得 \(|AB|=|A||B|\)．即使 \(A,B\) 不可交换，此等式仍恒成立．</p></div></details>
 </div>
 <div class="ex"><div class="lab">例 2.4　方阵的幂</div>
-  <div class="stmt">计算 \(\begin{pmatrix}1&2\\[6pt]0&1\end{pmatrix}^k\ (k\ge 1)\)．</div>
-  <div class="sol"><span class="mk">解</span>记 \(A=E+B\)，其中 \(B=\begin{pmatrix}0&2\\[6pt]0&0\end{pmatrix}\)．因 \(B^2=O\)，且 \(E\) 与 \(B\) 可交换，由二项式定理
+  <div class="stmt">计算 \(\begin{pmatrix}1&2\\[6pt]0&1\end{pmatrix}^k\ (k\ge 1)\)。</div>
+  <div class="sol"><span class="mk">解</span>记 \(A=E+B\)，其中 \(B=\begin{pmatrix}0&2\\[6pt]0&0\end{pmatrix}\)。因 \(B^2=O\)，且 \(E\) 与 \(B\) 可交换，由二项式定理
   \[A^k=(E+B)^k=E+kB=\begin{pmatrix}1&2k\\[6pt]0&1\end{pmatrix}.\]
-  （亦可用数学归纳法证明．）</div>
+  （亦可用数学归纳法证明。）</div>
 </div>
 <div class="ex"><div class="lab">例 2.5　对称与反对称</div>
-  <div class="stmt">判断 \(A=\begin{pmatrix}1&2&3\\[6pt]2&5&4\\[6pt]3&4&7\end{pmatrix}\) 与 \(B=\begin{pmatrix}0&2&3\\[6pt]-2&0&4\\[6pt]-3&-4&0\end{pmatrix}\) 的对称性．</div>
-  <div class="sol"><span class="mk">解</span>\(A^T=A\)，故 \(A\) 对称；\(B^T=-B\)，故 \(B\) 反对称．</div>
+  <div class="stmt">判断 \(A=\begin{pmatrix}1&2&3\\[6pt]2&5&4\\[6pt]3&4&7\end{pmatrix}\) 与 \(B=\begin{pmatrix}0&2&3\\[6pt]-2&0&4\\[6pt]-3&-4&0\end{pmatrix}\) 的对称性。</div>
+  <div class="sol"><span class="mk">解</span>\(A^T=A\)，故 \(A\) 对称；\(B^T=-B\)，故 \(B\) 反对称。</div>
 </div>
 <div class="ex"><div class="lab">例 2.6　幂等矩阵 \(\alpha\alpha^T\)</div>
-  <div class="stmt">设 \(\alpha=(a_1,a_2,\dots,a_n)^T\)，\(c=\sum_{i=1}^{n}a_i^2\neq0\)，矩阵 \(A=\alpha\alpha^T\)．证明 \(A^k=c^{k-1}A\)．</div>
+  <div class="stmt">设 \(\alpha=(a_1,a_2,\dots,a_n)^T\)，\(c=\sum_{i=1}^{n}a_i^2\neq0\)，矩阵 \(A=\alpha\alpha^T\)。证明 \(A^k=c^{k-1}A\)。</div>
   <div class="sol"><span class="mk">证明</span>\(\alpha^T\alpha=\sum a_i^2=c\)，故
   \[A^k=(\alpha\alpha^T)^k=\alpha(\alpha^T\alpha)^{k-1}\alpha^T=c^{k-1}\alpha\alpha^T=c^{k-1}A.\]</div>
 </div>
 <div class="ex"><div class="lab">例 2.7　Householder 反射矩阵</div>
-  <div class="stmt">设单位列向量 \(u\)（即 \(u^Tu=1\)），\(H=E-2uu^T\)．证明 \(H\) 对称正交，即 \(H^T=H\) 且 \(H^TH=E\)．</div>
-  <div class="sol"><span class="mk">证明</span>对称性：\(H^T=(E-2uu^T)^T=E-2uu^T=H\)．<br>
-  正交性：\(H^TH=H^2=(E-2uu^T)^2=E-4uu^T+4u(u^Tu)u^T=E-4uu^T+4uu^T=E\)．<br>
-  <details><summary>几何直观</summary><div class="body"><p>在平面或空间中，给定过原点、以单位法向量 \(u\) 表示的镜面，\(Hx\) 恰好把向量 \(x\) 关于该镜面作"反射"（对称）．反射两次回到原位，这正是 \(H^2=E\) 的几何含义．Householder 反射是数值线性代数中 QR 分解、特征值计算的基本工具，用途极广．</p></div></details>
+  <div class="stmt">设单位列向量 \(u\)（即 \(u^Tu=1\)），\(H=E-2uu^T\)。证明 \(H\) 对称正交，即 \(H^T=H\) 且 \(H^TH=E\)。</div>
+  <div class="sol"><span class="mk">证明</span>对称性：\(H^T=(E-2uu^T)^T=E-2uu^T=H\)。<br>
+  正交性：\(H^TH=H^2=(E-2uu^T)^2=E-4uu^T+4u(u^Tu)u^T=E-4uu^T+4uu^T=E\)。<br>
+  <details><summary>几何直观</summary><div class="body"><p>在平面或空间中，给定过原点、以单位法向量 \(u\) 表示的镜面，\(Hx\) 恰好把向量 \(x\) 关于该镜面作"反射"（对称）。反射两次回到原位，这正是 \(H^2=E\) 的几何含义。Householder 反射是数值线性代数中 QR 分解、特征值计算的基本工具，用途极广。</p></div></details>
   </div>
 </div>
 <div class="ex"><div class="lab">例 2.8　方阵的行列式</div>
-  <div class="stmt">求 \(A=\begin{pmatrix}a&-b&-c&-d\\[6pt] b&a&-d&c\\[6pt] c&d&a&-b\\[6pt] d&-c&b&a\end{pmatrix}\) 的行列式．</div>
+  <div class="stmt">求 \(A=\begin{pmatrix}a&-b&-c&-d\\[6pt] b&a&-d&c\\[6pt] c&d&a&-b\\[6pt] d&-c&b&a\end{pmatrix}\) 的行列式。</div>
   <div class="sol"><span class="mk">解</span>先算 \(AA^T\)（注意这是四元数型矩阵）：
   \[AA^T=(a^2+b^2+c^2+d^2)E_4.\]
   故 \(|A|^2=|AA^T|=(a^2+b^2+c^2+d^2)^4\)，又主对角元全为 \(a\)，展开式中 \(a^4\) 项系数为正，得
   \[|A|=(a^2+b^2+c^2+d^2)^2.\]</div>
 </div>
 <div class="ex"><div class="lab">例 2.9</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}1&2&0\\[6pt]2&1&2\\[6pt]0&2&1\end{pmatrix}\)，求 \(|A|\) 与 \(A\) 的迹．</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}1&2&0\\[6pt]2&1&2\\[6pt]0&2&1\end{pmatrix}\)，求 \(|A|\) 与 \(A\) 的迹。</div>
   <div class="sol"><span class="mk">解</span>按第一行展开：
   \[|A|=1\cdot\begin{vmatrix}1&2\\[6pt]2&1\end{vmatrix}-2\cdot\begin{vmatrix}2&2\\[6pt]0&1\end{vmatrix}+0
   =1(1-4)-2(2-0)=-3-4=-7.\]
-  迹 \(\operatorname{tr}(A)=1+1+1=3\)．</div>
+  迹 \(\operatorname{tr}(A)=1+1+1=3\)。</div>
 </div>
 
 <!-- ============ §2.3 ============ -->
@@ -423,7 +484,7 @@
 
 <h3>一、引例：信息的加密与解密</h3>
 <div class="ex"><div class="lab">引例　Hill 密码——矩阵在信息加密中的应用</div>
-  <p class="stmt">把明文数字按列排成矩阵 \(P\)，选一个整数元素且行列式与 \(26\) 互素的密钥矩阵 \(K\)，密文 \(C=KP\)．合法接收方只要左乘 \(K^{-1}\) 即可还原 \(P\)．这里所有运算都在<b>模 26</b> 意义下进行：字母 A~Z 编号为 \(1\sim26\)（或 \(0\sim25\)），矩阵每个元素运算后都取 \(\bmod\ 26\)——若结果大于 26 或超过范围，则减去 26 的若干倍归约；若为负数（如 \(-3\)），则加 26 直到落入 \(0\sim25\)（即 \(-3\equiv23\)）．寻找 \(K\) 在 \(\mathbb{Z}_{26}\) 中的<b>逆矩阵</b>，正是还原信息的关键．</p>
+  <p class="stmt">把明文数字按列排成矩阵 \(P\)，选一个整数元素且行列式与 \(26\) 互素的密钥矩阵 \(K\)，密文 \(C=KP\)。合法接收方只要左乘 \(K^{-1}\) 即可还原 \(P\)。这里所有运算都在<b>模 26</b> 意义下进行：字母 A~Z 编号为 \(1\sim26\)（或 \(0\sim25\)），矩阵每个元素运算后都取 \(\bmod\ 26\)——若结果大于 26 或超过范围，则减去 26 的若干倍归约；若为负数（如 \(-3\)），则加 26 直到落入 \(0\sim25\)（即 \(-3\equiv23\)）。寻找 \(K\) 在 \(\mathbb{Z}_{26}\) 中的<b>逆矩阵</b>，正是还原信息的关键。</p>
 </div>
 
 <h3>二、逆矩阵的定义与唯一性</h3>
@@ -460,7 +521,7 @@
   由定义 2.17，\(A\) 可逆且 \(A^{-1}=\dfrac{A^*}{|A|}\)．</p></div></details>
 </div>
 <div class="ex"><div class="lab">例 2.10　伴随法求逆（完整计算）</div>
-  <div class="stmt">求 \(A=\begin{pmatrix}1&2&-1\\[6pt]2&1&3\\[6pt]-3&0&1\end{pmatrix}\) 的逆矩阵（已知 \(|A|=-24\)）．</div>
+  <div class="stmt">求 \(A=\begin{pmatrix}1&2&-1\\[6pt]2&1&3\\[6pt]-3&0&1\end{pmatrix}\) 的逆矩阵（已知 \(|A|=-24\)）。</div>
   <div class="sol"><span class="mk">解</span>逐元素计算代数余子式：
   \[\begin{aligned}
   A_{11}&=+\begin{vmatrix}1&3\\[6pt]0&1\end{vmatrix}=1, & A_{21}&=-\begin{vmatrix}2&-1\\[6pt]0&1\end{vmatrix}=-2, & A_{31}&=+\begin{vmatrix}2&-1\\[6pt]1&3\end{vmatrix}=7,\\[6pt]
@@ -478,13 +539,13 @@
 <div class="note">这是验证可逆与寻找逆矩阵的常用方法：只要找到一个方阵 \(B\) 使 \(AB=E\)（或 \(BA=E\)），便立得 \(B=A^{-1}\)，无需再算行列式与伴随矩阵．</div>
 
 <div class="ex"><div class="lab">例 2.11　因式分解法求抽象逆</div>
-  <div class="stmt">设方阵 \(A\) 满足 \(A^2-A-2E=O\)，求 \(A^{-1}\) 与 \((A+2E)^{-1}\)．</div>
-  <div class="sol"><span class="mk">解</span>由 \(A^2-A-2E=O\) 得 \(A(A-E)=2E\)，即 \(A\cdot\frac{1}{2}(A-E)=E\)，故 \(A^{-1}=\frac{1}{2}(A-E)\)．<br>
-  又 \(A^2-A-2E=O\Rightarrow (A+2E)(A-3E)=-4E\)，即 \((A+2E)\left[-\frac{1}{4}(A-3E)\right]=E\)，故 \((A+2E)^{-1}=-\frac{1}{4}(A-3E)\)．</div>
+  <div class="stmt">设方阵 \(A\) 满足 \(A^2-A-2E=O\)，求 \(A^{-1}\) 与 \((A+2E)^{-1}\)。</div>
+  <div class="sol"><span class="mk">解</span>由 \(A^2-A-2E=O\) 得 \(A(A-E)=2E\)，即 \(A\cdot\frac{1}{2}(A-E)=E\)，故 \(A^{-1}=\frac{1}{2}(A-E)\)。<br>
+  又 \(A^2-A-2E=O\Rightarrow (A+2E)(A-3E)=-4E\)，即 \((A+2E)\left[-\frac{1}{4}(A-3E)\right]=E\)，故 \((A+2E)^{-1}=-\frac{1}{4}(A-3E)\)。</div>
 </div>
 <div class="ex"><div class="lab">例 2.12　矩阵方程 \(AX=A+X\)</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}2&2&0\\[6pt]2&1&3\\[6pt]0&1&0\end{pmatrix}\)，且 \(AX=A+X\)，求 \(X\)．</div>
-  <div class="sol"><span class="mk">解</span>原方程化为 \((A-E)X=A\)．因 \(|A-E|=\begin{vmatrix}1&2&0\\[6pt]2&0&3\\[6pt]0&1&-1\end{vmatrix}=1\cdot(-3)-2\cdot(-2)=1\neq0\)，故 \(A-E\) 可逆，且
+  <div class="stmt">设 \(A=\begin{pmatrix}2&2&0\\[6pt]2&1&3\\[6pt]0&1&0\end{pmatrix}\)，且 \(AX=A+X\)，求 \(X\)。</div>
+  <div class="sol"><span class="mk">解</span>原方程化为 \((A-E)X=A\)。因 \(|A-E|=\begin{vmatrix}1&2&0\\[6pt]2&0&3\\[6pt]0&1&-1\end{vmatrix}=1\cdot(-3)-2\cdot(-2)=1\neq0\)，故 \(A-E\) 可逆，且
   \[X=(A-E)^{-1}A=\begin{pmatrix}-2&2&6\\[6pt]2&0&-3\\[6pt]2&-1&-3\end{pmatrix}.\]</div>
 </div>
 
@@ -498,8 +559,8 @@
   <details><summary>证明</summary><div class="body"><p>这些均可用推论 2.1 验证．例如 (3)：因 \((AB)(B^{-1}A^{-1})=A(BB^{-1})A^{-1}=AEA^{-1}=E\)，故 \((AB)^{-1}=B^{-1}A^{-1}\)．(4)：\((A^T)(A^{-1})^T=(A^{-1}A)^T=E^T=E\)，故 \((A^T)^{-1}=(A^{-1})^T\)．(5)：由 \(|A||A^{-1}|=|E|=1\) 得 \(|A^{-1}|=1/|A|\)．</p></div></details>
 </div>
 <div class="ex"><div class="lab">例 2.13　伴随矩阵的性质</div>
-  <div class="stmt">设 \(A\) 可逆，证明 \((A^*)^{-1}=(A^{-1})^*\)．</div>
-  <div class="sol"><span class="mk">证明</span>由 \(A^*=|A|A^{-1}\)，得 \((A^*)^{-1}=\frac{1}{|A|}A\)．又 \((A^{-1})^*=|A^{-1}|(A^{-1})^{-1}=\frac{1}{|A|}A\)，二者相等，得证．</div>
+  <div class="stmt">设 \(A\) 可逆，证明 \((A^*)^{-1}=(A^{-1})^*\)。</div>
+  <div class="sol"><span class="mk">证明</span>由 \(A^*=|A|A^{-1}\)，得 \((A^*)^{-1}=\frac{1}{|A|}A\)。又 \((A^{-1})^*=|A^{-1}|(A^{-1})^{-1}=\frac{1}{|A|}A\)，二者相等，得证。</div>
 </div>
 
 <div class="labx">
@@ -542,10 +603,10 @@
 <h2 id="s24"><span class="num">§2.4</span>分块矩阵</h2>
 
 <div class="ex"><div class="lab">引例　图像分块存储与大型稀疏矩阵</div>
-  <p class="stmt">一张大图像常被切成若干 \(8\times8\) 小块（patch）分别压缩存储；工程中的超大规模稀疏矩阵（如 \(10^4\times10^4\) 的有限元刚度矩阵）也常按块划分，零块只存结构、非零块并行处理．把一个大矩阵"切成"若干子块后，以子块为"元素"再看，就是<b>分块矩阵</b>．例如
+  <p class="stmt">一张大图像常被切成若干 \(8\times8\) 小块（patch）分别压缩存储；工程中的超大规模稀疏矩阵（如 \(10^4\times10^4\) 的有限元刚度矩阵）也常按块划分，零块只存结构、非零块并行处理。把一个大矩阵"切成"若干子块后，以子块为"元素"再看，就是<b>分块矩阵</b>。例如
   \[A=\begin{pmatrix}a_{11}&a_{12}&\bigm|&a_{13}&a_{14}\\[6pt] a_{21}&a_{22}&\bigm|&a_{23}&a_{24}\\[6pt] \hline a_{31}&a_{32}&\bigm|&a_{33}&a_{34}\\[6pt] a_{41}&a_{42}&\bigm|&a_{43}&a_{44}\end{pmatrix}
   =\begin{pmatrix}A_{11}&A_{12}\\[6pt] A_{21}&A_{22}\end{pmatrix},\]
-  其中 \(A_{11},A_{12},A_{21},A_{22}\) 都是 \(2\times2\) 子块——分块让大结构一目了然．</p>
+  其中 \(A_{11},A_{12},A_{21},A_{22}\) 都是 \(2\times2\) 子块——分块让大结构一目了然。</p>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定义 2.19</span>分块矩阵</div>
@@ -554,12 +615,12 @@
 <p class="eg">转置规则：\(\begin{pmatrix}A_{11}&A_{12}\\[6pt]A_{21}&A_{22}\end{pmatrix}^T=\begin{pmatrix}A_{11}^T&A_{21}^T\\[6pt]A_{12}^T&A_{22}^T\end{pmatrix}\)——既换行列位置，又对每个子块转置．</p>
 
 <div class="ex"><div class="lab">例 2.14　同一矩阵的两种分块</div>
-  <div class="stmt">将 \(A=\begin{pmatrix}1&0&-1&2\\[6pt]0&1&1&1\\[6pt]0&0&1&2\\[6pt]0&0&2&1\end{pmatrix}\) 分别按"2+2 行、2+2 列"与"按行"分块，并指出其中的特殊子块．</div>
+  <div class="stmt">将 \(A=\begin{pmatrix}1&0&-1&2\\[6pt]0&1&1&1\\[6pt]0&0&1&2\\[6pt]0&0&2&1\end{pmatrix}\) 分别按"2+2 行、2+2 列"与"按行"分块，并指出其中的特殊子块。</div>
   <div class="sol"><span class="mk">解</span>第一种（按 \(2\times2\) 子块）：
   \[A=\begin{pmatrix}A_{11}&A_{12}\\[6pt]A_{21}&A_{22}\end{pmatrix},\ A_{11}=\begin{pmatrix}1&0\\[6pt]0&1\end{pmatrix}=E_2,\ A_{12}=\begin{pmatrix}-1&2\\[6pt]1&1\end{pmatrix},\ A_{21}=O,\ A_{22}=\begin{pmatrix}1&2\\[6pt]2&1\end{pmatrix}.\]
   第二种（按前 3 行、后 1 行）：
   \[A=\begin{pmatrix}B_{11}\\[6pt]B_{21}\end{pmatrix},\ B_{11}=\begin{pmatrix}1&0&-1&2\\[6pt]0&1&1&1\\[6pt]0&0&1&2\end{pmatrix},\ B_{21}=\begin{pmatrix}0&0&2&1\end{pmatrix}.\]
-  第一种分块凸显了单位块与零块，结构更清晰．</div>
+  第一种分块凸显了单位块与零块，结构更清晰。</div>
 </div>
 <div class="def"><div class="lab"><span class="n">定义 2.20</span>分块对角矩阵</div>
   <p>若 \(n\) 阶方阵 \(A\) 分块后呈
@@ -576,15 +637,15 @@
 <div class="note">这是求高阶可逆矩阵（尤其含零块时）的利器：把大矩阵拆成若干小方阵分别求逆，再拼回去即可．</div>
 
 <div class="ex"><div class="lab">例 2.15　一般型分块求逆</div>
-  <div class="stmt">设 \(A,B\) 均可逆，求 \(\begin{pmatrix}A&O\\[6pt]C&B\end{pmatrix}\) 的逆．</div>
+  <div class="stmt">设 \(A,B\) 均可逆，求 \(\begin{pmatrix}A&O\\[6pt]C&B\end{pmatrix}\) 的逆。</div>
   <div class="sol"><span class="mk">解</span>设逆为 \(\begin{pmatrix}X_1&X_2\\[6pt]X_3&X_4\end{pmatrix}\)，由
   \[\begin{pmatrix}A&O\\[6pt]C&B\end{pmatrix}\begin{pmatrix}X_1&X_2\\[6pt]X_3&X_4\end{pmatrix}=\begin{pmatrix}E&O\\[6pt]O&E\end{pmatrix}\]
-  比较分块得 \(AX_1=E\Rightarrow X_1=A^{-1}\)；\(AX_2=O\Rightarrow X_2=O\)；\(CX_1+BX_3=O\Rightarrow X_3=-B^{-1}CA^{-1}\)；\(CX_2+BX_4=E\Rightarrow X_4=B^{-1}\)．故
+  比较分块得 \(AX_1=E\Rightarrow X_1=A^{-1}\)；\(AX_2=O\Rightarrow X_2=O\)；\(CX_1+BX_3=O\Rightarrow X_3=-B^{-1}CA^{-1}\)；\(CX_2+BX_4=E\Rightarrow X_4=B^{-1}\)。故
   \[\begin{pmatrix}A&O\\[6pt]C&B\end{pmatrix}^{-1}=\begin{pmatrix}A^{-1}&O\\[6pt]-B^{-1}CA^{-1}&B^{-1}\end{pmatrix}.\]</div>
 </div>
 <div class="ex"><div class="lab">例 2.16　分块对角求逆</div>
-  <div class="stmt">求 \(A=\begin{pmatrix}2&1&0&0\\[6pt]1&1&0&0\\[6pt]0&0&2&0\\[6pt]0&0&-1&3\end{pmatrix}\) 的逆．</div>
-  <div class="sol"><span class="mk">解</span>分块为 \(A=\begin{pmatrix}A_1&O\\[6pt]O&A_2\end{pmatrix}\)，其中 \(A_1=\begin{pmatrix}2&1\\[6pt]1&1\end{pmatrix}\)，\(A_2=\begin{pmatrix}2&0\\[6pt]-1&3\end{pmatrix}\)．分别求逆：
+  <div class="stmt">求 \(A=\begin{pmatrix}2&1&0&0\\[6pt]1&1&0&0\\[6pt]0&0&2&0\\[6pt]0&0&-1&3\end{pmatrix}\) 的逆。</div>
+  <div class="sol"><span class="mk">解</span>分块为 \(A=\begin{pmatrix}A_1&O\\[6pt]O&A_2\end{pmatrix}\)，其中 \(A_1=\begin{pmatrix}2&1\\[6pt]1&1\end{pmatrix}\)，\(A_2=\begin{pmatrix}2&0\\[6pt]-1&3\end{pmatrix}\)。分别求逆：
   \[A_1^{-1}=\begin{pmatrix}1&-1\\[6pt]-1&2\end{pmatrix},\quad A_2^{-1}=\begin{pmatrix}\tfrac12&0\\[6pt]\tfrac16&\tfrac13\end{pmatrix}.\]
   故
   \[A^{-1}=\begin{pmatrix}1&-1&0&0\\[6pt]-1&2&0&0\\[6pt]0&0&\tfrac12&0\\[6pt]0&0&\tfrac16&\tfrac13\end{pmatrix}.\]</div>
@@ -599,7 +660,7 @@
 </ul>
 </div>
 <div class="ex"><div class="lab">例　分块乘法具体计算</div>
-  <div class="stmt">设 \(A=\begin{pmatrix}A_{11}&A_{12}\\[6pt]A_{21}&A_{22}\end{pmatrix}\)，\(B=\begin{pmatrix}B_{11}\\[6pt]B_{21}\end{pmatrix}\)，其中 \(A_{11}=E_2,\ A_{12}=\begin{pmatrix}2&0\\[6pt]0&2\end{pmatrix},\ A_{21}=\begin{pmatrix}1&1\\[6pt]1&1\end{pmatrix},\ A_{22}=O_2\)，\(B_{11}=\begin{pmatrix}1&1\\[6pt]0&1\end{pmatrix},\ B_{21}=\begin{pmatrix}2&0\\[6pt]0&2\end{pmatrix}\)．用分块乘法求 \(AB\)．</div>
+  <div class="stmt">设 \(A=\begin{pmatrix}A_{11}&A_{12}\\[6pt]A_{21}&A_{22}\end{pmatrix}\)，\(B=\begin{pmatrix}B_{11}\\[6pt]B_{21}\end{pmatrix}\)，其中 \(A_{11}=E_2,\ A_{12}=\begin{pmatrix}2&0\\[6pt]0&2\end{pmatrix},\ A_{21}=\begin{pmatrix}1&1\\[6pt]1&1\end{pmatrix},\ A_{22}=O_2\)，\(B_{11}=\begin{pmatrix}1&1\\[6pt]0&1\end{pmatrix},\ B_{21}=\begin{pmatrix}2&0\\[6pt]0&2\end{pmatrix}\)。用分块乘法求 \(AB\)。</div>
   <div class="sol"><span class="mk">解</span>按分块乘法，
   \[AB=\begin{pmatrix}A_{11}B_{11}+A_{12}B_{21}\\[6pt] A_{21}B_{11}+A_{22}B_{21}\end{pmatrix}.\]
   先算各子块乘积：
@@ -610,7 +671,7 @@
   于是
   \[AB=\begin{pmatrix}\begin{pmatrix}1&1\\[6pt]0&1\end{pmatrix}+\begin{pmatrix}4&0\\[6pt]0&4\end{pmatrix}\\[6pt] \begin{pmatrix}1&2\\[6pt]1&2\end{pmatrix}\end{pmatrix}
   =\begin{pmatrix}5&1\\[6pt]0&5\\[6pt]1&2\\[6pt]1&2\end{pmatrix}.\]
-  可见分块把大矩阵乘法拆成若干小矩阵乘法，与直接相乘结果完全一致．</div>
+  可见分块把大矩阵乘法拆成若干小矩阵乘法，与直接相乘结果完全一致。</div>
 </div>
 
 <div class="case"><div class="lab">应用 · 大矩阵加速与图像分块处理</div>
@@ -639,7 +700,7 @@
 <div class="ex"><div class="lab">引例　用三种初等行变换求解方程组</div>
   <p class="stmt">求解线性方程组
   \[\begin{cases}x_1+x_2+2x_3=1,\\[6pt] 2x_1-x_2+3x_3=4,\\[6pt] 3x_1+2x_2+5x_3=7.\end{cases}\]
-  写出增广矩阵，反复使用三类初等行变换（互换两行、某行乘非零常数、某行的倍数加到另一行），每一步都与原方程组同解．</p>
+  写出增广矩阵，反复使用三类初等行变换（互换两行、某行乘非零常数、某行的倍数加到另一行），每一步都与原方程组同解。</p>
   <div class="sol"><span class="mk">解</span>增广矩阵：
   \[\bigl(A\mid b\bigr)=\begin{pmatrix}1&1&2&1\\[6pt]2&-1&3&4\\[6pt]3&2&5&7\end{pmatrix}.\]
   <b>第 1 步</b>（消去第 2、3 行第 1 列）：\(r_2-2r_1,\ r_3-3r_1\)
@@ -648,7 +709,7 @@
   \[\xrightarrow{r_2\leftrightarrow r_3}\begin{pmatrix}1&1&2&1\\[6pt]0&-1&-1&4\\[6pt]0&-3&-1&2\end{pmatrix}.\]
   <b>第 3 步</b>（消去第 3 行第 2 列）：\(r_3-3r_2\)
   \[\xrightarrow{r_3-3r_2}\begin{pmatrix}1&1&2&1\\[6pt]0&-1&-1&4\\[6pt]0&0&2&-10\end{pmatrix}.\]
-  回代：\(2x_3=-10\Rightarrow x_3=-5\)；\(-x_2-x_3=4\Rightarrow x_2=1\)；\(x_1+1+2(-5)=1\Rightarrow x_1=10\)．故解为 \((10,1,-5)\)．三种初等变换把方程组完整化简——这正是高斯消元的矩阵版本．</p>
+  回代：\(2x_3=-10\Rightarrow x_3=-5\)；\(-x_2-x_3=4\Rightarrow x_2=1\)；\(x_1+1+2(-5)=1\Rightarrow x_1=10\)。故解为 \((10,1,-5)\)。三种初等变换把方程组完整化简——这正是高斯消元的矩阵版本。</p>
   </div>
 </div>
 
@@ -678,7 +739,7 @@
 </div>
 
 <div class="ex"><div class="lab">例 2.17　化为行阶梯形、最简形与标准形</div>
-  <div class="stmt">把 \(B=(A\mid b)=\begin{pmatrix}2&-1&2&4\\[6pt]1&1&2&1\\[6pt]4&1&4&2\end{pmatrix}\) 化为行阶梯形、行最简形，再化为标准形．</div>
+  <div class="stmt">把 \(B=(A\mid b)=\begin{pmatrix}2&-1&2&4\\[6pt]1&1&2&1\\[6pt]4&1&4&2\end{pmatrix}\) 化为行阶梯形、行最简形，再化为标准形。</div>
   <div class="sol"><span class="mk">解</span>（初等行变换）
   \[\begin{aligned}
   B&\xrightarrow{r_1\leftrightarrow r_2}\begin{pmatrix}1&1&2&1\\[6pt]2&-1&2&4\\[6pt]4&1&4&2\end{pmatrix}
@@ -686,9 +747,9 @@
   &\xrightarrow{r_3-r_2}\begin{pmatrix}1&1&2&1\\[6pt]0&-3&-2&2\\[6pt]0&0&-2&-4\end{pmatrix}
   \xrightarrow{\substack{r_2-r_3\\[6pt] \text{归一}}}\begin{pmatrix}1&0&0&-1\\[6pt]0&1&0&-2\\[6pt]0&0&1&2\end{pmatrix}=F_R.
   \end{aligned}\]
-  其中 \(F_R\) 即<b>行最简形</b>．再作初等列变换（把第 4 列用前 3 列消去）：
+  其中 \(F_R\) 即<b>行最简形</b>。再作初等列变换（把第 4 列用前 3 列消去）：
   \[F_R\xrightarrow{c_4+c_1+2c_2-2c_3}\begin{pmatrix}1&0&0&0\\[6pt]0&1&0&0\\[6pt]0&0&1&0\end{pmatrix}=(E_3,O),\]
-  此即<b>标准形</b>．</div>
+  此即<b>标准形</b>。</div>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定义 2.25</span>初等矩阵</div>
@@ -730,7 +791,7 @@
 <div class="note">推论：\(A\) 可逆 \(\iff\) \(A\stackrel{r}{\sim}E\)（\(A\) 行等价于单位阵）．据此可用初等行变换求逆——把 \((A\mid E)\) 化为 \((E\mid A^{-1})\)．</div>
 
 <div class="ex"><div class="lab">例 2.18　初等行变换求逆</div>
-  <div class="stmt">用初等行变换求 \(A=\begin{pmatrix}0&-2&1\\[6pt]3&0&-2\\[6pt]-2&3&0\end{pmatrix}\) 的逆．</div>
+  <div class="stmt">用初等行变换求 \(A=\begin{pmatrix}0&-2&1\\[6pt]3&0&-2\\[6pt]-2&3&0\end{pmatrix}\) 的逆。</div>
   <div class="sol"><span class="mk">解</span>对 \((A\mid E)\) 作行变换：
   \[\begin{aligned}
   (A\mid E)&=\begin{pmatrix}0&-2&1&1&0&0\\[6pt]3&0&-2&0&1&0\\[6pt]-2&3&0&0&0&1\end{pmatrix}
@@ -738,13 +799,13 @@
   &\xrightarrow{\substack{r_3+\frac{2}{3}r_1\\[6pt] r_1\div3}}\begin{pmatrix}1&0&-\frac23&0&\frac13&0\\[6pt]0&-2&1&1&0&0\\[6pt]0&3&-\frac43&0&\frac23&1\end{pmatrix}
   \xrightarrow{\substack{r_3+\frac{3}{2}r_2\\[6pt] \text{化简}}}\begin{pmatrix}1&0&0&6&3&4\\[6pt]0&1&0&4&2&3\\[6pt]0&0&1&9&4&6\end{pmatrix}.
   \end{aligned}\]
-  故 \(A^{-1}=\begin{pmatrix}6&3&4\\[6pt]4&2&3\\[6pt]9&4&6\end{pmatrix}\)．验证：\(AA^{-1}=E\)．</div>
+  故 \(A^{-1}=\begin{pmatrix}6&3&4\\[6pt]4&2&3\\[6pt]9&4&6\end{pmatrix}\)。验证：\(AA^{-1}=E\)。</div>
 </div>
 <div class="ex"><div class="lab">例 2.19　初等变换解矩阵方程</div>
-  <div class="stmt">解 \((A-E)X=A\)，其中 \(A=\begin{pmatrix}2&2&0\\[6pt]2&1&3\\[6pt]0&1&0\end{pmatrix}\)．</div>
+  <div class="stmt">解 \((A-E)X=A\)，其中 \(A=\begin{pmatrix}2&2&0\\[6pt]2&1&3\\[6pt]0&1&0\end{pmatrix}\)。</div>
   <div class="sol"><span class="mk">解</span>对 \((A-E\mid A)\) 作行变换化为 \((E\mid X)\)：
   \[\begin{pmatrix}1&2&0&2&2&0\\[6pt]2&0&3&2&1&3\\[6pt]0&1&-1&0&1&0\end{pmatrix}\xrightarrow{\text{初等行变换}}\begin{pmatrix}1&0&0&-2&2&6\\[6pt]0&1&0&2&0&-3\\[6pt]0&0&1&2&-1&-3\end{pmatrix}.\]
-  故 \(X=\begin{pmatrix}-2&2&6\\[6pt]2&0&-3\\[6pt]2&-1&-3\end{pmatrix}\)．</div>
+  故 \(X=\begin{pmatrix}-2&2&6\\[6pt]2&0&-3\\[6pt]2&-1&-3\end{pmatrix}\)。</div>
 </div>
 
 <div class="labx">
@@ -796,7 +857,7 @@
 <div class="ex"><div class="lab">引例　独立方程的个数</div>
   <p class="stmt">方程组
   \[\begin{cases}x+y+2z=1,\\[6pt] -3y-2z=2,\\[6pt] -2z=-4\end{cases}\]
-  三个方程彼此独立；但若某方程是另两个的线性组合，它就不提供新信息．矩阵 \(A\) 的<b>秩</b>正是其行（或列）向量中"真正独立"的最大个数，也等于方程组里有效方程的个数．</p>
+  三个方程彼此独立；但若某方程是另两个的线性组合，它就不提供新信息。矩阵 \(A\) 的<b>秩</b>正是其行（或列）向量中"真正独立"的最大个数，也等于方程组里有效方程的个数。</p>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定义 2.26</span>\(k\) 阶子式</div>
@@ -810,10 +871,10 @@
 <p class="eg">显然 \(R(A)=R(A^T)\)；当 \(R(A)=m\) 称行满秩，\(R(A)=n\) 称列满秩；\(n\) 阶方阵满秩 \(\iff\) 可逆．</p>
 
 <div class="ex"><div class="lab">例 2.20　用定义求秩</div>
-  <div class="stmt">求 \(A=\begin{pmatrix}2&-1&0&7&3\\[6pt]0&1&4&-2&5\\[6pt]0&0&0&1&-3\end{pmatrix}\) 的秩．</div>
-  <div class="sol"><span class="mk">解</span>该矩阵已是行阶梯形，非零行有 3 行．取 3 个非零行首个非零元所在列构成的子式
+  <div class="stmt">求 \(A=\begin{pmatrix}2&-1&0&7&3\\[6pt]0&1&4&-2&5\\[6pt]0&0&0&1&-3\end{pmatrix}\) 的秩。</div>
+  <div class="sol"><span class="mk">解</span>该矩阵已是行阶梯形，非零行有 3 行。取 3 个非零行首个非零元所在列构成的子式
   \[\begin{vmatrix}2&-1&7\\[6pt]0&1&-2\\[6pt]0&0&1\end{vmatrix}=2\neq0,\]
-  而 \(A\) 只有 3 行，不存在 4 阶及以上子式，故非零子式的最高阶数为 3，即 \(R(A)=3\)．</div>
+  而 \(A\) 只有 3 行，不存在 4 阶及以上子式，故非零子式的最高阶数为 3，即 \(R(A)=3\)。</div>
 </div>
 <div class="def"><div class="lab"><span class="n">定理 2.7</span>行阶梯形矩阵秩 = 非零行数</div>
   <p>若矩阵已化为行阶梯形，则其秩等于非零行的行数．</p>
@@ -845,18 +906,18 @@
   <p>(5) 当 \(R(A)=n\)，\(|A|\neq0\)，由 \(AA^*=|A|E\) 知 \(A^*\) 可逆，故 \(R(A^*)=n\)．当 \(R(A)=n-1\)，\(|A|=0\) 且 \(AA^*=O\)，由 (4) 得 \(R(A^*)\le1\)；又至少有一个 \(n-1\) 阶子式非零，故 \(A^*\neq O\)，\(R(A^*)\ge1\)，于是 \(=1\)．当 \(R(A)\lt n-1\)，所有 \(n-1\) 阶子式为 0，\(A^*=O\)，故 \(R(A^*)=0\)．</p></div></details>
 </div>
 <div class="ex"><div class="lab">例 2.21　秩 1 矩阵 \(\alpha\beta^T\)</div>
-  <div class="stmt">设 \(\alpha,\beta\) 为 \(n\) 维非零列向量，证明 \(R(\alpha\beta^T)=1\)．</div>
-  <div class="sol"><span class="mk">证明</span>\(\alpha\beta^T\neq O\) 故 \(R(\alpha\beta^T)\ge1\)；又 \(R(\alpha\beta^T)\le R(\alpha)=1\)，故 \(R(\alpha\beta^T)=1\)．具体地，\(\alpha\beta^T\) 的每一列都是 \(\alpha\) 的倍数，故列空间维数为 1．</div>
+  <div class="stmt">设 \(\alpha,\beta\) 为 \(n\) 维非零列向量，证明 \(R(\alpha\beta^T)=1\)。</div>
+  <div class="sol"><span class="mk">证明</span>\(\alpha\beta^T\neq O\) 故 \(R(\alpha\beta^T)\ge1\)；又 \(R(\alpha\beta^T)\le R(\alpha)=1\)，故 \(R(\alpha\beta^T)=1\)。具体地，\(\alpha\beta^T\) 的每一列都是 \(\alpha\) 的倍数，故列空间维数为 1。</div>
 </div>
 <div class="ex"><div class="lab">例 2.22　幂等矩阵的秩恒等式</div>
-  <div class="stmt">设 \(A^2=A\)（幂等矩阵），证明 \(R(A)+R(A-E)=n\)．</div>
-  <div class="sol"><span class="mk">证明</span>由 \(A(A-E)=O\)，据性质 2.7(4) 得 \(R(A)+R(A-E)\le n\)．又
+  <div class="stmt">设 \(A^2=A\)（幂等矩阵），证明 \(R(A)+R(A-E)=n\)。</div>
+  <div class="sol"><span class="mk">证明</span>由 \(A(A-E)=O\)，据性质 2.7(4) 得 \(R(A)+R(A-E)\le n\)。又
   \[R(A)+R(A-E)\ge R(A-(A-E))=R(E)=n,\]
-  故 \(R(A)+R(A-E)=n\)．</div>
+  故 \(R(A)+R(A-E)=n\)。</div>
 </div>
 <div class="ex"><div class="lab">例 2.23　伴随矩阵的秩</div>
-  <div class="stmt">设 \(A\) 为 3 阶方阵，\(R(A)=2\)，求 \(R(A^*)\)．</div>
-  <div class="sol"><span class="mk">解</span>因 \(R(A)=n-1=2\)，由性质 2.7(5) 得 \(R(A^*)=1\)．</div>
+  <div class="stmt">设 \(A\) 为 3 阶方阵，\(R(A)=2\)，求 \(R(A^*)\)。</div>
+  <div class="sol"><span class="mk">解</span>因 \(R(A)=n-1=2\)，由性质 2.7(5) 得 \(R(A^*)=1\)。</div>
 </div>
 
 <div class="case"><div class="lab">应用 · 数据压缩与矩阵低秩近似</div>
@@ -926,8 +987,8 @@ print("RREF =\n", rref)
 <div class="sec-quiz" data-sec="s26" data-ch="2" data-n="27"></div>
 <h2 id="s27"><span class="num">§2.7</span>综合应用与软件实现</h2>
 <div class="ex"><div class="lab">引例　工业机器人"手眼标定"：把前面所有矩阵工具用一遍</div>
-  <p class="stmt">要让<b>国产工业机器人</b>准确抓取零件，必须知道相机（"眼"）相对于机械臂末端（"手"）的位姿——用一个 \(4\times4\) 的变换矩阵 \(T\) 描述（含旋转与平移）．标定方程形如 \(XA=ZB\)，其中旋转部分满足 \(R^TR=E\)（正交），求 \(X\) 既要会矩阵乘法（复合变换）、又要会求逆（从末端反推相机）．本章的矩阵运算、逆、秩，在这里被一次性串起来．</p>
-  <p><b>探索：</b>给定"先绕原点转 \(30^\circ\) 再平移 \((1,0)\)"这样一个平面刚体运动，学完本章你就能把它写成一个 \(3\times3\) 的齐次变换矩阵，并随时反解出"相机看到的点在手上是什么坐标"．</p>
+  <p class="stmt">要让<b>国产工业机器人</b>准确抓取零件，必须知道相机（"眼"）相对于机械臂末端（"手"）的位姿——用一个 \(4\times4\) 的变换矩阵 \(T\) 描述（含旋转与平移）。标定方程形如 \(XA=ZB\)，其中旋转部分满足 \(R^TR=E\)（正交），求 \(X\) 既要会矩阵乘法（复合变换）、又要会求逆（从末端反推相机）。本章的矩阵运算、逆、秩，在这里被一次性串起来。</p>
+  <p><b>探索：</b>给定"先绕原点转 \(30^\circ\) 再平移 \((1,0)\)"这样一个平面刚体运动，学完本章你就能把它写成一个 \(3\times3\) 的齐次变换矩阵，并随时反解出"相机看到的点在手上是什么坐标"。</p>
 </div>
 
 <div class="case"><div class="lab">应用 1 · 图像处理：模糊、边缘检测与亮度</div>
@@ -986,6 +1047,33 @@ print("RREF =\n", rref)
   <p><b>结论解释：</b>排名本质上是"被重要页面指向得多"的稳态概率，完全由矩阵 \(P\) 的特征结构决定．搜索引擎的基石，正是线性代数中的特征值与幂迭代．</p>
   </div></details>
 </div>
+
+<div class="labx">
+    <div class="lab">交互实验 · 改一条链接，看排名立刻重排</div>
+    <div class="desc">下方是一个 5 网页小网络（A~E）。勾选 / 取消链接会改变“随机游走”矩阵 \(P\)，幂迭代实时重算 PageRank 排名；阻尼系数 \(d\)（随机跳转到任意页的概率）可调——这正是 Google 处理“悬挂网页”和“作弊刷链”的关键。试着把所有页都指向 D，看 D 是否登顶。</div>
+    <div class="xv-wrap" id="prDemo">
+      <canvas id="prCanvas" width="760" height="300"></canvas>
+      <div class="xv-ctrls">
+        <div class="xv-ctrl">阻尼系数 d
+          <input type="range" id="prDamp" min="0.5" max="0.99" step="0.01" value="0.85">
+          <span id="prDampV">85.00%</span></div>
+        <div class="xv-ctrl" id="prLinks" style="min-width:260px">链接（行→列）：
+          <label style="margin-right:8px"><input type="checkbox" data-from="A" data-to="1" checked>A→B</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="A" data-to="2" checked>A→C</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="B" data-to="0" checked>B→A</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="C" data-to="0" checked>C→A</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="C" data-to="1" checked>C→B</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="D" data-to="2" checked>D→C</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="D" data-to="4" checked>D→E</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="E" data-to="2" checked>E→C</label>
+          <label style="margin-right:8px"><input type="checkbox" data-from="E" data-to="3" checked>E→D</label>
+        </div>
+      </div>
+      <div class="xv-out" id="prOut"></div>
+    </div>
+    <div class="xv-note">排名 = 转移矩阵“属于特征值 1 的特征向量”（左特征向量归一化）。几十亿网页的规模下，没有人会真的去求 \(P-I\) 的逆——工程上全用幂迭代：不停地“顺着链接走、偶尔随机跳”，走的次数越多，落点频率就越接近真实 PageRank。</div>
+  </div>
+<script src="pagerank.js"></script>
 
 <div class="case"><div class="lab">应用 3 · 神经网络与权重矩阵</div>
   <details><summary>展开查看</summary><div class="body">
@@ -1095,66 +1183,66 @@ print("inv  =", M.inv())
     <p class="muted">本栏目选取历年考研真题，展示矩阵运算技巧的综合运用．建议先独立思考，再展开解答．</p>
 
     <div class="ex"><div class="lab">选讲 1　（2019 · 考研数学二改编）</div>
-      <p class="stmt">设 \(A\) 为 \(3\) 阶方阵，\(|A|=2\)．计算：(1) \(|2A|\)；(2) \(|A^{-1}|\)；(3) \(|A^*|\)；(4) \(|(2A)^{-1}|\)．</p>
+      <p class="stmt">设 \(A\) 为 \(3\) 阶方阵，\(|A|=2\)。计算：(1) \(|2A|\)；(2) \(|A^{-1}|\)；(3) \(|A^*|\)；(4) \(|(2A)^{-1}|\)。</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span></p>
-          <p>(1) 由数乘行列式性质 \(|kA|=k^n|A|\)：\(|2A|=2^3|A|=8\times2=16\)．</p>
-          <p>(2) 由逆矩阵性质 \(|A^{-1}|=\dfrac1{|A|}=\dfrac12\)．</p>
-          <p>(3) 由伴随矩阵性质 \(|A^*|=|A|^{n-1}\)：\(|A^*|=2^{2}=4\)．</p>
-          <p>(4) 综合：\(|(2A)^{-1}|=|2A|^{-1}=\dfrac1{16}\)．</p>
-          <p><b>方法提炼：</b>\(|kA|=k^n|A|\)、\(|A^{-1}|=1/|A|\)、\(|A^*|=|A|^{n-1}\) 三者结合，能秒杀大量填空题——注意第一式容易漏掉指数 \(n\)．</p>
+          <p>(1) 由数乘行列式性质 \(|kA|=k^n|A|\)：\(|2A|=2^3|A|=8\times2=16\)。</p>
+          <p>(2) 由逆矩阵性质 \(|A^{-1}|=\dfrac1{|A|}=\dfrac12\)。</p>
+          <p>(3) 由伴随矩阵性质 \(|A^*|=|A|^{n-1}\)：\(|A^*|=2^{2}=4\)。</p>
+          <p>(4) 综合：\(|(2A)^{-1}|=|2A|^{-1}=\dfrac1{16}\)。</p>
+          <p><b>方法提炼：</b>\(|kA|=k^n|A|\)、\(|A^{-1}|=1/|A|\)、\(|A^*|=|A|^{n-1}\) 三者结合，能秒杀大量填空题——注意第一式容易漏掉指数 \(n\)。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 2　（2021 · 考研数学一改编）</div>
-      <p class="stmt">设 \(A=\begin{pmatrix}2&1\\0&2\end{pmatrix}\)，求 \(A^n\)．</p>
+      <p class="stmt">设 \(A=\begin{pmatrix}2&1\\0&2\end{pmatrix}\)，求 \(A^n\)。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　把 \(A\) 拆成数量阵与幂零阵之和：\(A=2E+N\)，其中 \(N=\begin{pmatrix}0&1\\0&0\end{pmatrix}\)，且 \(N^2=O\)．因为 \(2E\) 与 \(N\) 可交换，可用二项式展开：
+          <p><span style="font-weight:700">解</span>　把 \(A\) 拆成数量阵与幂零阵之和：\(A=2E+N\)，其中 \(N=\begin{pmatrix}0&1\\0&0\end{pmatrix}\)，且 \(N^2=O\)。因为 \(2E\) 与 \(N\) 可交换，可用二项式展开：
           \[A^n=(2E)^n+\binom n1(2E)^{n-1}N=2^nE+n\cdot2^{n-1}N
             =\begin{pmatrix}2^n&n\cdot2^{\,n-1}\\0&2^n\end{pmatrix}.\]
-          例如 \(n=5\) 时 \(A^5=\begin{pmatrix}32&80\\0&32\end{pmatrix}\)．</p>
-          <p><b>方法提炼：</b>对角元相等的上三角阵可拆成"数量阵 + 幂零阵"，幂零阵高次幂归零，幂次立刻写出——比逐次相乘快得多．</p>
+          例如 \(n=5\) 时 \(A^5=\begin{pmatrix}32&80\\0&32\end{pmatrix}\)。</p>
+          <p><b>方法提炼：</b>对角元相等的上三角阵可拆成"数量阵 + 幂零阵"，幂零阵高次幂归零，幂次立刻写出——比逐次相乘快得多。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 3　（2017 · 考研数学二）</div>
-      <p class="stmt">求 \(M=\begin{pmatrix}1&2&0&0\\3&4&0&0\\0&0&1&1\\0&0&2&3\end{pmatrix}^{-1}\)．</p>
+      <p class="stmt">求 \(M=\begin{pmatrix}1&2&0&0\\3&4&0&0\\0&0&1&1\\0&0&2&3\end{pmatrix}^{-1}\)。</p>
       <details><summary>解答</summary>
         <div class="body">
           <p><span style="font-weight:700">解</span>　\(M\) 为分块对角矩阵 \(M=\operatorname{diag}(B,C)\)，其中
-          \(B=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)，\(C=\begin{pmatrix}1&1\\2&3\end{pmatrix}\)．
+          \(B=\begin{pmatrix}1&2\\3&4\end{pmatrix}\)，\(C=\begin{pmatrix}1&1\\2&3\end{pmatrix}\)。
           \[B^{-1}=-\frac12\begin{pmatrix}4&-2\\-3&1\end{pmatrix}
             =\begin{pmatrix}-2&1\\[2pt]\tfrac32&-\tfrac12\end{pmatrix},\qquad
             C^{-1}=\begin{pmatrix}3&-1\\-2&1\end{pmatrix}.\]
           故 \(M^{-1}=\operatorname{diag}(B^{-1},C^{-1})
-          =\begin{pmatrix}-2&1&0&0\\[2pt]\tfrac32&-\tfrac12&0&0\\0&0&3&-1\\0&0&-2&1\end{pmatrix}\)．</p>
-          <p><b>方法提炼：</b>分块对角（或分块三角）矩阵求逆，块与块互不干扰——大矩阵化小，是工程与算法的常态．</p>
+          =\begin{pmatrix}-2&1&0&0\\[2pt]\tfrac32&-\tfrac12&0&0\\0&0&3&-1\\0&0&-2&1\end{pmatrix}\)。</p>
+          <p><b>方法提炼：</b>分块对角（或分块三角）矩阵求逆，块与块互不干扰——大矩阵化小，是工程与算法的常态。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 4　</div>
-      <p class="stmt">设 \(E_{12}(k)\) 表示"将第 \(1\) 行的 \(k\) 倍加到第 \(2\) 行"的初等矩阵．证明 \(E_{12}(k)^{-1}=E_{12}(-k)\)，并说明初等变换对应左乘还是右乘．</p>
+      <p class="stmt">设 \(E_{12}(k)\) 表示"将第 \(1\) 行的 \(k\) 倍加到第 \(2\) 行"的初等矩阵。证明 \(E_{12}(k)^{-1}=E_{12}(-k)\)，并说明初等变换对应左乘还是右乘。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　以 \(3\) 阶为例，\(E_{12}(k)=\begin{pmatrix}1&k&0\\0&1&0\\0&0&1\end{pmatrix}\)．直接相乘 \(E_{12}(k)E_{12}(-k)=E\)，故其逆为 \(E_{12}(-k)\)．</p>
-          <p>对矩阵 \(A\) 作"行变换"等价于<b>左乘</b>相应初等矩阵；"列变换"等价于<b>右乘</b>．本例中 \(E_{12}(k)A\) 把 \(A\) 的第 \(1\) 行的 \(k\) 倍加到第 \(2\) 行；而 \(AE_{12}(k)\) 则把 \(A\) 的"第 \(2\) 列的 \(k\) 倍加到第 \(1\) 列"．记住"左行右列"四字即可．</p>
-          <p><b>方法提炼：</b>初等变换不是孤立技巧，它与矩阵乘法同向同构——这正是 §2.5 的深层含义．</p>
+          <p><span style="font-weight:700">解</span>　以 \(3\) 阶为例，\(E_{12}(k)=\begin{pmatrix}1&k&0\\0&1&0\\0&0&1\end{pmatrix}\)。直接相乘 \(E_{12}(k)E_{12}(-k)=E\)，故其逆为 \(E_{12}(-k)\)。</p>
+          <p>对矩阵 \(A\) 作"行变换"等价于<b>左乘</b>相应初等矩阵；"列变换"等价于<b>右乘</b>。本例中 \(E_{12}(k)A\) 把 \(A\) 的第 \(1\) 行的 \(k\) 倍加到第 \(2\) 行；而 \(AE_{12}(k)\) 则把 \(A\) 的"第 \(2\) 列的 \(k\) 倍加到第 \(1\) 列"。记住"左行右列"四字即可。</p>
+          <p><b>方法提炼：</b>初等变换不是孤立技巧，它与矩阵乘法同向同构——这正是 §2.5 的深层含义。</p>
         </div>
       </details>
     </div>
 
     <div class="ex"><div class="lab">选讲 5　（2020 · 考研数学一）</div>
-      <p class="stmt">设 \(A\) 为 \(m\times n\) 矩阵，\(B\) 为 \(n\times s\) 矩阵．证明 \(R(AB)\le\min\{R(A),R(B)\}\)，且 \(R(A)+R(B)\le n+R(AB)\)．并由此说明：若 \(AB=O\)，则 \(R(A)+R(B)\le n\)．</p>
+      <p class="stmt">设 \(A\) 为 \(m\times n\) 矩阵，\(B\) 为 \(n\times s\) 矩阵。证明 \(R(AB)\le\min\{R(A),R(B)\}\)，且 \(R(A)+R(B)\le n+R(AB)\)。并由此说明：若 \(AB=O\)，则 \(R(A)+R(B)\le n\)。</p>
       <details><summary>解答</summary>
         <div class="body">
-          <p><span style="font-weight:700">解</span>　把 \(B\) 按列分块 \(B=(\beta_1,\dots,\beta_s)\)，则 \(AB=(A\beta_1,\dots,A\beta_s)\)，每个 \(A\beta_j\) 都是 \(A\) 列向量的线性组合，故 \(R(AB)\le R(A)\)；对转置同理得 \(R(AB)\le R(B)\)．</p>
-          <p>Frobenius 不等式 \(R(AB)\ge R(A)+R(B)-n\) 与本性质结合即 \(R(A)+R(B)\le n+R(AB)\)．若 \(AB=O\)，则 \(R(AB)=0\)，代入得 \(R(A)+R(B)\le n\)．</p>
-          <p><b>方法提炼：</b>秩的不等式是"方程组有非零解""矩阵可分解"等结论的统一语言，考研常作为压轴选择题的判据．</p>
+          <p><span style="font-weight:700">解</span>　把 \(B\) 按列分块 \(B=(\beta_1,\dots,\beta_s)\)，则 \(AB=(A\beta_1,\dots,A\beta_s)\)，每个 \(A\beta_j\) 都是 \(A\) 列向量的线性组合，故 \(R(AB)\le R(A)\)；对转置同理得 \(R(AB)\le R(B)\)。</p>
+          <p>Frobenius 不等式 \(R(AB)\ge R(A)+R(B)-n\) 与本性质结合即 \(R(A)+R(B)\le n+R(AB)\)。若 \(AB=O\)，则 \(R(AB)=0\)，代入得 \(R(A)+R(B)\le n\)。</p>
+          <p><b>方法提炼：</b>秩的不等式是"方程组有非零解""矩阵可分解"等结论的统一语言，考研常作为压轴选择题的判据。</p>
         </div>
       </details>
     </div>
@@ -1164,82 +1252,82 @@ print("inv  =", M.inv())
 
   <div class="grp">一、选择题（题干在前、选项在后）</div>
   <ol>
-    <li><div class="qt">矩阵 \(A=B\) 的充要条件是（　）．</div>
+    <li><div class="qt">矩阵 \(A=B\) 的充要条件是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q1" value="A"> \(A,B\) 同型</label>
       <label><b>B.</b> <input type="radio" name="hw2q1" value="B"> \(A,B\) 同阶</label>
       <label><b>C.</b> <input type="radio" name="hw2q1" value="C"> 对应元素相等</label>
       <label><b>D.</b> <input type="radio" name="hw2q1" value="D"> \(A,B\) 同型且对应元素全相等</label></li>
-    <li><div class="qt">若 \(A\) 为 \(2\times3\)，\(B\) 为 \(3\times2\)，则 \(AB\) 是（　）．</div>
+    <li><div class="qt">若 \(A\) 为 \(2\times3\)，\(B\) 为 \(3\times2\)，则 \(AB\) 是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q2" value="A"> \(3\times2\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q2" value="B"> \(2\times3\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q2" value="C"> \(3\times3\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q2" value="D"> \(2\times2\)</label></li>
-    <li><div class="qt">设 \(A,B,C\) 为 \(n\) 阶方阵，则下列等式中<b>不一定成立</b>的是（　）．</div>
+    <li><div class="qt">设 \(A,B,C\) 为 \(n\) 阶方阵，则下列等式中<b>不一定成立</b>的是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q3" value="A"> \(A+B=B+A\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q3" value="B"> \(AB=BA\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q3" value="C"> \((AB)C=A(BC)\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q3" value="D"> \(A(B+C)=AB+AC\)</label></li>
-    <li><div class="qt">若 \(AB=O\)，则（　）．</div>
+    <li><div class="qt">若 \(AB=O\)，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q4" value="A"> 必有 \(A=O\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q4" value="B"> 必有 \(B=O\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q4" value="C"> 不能推出 \(A=O\) 或 \(B=O\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q4" value="D"> 必对称</label></li>
-    <li><div class="qt">（考研真题）设 \(A\) 为 \(n\) 阶方阵，则 \(|kA|=\)（　）．</div>
+    <li><div class="qt">（考研真题）设 \(A\) 为 \(n\) 阶方阵，则 \(|kA|=\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q5" value="A"> \(k|A|\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q5" value="B"> \(k^n|A|\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q5" value="C"> \(|A|^k\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q5" value="D"> \(k|A|^n\)</label></li>
-    <li><div class="qt">（考研真题）若 \(A,B\) 均可逆，则 \((AB)^{-1}=\)（　）．</div>
+    <li><div class="qt">（考研真题）若 \(A,B\) 均可逆，则 \((AB)^{-1}=\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q6" value="A"> \(B^{-1}A^{-1}\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q6" value="B"> \(A^{-1}B^{-1}\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q6" value="C"> \(AB^{-1}\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q6" value="D"> \((BA)^{-1}\)</label></li>
-    <li><div class="qt">若 \(A^T=-A\)，则 \(A\) 是（　）．</div>
+    <li><div class="qt">若 \(A^T=-A\)，则 \(A\) 是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q7" value="A"> 对称阵</label>
       <label><b>B.</b> <input type="radio" name="hw2q7" value="B"> 反对称阵</label>
       <label><b>C.</b> <input type="radio" name="hw2q7" value="C"> 数量阵</label>
       <label><b>D.</b> <input type="radio" name="hw2q7" value="D"> 单位阵</label></li>
-    <li><div class="qt">（考研真题）下列命题正确的是（　）．</div>
+    <li><div class="qt">（考研真题）下列命题正确的是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q8" value="A"> 初等矩阵都不可逆</label>
       <label><b>B.</b> <input type="radio" name="hw2q8" value="B"> 初等矩阵都是单位阵</label>
       <label><b>C.</b> <input type="radio" name="hw2q8" value="C"> 初等矩阵乘积一定为 \(O\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q8" value="D"> 初等矩阵都可逆，且逆仍为同类初等矩阵</label></li>
-    <li><div class="qt">（考研真题）设 \(A,B\) 为 \(n\) 阶且 \(AB=O\)，则（　）．</div>
+    <li><div class="qt">（考研真题）设 \(A,B\) 为 \(n\) 阶且 \(AB=O\)，则（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q9" value="A"> \(R(A)+R(B)\le n\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q9" value="B"> \(R(A)+R(B)\ge n\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q9" value="C"> \(R(A)R(B)=n\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q9" value="D"> \(R(A)=R(B)\)</label></li>
-    <li><div class="qt">（考研真题）设 \(A\) 为 \(n\) 阶可逆阵，则 \(R(A^*)=\)（　）．</div>
+    <li><div class="qt">（考研真题）设 \(A\) 为 \(n\) 阶可逆阵，则 \(R(A^*)=\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q10" value="A"> \(n\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q10" value="B"> \(n-1\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q10" value="C"> \(1\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q10" value="D"> \(0\)</label></li>
-    <li><div class="qt">对矩阵 \(A\) 左乘初等矩阵，等价于对 \(A\) 作（　）．</div>
+    <li><div class="qt">对矩阵 \(A\) 左乘初等矩阵，等价于对 \(A\) 作（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q11" value="A"> 初等行变换</label>
       <label><b>B.</b> <input type="radio" name="hw2q11" value="B"> 初等列变换</label>
       <label><b>C.</b> <input type="radio" name="hw2q11" value="C"> 转置</label>
       <label><b>D.</b> <input type="radio" name="hw2q11" value="D"> 求逆</label></li>
-    <li><div class="qt">分块对角矩阵 \(A=\operatorname{diag}(A_1,A_2)\) 的行列式 \(|A|=\)（　）．</div>
+    <li><div class="qt">分块对角矩阵 \(A=\operatorname{diag}(A_1,A_2)\) 的行列式 \(|A|=\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q12" value="A"> \(|A_1|+|A_2|\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q12" value="B"> \(|A_1||A_2|\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q12" value="C"> \(|A_1|^{|A_2|}\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q12" value="D"> \(0\)</label></li>
-    <li><div class="qt">行最简形矩阵的特征是（　）．</div>
+    <li><div class="qt">行最简形矩阵的特征是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q13" value="A"> 非零行首元为 1 且该列其余为 0</label>
       <label><b>B.</b> <input type="radio" name="hw2q13" value="B"> 必须是方阵</label>
       <label><b>C.</b> <input type="radio" name="hw2q13" value="C"> 主对角元全为 1</label>
       <label><b>D.</b> <input type="radio" name="hw2q13" value="D"> 所有元素非负</label></li>
-    <li><div class="qt">（考研真题）用初等行变换求逆时，构造的增广矩阵是（　）．</div>
+    <li><div class="qt">（考研真题）用初等行变换求逆时，构造的增广矩阵是（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q14" value="A"> \((A\mid A)\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q14" value="B"> \((E\mid A)\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q14" value="C"> \((A\mid E)\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q14" value="D"> \((E\mid E)\)</label></li>
-    <li><div class="qt">设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\)，则 \(A^*=\)（　）．</div>
+    <li><div class="qt">设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\)，则 \(A^*=\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q15" value="A"> \(\begin{pmatrix}1&-2\\[6pt]-3&4\end{pmatrix}\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q15" value="B"> \(\begin{pmatrix}4&2\\[6pt]3&1\end{pmatrix}\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q15" value="C"> \(\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)</label>
       <label><b>D.</b> <input type="radio" name="hw2q15" value="D"> \(\begin{pmatrix}-4&2\\[6pt]3&-1\end{pmatrix}\)</label></li>
-    <li><div class="qt">（考研真题）若 \(A^2=A\) 且 \(A\neq E\)，则 \(R(A)+R(A-E)=\)（　）．</div>
+    <li><div class="qt">（考研真题）若 \(A^2=A\) 且 \(A\neq E\)，则 \(R(A)+R(A-E)=\)（　）。</div>
       <label><b>A.</b> <input type="radio" name="hw2q16" value="A"> \(n\)</label>
       <label><b>B.</b> <input type="radio" name="hw2q16" value="B"> \(n-1\)</label>
       <label><b>C.</b> <input type="radio" name="hw2q16" value="C"> \(2n\)</label>
@@ -1248,73 +1336,73 @@ print("inv  =", M.inv())
 
   <div class="grp">二、填空题（10 题）</div>
   <ol>
-    <li>若 \(A=(a_{ij})_{2\times3}\)，\(B=(b_{ij})_{2\times3}\)，则 \(A+B\) 的第 \((i,j)\) 元为 ______．</li>
-    <li>设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\)，则 \(2A-3E=\) ______．</li>
-    <li>设 \(A\) 为 \(3\) 阶且 \(|A|=2\)，则 \(|2A|=\) ______，\(|A^{-1}|=\) ______．</li>
-    <li>若 \(A^T=A\) 且 \(A\) 为 \(3\) 阶，则 \(A\) 的独立元素个数为 ______．</li>
-    <li>设 \(\alpha=(1,2,3)^T\)，则 \(R(\alpha\alpha^T)=\) ______．</li>
-    <li>设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\)，则 \(A^*=\) ______．</li>
-    <li>若 \(A=\begin{pmatrix}1&1\\[6pt]0&1\end{pmatrix}\)，则 \(A^{10}=\) ______．</li>
-    <li>设 \(A\) 为 \(n\) 阶且 \(A^2=E\)，\(A\neq E\)，则 \(R(A+E)+R(A-E)=\) ______．</li>
-    <li>若 \(A\) 可逆，则 \((A^T)^{-1}=\) ______．</li>
-    <li>设 \(A=\begin{pmatrix}1&0&0\\[6pt]2&1&0\\[6pt]0&3&1\end{pmatrix}\)，则 \(|A|=\) ______，且 \(R(A)=\) ______．</li>
+    <li>若 \(A=(a_{ij})_{2\times3}\)，\(B=(b_{ij})_{2\times3}\)，则 \(A+B\) 的第 \((i,j)\) 元为 ______。</li>
+    <li>设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\)，则 \(2A-3E=\) ______。</li>
+    <li>设 \(A\) 为 \(3\) 阶且 \(|A|=2\)，则 \(|2A|=\) ______，\(|A^{-1}|=\) ______。</li>
+    <li>若 \(A^T=A\) 且 \(A\) 为 \(3\) 阶，则 \(A\) 的独立元素个数为 ______。</li>
+    <li>设 \(\alpha=(1,2,3)^T\)，则 \(R(\alpha\alpha^T)=\) ______。</li>
+    <li>设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\)，则 \(A^*=\) ______。</li>
+    <li>若 \(A=\begin{pmatrix}1&1\\[6pt]0&1\end{pmatrix}\)，则 \(A^{10}=\) ______。</li>
+    <li>设 \(A\) 为 \(n\) 阶且 \(A^2=E\)，\(A\neq E\)，则 \(R(A+E)+R(A-E)=\) ______。</li>
+    <li>若 \(A\) 可逆，则 \((A^T)^{-1}=\) ______。</li>
+    <li>设 \(A=\begin{pmatrix}1&0&0\\[6pt]2&1&0\\[6pt]0&3&1\end{pmatrix}\)，则 \(|A|=\) ______，且 \(R(A)=\) ______。</li>
   </ol>
 
   <div class="grp">三、计算题（12 题）</div>
   <ol>
-    <li>设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix},\ B=\begin{pmatrix}0&1\\[6pt]1&0\end{pmatrix}\)，求 \(A+B,\ 2A-3B,\ AB,\ BA\)．</li>
-    <li>设 \(A=\begin{pmatrix}1&1&1\\[6pt]0&1&1\\[6pt]0&0&1\end{pmatrix}\)，求 \(A^2,\ A^3\)．</li>
-    <li>设 \(\alpha=(1,2,3)^T,\ \beta=(4,5,6)^T\)，求 \(\alpha^T\beta\) 与 \(\alpha\beta^T\)．</li>
-    <li>求 \(A=\begin{pmatrix}1&2&3\\[6pt]2&1&2\\[6pt]3&2&1\end{pmatrix}\) 的转置与行列式．</li>
-    <li>用伴随矩阵法求 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\) 的逆．</li>
-    <li>用初等行变换求 \(A=\begin{pmatrix}1&2&3\\[6pt]2&1&2\\[6pt]1&3&2\end{pmatrix}\) 的逆．</li>
-    <li>设 \(A=\begin{pmatrix}2&2&0\\[6pt]2&1&3\\[6pt]0&1&0\end{pmatrix}\)，解方程 \((A-E)X=A\)．</li>
-    <li>求矩阵 \(A=\begin{pmatrix}1&-1&5&-1\\[6pt]1&1&-2&3\\[6pt]3&-1&8&1\\[6pt]1&3&-9&7\end{pmatrix}\) 的秩．</li>
-    <li>把矩阵 \(\begin{pmatrix}1&2&3\\[6pt]2&4&6\\[6pt]1&2&1\end{pmatrix}\) 化为行最简形并求秩．</li>
-    <li>设 \(A=\begin{pmatrix}1&0&0\\[6pt]0&2&0\\[6pt]0&0&3\end{pmatrix},\ B=\begin{pmatrix}1&0&0\\[6pt]0&0&1\\[6pt]0&1&0\end{pmatrix}\)，求分块积 \(AB\) 与 \(BA\)．</li>
-    <li>设 \(A=\begin{pmatrix}2&1&0&0\\[6pt]1&1&0&0\\[6pt]0&0&2&0\\[6pt]0&0&-1&3\end{pmatrix}\)，用分块法求 \(A^{-1}\)．</li>
-    <li>设 \(A=\begin{pmatrix}0&-1\\[6pt]1&0\end{pmatrix}\)，求 \(A^4\) 并说明其几何意义．</li>
+    <li>设 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix},\ B=\begin{pmatrix}0&1\\[6pt]1&0\end{pmatrix}\)，求 \(A+B,\ 2A-3B,\ AB,\ BA\)。</li>
+    <li>设 \(A=\begin{pmatrix}1&1&1\\[6pt]0&1&1\\[6pt]0&0&1\end{pmatrix}\)，求 \(A^2,\ A^3\)。</li>
+    <li>设 \(\alpha=(1,2,3)^T,\ \beta=(4,5,6)^T\)，求 \(\alpha^T\beta\) 与 \(\alpha\beta^T\)。</li>
+    <li>求 \(A=\begin{pmatrix}1&2&3\\[6pt]2&1&2\\[6pt]3&2&1\end{pmatrix}\) 的转置与行列式。</li>
+    <li>用伴随矩阵法求 \(A=\begin{pmatrix}1&2\\[6pt]3&4\end{pmatrix}\) 的逆。</li>
+    <li>用初等行变换求 \(A=\begin{pmatrix}1&2&3\\[6pt]2&1&2\\[6pt]1&3&2\end{pmatrix}\) 的逆。</li>
+    <li>设 \(A=\begin{pmatrix}2&2&0\\[6pt]2&1&3\\[6pt]0&1&0\end{pmatrix}\)，解方程 \((A-E)X=A\)。</li>
+    <li>求矩阵 \(A=\begin{pmatrix}1&-1&5&-1\\[6pt]1&1&-2&3\\[6pt]3&-1&8&1\\[6pt]1&3&-9&7\end{pmatrix}\) 的秩。</li>
+    <li>把矩阵 \(\begin{pmatrix}1&2&3\\[6pt]2&4&6\\[6pt]1&2&1\end{pmatrix}\) 化为行最简形并求秩。</li>
+    <li>设 \(A=\begin{pmatrix}1&0&0\\[6pt]0&2&0\\[6pt]0&0&3\end{pmatrix},\ B=\begin{pmatrix}1&0&0\\[6pt]0&0&1\\[6pt]0&1&0\end{pmatrix}\)，求分块积 \(AB\) 与 \(BA\)。</li>
+    <li>设 \(A=\begin{pmatrix}2&1&0&0\\[6pt]1&1&0&0\\[6pt]0&0&2&0\\[6pt]0&0&-1&3\end{pmatrix}\)，用分块法求 \(A^{-1}\)。</li>
+    <li>设 \(A=\begin{pmatrix}0&-1\\[6pt]1&0\end{pmatrix}\)，求 \(A^4\) 并说明其几何意义。</li>
   </ol>
 
   <div class="grp">四、证明题（8 题）</div>
   <ol>
-    <li>证明：若 \(A,B\) 为同型对称矩阵，则 \(A+B\) 仍为对称矩阵．</li>
-    <li>证明：对任意方阵 \(A\)，\(A+A^T\) 对称、\(A-A^T\) 反对称．</li>
-    <li>证明：\((AB)^T=B^TA^T\)．</li>
-    <li>证明：若 \(A\) 可逆，则 \((A^{-1})^T=(A^T)^{-1}\)，且 \((A^T)\) 可逆．</li>
-    <li>证明：若 \(A^2=A\)（幂等），则 \(R(A)+R(A-E)=n\)．</li>
-    <li>证明：若 \(AB=E\)（\(A,B\) 同阶方阵），则 \(A,B\) 都可逆且互为逆矩阵．</li>
-    <li>证明：\(R(AB)\le\min(R(A),R(B))\)．</li>
-    <li>设 \(A\) 为 \(n\) 阶且 \(R(A)=n-1\)，证明 \(R(A^*)=1\)．</li>
+    <li>证明：若 \(A,B\) 为同型对称矩阵，则 \(A+B\) 仍为对称矩阵。</li>
+    <li>证明：对任意方阵 \(A\)，\(A+A^T\) 对称、\(A-A^T\) 反对称。</li>
+    <li>证明：\((AB)^T=B^TA^T\)。</li>
+    <li>证明：若 \(A\) 可逆，则 \((A^{-1})^T=(A^T)^{-1}\)，且 \((A^T)\) 可逆。</li>
+    <li>证明：若 \(A^2=A\)（幂等），则 \(R(A)+R(A-E)=n\)。</li>
+    <li>证明：若 \(AB=E\)（\(A,B\) 同阶方阵），则 \(A,B\) 都可逆且互为逆矩阵。</li>
+    <li>证明：\(R(AB)\le\min(R(A),R(B))\)。</li>
+    <li>设 \(A\) 为 \(n\) 阶且 \(R(A)=n-1\)，证明 \(R(A^*)=1\)。</li>
   </ol>
 
   <div class="grp">五、应用与拓展（5 题）</div>
   <ol>
-    <li>用 Hill 密码：密钥 \(K=\begin{pmatrix}1&2&1\\[6pt]2&5&3\\[6pt]2&3&2\end{pmatrix}\)，把明文"CAT"（C=3,A=1,T=20）按列排成 \(3\times1\) 向量加密，再求 \(K^{-1}\) 还原（结果按模 26 归约）．</li>
-    <li>设图像像素矩阵 \(I=\begin{pmatrix}10&20\\[6pt]30&40\end{pmatrix}\)，作亮度调整 \(I' = 1.5I + 10\)（截断到 \([0,255]\)），写出结果矩阵．</li>
-    <li>某食物链可用 Leslie 矩阵 \(L=\begin{pmatrix}0&4&3\\[6pt]1/2&0&0\\[6pt]0&1/4&0\end{pmatrix}\) 描述，写出 \(x(k+1)=Lx(k)\) 的分量形式，并说明各元素的含义．</li>
-    <li>设权重矩阵 \(W=\begin{pmatrix}0.2&0.8\\[6pt]0.6&0.4\end{pmatrix}\)，输入向量 \(x=(1,1)^T\)，求输出 \(y=Wx\) 并解释其意义．</li>
-    <li>取 \(3\times3\) 灰度图 \(G=\begin{pmatrix}0&0&0\\[6pt]0&255&0\\[6pt]0&0&0\end{pmatrix}\)，说明用 Sobel 算子 \(G_x\)（见 §2.7 应用 1）在中心的卷积结果（只需写出中心 \(3\times3\) 块的相关计算）．</li>
+    <li>用 Hill 密码：密钥 \(K=\begin{pmatrix}1&2&1\\[6pt]2&5&3\\[6pt]2&3&2\end{pmatrix}\)，把明文"CAT"（C=3,A=1,T=20）按列排成 \(3\times1\) 向量加密，再求 \(K^{-1}\) 还原（结果按模 26 归约）。</li>
+    <li>设图像像素矩阵 \(I=\begin{pmatrix}10&20\\[6pt]30&40\end{pmatrix}\)，作亮度调整 \(I' = 1.5I + 10\)（截断到 \([0,255]\)），写出结果矩阵。</li>
+    <li>某食物链可用 Leslie 矩阵 \(L=\begin{pmatrix}0&4&3\\[6pt]1/2&0&0\\[6pt]0&1/4&0\end{pmatrix}\) 描述，写出 \(x(k+1)=Lx(k)\) 的分量形式，并说明各元素的含义。</li>
+    <li>设权重矩阵 \(W=\begin{pmatrix}0.2&0.8\\[6pt]0.6&0.4\end{pmatrix}\)，输入向量 \(x=(1,1)^T\)，求输出 \(y=Wx\) 并解释其意义。</li>
+    <li>取 \(3\times3\) 灰度图 \(G=\begin{pmatrix}0&0&0\\[6pt]0&255&0\\[6pt]0&0&0\end{pmatrix}\)，说明用 Sobel 算子 \(G_x\)（见 §2.7 应用 1）在中心的卷积结果（只需写出中心 \(3\times3\) 块的相关计算）。</li>
   </ol>
 
   <details><summary>参考答案（详细）</summary><div class="body">
-  <p><b>一、选择题</b>　1.D　2.D（\(AB\) 为 \(2\times2\)）　3.B（\(AB=BA\) 一般不成立，其余三条恒成立）　4.C（矩阵乘法无消去律）　5.B（考研真题，\(|kA|=k^n|A|\)）　6.A（考研真题）　7.B　8.D（考研真题，\(E(i,j)^{-1}=E(i,j)\) 等）　9.A（考研真题，\(R(A)+R(B)\le n\)）　10.A（考研真题，\(A\) 可逆则 \(R(A^*)=n\)）　11.A（左乘=行变换）　12.B（分块对角阵行列式为各块行列式之积）　13.A（见定义 2.23）　14.C（考研真题，\((A\mid E)\xrightarrow{r}(E\mid A^{-1})\)）　15.C（伴随阵 \(\begin{pmatrix}d&-b\\[6pt]-c&a\end{pmatrix}=\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)）　16.A（考研真题，幂等矩阵秩恒等式）．</p>
-  <p><b>二、填空题</b>　1. \(a_{ij}+b_{ij}\)　2. \(\begin{pmatrix}-1&4\\[6pt]6&5\end{pmatrix}\)　3. \(16,\ 1/2\)　4. \(6\)（上三角含对角线共 6 个）　5. \(1\)　6. \(\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)　7. \(\begin{pmatrix}1&10\\[6pt]0&1\end{pmatrix}\)　8. \(n\)　9. \((A^{-1})^T\)　10. \(1,\ 3\)．</p>
+  <p><b>一、选择题</b>　1.D　2.D（\(AB\) 为 \(2\times2\)）　3.B（\(AB=BA\) 一般不成立，其余三条恒成立）　4.C（矩阵乘法无消去律）　5.B（考研真题，\(|kA|=k^n|A|\)）　6.A（考研真题）　7.B　8.D（考研真题，\(E(i,j)^{-1}=E(i,j)\) 等）　9.A（考研真题，\(R(A)+R(B)\le n\)）　10.A（考研真题，\(A\) 可逆则 \(R(A^*)=n\)）　11.A（左乘=行变换）　12.B（分块对角阵行列式为各块行列式之积）　13.A（见定义 2.23）　14.C（考研真题，\((A\mid E)\xrightarrow{r}(E\mid A^{-1})\)）　15.C（伴随阵 \(\begin{pmatrix}d&-b\\[6pt]-c&a\end{pmatrix}=\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)）　16.A（考研真题，幂等矩阵秩恒等式）。</p>
+  <p><b>二、填空题</b>　1. \(a_{ij}+b_{ij}\)　2. \(\begin{pmatrix}-1&4\\[6pt]6&5\end{pmatrix}\)　3. \(16,\ 1/2\)　4. \(6\)（上三角含对角线共 6 个）　5. \(1\)　6. \(\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)　7. \(\begin{pmatrix}1&10\\[6pt]0&1\end{pmatrix}\)　8. \(n\)　9. \((A^{-1})^T\)　10. \(1,\ 3\)。</p>
   <p><b>三、计算题</b></p>
-  <p>1. \(A+B=\begin{pmatrix}1&3\\[6pt]4&4\end{pmatrix},\ 2A-3B=\begin{pmatrix}2&1\\[6pt]3&8\end{pmatrix},\ AB=\begin{pmatrix}2&1\\[6pt]4&3\end{pmatrix},\ BA=\begin{pmatrix}3&4\\[6pt]1&2\end{pmatrix}\)．</p>
-  <p>2. \(A^2=\begin{pmatrix}1&2&3\\[6pt]0&1&2\\[6pt]0&0&1\end{pmatrix},\ A^3=\begin{pmatrix}1&3&6\\[6pt]0&1&3\\[6pt]0&0&1\end{pmatrix}\)．</p>
-  <p>3. \(\alpha^T\beta=1\cdot4+2\cdot5+3\cdot6=32\)（数）；\(\alpha\beta^T=\begin{pmatrix}4&5&6\\[6pt]8&10&12\\[6pt]12&15&18\end{pmatrix}\)（秩 1）．</p>
-  <p>4. \(A^T=\begin{pmatrix}1&2&3\\[6pt]2&1&2\\[6pt]3&2&1\end{pmatrix}\)；\(|A|=1(1-4)-2(2-6)+3(4-3)=-3+8+3=8\)．</p>
-  <p>5. \(|A|=-2\)，\(A^*=\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)，\(A^{-1}=\frac12\begin{pmatrix}-4&2\\[6pt]3&-1\end{pmatrix}\)．</p>
-  <p>6. \(|A|=7\neq0\)．\((A\mid E)\xrightarrow{r}\big(E\mid A^{-1}\big)\)，得 \(A^{-1}=\dfrac{1}{7}\begin{pmatrix}-4&5&1\\[6pt]-2&-1&4\\[6pt]5&-1&-3\end{pmatrix}\)（可验证 \(AA^{-1}=E\)）．</p>
-  <p>7. \(X=(A-E)^{-1}A=\begin{pmatrix}-2&2&6\\[6pt]2&0&-3\\[6pt]2&-1&-3\end{pmatrix}\)．</p>
-  <p>8. 经行变换得两非零行，\(R(A)=2\)．</p>
-  <p>9. 行最简形 \(\begin{pmatrix}1&2&0\\[6pt]0&0&1\\[6pt]0&0&0\end{pmatrix}\)，\(R(A)=2\)．</p>
-  <p>10. \(AB=\begin{pmatrix}1&0&0\\[6pt]0&0&2\\[6pt]0&3&0\end{pmatrix},\ BA=\begin{pmatrix}1&0&0\\[6pt]0&0&3\\[6pt]0&2&0\end{pmatrix}\)．</p>
-  <p>11. 分块 \(A=\begin{pmatrix}A_1&O\\[6pt]O&A_2\end{pmatrix}\)，\(A_1^{-1}=\begin{pmatrix}1&-1\\[6pt]-1&2\end{pmatrix}\)，\(A_2^{-1}=\begin{pmatrix}1/2&0\\[6pt]1/6&1/3\end{pmatrix}\)，拼接得逆．</p>
-  <p>12. \(A^2=-E\)，故 \(A^4=E_2\)；几何意义为平面逆时针旋转 \(90^\circ\) 四次回到原位．</p>
-  <p><b>四、证明题</b>　均可用定义与前述性质完成：如第 3 题 \((AB)^T_{ij}=(AB)_{ji}=\sum_k a_{jk}b_{ki}=(B^TA^T)_{ij}\)；第 5、7、8 题用到 §2.6 性质 2.7；第 6 题由 \(|AB|=|A||B|=1\) 得 \(|A|\neq0\) 故可逆，再由 \(A^{-1}=A^{-1}(AB)=B\) 得证．</p>
-  <p><b>五、应用与拓展</b>　1. \(p=(3,1,20)^T\)，\(c=Kp=(3+2+20,\ 6+5+60,\ 6+3+40)^T=(25,71,49)^T\equiv(25,19,23)\pmod{26}\)（对应 Y,S,W）；\(K^{-1}=\begin{pmatrix}1&-1&1\\[6pt]2&0&-1\\[6pt]-4&1&1\end{pmatrix}\)，验证 \(K^{-1}c\equiv p\pmod{26}\)．　2. \(I'= \begin{pmatrix}25&40\\[6pt]55&70\end{pmatrix}\)．　3. 分量：\(x_1(k+1)=4x_2(k)+3x_3(k),\ x_2(k+1)=\tfrac12x_1(k),\ x_3(k+1)=\tfrac14x_2(k)\)．　4. \(y=(1.0,\ 1.0)^T\)（两神经元加权求和后输出均为 1）．　5. 中心块相关：\(G_x\) 与 \(3\times3\) 块（以中心 255 为核）卷积，水平方向左右差为 \(0\cdot(-1)+0\cdot1=0\) 等，结果体现中心高亮、四周暗的边缘响应．</p>
+  <p>1. \(A+B=\begin{pmatrix}1&3\\[6pt]4&4\end{pmatrix},\ 2A-3B=\begin{pmatrix}2&1\\[6pt]3&8\end{pmatrix},\ AB=\begin{pmatrix}2&1\\[6pt]4&3\end{pmatrix},\ BA=\begin{pmatrix}3&4\\[6pt]1&2\end{pmatrix}\)。</p>
+  <p>2. \(A^2=\begin{pmatrix}1&2&3\\[6pt]0&1&2\\[6pt]0&0&1\end{pmatrix},\ A^3=\begin{pmatrix}1&3&6\\[6pt]0&1&3\\[6pt]0&0&1\end{pmatrix}\)。</p>
+  <p>3. \(\alpha^T\beta=1\cdot4+2\cdot5+3\cdot6=32\)（数）；\(\alpha\beta^T=\begin{pmatrix}4&5&6\\[6pt]8&10&12\\[6pt]12&15&18\end{pmatrix}\)（秩 1）。</p>
+  <p>4. \(A^T=\begin{pmatrix}1&2&3\\[6pt]2&1&2\\[6pt]3&2&1\end{pmatrix}\)；\(|A|=1(1-4)-2(2-6)+3(4-3)=-3+8+3=8\)。</p>
+  <p>5. \(|A|=-2\)，\(A^*=\begin{pmatrix}4&-2\\[6pt]-3&1\end{pmatrix}\)，\(A^{-1}=\frac12\begin{pmatrix}-4&2\\[6pt]3&-1\end{pmatrix}\)。</p>
+  <p>6. \(|A|=7\neq0\)。\((A\mid E)\xrightarrow{r}\big(E\mid A^{-1}\big)\)，得 \(A^{-1}=\dfrac{1}{7}\begin{pmatrix}-4&5&1\\[6pt]-2&-1&4\\[6pt]5&-1&-3\end{pmatrix}\)（可验证 \(AA^{-1}=E\)）。</p>
+  <p>7. \(X=(A-E)^{-1}A=\begin{pmatrix}-2&2&6\\[6pt]2&0&-3\\[6pt]2&-1&-3\end{pmatrix}\)。</p>
+  <p>8. 经行变换得两非零行，\(R(A)=2\)。</p>
+  <p>9. 行最简形 \(\begin{pmatrix}1&2&0\\[6pt]0&0&1\\[6pt]0&0&0\end{pmatrix}\)，\(R(A)=2\)。</p>
+  <p>10. \(AB=\begin{pmatrix}1&0&0\\[6pt]0&0&2\\[6pt]0&3&0\end{pmatrix},\ BA=\begin{pmatrix}1&0&0\\[6pt]0&0&3\\[6pt]0&2&0\end{pmatrix}\)。</p>
+  <p>11. 分块 \(A=\begin{pmatrix}A_1&O\\[6pt]O&A_2\end{pmatrix}\)，\(A_1^{-1}=\begin{pmatrix}1&-1\\[6pt]-1&2\end{pmatrix}\)，\(A_2^{-1}=\begin{pmatrix}1/2&0\\[6pt]1/6&1/3\end{pmatrix}\)，拼接得逆。</p>
+  <p>12. \(A^2=-E\)，故 \(A^4=E_2\)；几何意义为平面逆时针旋转 \(90^\circ\) 四次回到原位。</p>
+  <p><b>四、证明题</b>　均可用定义与前述性质完成：如第 3 题 \((AB)^T_{ij}=(AB)_{ji}=\sum_k a_{jk}b_{ki}=(B^TA^T)_{ij}\)；第 5、7、8 题用到 §2.6 性质 2.7；第 6 题由 \(|AB|=|A||B|=1\) 得 \(|A|\neq0\) 故可逆，再由 \(A^{-1}=A^{-1}(AB)=B\) 得证。</p>
+  <p><b>五、应用与拓展</b>　1. \(p=(3,1,20)^T\)，\(c=Kp=(3+2+20,\ 6+5+60,\ 6+3+40)^T=(25,71,49)^T\equiv(25,19,23)\pmod{26}\)（对应 Y,S,W）；\(K^{-1}=\begin{pmatrix}1&-1&1\\[6pt]2&0&-1\\[6pt]-4&1&1\end{pmatrix}\)，验证 \(K^{-1}c\equiv p\pmod{26}\)。　2. \(I'= \begin{pmatrix}25&40\\[6pt]55&70\end{pmatrix}\)。　3. 分量：\(x_1(k+1)=4x_2(k)+3x_3(k),\ x_2(k+1)=\tfrac12x_1(k),\ x_3(k+1)=\tfrac14x_2(k)\)。　4. \(y=(1.0,\ 1.0)^T\)（两神经元加权求和后输出均为 1）。　5. 中心块相关：\(G_x\) 与 \(3\times3\) 块（以中心 255 为核）卷积，水平方向左右差为 \(0\cdot(-1)+0\cdot1=0\) 等，结果体现中心高亮、四周暗的边缘响应。</p>
   </div></details>
 </div>
 
@@ -1339,5 +1427,7 @@ print("inv  =", M.inv())
 <script src="app.js"></script>
 <script src="energy_bar.js"></script>
 <script src="section_quiz.js"></script>
+<script src="msgboard.js"></script>
+<script src="ux-enhancer.js"></script>
 </body>
 </html>
