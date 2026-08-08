@@ -41,62 +41,45 @@ window.addEventListener('DOMContentLoaded',function(){
     renderMathInElement(document.body,katexOpts);
     fixVdots(document.body);
 
-    // 用 requestAnimationFrame 把 children 分批渲染，避免单一大块阻塞主线程。
-    function renderChildrenIncremental(root, done){
+    // ===== 折叠块渲染策略（对齐高等数学数字教材：展开时再渲染，滚动期绝不预渲染）=====
+    // 关键教训：曾用 IntersectionObserver 在「滚动到距视口 200px」时静默预渲染，
+    // 结果后台渲染抢占主线程，造成滚动经过折叠块时卡顿。高数版只在「点开」时渲染，
+    // 滚动完全空闲，因此丝滑。此处采用同样思路，并改用 requestIdleCallback 按时间
+    // 预算分片（比高数一次性整体渲染更稳，百公式大块也不会卡）。
+    var idle=window.requestIdleCallback
+      ? function(cb){ return requestIdleCallback(cb,{timeout:200}); }
+      : function(cb){ return setTimeout(function(){ cb({timeRemaining:function(){return 8;}}); },16); };
+
+    function renderIncremental(root){
       var children=Array.prototype.slice.call(root.children).filter(function(c){ return c.tagName!=='SUMMARY'; });
-      var idx=0, BATCH=2; // 每帧最多处理 2 个直接子元素；实测每子元素通常 <25ms
-      function next(){
-        var start=performance.now();
-        while(idx<children.length){
-          renderMathInElement(children[idx], katexOpts);
-          fixVdots(children[idx]);
-          idx++;
-          // 如果本帧已用掉 >12ms，则让出主线程。
-          if((idx % BATCH)===0 && performance.now()-start>12){
-            requestAnimationFrame(next);
-            return;
-          }
+      var i=0;
+      function step(deadline){
+        var t0=performance.now();
+        while(i<children.length){
+          renderMathInElement(children[i], katexOpts);
+          fixVdots(children[i]);
+          i++;
+          // 用完本帧空闲预算就交还主线程，永不阻塞滚动/点击。
+          if(deadline && deadline.timeRemaining()<=0) break;
+          if(!deadline && performance.now()-t0>8) break;
         }
-        if(done) done();
+        if(i<children.length) idle(step);
       }
-      requestAnimationFrame(next);
+      idle(step);
     }
 
     lazyBlocks.forEach(function(d){
       var rendered=false;
-      function ensureRender(){
-        if(rendered) return;
+      function onToggle(){
+        if(!d.open) return;            // 收起：不做任何事
+        if(rendered) return;           // 只渲染一次
         rendered=true;
         d.classList.remove('katex-lazy');
-        renderChildrenIncremental(d);
+        d.removeEventListener('toggle',onToggle);
+        renderIncremental(d);          // 点开才渲染，由浏览器空闲时间驱动
       }
-      // 用户点击展开时，若还没预渲染，则分片渲染。
-      d.addEventListener('toggle', function(){
-        if(d.open) ensureRender();
-      });
-      d._ensureRender=ensureRender;
+      d.addEventListener('toggle',onToggle);
     });
-
-    // 预渲染：页面加载后，当折叠块接近视口 200px 时提前开始渲染，
-    // 这样学生正常滚动到该区域再点开时，公式已经准备好了。
-    var io=('IntersectionObserver' in window)
-      ? new IntersectionObserver(function(entries){
-          entries.forEach(function(e){
-            if(e.isIntersecting && e.target._ensureRender){
-              e.target._ensureRender();
-              io.unobserve(e.target);
-            }
-          });
-        }, {rootMargin:'200px 0px 200px 0px', threshold:0})
-      : null;
-    if(io){
-      lazyBlocks.forEach(function(d){ io.observe(d); });
-    } else {
-      // 回退：不支持 IntersectionObserver 的浏览器在页面完全加载后整体预渲染
-      if('requestIdleCallback' in window){
-        requestIdleCallback(function(){ lazyBlocks.forEach(function(d){ d._ensureRender(); }); }, {timeout:2000});
-      }
-    }
   }
 if(document.getElementById('cv')){ updateDet(); drawProp(); }
 });
