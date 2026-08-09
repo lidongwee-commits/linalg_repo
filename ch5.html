@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="weaknotes.css">
+<link rel="stylesheet" href="tower.css">
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 </head>
@@ -18,6 +19,7 @@
 <h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
 <div class="sub">交互式数字教材</div>
 <div id="eb-slot"></div>
+<div id="tower-slot"></div>
 <a href="index.html" style="background:#1b3547;color:#fff">← 教材目录</a>
 <div class="ch">第1章 · 行列式</div>
 <a href="ch1.html">整章</a>
@@ -535,6 +537,16 @@
   \[f=\lambda_1y_1^2+\lambda_2y_2^2+\cdots+\lambda_ny_n^2,\]
   其中 \(\lambda_1,\dots,\lambda_n\) 是 \(A\) 的特征值，\(P\) 的列是 \(A\) 的对应正交单位特征向量．</p></div>
 <p class="muted">步骤：(1) 求 \(A\) 的特征值；(2) 对每个特征值求正交单位特征向量（重根用施密特正交化）；(3) 以这些向量为列构成正交阵 \(P\)，即得正交变换．</p>
+<details class="prf"><summary>证明</summary>
+  <div class="body">
+    <p>二次型 \(f=x^TAx\) 的矩阵 \(A\) 必为实对称阵（由定义 \(a_{ij}=a_{ji}\)），故由定理 5.8（谱定理），存在正交阵 \(P\) 使
+    \[P^{-1}AP=P^TAP=\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_n),\]
+    其中 \(\lambda_1,\dots,\lambda_n\) 是 \(A\) 的全部特征值，而 \(P\) 的列 \(p_1,\dots,p_n\) 是两两正交的单位特征向量（\(Ap_i=\lambda_i p_i\)）．</p>
+    <p>令 \(x=Py\)（正交变换满足 \(P^{-1}=P^T\)），代入二次型：
+    \[f=x^TAx=(Py)^TA(Py)=y^T(P^TAP)y=y^T\Lambda y=\lambda_1y_1^2+\cdots+\lambda_ny_n^2.\]
+    标准形得证，且其系数恰为 \(A\) 的特征值、变换矩阵的列恰为对应的正交单位特征向量．□</p>
+  </div>
+</details>
 
 <div class="ex"><div class="lab">例 5.12　正交变换化标准形</div>
   <div class="stmt">用正交变换将 \(f(x_1,x_2,x_3)=2x_1x_2+2x_1x_3+2x_2x_3\) 化为标准形。</div>
@@ -590,9 +602,21 @@
 <p>设实二次型 \(f=x^TAx\) 的秩为 \(r\)，经两个实可逆变换 \(x=Cy\) 与 \(x=Pz\) 分别化为
   \[f=k_1y_1^2+\cdots+k_ry_r^2\quad(k_i\neq0),\qquad f=\lambda_1z_1^2+\cdots+\lambda_rz_r^2\quad(\lambda_i\neq0),\]
   则 \(k_1,\dots,k_r\) 中正数的个数与 \(\lambda_1,\dots,\lambda_r\) 中正数的个数相等（从而负数个数也相等）．</p>
-<details><summary>证明（思路＋关键步骤，实质完整）</summary><div class="body"><p>记正平方项个数为 \(p\)、负平方项个数为 \(q=r-p\)．假设另一次标准形有 \(s\) 个正项、\(r-s\) 个负项．由 \(x=Cy\) 与 \(x=Pz\) 得 \(z=P^{-1}Cy=Qy\)，即两个标准形通过变量替换相联系．</p>
-  <p><b>关键步骤（反证）：</b>设 \(p>s\)．考虑第一组标准形中使 \(y_{p+1}=\cdots=y_r=0\) 的"正子空间" \(V_+\)（维数 \(p\)）与第二组标准形中令 \(z_1=\cdots=z_s=0\) 的"非正子空间" \(W\)（维数 \(n-s\)）．因 \(p>s\)，有 \(p+(n-s)=n+(p-s)>n\)，故 \(V_+\cap W\neq\{0\}\)，存在非零向量同时属于两者．在该向量上，第一组给出 \(f>0\)（只有正平方项非零），第二组给出 \(f\le0\)（正平方项全为 \(0\)），矛盾．同理 \(s>p\) 亦矛盾，故 \(p=s\)．证毕．</p>
-  <p>该证明的核心是"维数论证"：两个互补符号的子空间维数之和超过 \(n\) 则必有非零交，从而导出矛盾．这是惯性定理最经典的证明路线．</p></div></details></div>
+<details class="prf"><summary>证明</summary><div class="body">
+  <p>记第一组标准形的正平方项个数为 \(p\)、负平方项个数为 \(q=r-p\)；设第二组标准形的正平方项个数为 \(s\)、负平方项个数为 \(r-s\)．由 \(x=Cy\) 与 \(x=Pz\) 消去 \(x\) 得 \(z=P^{-1}Cy=Qy\)，即两组标准形通过<b>可逆</b>变量替换 \(z=Qy\) 相联系．</p>
+  <p><b>构造两个子空间．</b>令
+  \[V_+=\{x\in\mathbb R^n\mid \text{在 }y\text{ 坐标下 }y_{p+1}=\cdots=y_n=0\},\qquad
+  W=\{x\in\mathbb R^n\mid \text{在 }z\text{ 坐标下 }z_1=\cdots=z_s=0\}.\]
+  由于变量替换可逆，坐标刻画即几何子空间：\(V_+\) 由 \(y_1,\dots,y_p\) 对应的向量张成，\(\dim V_+=p\)；\(W\) 剩 \(z_{s+1},\dots,z_n\) 共 \(n-s\) 个自由坐标，\(\dim W=n-s\)．</p>
+  <p><b>反证（维数论证）．</b>若 \(p>s\)，则
+  \[\dim(V_+\cap W)\ge\dim V_++\dim W-n=p+(n-s)-n=p-s>0,\]
+  故存在非零向量 \(x_0\in V_+\cap W\)．在 \(x_0\) 处：由第一组标准形，\(y_{p+1}=\cdots=y_n=0\) 且 \(y_1,\dots,y_p\) 不全为零（否则 \(x_0=0\)），故
+  \[f(x_0)=k_1y_1^2+\cdots+k_py_p^2>0;\]
+  而由第二组标准形，\(z_1=\cdots=z_s=0\)，剩下全是负平方项或零项，故
+  \[f(x_0)=\lambda_{s+1}z_{s+1}^2+\cdots+\lambda_rz_r^2\le0.\]
+  同一向量处的函数值既大于 0 又不大于 0，矛盾．</p>
+  <p>若 \(s>p\)，交换两组标准形的地位重复上述论证，同样导出矛盾．故 \(p=s\)，负平方项个数 \(q=r-p=r-s\) 也相等．□</p>
+</div></details></div>
 
 <div class="def"><div class="lab"><span class="n">定义 5.6</span>正/负惯性指数与符号差</div>
 <p>秩为 \(r\) 的实二次型，其标准形中正平方项的个数 \(p\) 称为<strong>正惯性指数</strong>，负平方项的个数 \(q\) 称为<strong>负惯性指数</strong>；\(p-q=2p-r\) 称为<strong>符号差</strong>．</p></div>
@@ -602,6 +626,17 @@
 <p>任意实二次型总可经可逆线性变换化为唯一的规范形；等价地，任意 \(n\) 阶实对称阵 \(A\) 合同于
   \[\begin{pmatrix}E_p&&\\&-E_{r-p}&\\&&O\end{pmatrix},\]
   其中 \(r=R(A)\)，\(p\) 为正特征值个数（重根按重数计）．</p></div>
+<details class="prf"><summary>证明</summary>
+  <div class="body">
+    <p><b>存在性（必可化为规范形）．</b>由配方法（§5.4 一）或主轴定理（定理 5.10），\(f\) 总可经可逆线性变换化为标准形
+    \[f=d_1y_1^2+\cdots+d_ry_r^2\qquad(d_i\neq0,\ r=R(A)).\]
+    再作可逆变换 \(y_i=\dfrac{z_i}{\sqrt{|d_i|}}\ (i=1,\dots,r)\)，各系数化为 \(\dfrac{d_i}{|d_i|}=\pm1\)，即得规范形——规范形<b>存在</b>．</p>
+    <p><b>唯一性．</b>由惯性定理（定理 5.11），无论经何种实可逆变换化为标准形，正平方项个数 \(p\) 与负平方项个数 \(q=r-p\) 都不变；而规范形完全由 \(r\) 与 \(p\) 两个数决定（对角线上 \(p\) 个 \(1\)、\(q\) 个 \(-1\)，其余为 \(0\)），故规范形<b>唯一</b>．</p>
+    <p><b>合同标准形．</b>把"经可逆变换 \(x=Cy\) 化为规范形"翻译成矩阵语言，即
+    \[A=C^{T}\begin{pmatrix}E_p&&\\&-E_{r-p}&\\&&O\end{pmatrix}C,\]
+    换言之 \(A\) 与右侧矩阵<b>合同</b>．其中 \(r=R(A)\)；又由主轴定理，标准形的系数可取为特征值，故正惯性指数 \(p\) 恰为正特征值的个数（重根按重数计）．□</p>
+  </div>
+</details>
 
 <div class="hist"><div class="lab">数学家小传 · Sylvester 与惯性定理</div>
   <p>英国数学家 <b>Sylvester（西尔维斯特，1814—1897）</b> 在研析二次曲线、二次曲面的分类时，提出了"惯性定理"——标准形中正、负平方项的个数在实可逆变换下保持不变．他也是"matrix（矩阵）"一词的创造者，并与 Cayley 共同奠定了矩阵理论．惯性定理后来被 Jacobi 重新发现并证明，成为二次型理论的基石．</p>
@@ -634,9 +669,16 @@
 
 <div class="def"><div class="lab"><span class="n">定理 5.14</span>正定的标准形判别</div>
 <p>\(n\) 元实二次型 \(f=x^TAx\) 正定 \(\iff\) 其标准形的 \(n\) 个系数全为正，即 \(f\) 的正惯性指数等于 \(n\)．</p>
-<details><summary>证明</summary><div class="body"><p>设可逆变换 \(x=Cy\) 使 \(f=d_1y_1^2+\cdots+d_ny_n^2\)．因 \(C\) 可逆，对任意 \(x\neq0\) 有 \(y=C^{-1}x\neq0\)，从而
-  \[f(x)=d_1y_1^2+\cdots+d_ny_n^2>0\quad(\forall x\neq0)\]
-  等价于每个 \(d_i>0\ (i=1,\dots,n)\)，即正惯性指数为 \(n\)．</p></div></details></div>
+<details class="prf"><summary>证明</summary><div class="body">
+  <p>设可逆变换 \(x=Cy\) 使 \(f=d_1y_1^2+\cdots+d_ny_n^2\)．</p>
+  <p><b>充分性．</b>若所有 \(d_i>0\)，则对任意 \(x\neq0\)，因 \(C\) 可逆有 \(y=C^{-1}x\neq0\)，故至少一个 \(y_i\neq0\)，于是
+  \[f(x)=d_1y_1^2+\cdots+d_ny_n^2>0,\]
+  即 \(f\) 正定．</p>
+  <p><b>必要性（反证）．</b>若某个 \(d_k\le0\)，取 \(y=e_k\)（第 \(k\) 个标准基向量），则 \(x=Ce_k\neq0\)（\(C\) 可逆），但
+  \[f(x)=d_k\le0,\]
+  与 \(f\) 正定矛盾．故 \(f\) 正定必推出所有 \(d_i>0\)．</p>
+  <p>系数全为正，即标准形中既无负项也无零项，等价于正惯性指数为 \(n\)（此时秩亦为 \(n\)）．□</p>
+</div></details></div>
 
 <div class="def"><div class="lab"><span class="n">推论 5.5</span>特征值判据</div>
 <p>实对称阵 \(A\) 正定 \(\iff\) \(A\) 的全部特征值均为正数．</p>
@@ -657,8 +699,19 @@
   \[a_{11}>0,\quad
   \begin{vmatrix}a_{11}&a_{12}\\a_{21}&a_{22}\end{vmatrix}>0,\quad\cdots,\quad
   \begin{vmatrix}a_{11}&\cdots&a_{1n}\\\vdots&&\vdots\\a_{n1}&\cdots&a_{nn}\end{vmatrix}>0.\]
-  （证明从略，但其核心特例"特征值全正 \(\Rightarrow\) 正定"已在推论 5.5 中完整证明；顺序主子式全正与特征值全正等价可由合同标准形与行列式乘法链推出．）</p>
-<details><summary>关键步骤补充</summary><div class="body"><p>若 \(A\) 正定，则对前 \(k\) 个变量作同样的二次型必正定，故其顺序主子式对应的 \(k\) 阶主子阵也正定，行列式 \(>0\)（推论 5.7）．反之，若各阶顺序主子式全正，可对 \(n\) 用归纳法构造分解 \(A=C^TDC\)（\(D\) 对角且对角元为正），故 \(A\) 与 \(E\) 合同，从而正定．这里"各阶顺序主子式全正"是判定正定性最常用、最易计算的代数准则．</p></div></details></div>
+  （完整证明见下方折叠块；另注意核心特例"特征值全正 \(\Rightarrow\) 正定"已在推论 5.5 中给出．）</p>
+<details class="prf"><summary>证明</summary><div class="body">
+  <p><b>必要性：正定 \(\Rightarrow\) 各阶顺序主子式全正．</b>对每个 \(k\ (1\le k\le n)\)，把任意非零的 \(k\) 维向量 \(\tilde x\) 补零成 \(n\) 维向量 \(x=(\tilde x,0,\dots,0)^T\neq0\)，由 \(f\) 正定得
+  \[\tilde x^TA_k\tilde x=x^TAx>0,\]
+  其中 \(A_k\) 是 \(A\) 的前 \(k\) 行前 \(k\) 列组成的顺序主子阵．故 \(A_k\) 正定，由推论 5.7 有 \(|A_k|>0\)．令 \(k=1,2,\dots,n\)，即得各阶顺序主子式全正．</p>
+  <p><b>充分性：各阶顺序主子式全正 \(\Rightarrow\) 正定．</b>对阶数 \(n\) 作数学归纳法．\(n=1\) 时 \(a_{11}>0\) 显然成立．设 \(n-1\) 阶情形成立，把 \(A\) 分块为
+  \[A=\begin{pmatrix}A_{n-1}&\alpha\\ \alpha^T&a_{nn}\end{pmatrix},\qquad \alpha=(a_{1n},\dots,a_{n-1,n})^T.\]
+  因 \(\Delta_{n-1}=|A_{n-1}|>0\)，\(A_{n-1}\) 可逆；作合同变换消去"尾巴"：
+  \[\begin{pmatrix}E&O\\-\alpha^TA_{n-1}^{-1}&1\end{pmatrix} \begin{pmatrix}A_{n-1}&\alpha\\ \alpha^T&a_{nn}\end{pmatrix} \begin{pmatrix}E&-A_{n-1}^{-1}\alpha\\O&1\end{pmatrix}=\begin{pmatrix}A_{n-1}&O\\O&c_n\end{pmatrix},\]
+  其中 \(c_n=a_{nn}-\alpha^TA_{n-1}^{-1}\alpha\) 为该分块的 Schur 补．两边取行列式，注意两侧矩阵的行列式分别为 \(\Delta_n\) 与 \(\Delta_{n-1}\cdot c_n\)，故
+  \[c_n=\frac{\Delta_n}{\Delta_{n-1}}>0.\]
+  由归纳假设 \(A_{n-1}\) 正定（合同于 \(E_{n-1}\)），又 \(c_n>0\)，故 \(\operatorname{diag}(A_{n-1},c_n)\) 合同于 \(\operatorname{diag}(E_{n-1},1)=E_n\)，从而 \(A\) 合同于 \(E_n\)，由推论 5.6 知 \(A\) 正定．归纳完成．□</p>
+</div></details></div>
 
 <div class="ex"><div class="lab">例 5.16　顺序主子式判别</div>
   <div class="stmt">判断 \(A=\begin{pmatrix}2&1&0\\1&2&1\\0&1&2\end{pmatrix}\) 是否正定。</div>
@@ -1069,7 +1122,11 @@ print("正定?", is_pos_def([[2,1,0],[1,2,1],[0,1,2]]))   # True
     </footer>
   </div></div>
 </div>
+<script>window.TOWER_BOOK='linalg';</script>
+<script src="tower.js" defer></script>
+<script src="lastread.js"></script>
 <script src="app.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
 <script src="energy_bar.js"></script>
 <script src="section_quiz.js"></script>
 <script src="msgboard.js"></script>

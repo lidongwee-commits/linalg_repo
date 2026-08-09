@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="weaknotes.css">
+<link rel="stylesheet" href="tower.css">
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 </head>
@@ -18,6 +19,7 @@
 <h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
 <div class="sub">交互式数字教材</div>
 <div id="eb-slot"></div>
+<div id="tower-slot"></div>
 <a href="index.html" style="background:#1b3547;color:#fff">← 教材目录</a>
 <div class="ch">第1章 · 行列式</div>
 <a href="ch1.html">▸ 整章</a>
@@ -330,7 +332,25 @@
       <b>性质 4</b>　若某行（列）的元素都是两数之和，则行列式可按该行（列）拆成两个行列式之和．<br>
       <b>性质 5</b>　把某行（列）的 \(k\) 倍加到另一行（列）上，行列式的值不变．</p>
     </div>
-    <p class="muted">以上性质均可由定义与数学归纳法证明，本教材不展开证明，而是为最常用的四条各配一个<b>三阶数值验证</b>，供读者建立具体感受．</p>
+    <p class="muted">以下折叠块基于 §1.1 的递归定义给出性质 1—5 的证明（"摊平"论证 + 数学归纳法）；其后另配四条<b>三阶数值验证</b>，供读者建立具体感受．</p>
+    <details class="prf"><summary>性质 1—5 的证明</summary>
+      <div class="body">
+        <p><b>预备：把递归定义"摊平"．</b>对 \(D\) 按第一行逐层递归展开，最终得到 \(n!\) 个"每行每列各取一个元素"的乘积之和，且每一项的符号恰为该乘积诸因子所在列构成的排列的逆序数的奇偶性，即
+        \[|D|=\sum_{\sigma\in S_n}(-1)^{\tau(\sigma)}\,a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)},\]
+        其中 \(\tau(\sigma)\) 是排列 \(\sigma=(\sigma(1),\dots,\sigma(n))\) 的逆序数．这一点可用归纳法验证：按第一行展开时，第 \(j\) 项乘以 \((-1)^{1+j}\) 后，再把余子式 \(M_{1j}\) 中的因子按行列次序接在 \(a_{1j}\) 之后，恰好把 \(j\) 与其前各数之间的逆序关系逐层累积成 \(\tau(\sigma)\)．以下性质均以此式为基础．</p>
+        <p><b>性质 1（转置不变）．</b>对 \(D^{T}\) 同样摊平，其第 \(i\) 行第 \(j\) 列元素是 \(a_{ji}\)，故
+        \[|D^{T}|=\sum_{\sigma\in S_n}(-1)^{\tau(\sigma)}\,a_{\sigma(1),1}a_{\sigma(2),2}\cdots a_{\sigma(n),n}.\]
+        令 \(\rho=\sigma^{-1}\)（把因子下标 \(\sigma(i)\) 与 \(i\) 对调）：\(a_{\sigma(i),i}=a_{\sigma(i),(\sigma^{-1}\circ\sigma)(i)}=a_{\rho(\sigma(i)),\sigma(i)}\)，于是乘积恰为 \(a_{1\rho(1)}a_{2\rho(2)}\cdots a_{n\rho(n)}\)，且取逆不改变逆序数（\(\tau(\sigma^{-1})=\tau(\sigma)\)，因逆序对一一对应）．故
+        \[|D^{T}|=\sum_{\rho\in S_n}(-1)^{\tau(\rho)}\,a_{1\rho(1)}a_{2\rho(2)}\cdots a_{n\rho(n)}=|D|.\]
+        由此，"凡对行成立的结论，对列同样成立"即可直接沿用．</p>
+        <p><b>性质 2（互换两行变号）．</b>先看<b>相邻</b>两行：交换第 \(i\) 与第 \(i+1\) 行后，摊平式中每一项的因子顺序相当于被对换 \((i\ i+1)\) 打乱——新排列 \(\rho=\sigma\circ(i\ i+1)\) 恰比 \(\sigma\) 多一次对换，逆序数奇偶性改变，故每一项都变号，整个行列式变号．一般情形：把第 \(i\) 行移到第 \(j\) 行，等价于第 \(i\) 行先逐个越过中间各行（\(|i-j|\) 次相邻互换），再让原第 \(j\) 行反向逐个越过（\(|i-j|-1\) 次），共 \(2|i-j|-1\) 次相邻互换，是<b>奇数</b>，故仍变号．</p>
+        <p><span class="muted">推论（两行相同则零）：</span>交换这两行，行列式本身没有任何变化，但由性质 2 又应变号，故 \(D=-D\)，即 \(D=0\)．</p>
+        <p><b>性质 3（某行同乘 \(k\)）．</b>摊平式中每一项恰含第 \(i\) 行的一个因子 \(a_{i\sigma(i)}\)；把第 \(i\) 行全体元素乘 \(k\)，即每个这样的因子都乘 \(k\)，于是每一项都乘 \(k\)，整体提出 \(k\) 即可．</p>
+        <p><span class="muted">推论：</span>整行（列）的公因子可提到行列式记号之外；某行（列）全为零即提出公因子 \(0\)，故 \(D=0\)；两行（列）对应成比例 \(a_{j\sigma(j)}=k\,a_{i\sigma(j)}\;(\forall j)\) 时，提出 \(k\) 后两行（列）相同，由性质 2 的推论得 \(D=0\)．</p>
+        <p><b>性质 4（按行拆分）．</b>若第 \(i\) 行元素 \(a_{ij}=b_{ij}+c_{ij}\)，则摊平式中每一项的因子 \(a_{i\sigma(i)}\) 都拆成 \(b_{i\sigma(i)}+c_{i\sigma(i)}\)，展开后所有含 \(b\) 因子的项恰好组成"以 \(b_{ij}\) 为第 \(i\) 行"的行列式，含 \(c\) 因子的项组成"以 \(c_{ij}\) 为第 \(i\) 行"的行列式，故原行列式等于二者之和．</p>
+        <p><b>性质 5（倍加不变）．</b>把第 \(j\) 行的 \(k\) 倍加到第 \(i\) 行上，由性质 4 可拆成两个行列式之和：前者即原行列式，后者是"第 \(i\) 行恰为第 \(j\) 行的 \(k\) 倍"的行列式；由性质 3 提出 \(k\) 后两行相同，由性质 2 的推论其为 0．故行列式的值不变．□</p>
+      </div>
+    </details>
 
     <details class="demo"><summary>数值验证 · 性质 1：\(D=D^{T}\)</summary>
       <div class="body">
@@ -905,7 +925,11 @@
     </footer>
   </div></div>
 </div>
+<script>window.TOWER_BOOK='linalg';</script>
+<script src="tower.js" defer></script>
+<script src="lastread.js"></script>
 <script src="app.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
 <script src="energy_bar.js"></script>
 <script src="section_quiz.js"></script>
 <script src="msgboard.js"></script>

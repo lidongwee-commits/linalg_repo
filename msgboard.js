@@ -18,7 +18,7 @@
   }
   function pageId() {
     var f = location.pathname.split('/').pop().replace(/\.html?$/, '');
-    return 'linalg-' + (f || 'home');
+    return f || 'home';
   }
   function nowStr() { return new Date().toLocaleString('zh-CN'); }
   function avatarColor(name) {
@@ -246,6 +246,4 @@
 
     loadComments();
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ if (window.initMsgBoard) window.initMsgBoard(); });
-  else if (window.initMsgBoard) window.initMsgBoard();
 })();

@@ -26,8 +26,19 @@
   var STREAK_BONUS = 5;      // 连续学习连击奖励（每天一次）
 
   var CHAPTERS = [
-    { ch: 1, name: '行列式' }, { ch: 2, name: '矩阵' }, { ch: 3, name: '向量组' },
-    { ch: 4, name: '方程组' }, { ch: 5, name: '二次型' }
+    { ch: 1,  name: '函数与极限' },
+    { ch: 2,  name: '极限与连续' },
+    { ch: 3,  name: '微分中值定理与导数应用' },
+    { ch: 4,  name: '不定积分' },
+    { ch: 5,  name: '定积分' },
+    { ch: 6,  name: '定积分的应用' },
+    { ch: 7,  name: '微分方程' },
+    { ch: 8,  name: '向量代数与空间解析几何' },
+    { ch: 9,  name: '多元函数微分法及其应用' },
+    { ch: 10, name: '重积分' },
+    { ch: 11, name: '曲线积分与曲面积分' },
+    { ch: 12, name: '无穷级数' },
+    { ch: 13, name: '傅里叶级数' }
   ];
   var STAGES = [
     { at: 0,   name: '萌芽', icon: '🌱' }, { at: 20,  name: '生长', icon: '🌿' },
@@ -56,7 +67,7 @@
     var u = '';
     try { u = localStorage.getItem(LS_UID) || ''; } catch (e) {}
     if (!u) {
-      u = 'linalg-' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+      u = 'gdsx-' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
       try { localStorage.setItem(LS_UID, u); } catch (e) {}
     }
     return u;
@@ -104,6 +115,18 @@
     ['lastDay', 'streakBonusDay', 'lastGainDay', 'todayGain'].forEach(function (k) {
       if (d[k] !== undefined && (!cur[k] || d[k] > cur[k])) cur[k] = d[k];
     });
+    // 知识之塔数据（手迹/盲盒/对话/称号）：取并集合并（跨设备同步）
+    if (d.tower && typeof d.tower === 'object') {
+      if (!cur.tower) cur.tower = {};
+      ['relics', 'blind', 'dialog', 'titles'].forEach(function (k) {
+        if (d.tower[k] && typeof d.tower[k] === 'object') {
+          if (!cur.tower[k]) cur.tower[k] = {};
+          Object.keys(d.tower[k]).forEach(function (ch) {
+            if (cur.tower[k][ch] === undefined) cur.tower[k][ch] = d.tower[k][ch];
+          });
+        }
+      });
+    }
     save(cur);
     render();
   }
@@ -196,6 +219,9 @@
 
   var detailOpen = false;
   function buildUI() {
+    // 最小模式：数据引擎照跑（计分/掌握度/云同步），不渲染独立 UI
+    // （能量展示已由「知识之塔」面板接管：能量=勇士等级，与塔同一套叙事）
+    if (window.EB_MINIMAL === true) return;
     if (document.getElementById('eb-chip')) return;
 
     var chip = document.createElement('div');
@@ -237,7 +263,7 @@
       '</div>' +
       '<div class="eb-chs" id="eb-chs"></div>' +
       '<div class="eb-sync">' +
-        '<div class="eb-gh-title">云端同步</div>' +
+        '<div class="eb-gh-title">数据同步</div>' +
         '<p class="eb-sync-tip">进度已自动云端同步。换设备 / 换浏览器时，用「同步码」一键带走能量与掌握度。</p>' +
         '<div class="eb-sync-row">' +
           '<button class="eb-btn" id="eb-sync-gen" type="button">我的同步码</button>' +
@@ -247,16 +273,6 @@
         '<textarea id="eb-sync-in" placeholder="粘贴另一台设备的同步码"></textarea>' +
         '<button class="eb-btn" id="eb-sync-imp" type="button">导入同步码</button>' +
         '<div class="eb-sync-msg" id="eb-sync-msg"></div>' +
-        '<div class="eb-gh-title" style="margin-top:14px">离线备份</div>' +
-        '<p class="eb-sync-tip">无网络时，也可导出「备份码」用微信文件传输助手发给另一台设备，再导入恢复（与云端同步并存）。</p>' +
-        '<div class="eb-sync-row">' +
-          '<button class="eb-btn" id="eb-off-gen" type="button">导出备份码</button>' +
-          '<button class="eb-btn" id="eb-off-copy" type="button" hidden>复制</button>' +
-        '</div>' +
-        '<textarea id="eb-off-out" readonly hidden></textarea>' +
-        '<textarea id="eb-off-in" placeholder="粘贴备份码"></textarea>' +
-        '<button class="eb-btn" id="eb-off-imp" type="button">导入备份</button>' +
-        '<div class="eb-sync-msg" id="eb-off-msg"></div>' +
       '</div>';
     document.body.appendChild(detail);
 
@@ -301,41 +317,10 @@
         });
       }
     })();
-
-    // 离线备份码（base64，无网络也可带走数据）—— 严格超过高数版（高数仅有云端同步）
-    (function () {
-      function encodeStudyLocal() {
-        try { return 'EBS1.' + btoa(unescape(encodeURIComponent(JSON.stringify(load())))); }
-        catch (e) { return ''; }
-      }
-      function decodeStudyLocal(code) {
-        code = (code || '').trim();
-        if (code.indexOf('EBS1.') !== 0) throw new Error('格式不对，请检查备份码');
-        return JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));
-      }
-      var genBtn = document.getElementById('eb-off-gen');
-      var copyBtn = document.getElementById('eb-off-copy');
-      var outTa = document.getElementById('eb-off-out');
-      var inTa = document.getElementById('eb-off-in');
-      var impBtn = document.getElementById('eb-off-imp');
-      var msg = document.getElementById('eb-off-msg');
-      if (genBtn) genBtn.addEventListener('click', function () {
-        outTa.value = encodeStudyLocal(); outTa.hidden = false; copyBtn.hidden = false;
-        if (msg) msg.textContent = '复制后通过微信「文件传输助手」发给另一台设备，或手动保存。';
-      });
-      if (copyBtn) copyBtn.addEventListener('click', function () {
-        outTa.select();
-        try { document.execCommand('copy'); if (msg) msg.textContent = '已复制到剪贴板'; }
-        catch (e) { if (msg) msg.textContent = '复制失败，请手动复制上方文本框'; }
-      });
-      if (impBtn) impBtn.addEventListener('click', function () {
-        try { mergeStudy(decodeStudyLocal(inTa.value)); if (msg) msg.textContent = '能量与掌握度已合并导入'; }
-        catch (e) { if (msg) msg.textContent = e.message || '导入失败'; }
-      });
-    })();
   }
 
   function render() {
+    if (window.EB_MINIMAL === true) return; // 塔面板已接管渲染
     var s = load();
     var ico = document.getElementById('eb-ico'); if (ico) ico.textContent = currentStage(s.energy).icon;
     var name = document.getElementById('eb-name'); if (name) name.textContent = currentStage(s.energy).name;
@@ -374,6 +359,7 @@
 
   function floatGain(gain) {
     if (!gain) return;
+    if (window.EB_MINIMAL === true) return; // 最小模式无飘字（塔面板会显示）
     var chip = document.getElementById('eb-chip');
     var f = document.createElement('div'); f.className = 'eb-float'; f.textContent = '+' + gain;
     if (chip) {
@@ -414,6 +400,7 @@
 
   // 窗口尺寸变化导致原插槽隐藏/新插槽可见时，自动迁移能量条
   function relocateIfNeeded() {
+    if (window.EB_MINIMAL === true) return; // 最小模式无 UI 可迁移
     var chip = document.getElementById('eb-chip');
     if (!chip) return;
     if (chip.parentElement && chip.parentElement.offsetParent !== null) return;
@@ -437,8 +424,8 @@
     awardExam: awardExam,
     recordMastery: recordMastery,
     refresh: render,
-    load: load,
-    save: save
+    mergeFromCloud: mergeStudy,   // 供外部/知识之塔触发云端合并（换设备拉取后）
+    getState: load                 // 供外部读取当前学习状态
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
