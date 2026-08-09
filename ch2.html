@@ -73,6 +73,16 @@
 .px-cell{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:ui-monospace,Menlo,monospace;border-radius:3px}
 .px-flex{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
 .px-cap{font-size:12px;color:#64748b;margin-top:4px}
+/* 3×3 彩色像素网格（覆盖默认 4 列） */
+.px-wrap.px3{grid-template-columns:repeat(3,62px);grid-template-rows:repeat(3,30px)}
+.px-wrap.px3 .px-cell{width:62px;height:30px}
+/* 彩色引例：R/G/B 三矩阵横排 */
+.px-mats{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;margin:6px 0}
+.px-mats>div{text-align:center}
+.px-mats .px-cap{margin-top:2px}
+/* 紧凑列表 */
+ul.tight{margin:.4em 0;padding-left:1.4em;line-height:1.85}
+ul.tight li{margin:.15em 0}
 /* 定义框外移出的“例如/说明”段落 */
 .eg{margin:.5em 0 .6em 0;padding:.35em .8em;color:#475569;font-size:.95em;background:#f8fafc;border-left:3px solid #cbd5e1;border-radius:0 4px 4px 0}
 </style>
@@ -121,6 +131,38 @@
     </div>
   </div>
   <p>左上角较暗（30）、右下角最亮（210）。二维码、音频频谱、气温网格等，本质上都是用矩阵来"编码"结构化的数据——矩阵是信息时代的通用容器。</p>
+</div>
+
+<div class="ex"><div class="lab">引例 2+　彩色图像 = 三个矩阵（RGB）</div>
+  <p class="stmt">灰度图只是"一张数表"，<b>彩色图则是三张数表</b>：把每个像素的红（R）、绿（G）、蓝（B）三原色强度（各 \(0\sim255\)）分别取出，就得到三个矩阵。下面是一张 \(3\times3\) 的微小彩色图，左为其渲染效果，右为其 R、G、B 三个通道矩阵：</p>
+  <div class="px-flex">
+    <div>
+      <div class="px-wrap px3">
+        <div class="px-cell" style="background:rgb(255,0,0);color:#fff">255,0,0</div>
+        <div class="px-cell" style="background:rgb(255,255,0);color:#111">255,255,0</div>
+        <div class="px-cell" style="background:rgb(0,255,0);color:#111">0,255,0</div>
+        <div class="px-cell" style="background:rgb(255,0,255);color:#fff">255,0,255</div>
+        <div class="px-cell" style="background:rgb(255,255,255);color:#111">255,255,255</div>
+        <div class="px-cell" style="background:rgb(0,255,255);color:#111">0,255,255</div>
+        <div class="px-cell" style="background:rgb(0,0,255);color:#fff">0,0,255</div>
+        <div class="px-cell" style="background:rgb(128,128,128);color:#111">128,128,128</div>
+        <div class="px-cell" style="background:rgb(255,128,0);color:#fff">255,128,0</div>
+      </div>
+      <div class="px-cap">彩色像素网格（每格标其 RGB 值）</div>
+    </div>
+    <div class="px-mats">
+      <div>\[\begin{pmatrix}255&255&0\\[2pt]255&255&0\\[2pt]0&128&255\end{pmatrix}\]<div class="px-cap">R 矩阵</div></div>
+      <div>\[\begin{pmatrix}0&255&255\\[2pt]0&255&255\\[2pt]0&128&128\end{pmatrix}\]<div class="px-cap">G 矩阵</div></div>
+      <div>\[\begin{pmatrix}0&0&0\\[2pt]255&255&255\\[2pt]255&128&0\end{pmatrix}\]<div class="px-cap">B 矩阵</div></div>
+    </div>
+  </div>
+  <p>三个矩阵<b>逐元素拼合</b>才还原出彩色画面：左上角 \(\begin{pmatrix}255\\0\\0\end{pmatrix}\) 是纯红，正中 \(\begin{pmatrix}255\\255\\255\end{pmatrix}\) 是白，左下角 \(\begin{pmatrix}0\\0\\255\end{pmatrix}\) 是纯蓝。这意味着——</p>
+  <ul class="tight">
+    <li><b>转置</b> \(A^T\)：把三张矩阵同时行列互换，整张图被<b>沿主对角线翻转</b>；</li>
+    <li><b>乘法</b> \(C=AB\)：对像素做线性组合，等价于给图像加<b>滤镜 / 调色</b>（你手机里的"滤镜"本质就是一次矩阵乘法）；</li>
+    <li><b>仿射变换</b>：对坐标矩阵左乘一个变换矩阵，整张图被<b>平移、旋转、缩放或错切</b>（本书 §2.2 与第二章深案例会亲手验证）。</li>
+  </ul>
+  <p>一张照片、一段视频、乃至 AI 生成的画面，在计算机眼里都只是成批的矩阵——而本章要学的，正是"怎样对这些矩阵做运算"。</p>
 </div>
 
 <div class="ex"><div class="lab">引例 3　线性方程组</div>

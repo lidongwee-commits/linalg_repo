@@ -269,6 +269,35 @@
       <p><b>其一，背面剔除．</b>三角形 \(P_1P_2P_3\) 的<b>有向面积</b>
       \[S=\frac12\begin{vmatrix}x_2-x_1&y_2-y_1\\ x_3-x_1&y_3-y_1\end{vmatrix}\]
       的<b>符号</b>由顶点的绕行方向决定：逆时针为正、顺时针为负．约定模型正面的三角形逆时针编号，则投影后 \(S\lt 0\) 的三角形必然背对观察者，可直接跳过，不必渲染——通常一半的三角形因此被免于计算．</p>
+      <figure style="margin:14px 0;text-align:center">
+        <svg viewBox="0 0 600 230" width="100%" style="max-width:560px;height:auto" font-family="-apple-system,'Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="ah" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1e5aa8"/></marker>
+            <marker id="ahr" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c0392b"/></marker>
+          </defs>
+          <g>
+            <polygon points="70,172 230,172 150,52" fill="rgba(30,90,168,.07)" stroke="#1e5aa8" stroke-width="2"/>
+            <line x1="70" y1="172" x2="230" y2="172" stroke="#1e5aa8" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="230" y1="172" x2="150" y2="52" stroke="#1e5aa8" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="150" y1="52" x2="70" y2="172" stroke="#1e5aa8" stroke-width="2" marker-end="url(#ah)"/>
+            <text x="58" y="194" fill="#1e5aa8" font-size="14">P₁</text>
+            <text x="224" y="194" fill="#1e5aa8" font-size="14">P₂</text>
+            <text x="142" y="46" fill="#1e5aa8" font-size="14">P₃</text>
+            <text x="96" y="218" fill="#1e5aa8" font-size="14" font-weight="700">逆时针绕行 ⇒ det &gt; 0（正面渲染）</text>
+          </g>
+          <g transform="translate(300,0)">
+            <polygon points="70,172 230,172 150,52" fill="rgba(192,57,43,.07)" stroke="#c0392b" stroke-width="2"/>
+            <line x1="70" y1="172" x2="150" y2="52" stroke="#c0392b" stroke-width="2" marker-end="url(#ahr)"/>
+            <line x1="150" y1="52" x2="230" y2="172" stroke="#c0392b" stroke-width="2" marker-end="url(#ahr)"/>
+            <line x1="230" y1="172" x2="70" y2="172" stroke="#c0392b" stroke-width="2" marker-end="url(#ahr)"/>
+            <text x="58" y="194" fill="#c0392b" font-size="14">P₁</text>
+            <text x="224" y="194" fill="#c0392b" font-size="14">P₂</text>
+            <text x="142" y="46" fill="#c0392b" font-size="14">P₃</text>
+            <text x="94" y="218" fill="#c0392b" font-size="14" font-weight="700">顺时针绕行 ⇒ det &lt; 0（背面剔除）</text>
+          </g>
+        </svg>
+        <figcaption style="font-size:13px;color:#5b6b7b;margin-top:4px">图　同一组顶点，绕行方向不同 ⇒ 有向面积符号相反．这正是背面剔除的依据：约定正面逆时针编号，则投影后 det&lt;0 的三角形必背对观察者．</figcaption>
+      </figure>
       <p><b>其二，判断像素是否落在三角形内．</b>屏幕上每个候选像素 \(P\)，分别与三条边构成三个二阶行列式（图形学中称边函数）：\(E_i=\det(P_{i+1}-P_i,\;P-P_i)\)．<b>三个 \(E_i\) 同号 \(\iff P\) 在三角形内部</b>——这就是光栅化的核心判据．</p>
       <details><summary>算例：像素 \(P(2,2)\) 在三角形 \(A(0,0),B(5,0),C(0,4)\) 内吗</summary>
         <div class="body">

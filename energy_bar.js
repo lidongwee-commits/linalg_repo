@@ -436,7 +436,9 @@
     awardPractice: awardPractice,
     awardExam: awardExam,
     recordMastery: recordMastery,
-    refresh: render
+    refresh: render,
+    load: load,
+    save: save
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
