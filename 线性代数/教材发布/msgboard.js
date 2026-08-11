@@ -147,13 +147,14 @@
       var key = prompt('请输入管理口令（与 Worker 的 ADMIN_KEY 一致）：');
       if (!key) return;
       sendBtn.disabled = true;
+      // 用大号不存在的 id 做校验：即便口令正确也只会 DELETE 0 行，不会误删真实留言；
+      // 线上 Worker 错口令返回 400（而非 403），故以「非 2xx 即失败」统一判定
       fetch(COMMENTS_API_URL + '/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'delete', id: -1, key: key })
+        body: JSON.stringify({ action: 'delete', id: 999999999, key: key })
       }).then(function (r) {
-        if (r.status === 403) { alert('口令错误，或无删除权限.'); return; }
-        // 403 表示未授权；其他（400/ok）表示口令通过（id=-1 不会真删）
+        if (!r.ok) { alert('口令错误，或无删除权限.'); return; }
         localStorage.setItem(ADMIN_KEY_LS, key);
         panel.classList.add('admin');
         alert('已进入管理模式，鼠标悬停留言可见 🗑 删除按钮.');
