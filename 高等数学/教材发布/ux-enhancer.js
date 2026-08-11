@@ -94,9 +94,20 @@
    *   高等数学 → 微积分经典公式（牛顿-莱布尼茨、泰勒、欧拉、格林等）
    *   线性代数 → 矩阵与线性空间符号
    */
-  var isCalculus = /高等数学|Calculus|calculus|gaoshux/i.test(
-    (document.title || '') + ' ' + location.pathname
-  ) || !!$('.hero .lede'); /* 高数 hero 有 lede 段；章节页靠 pathname 兜底 */
+  var _decPath = '';
+  try { _decPath = decodeURIComponent(location.pathname || ''); } catch (e) { _decPath = location.pathname || ''; }
+  function _bookFromDom() {
+    var a = document.querySelector('h1 a');   // 章节页面包屑：<a>高等数学</a> / <a>线性代数</a>
+    if (a) {
+      var t = (a.textContent || '').trim();
+      if (t.indexOf('高等数学') >= 0) return 'gaoshu';
+      if (t.indexOf('线性代数') >= 0) return 'linalg';
+    }
+    return '';
+  }
+  var isCalculus = _bookFromDom() === 'gaoshu'
+    || /高等数学|Calculus|calculus|gaoshux/i.test((document.title || '') + ' ' + _decPath)
+    || !!$('.hero .lede'); /* 高数 hero 有 lede 段；优先用面包屑/路径判定，规避部署后路径百分号编码导致误判 */
   var CALC_SYMBOLS = [
     /* 微积分核心 */
     '∫f(x)dx', 'd/dx', '∂f/∂x', 'lim_{x→0}', 'Σ_{n=1}^∞',
@@ -118,8 +129,41 @@
     'Tr', '0 1; 1 0', 'det≠0', '∥A∥', 'n×m', '∑ λᵢ', '〈x,y〉'
   ];
   var SYMBOLS = isCalculus ? CALC_SYMBOLS : LINALG_SYMBOLS;
+  /* 每章代表公式（封面呼吸徽章用，与章节强相关） */
+  var BOOKKEY = isCalculus ? 'gaoshu' : 'linalg';
+  var CHAPTER_FORMULAS = {
+    gaoshu: {
+      1: ['y=f(x)', 'f:\\,A\\to B'],
+      2: ['\\lim_{x\\to a}f(x)', '\\forall\\varepsilon\\,\\exists\\delta'],
+      3: ["f'(x_0)=\\lim_{h\\to0}\\dfrac{f(x_0+h)-f(x_0)}{h}", '\\dfrac{dy}{dx}'],
+      4: ["f'(\\xi)=\\dfrac{f(b)-f(a)}{b-a}", "\\dfrac{d}{dx}\\Big(\\dfrac{u}{v}\\Big)=\\dfrac{u'v-uv'}{v^2}"],
+      5: ['\\int_a^b f(x)\\,dx=F(b)-F(a)', '\\int f(x)\\,dx'],
+      6: ["V=\\pi\\int_a^b f^2(x)\\,dx", "s=\\int_a^b\\sqrt{1+f'^2}\\,dx"],
+      7: ['\\dfrac{dy}{dx}=f(x,y)', "y'+p(x)y=q(x)"],
+      8: ['\\vec a\\cdot\\vec b=|a||b|\\cos\\theta', '\\vec a\\times\\vec b'],
+      9: ['\\dfrac{\\partial f}{\\partial x}', 'df=\\dfrac{\\partial f}{\\partial x}dx+\\dfrac{\\partial f}{\\partial y}dy'],
+      10: ['\\iint_D f(x,y)\\,dA', '\\iint r\\,dr\\,d\\theta'],
+      11: ['\\oint_L P\\,dx+Q\\,dy', '\\dfrac{\\partial Q}{\\partial x}-\\dfrac{\\partial P}{\\partial y}'],
+      12: ['\\oiint_\\Sigma \\vec F\\cdot d\\vec S', '\\iiint_V \\nabla\\cdot\\vec F\\,dV'],
+      13: ['\\sum_{n=0}^{\\infty} a_n x^n', 'S=\\sum_{n=1}^{\\infty} a_n']
+    },
+    linalg: {
+      1: ['\\det A', '|A|=\\sum (-1)^{\\sigma}a_{1j_1}\\cdots a_{nj_n}'],
+      2: ['A^{-1}', 'AB=BA=I'],
+      3: ['\\mathrm{rank}(A)', '\\mathrm{span}\\{\\vec v_1,\\dots,\\vec v_s\\}'],
+      4: ['A\\vec x=\\vec b', 'A\\vec x=\\vec 0'],
+      5: ['|\\lambda I-A|=0', 'A\\vec x=\\lambda\\vec x']
+    }
+  };
   function rain(target, count, sizeMin, sizeMax, durMin, durMax, opMin, opMax) {
     if (!target || reduce) return;
+    if (!document.getElementById('rain-styles')) {
+      var rst = document.createElement('style'); rst.id = 'rain-styles';
+      rst.textContent = '.math-rain{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}' +
+        '.math-rain span{position:absolute;top:-12%;will-change:transform;animation-name:rainFall;animation-timing-function:linear;animation-iteration-count:infinite}' +
+        '@keyframes rainFall{from{transform:translateY(-12%)}to{transform:translateY(112%)}}';
+      document.head.appendChild(rst);
+    }
     var box = document.createElement('div');
     box.className = 'math-rain';
     target.insertBefore(box, target.firstChild);
@@ -141,59 +185,88 @@
   /* 首页符号雨：仅线代首页启用（高数首页有 SVG 插画，不需要文字符号雨） */
   if (hero && isHome && !isCalculus) rain(hero, 28, 13, 24, 14, 28, 0.16, 0.30);
 
-  /* ========== 6b. 浮动数学家头像（仅高数章节封面，首页有 SVG 插画不需要） ========== */
-  if (hero && isChapter && isCalculus && !reduce) {
-    var mathAvatars = [
-      { name: 'Newton',  initial: 'N',  color: '#f59e0b', quote: '微积分' },
-      { name: 'Leibniz', initial: 'L',  color: '#3b82f6', quote: '∫ dx' },
-      { name: 'Euler',   initial: 'E',  color: '#10b981', quote: 'e^{iπ}' },
-      { name: 'Gauss',   initial: 'G',  color: '#8b5cf6', quote: '∇·F' },
-      { name: 'Riemann', initial: 'R',  color: '#ef4444', quote: '∑ 1/nˢ' },
-    ];
-    var avatarBox = document.createElement('div');
-    avatarBox.className = 'math-avatars';
-    avatarBox.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden';
-    mathAvatars.forEach(function (info, idx) {
-      var el = document.createElement('div');
-      el.className = 'math-avatar';
-      el.title = info.name + ' — ' + info.quote;
-      el.setAttribute('aria-label', info.name);
-      var positions = [
-        'top:8%;right:5%', 'top:35%;right:12%', 'top:60%;right:6%',
-        'top:15%;left:3%', 'top:50%;left:2%'
-      ];
-      el.style.cssText = 'position:absolute;' + positions[idx] +
-        ';width:48px;height:48px;border-radius:50%;background:' + info.color +
-        ';color:#fff;font-size:20px;font-weight:700;display:flex;align-items:center;' +
-        'justify-content:center;box-shadow:0 4px 16px ' + info.color + '40,' +
-        '0 0 0 0 ' + info.color + '15;opacity:.55;animation:avatarPulse ' +
-        (3 + idx * 0.7) + 's ease-in-out infinite;animation-delay:' + (-idx * 1.2) + 's;' +
-        'cursor:default;transition:transform .25s ease,opacity .25s ease;font-family:Georgia,serif';
-      el.textContent = info.initial;
-      el.addEventListener('mouseenter', function () {
-        el.style.transform = 'scale(1.2)';
-        el.style.opacity = '1';
-        el.style.boxShadow = '0 6px 24px ' + info.color + '50,0 0 0 6px ' + info.color + '20';
-      });
-      el.addEventListener('mouseleave', function () {
-        el.style.transform = '';
-        el.style.opacity = '';
-        el.style.boxShadow = '';
-      });
-      avatarBox.appendChild(el);
-    });
-    hero.insertBefore(avatarBox, hero.firstChild);
-
-    /* 注入头像动画 keyframes（仅一次） */
-    if (!document.getElementById('avatar-styles')) {
-      var ast = document.createElement('style');
-      ast.id = 'avatar-styles';
-      ast.textContent =
-        '@keyframes avatarPulse{' +
-          '0%,100%{transform:translateY(0) scale(1);box-shadow:0 4px 16px rgba(0,0,0,.15),0 0 0 0 currentColor}' +
-          '50%{transform:translateY(-7px) scale(1.06);box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 0 8px currentColor}}';
-      document.head.appendChild(ast);
+  /* ========== 6b. 章节封面「知识塔元素」拼贴（塔元素碎片 + 本章公式 + 呼吸） ========== */
+  function injectCoverEmblemStyles() {
+    if (document.getElementById('cover-emblem-styles')) return;
+    var st = document.createElement('style'); st.id = 'cover-emblem-styles';
+    st.textContent =
+      '.ch-cover .cover-emblem{float:right;width:198px;max-width:42%;margin:2px 0 12px 22px;' +
+        'position:relative;z-index:2;animation:coverBreathe 4.6s ease-in-out infinite;transform-origin:60% 40%}' +
+      '.ch-cover .cover-emblem-svg{width:100%;height:auto;display:block;overflow:visible}' +
+      '.ch-cover .cover-emblem-label{margin-top:6px;font-size:12px;font-weight:600;text-align:center;' +
+        'color:#bdf3ec;letter-spacing:.3px}' +
+      '.ch-cover .cover-emblem-label b{color:#7df9ff}' +
+      '.ch-cover .cover-emblem-formulas{margin-top:8px;display:flex;flex-direction:column;gap:6px;align-items:center}' +
+      '.ch-cover .cover-emblem-formulas .f{font-size:13px;color:#dff7f2;background:rgba(255,255,255,.06);' +
+        'border:1px solid rgba(125,249,255,.22);border-radius:9px;padding:4px 9px;max-width:100%;' +
+        'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:coverBreathe 4.6s ease-in-out infinite}' +
+      '@keyframes coverBreathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 5px rgba(125,249,255,.22))}' +
+        '50%{transform:scale(1.045);filter:drop-shadow(0 0 16px rgba(125,249,255,.5))}}' +
+      ':root.dark .ch-cover .cover-emblem-formulas .f{background:rgba(255,255,255,.05)}' +
+      '@media (max-width:680px){' +
+        '.ch-cover .cover-emblem{float:none;width:198px;max-width:72%;margin:16px auto 6px;animation:none}' +
+        '.ch-cover .cover-emblem-formulas .f{animation:none}}';
+    document.head.appendChild(st);
+  }
+  function climberSVG(x, y, shirt) {
+    return '<g transform="translate(' + x + ',' + y + ')">' +
+      '<ellipse cy="14" rx="7" ry="2.2" fill="rgba(0,0,0,.15)"/>' +
+      '<circle r="5.4" fill="#f5d0a8"/>' +
+      '<circle cx="-2.1" cy="-0.8" r="1" fill="#3a2a1a"/><circle cx="2.1" cy="-0.8" r="1" fill="#3a2a1a"/>' +
+      '<path d="M -1.6 1.6 Q 0 3.2 1.6 1.6" stroke="#3a2a1a" stroke-width="1" fill="none" stroke-linecap="round"/>' +
+      '<rect x="-5" y="4.6" width="10" height="6.4" rx="3" fill="' + shirt + '"/>' +
+      '<rect x="-8.2" y="5.2" width="3.4" height="4.6" rx="1.7" fill="' + shirt + '"/><rect x="4.8" y="5.2" width="3.4" height="4.6" rx="1.7" fill="' + shirt + '"/>' +
+      '<rect x="-4.6" y="10.4" width="3.8" height="5" rx="1.8" fill="#4a4a6a"/><rect x="0.8" y="10.4" width="3.8" height="5" rx="1.8" fill="#4a4a6a"/>' +
+      '</g>';
+  }
+  function renderFormula(el, tex) {
+    if (window.katex && window.katex.renderToString) {
+      try { el.innerHTML = window.katex.renderToString(tex, { throwOnError: false, displayMode: false }); return; } catch (e) {}
     }
+    if (window.renderMathInElement) {
+      el.textContent = '\\(' + tex + '\\)';
+      try { window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }, { left: '$$', right: '$$', display: true }], throwOnError: false }); return; } catch (e) {}
+    }
+    el.textContent = tex;
+  }
+  function buildCoverEmblem(wrap, ch, palette, formulas) {
+    if (!wrap || reduce) return;
+    var ground = (palette && palette.ground) || '#bfe3bf';
+    var wname = (palette && palette.name) || '知识之塔';
+    var shirt = '#5b6cf0';
+    var s = '<svg class="cover-emblem-svg" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">';
+    s += '<rect x="2" y="2" width="156" height="156" rx="20" fill="rgba(255,255,255,.05)" stroke="' + ground + '" stroke-opacity=".55" stroke-width="1.5"/>';
+    /* 领地格子（本章世界色） */
+    s += '<rect x="26" y="100" width="48" height="48" rx="10" fill="' + ground + '"/><rect x="31" y="105" width="38" height="6" rx="3" fill="#fff" opacity=".18"/>';
+    /* 攀登者（正在登塔的你） */
+    s += climberSVG(50, 64, shirt);
+    /* 考研盲盒（金宝箱） */
+    s += '<g transform="translate(96,104)"><rect x="0" y="8" width="46" height="36" rx="8" fill="#e0a93b"/><rect x="0" y="0" width="46" height="15" rx="7" fill="#f5c35c"/>' +
+         '<rect x="19" y="14" width="8" height="11" rx="2" fill="#7a4a2e"/><circle cx="23" cy="19" r="2.4" fill="#ffe08a"/></g>';
+    /* 楼梯（登层） */
+    s += '<g transform="translate(100,34)"><rect x="0" y="6" width="44" height="28" rx="9" fill="#9b8bff" opacity=".95"/><text x="22" y="26" text-anchor="middle" font-size="17" fill="#fff">⬆</text></g>';
+    /* 本章误区怪 */
+    s += '<g transform="translate(44,36)"><circle r="13" fill="#e2607a"/><circle cx="-5" cy="-3" r="2.6" fill="#fff"/><circle cx="5" cy="-3" r="2.6" fill="#fff"/>' +
+         '<path d="M -7 5 Q 0 10 7 5" stroke="#fff" stroke-width="1.8" fill="none"/></g>';
+    s += '</svg>';
+    var box = document.createElement('div');
+    box.className = 'cover-emblem';
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', '知识之塔元素 · ' + wname);
+    box.innerHTML = s;
+    var label = document.createElement('div'); label.className = 'cover-emblem-label';
+    label.innerHTML = '🏰 知识之塔 · <b>' + wname + '</b>';
+    box.appendChild(label);
+    if (formulas && formulas.length) {
+      var ff = document.createElement('div'); ff.className = 'cover-emblem-formulas';
+      formulas.slice(0, 2).forEach(function (fx) {
+        var d = document.createElement('div'); d.className = 'f';
+        renderFormula(d, fx);
+        ff.appendChild(d);
+      });
+      box.appendChild(ff);
+    }
+    wrap.appendChild(box);
   }
 
   /* ========== 7. 章节封面动态包裹 + 入场 + 符号雨 ========== */
@@ -217,6 +290,14 @@
         wrap.setAttribute('data-num', roman);
         wrap.setAttribute('data-zh', zh);
         rain(wrap, 18, 16, 32, 18, 36, 0.14, 0.26);
+        injectCoverEmblemStyles();
+        var _f = (CHAPTER_FORMULAS[BOOKKEY] && CHAPTER_FORMULAS[BOOKKEY][n]) || [];
+        function _drawEmblem() {
+          if (!window.TowerGame || !window.TowerGame.chapterPalette) return false;
+          buildCoverEmblem(wrap, n, window.TowerGame.chapterPalette(n), _f);
+          return true;
+        }
+        if (!_drawEmblem()) { var _cv = setInterval(function () { if (_drawEmblem()) clearInterval(_cv); }, 60); setTimeout(function () { clearInterval(_cv); }, 5000); }
         requestAnimationFrame(function () { wrap.classList.add('in'); });
       }
     }

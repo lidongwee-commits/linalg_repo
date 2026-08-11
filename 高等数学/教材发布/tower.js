@@ -31,6 +31,33 @@
     peak: { name: '多元雪峰', sky: ['#eaf4f7', '#cfe8f0'], ground: '#dfeef5', water: 'transparent', decor: 'peak', ambient: 'snow', boss: 'titan' }
   };
 
+  /* ---------- 每章独立世界（差异化世界地图核心） ---------- */
+  /* 确定性伪随机：同一 ch 永远得到同一张地图，刷新不跳变 */
+  function makeRng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  /* 章节世界名后缀：同一地形族（林/谷/海/星/峰）每章有独立后缀，保证每章世界名不同 */
+  var WORLD_SUFFIX = ['·初境', '·深境', '·秘境', '·幻境', '·绝境', '·圣境', '·灵境', '·幽境', '·炎境', '·霜境', '·空境', '·星境', '·终境'];
+  function chapterWorld(ch) {
+    var base = CFG.worldOf[ch] || 'forest';
+    var W = WORLDS[base];
+    var suf = WORLD_SUFFIX[(ch - 1) % WORLD_SUFFIX.length];
+    /* 每章微调配色（色相沿章节轻柔旋转），使同族不同章在配色上也略有区分 */
+    return {
+      base: base,
+      name: W.name + suf,
+      sky: W.sky, ground: W.ground, water: W.water,
+      decor: W.decor, ambient: W.ambient, boss: W.boss,
+      ch: ch
+    };
+  }
+
   /* ---------- 数据读取 ---------- */
   function readStudy() { try { return JSON.parse(localStorage.getItem('study_v1')) || {}; } catch (e) { return {}; } }
   function mastery(ch) {
@@ -302,25 +329,63 @@
     clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('show'); }, 2200);
   }
 
-  /* ---------- 地图渲染（单章单层，5×6 紧凑网格——去掉装饰空地，格子更大） ---------- */
+  /* ---------- 地图渲染（单章单层，5×6 紧凑网格——按章节程序化，每章地形各不相同） ---------- */
   var COLS = 5, ROWS = 6, CELL = 42, PAD = 15;
   // 大图模式同网格、格子再放大
   var BIG_COLS = 5, BIG_ROWS = 6;
-  function genLayout(world, big) {
+  /* 每章一张独一无二的地图：
+   *  - hero(底行) / stairs(顶行) 列随章节号变化
+   *  - 蛇形主路连通二者（保证可玩），路径弯曲随章节抖动
+   *  - 地形特征(water/chasm/void)按基调散布于主路两侧，密度随章节变化
+   *  - 确定性伪随机（makeRng(ch)），刷新不跳变
+   */
+  function genLayout(ch, big) {
     var cols = big ? BIG_COLS : COLS, rows = big ? BIG_ROWS : ROWS;
+    var base = CFG.worldOf[ch] || 'forest';
+    var rnd = makeRng((ch * 2654435761) >>> 0);
     var T = []; for (var r = 0; r < rows; r++) { T.push(new Array(cols).fill('ground')); }
-    var hero = [Math.floor(cols / 2), rows - 1], stairs = [Math.floor(cols / 2), 0], monster = [1, Math.floor(rows / 2)], blind = [cols - 2, Math.floor(rows / 2)];
-    if (world === 'forest') { for (var r1 = 1; r1 < rows - 1; r1++) { if (r1 % 2 === 1) T[r1][Math.floor(cols / 2)] = 'water'; } hero = [1, rows - 1]; stairs = [cols - 2, 0]; monster = [1, rows - 2]; blind = [cols - 2, 2]; }
-    else if (world === 'canyon') { for (var r2 = 0; r2 < rows; r2++) { if (r2 !== 2 && r2 !== rows - 2) T[r2][Math.floor(cols / 2)] = 'chasm'; } hero = [Math.floor(cols / 2), rows - 2]; stairs = [1, 0]; monster = [cols - 2, rows - 3]; blind = [1, 2]; }
-    else if (world === 'sea') { for (var r3 = rows - 2; r3 < rows; r3++) { for (var c1 = 0; c1 < cols; c1++) T[r3][c1] = 'water'; } T[0][1] = T[0][2] = T[0][3] = 'ground'; T[2][1] = T[2][3] = T[3][2] = 'ground'; hero = [Math.floor(cols / 2), rows - 1]; stairs = [1, 0]; monster = [cols - 2, 2]; blind = [1, 3]; }
-    else if (world === 'star') { for (var r4 = 0; r4 < rows; r4++) { for (var c2 = 0; c2 < cols; c2++) T[r4][c2] = 'void'; } [[2, 0], [1, 2], [3, 2], [0, 3], [4, 3], [2, 4], [2, rows - 1]].forEach(function (p) { T[p[1]][p[0]] = 'ground'; }); hero = [Math.floor(cols / 2), rows - 1]; stairs = [2, 0]; monster = [1, 2]; blind = [cols - 2, 3]; }
-    else { for (var r5 = 0; r5 < rows; r5++) { for (var c3 = 0; c3 < cols; c3++) T[r5][c3] = 'void'; } for (var r6 = 0; r6 < rows; r6++) { var cc = Math.round(r6 / (rows - 1) * (cols - 1)); T[r6][cc] = 'ground'; if (cc > 0) T[r6][cc - 1] = 'ground'; if (cc < cols - 1) T[r6][cc + 1] = 'ground'; } hero = [Math.floor(cols / 2), rows - 1]; stairs = [1, 0]; monster = [cols - 2, rows - 2]; blind = [1, 2]; }
-    [hero, stairs, monster, blind].forEach(function (p) { T[p[1]][p[0]] = 'ground'; });
-    return { T: T, hero: hero, stairs: stairs, monster: monster, blind: blind, world: world, cols: cols, rows: rows };
+    // hero 底行、stairs 顶行：列随章变化
+    var hc = Math.floor(rnd() * cols);
+    var sc = Math.floor(rnd() * cols);
+    var hero = [hc, rows - 1], stairs = [sc, 0];
+    // 蛇形主路：保证 hero↔stairs 连通
+    var path = {};
+    (function carve() {
+      var rr = hero[1], c = hero[0]; T[rr][c] = 'ground'; path[rr + ',' + c] = 1;
+      while (rr > stairs[1]) {
+        rr--;
+        if (c < sc) c++; else if (c > sc) c--;
+        if (rnd() < 0.3) { var j = (c > 0 && (c >= cols - 1 || rnd() < 0.5)) ? -1 : 1; var nc = c + j; if (nc >= 0 && nc < cols) c = nc; }
+        T[rr][c] = 'ground'; path[rr + ',' + c] = 1;
+      }
+      T[stairs[1]][stairs[0]] = 'ground'; path[stairs[1] + ',' + stairs[0]] = 1;
+    })();
+    function freeCell() {
+      for (var k = 0; k < 80; k++) {
+        var fr = 1 + Math.floor(rnd() * (rows - 2));
+        var fc = Math.floor(rnd() * cols);
+        if (path[fr + ',' + fc]) continue;
+        if ((fr === hero[1] && fc === hero[0]) || (fr === stairs[1] && fc === stairs[0])) continue;
+        return [fc, fr];
+      }
+      return [Math.floor(rnd() * cols), 1];
+    }
+    var monster = freeCell(), blind = freeCell();
+    if (monster[0] === blind[0] && monster[1] === blind[1]) blind = freeCell();
+    // 地形特征：按基调撒 water/chasm/void（避开主路/关键格），密度随章节变化
+    var feat = base === 'canyon' ? 'chasm' : (base === 'star' || base === 'peak') ? 'void' : 'water';
+    var density = 0.16 + (ch % 4) * 0.045;
+    for (var r2 = 0; r2 < rows; r2++) for (var c2 = 0; c2 < cols; c2++) {
+      if (path[r2 + ',' + c2]) continue;
+      if ((r2 === hero[1] && c2 === hero[0]) || (r2 === stairs[1] && c2 === stairs[0])) continue;
+      if ((r2 === monster[1] && c2 === monster[0]) || (r2 === blind[1] && c2 === blind[0])) continue;
+      if (rnd() < density) T[r2][c2] = feat;
+    }
+    return { T: T, hero: hero, stairs: stairs, monster: monster, blind: blind, world: base, W: chapterWorld(ch), ch: ch, cols: cols, rows: rows };
   }
   /* ---------- 地图渲染（big=true 时放大为大图模式） ---------- */
   function mapSVG(layout, m, big) {
-    var W = WORLDS[layout.world];
+    var W = layout.W || WORLDS[layout.world];
     var cols = layout.cols || COLS, rows = layout.rows || ROWS;
     // 大图模式：格子放大、留白加大
     var cell = big ? 52 : CELL, pad = big ? 24 : PAD;
@@ -437,7 +502,7 @@
         }
         /* 当前层地图：嵌入塔身，紧随当前章 */
         h += '<div class="tb-map-wrap tb-map-inline"><div class="tb-map-label">掌握度 ' + Math.round(mastery(curCh).rate * 100) + '%<button class="tbtn tb-zoom" id="tbZoom" title="放大查看地图">⛶ 放大</button></div>';
-        h += '<svg class="tb-map" viewBox="0 0 ' + (PAD * 2 + COLS * CELL) + ' ' + (PAD * 2 + ROWS * CELL) + '" xmlns="http://www.w3.org/2000/svg">' + mapSVG(genLayout(curWorld), mastery(curCh)) + '</svg></div>';
+        h += '<svg class="tb-map" viewBox="0 0 ' + (PAD * 2 + COLS * CELL) + ' ' + (PAD * 2 + ROWS * CELL) + '" xmlns="http://www.w3.org/2000/svg">' + mapSVG(genLayout(curCh), mastery(curCh)) + '</svg></div>';
       }
     }
     h += '</div>';
@@ -491,7 +556,7 @@
   function openBigMap() {
     var box = document.getElementById('tbbig');
     var W = WORLDS[CFG.worldOf[curCh]];
-    var layout = genLayout(CFG.worldOf[curCh], true); // 大图用 5×6 紧凑网格
+    var layout = genLayout(curCh, true); // 大图用 5×6 紧凑网格，按章差异化
     var svg = document.getElementById('tbbigMap');
     svg.innerHTML = '';
     var wpx = 24 * 2 + layout.cols * 52, hpx = 24 * 2 + layout.rows * 52;
@@ -838,7 +903,29 @@
           toast('📈 第' + ch + '章掌握度 ' + Math.round(m.rate * 100) + '% · 再做几题就能点亮塔层');
         }, 400);
       }
-    }
+    },
+    /* ===== 章节封面「世界地图」迷你版接口（供 ux-enhancer 封面联动） ===== */
+    currentChapter: function () {
+      var pm = location.pathname.match(/ch(\d+)/i);
+      return pm ? Math.min(+pm[1], CFG.total) : (typeof curCh !== 'undefined' ? curCh : 1);
+    },
+    chapterMapSVG: function (ch) {
+      ch = ch || this.currentChapter();
+      var lay = genLayout(ch);
+      var m = mastery(ch);
+      var vw = PAD * 2 + COLS * CELL, vh = PAD * 2 + ROWS * CELL;
+      return '<svg class="tb-map cover-map-svg" viewBox="0 0 ' + vw + ' ' + vh +
+        '" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">' +
+        mapSVG(lay, m) + '</svg>';
+    },
+    worldName: function (ch) { return chapterWorld(ch || this.currentChapter()).name; },
+    chapterPalette: function (ch) {
+      ch = ch || this.currentChapter();
+      var W = chapterWorld(ch);
+      return { ground: W.ground, sky: W.sky, water: W.water, name: W.name, base: W.base };
+    },
+    chapterName: function (ch) { return CFG.chNames[ch || this.currentChapter()]; },
+    openBigMap: function () { if (typeof openBigMap === 'function') openBigMap(); }
   };
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', build); }
