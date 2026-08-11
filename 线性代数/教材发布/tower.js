@@ -83,6 +83,8 @@
   }
   /* 章节世界名后缀：同一地形族（林/谷/海/星/峰）每章有独立后缀，保证每章世界名不同 */
   var WORLD_SUFFIX = ['·初境', '·深境', '·秘境', '·幻境', '·绝境', '·圣境', '·灵境', '·幽境', '·炎境', '·霜境', '·空境', '·星境', '·终境'];
+  /* 线性代数专属世界名（覆盖 WORLDS 的高数命名） */
+  var LINALG_NAMES = { forest: '矩阵之林', canyon: '运算峡谷', sea: '向量之海', star: '特征星空', peak: '二次雪峰' };
   function chapterWorld(ch) {
     var base = CFG.worldOf[ch] || 'forest';
     var W = WORLDS[base];
@@ -98,8 +100,9 @@
     var accent = shade(ground, 0.14);
     /* 封面粒子配色直接由地图 ground/sky 派生 → 封面主色 == 世界图主色 */
     var particle = [ground, shade(ground, -0.14), accent, shade(sky0, 0.06), '#ffffff'];
+    var wName = (BOOK === 'linalg') ? (LINALG_NAMES[base] || W.name) : W.name;
     return {
-      base: base, name: W.name + suf,
+      base: base, name: wName + suf,
       sky: [sky0, sky1], ground: ground, water: water,
       decor: W.decor, ambient: W.ambient, boss: W.boss,
       decorVar: dvar, ch: ch, accent: accent, particle: particle
