@@ -228,6 +228,16 @@
     var r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
     return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
   }
+  /* 对 hex 色做明暗偏移（amt: -1~+1），输出 #rrggbb */
+  function shadeHex(hex, amt) {
+    if (!hex || hex[0] !== '#') return '#111111';
+    var h = hex.slice(1);
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    var r = Math.max(0, Math.min(255, Math.round(parseInt(h.slice(0,2),16) + amt*255)));
+    var g = Math.max(0, Math.min(255, Math.round(parseInt(h.slice(2,4),16) + amt*255)));
+    var b = Math.max(0, Math.min(255, Math.round(parseInt(h.slice(4,6),16) + amt*255)));
+    return '#' + [r,g,b].map(function(c){var s=c.toString(16);return s.length<2?'0'+s:s}).join('');
+  }
   function renderFormula(el, tex) {
     if (window.katex && window.katex.renderToString) {
       try { el.innerHTML = window.katex.renderToString(tex, { throwOnError: false, displayMode: false }); return; } catch (e) {}
@@ -254,6 +264,9 @@
     var palette = (world && world.particle && world.particle.length) ? world.particle : (def.palette || SCENE.forest.palette);
     var grassCol = (world && world.ground) ? world.ground : '#78b46e';
     var weedCol = (world && world.water && world.water !== 'transparent') ? world.water : '#5aaa8c';
+    /* 封面容器背景：取本章世界 ground 色的深暗版本，让整张封面有主题色调 */
+    var coverBg = (world && world.ground) ? shadeHex(world.ground, -0.68) : '#0a0f0a';
+    wrap.style.background = 'linear-gradient(160deg,' + coverBg + ',' + shadeHex(coverBg, -0.12) + ')';
     var DPR = Math.min(2, window.devicePixelRatio || 1);
     var cv = document.createElement('canvas'); cv.className = 'cover-scene';
     wrap.insertBefore(cv, wrap.firstChild);
@@ -359,8 +372,10 @@
     function drawScene(t) {
       ctx.clearRect(0, 0, W, H);
       var g = ctx.createRadialGradient(W * 0.5, H * 0.42, 10, W * 0.5, H * 0.5, Math.max(W, H) * 0.72);
-      g.addColorStop(0, hexA(tint, def.ambient === 'twinkle' ? 0.12 : 0.06));
-      g.addColorStop(1, 'rgba(0,0,0,0)');
+      /* 背景光晕用本章 sky 色，加大可见度让主题色更明显 */
+      var glowAlpha = def.ambient === 'twinkle' ? 0.22 : 0.14;
+      g.addColorStop(0, hexA(tint, glowAlpha));
+      g.addColorStop(1, hexA(tint, 0.04));
       ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
       for (var i = 0; i < P.length; i++) {
         var p = P[i];
