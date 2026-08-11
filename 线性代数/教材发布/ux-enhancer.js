@@ -185,39 +185,48 @@
   /* 首页符号雨：仅线代首页启用（高数首页有 SVG 插画，不需要文字符号雨） */
   if (hero && isHome && !isCalculus) rain(hero, 28, 13, 24, 14, 28, 0.16, 0.30);
 
-  /* ========== 6b. 章节封面「知识塔元素」拼贴（塔元素碎片 + 本章公式 + 呼吸） ========== */
-  function injectCoverEmblemStyles() {
-    if (document.getElementById('cover-emblem-styles')) return;
-    var st = document.createElement('style'); st.id = 'cover-emblem-styles';
+  /* ========== 6b. 章节封面「世界氛围场景」（按本章世界主题沉浸化：
+   *   花/草/雪/泡/星 等粒子 + 呼吸流动的数学符号，而非贴一整块元件） ========== */
+  function injectCoverSceneStyles() {
+    if (document.getElementById('cover-scene-styles')) return;
+    var st = document.createElement('style'); st.id = 'cover-scene-styles';
     st.textContent =
-      '.ch-cover .cover-emblem{float:right;width:198px;max-width:42%;margin:2px 0 12px 22px;' +
-        'position:relative;z-index:2;animation:coverBreathe 4.6s ease-in-out infinite;transform-origin:60% 40%}' +
-      '.ch-cover .cover-emblem-svg{width:100%;height:auto;display:block;overflow:visible}' +
-      '.ch-cover .cover-emblem-label{margin-top:6px;font-size:12px;font-weight:600;text-align:center;' +
-        'color:#bdf3ec;letter-spacing:.3px}' +
-      '.ch-cover .cover-emblem-label b{color:#7df9ff}' +
-      '.ch-cover .cover-emblem-formulas{margin-top:8px;display:flex;flex-direction:column;gap:6px;align-items:center}' +
-      '.ch-cover .cover-emblem-formulas .f{font-size:13px;color:#dff7f2;background:rgba(255,255,255,.06);' +
-        'border:1px solid rgba(125,249,255,.22);border-radius:9px;padding:4px 9px;max-width:100%;' +
-        'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:coverBreathe 4.6s ease-in-out infinite}' +
-      '@keyframes coverBreathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 5px rgba(125,249,255,.22))}' +
-        '50%{transform:scale(1.045);filter:drop-shadow(0 0 16px rgba(125,249,255,.5))}}' +
-      ':root.dark .ch-cover .cover-emblem-formulas .f{background:rgba(255,255,255,.05)}' +
+      '.ch-cover{position:relative;overflow:hidden}' +
+      '.ch-cover .cover-scene{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}' +
+      '.ch-cover .cover-glyph{position:absolute;z-index:2;pointer-events:none;opacity:.4;' +
+        'filter:drop-shadow(0 1px 7px rgba(0,0,0,.14));will-change:transform,opacity;' +
+        'animation:coverGlyphFloat var(--gd,15s) ease-in-out infinite, coverGlyphBreathe var(--gb,5.5s) ease-in-out infinite}' +
+      '.ch-cover .cover-glyph .katex{font-size:1.18em}' +
+      '.ch-cover .cover-tag{position:absolute;left:14px;bottom:10px;z-index:2;pointer-events:none;' +
+        'font-size:12px;font-weight:600;color:rgba(255,255,255,.94);letter-spacing:.4px;' +
+        'text-shadow:0 1px 5px rgba(0,0,0,.4);opacity:0;animation:coverTagIn 1s ease .5s forwards}' +
+      /* 让封面正文始终浮在场景之上 */
+      '.ch-cover > *:not(.cover-scene):not(.cover-glyph):not(.cover-tag){position:relative;z-index:1}' +
+      '@keyframes coverGlyphFloat{0%,100%{transform:translate(0,0) rotate(-1.5deg)}' +
+        '50%{transform:translate(11px,-15px) rotate(2deg)}}' +
+      '@keyframes coverGlyphBreathe{0%,100%{opacity:.24;transform:scale(1)}' +
+        '50%{opacity:.62;transform:scale(1.07)}}' +
+      '@keyframes coverTagIn{to{opacity:.94}}' +
       '@media (max-width:680px){' +
-        '.ch-cover .cover-emblem{float:none;width:198px;max-width:72%;margin:16px auto 6px;animation:none}' +
-        '.ch-cover .cover-emblem-formulas .f{animation:none}}';
+        '.ch-cover .cover-glyph{display:none}.ch-cover .cover-tag{font-size:11px}}';
     document.head.appendChild(st);
   }
-  function climberSVG(x, y, shirt) {
-    return '<g transform="translate(' + x + ',' + y + ')">' +
-      '<ellipse cy="14" rx="7" ry="2.2" fill="rgba(0,0,0,.15)"/>' +
-      '<circle r="5.4" fill="#f5d0a8"/>' +
-      '<circle cx="-2.1" cy="-0.8" r="1" fill="#3a2a1a"/><circle cx="2.1" cy="-0.8" r="1" fill="#3a2a1a"/>' +
-      '<path d="M -1.6 1.6 Q 0 3.2 1.6 1.6" stroke="#3a2a1a" stroke-width="1" fill="none" stroke-linecap="round"/>' +
-      '<rect x="-5" y="4.6" width="10" height="6.4" rx="3" fill="' + shirt + '"/>' +
-      '<rect x="-8.2" y="5.2" width="3.4" height="4.6" rx="1.7" fill="' + shirt + '"/><rect x="4.8" y="5.2" width="3.4" height="4.6" rx="1.7" fill="' + shirt + '"/>' +
-      '<rect x="-4.6" y="10.4" width="3.8" height="5" rx="1.8" fill="#4a4a6a"/><rect x="0.8" y="10.4" width="3.8" height="5" rx="1.8" fill="#4a4a6a"/>' +
-      '</g>';
+  /* 确定性随机（同章同景，避免每次刷新抖动） */
+  function sceneRng(seed) {
+    var a = (seed >>> 0) || 1;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function hexA(hex, a) {
+    if (!hex || hex[0] !== '#') return 'rgba(255,255,255,' + a + ')';
+    var h = hex.slice(1);
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var r = parseInt(h.slice(0, 2), 16), g = parseInt(h.slice(2, 4), 16), b = parseInt(h.slice(4, 6), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
   }
   function renderFormula(el, tex) {
     if (window.katex && window.katex.renderToString) {
@@ -229,44 +238,174 @@
     }
     el.textContent = tex;
   }
-  function buildCoverEmblem(wrap, ch, palette, formulas) {
-    if (!wrap || reduce) return;
-    var ground = (palette && palette.ground) || '#bfe3bf';
-    var wname = (palette && palette.name) || '知识之塔';
-    var shirt = '#5b6cf0';
-    var s = '<svg class="cover-emblem-svg" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">';
-    s += '<rect x="2" y="2" width="156" height="156" rx="20" fill="rgba(255,255,255,.05)" stroke="' + ground + '" stroke-opacity=".55" stroke-width="1.5"/>';
-    /* 领地格子（本章世界色） */
-    s += '<rect x="26" y="100" width="48" height="48" rx="10" fill="' + ground + '"/><rect x="31" y="105" width="38" height="6" rx="3" fill="#fff" opacity=".18"/>';
-    /* 攀登者（正在登塔的你） */
-    s += climberSVG(50, 64, shirt);
-    /* 考研盲盒（金宝箱） */
-    s += '<g transform="translate(96,104)"><rect x="0" y="8" width="46" height="36" rx="8" fill="#e0a93b"/><rect x="0" y="0" width="46" height="15" rx="7" fill="#f5c35c"/>' +
-         '<rect x="19" y="14" width="8" height="11" rx="2" fill="#7a4a2e"/><circle cx="23" cy="19" r="2.4" fill="#ffe08a"/></g>';
-    /* 楼梯（登层） */
-    s += '<g transform="translate(100,34)"><rect x="0" y="6" width="44" height="28" rx="9" fill="#9b8bff" opacity=".95"/><text x="22" y="26" text-anchor="middle" font-size="17" fill="#fff">⬆</text></g>';
-    /* 本章误区怪 */
-    s += '<g transform="translate(44,36)"><circle r="13" fill="#e2607a"/><circle cx="-5" cy="-3" r="2.6" fill="#fff"/><circle cx="5" cy="-3" r="2.6" fill="#fff"/>' +
-         '<path d="M -7 5 Q 0 10 7 5" stroke="#fff" stroke-width="1.8" fill="none"/></g>';
-    s += '</svg>';
-    var box = document.createElement('div');
-    box.className = 'cover-emblem';
-    box.setAttribute('role', 'img');
-    box.setAttribute('aria-label', '知识之塔元素 · ' + wname);
-    box.innerHTML = s;
-    var label = document.createElement('div'); label.className = 'cover-emblem-label';
-    label.innerHTML = '🏰 知识之塔 · <b>' + wname + '</b>';
-    box.appendChild(label);
-    if (formulas && formulas.length) {
-      var ff = document.createElement('div'); ff.className = 'cover-emblem-formulas';
-      formulas.slice(0, 2).forEach(function (fx) {
-        var d = document.createElement('div'); d.className = 'f';
-        renderFormula(d, fx);
-        ff.appendChild(d);
-      });
-      box.appendChild(ff);
+  /* 各「世界基调」→ 场景粒子配置（ambient 取自 tower.js 的 world.ambient） */
+  var SCENE = {
+    forest: { count: 24, ambient: 'leaf',    palette: ['#ff9ec4', '#ffc2d6', '#fff0f5', '#bfe3bf', '#a8d8a0', '#ffffff'] },
+    peak:   { count: 30, ambient: 'snow',    palette: ['#ffffff', '#eaf6ff', '#dff0ff'] },
+    canyon: { count: 26, ambient: 'sand',    palette: ['#f3d9a8', '#e8c483', '#fff0d0', '#ffd9a0'] },
+    sea:    { count: 20, ambient: 'ripple',  palette: ['#bfe9ff', '#9fd0ff', '#ffffff', '#d6f5e8'] },
+    star:   { count: 34, ambient: 'twinkle', palette: ['#ffffff', '#ffe9b0', '#cdbfff', '#bfe0ff'] }
+  };
+  function buildCoverScene(wrap, ch, world, formulas) {
+    if (!wrap) return;
+    var base = (world && world.base) || 'forest';
+    var def = SCENE[base] || SCENE.forest;
+    /* 封面粒子配色与知识塔世界地图同源：优先用本章 world.particle（由地图 ground/sky 派生），保证主色一致 */
+    var palette = (world && world.particle && world.particle.length) ? world.particle : (def.palette || SCENE.forest.palette);
+    var grassCol = (world && world.ground) ? world.ground : '#78b46e';
+    var weedCol = (world && world.water && world.water !== 'transparent') ? world.water : '#5aaa8c';
+    var DPR = Math.min(2, window.devicePixelRatio || 1);
+    var cv = document.createElement('canvas'); cv.className = 'cover-scene';
+    wrap.insertBefore(cv, wrap.firstChild);
+    var ctx = cv.getContext('2d');
+    var W = 0, H = 0;
+    function size() {
+      var r = wrap.getBoundingClientRect();
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
-    wrap.appendChild(box);
+    size();
+    var tint = (world && world.sky && world.sky[0]) ? world.sky[0] : '#ffffff';
+    var rng = sceneRng((ch || 1) * 1009 + 7);
+    var P = [];
+    for (var i = 0; i < def.count; i++) {
+      P.push({
+        x: rng() * W, y: rng() * H,
+        s: 4 + rng() * 10,
+        vx: (rng() - 0.5) * 0.5,
+        vy: 0.25 + rng() * 0.7,
+        rot: rng() * 6.283, vr: (rng() - 0.5) * 0.04,
+        ph: rng() * 6.283,
+        col: palette[(rng() * palette.length) | 0],
+        a: 0.5 + rng() * 0.4,
+        tw: 0.4 + rng() * 0.6, sp: 0.6 + rng() * 1.6
+      });
+    }
+    var shoot = null, shootT = 0;
+    function drawPetal(p, t) {
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.globalAlpha = p.a * (0.8 + 0.2 * Math.sin(t * 1.5 + p.ph));
+      ctx.fillStyle = p.col;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.s * 0.5);
+      ctx.bezierCurveTo(p.s * 0.5, -p.s * 0.5, p.s * 0.5, p.s * 0.5, 0, p.s * 0.5);
+      ctx.bezierCurveTo(-p.s * 0.5, p.s * 0.5, -p.s * 0.5, -p.s * 0.5, 0, -p.s * 0.5);
+      ctx.fill();
+      ctx.restore();
+    }
+    function drawDot(p, t, glow) {
+      ctx.save();
+      ctx.globalAlpha = glow ? p.a * (0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t * p.sp + p.ph))) : p.a;
+      ctx.fillStyle = p.col;
+      if (glow) { ctx.shadowColor = p.col; ctx.shadowBlur = 8; }
+      ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(1, p.s * 0.4), 0, 6.2832); ctx.fill();
+      ctx.restore();
+    }
+    function drawBubble(p) {
+      ctx.save();
+      ctx.globalAlpha = p.a * 0.75;
+      ctx.strokeStyle = p.col; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.s * 0.5, 0, 6.2832); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.6)';
+      ctx.beginPath(); ctx.arc(p.x - p.s * 0.18, p.y - p.s * 0.18, p.s * 0.12, 0, 6.2832); ctx.fill();
+      ctx.restore();
+    }
+    function drawGrass(t) {
+      ctx.save();
+      var blades = Math.max(6, Math.round(W / 26));
+      for (var i = 0; i <= blades; i++) {
+        var x = (i / blades) * W;
+        var hgt = 16 + (i % 3) * 10 + Math.sin(i) * 4;
+        var sway = Math.sin(t * 1.2 + i) * 6;
+        ctx.strokeStyle = hexA(grassCol, 0.5); ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x, H);
+        ctx.quadraticCurveTo(x + sway * 0.5, H - hgt * 0.6, x + sway, H - hgt);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function drawSeaweed(t) {
+      ctx.save();
+      var strands = Math.max(4, Math.round(W / 60));
+      for (var i = 0; i < strands; i++) {
+        var x = (i + 0.5) / strands * W;
+        ctx.strokeStyle = hexA(weedCol, 0.5); ctx.lineWidth = 3; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x, H);
+        for (var s = 1; s <= 4; s++) {
+          var yy = H - s * (H * 0.12);
+          var xx = x + Math.sin(t * 1.4 + i + s * 0.6) * 8;
+          ctx.lineTo(xx, yy);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    function step(p, t) {
+      if (def.ambient === 'leaf' || def.ambient === 'snow') {
+        p.y += p.vy; p.x += Math.sin(t * 0.8 + p.ph) * 0.4 + p.vx * 0.3; p.rot += p.vr;
+        if (p.y > H + 12) { p.y = -12; p.x = rng() * W; }
+      } else if (def.ambient === 'ripple') {
+        p.y -= p.vy; p.x += Math.sin(t * 1.0 + p.ph) * 0.4;
+        if (p.y < -12) { p.y = H + 12; p.x = rng() * W; }
+      } else if (def.ambient === 'sand') {
+        p.x += p.vx; p.y += Math.sin(t * 0.6 + p.ph) * 0.2;
+        if (p.x > W + 12) p.x = -12; else if (p.x < -12) p.x = W + 12;
+      }
+      /* twinkle：星固定，仅闪烁 */
+    }
+    function drawScene(t) {
+      ctx.clearRect(0, 0, W, H);
+      var g = ctx.createRadialGradient(W * 0.5, H * 0.42, 10, W * 0.5, H * 0.5, Math.max(W, H) * 0.72);
+      g.addColorStop(0, hexA(tint, def.ambient === 'twinkle' ? 0.12 : 0.06));
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+      for (var i = 0; i < P.length; i++) {
+        var p = P[i];
+        if (def.ambient === 'leaf') drawPetal(p, t);
+        else if (def.ambient === 'snow') drawDot(p, t, false);
+        else if (def.ambient === 'ripple') drawBubble(p);
+        else if (def.ambient === 'sand') drawDot(p, t, false);
+        else if (def.ambient === 'twinkle') drawDot(p, t, true);
+        step(p, t);
+      }
+      if (def.ambient === 'leaf') drawGrass(t);
+      else if (def.ambient === 'ripple') drawSeaweed(t);
+      else       if (def.ambient === 'twinkle') {
+        shootT -= 1;
+        if (!shoot && shootT <= 0 && rng() < 0.004) { shoot = { x: rng() * W, y: rng() * H * 0.5, len: 60 + rng() * 60 }; shootT = 220; }
+        if (shoot) {
+          ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(shoot.x, shoot.y); ctx.lineTo(shoot.x + shoot.len, shoot.y + shoot.len * 0.5); ctx.stroke();
+          ctx.restore();
+          shoot.x += 4; shoot.y += 2; if (shoot.x > W) shoot = null;
+        }
+      }
+      if (!reduce) raf = requestAnimationFrame(frame);
+    }
+    var raf = 0;
+    function frame(ms) { drawScene(ms / 1000); }
+    if (reduce) { drawScene(0); } else { raf = requestAnimationFrame(frame); }
+    window.addEventListener('resize', size);
+    requestAnimationFrame(size); if (reduce) setTimeout(size, 0);
+    /* 漂浮的本章数学符号（呼吸流动） */
+    if (!reduce) {
+      (formulas || []).slice(0, 2).forEach(function (tex, idx) {
+        var el = document.createElement('div'); el.className = 'cover-glyph';
+        renderFormula(el, tex);
+        el.style.left = (12 + rng() * 56) + '%';
+        el.style.top = (30 + rng() * 46) + '%';
+        el.style.setProperty('--gd', (13 + idx * 4 + rng() * 4).toFixed(1) + 's');
+        el.style.setProperty('--gb', (4.5 + rng() * 2.5).toFixed(1) + 's');
+        wrap.appendChild(el);
+      });
+    }
+    /* 世界名小标（轻盈，非整块） */
+    var tag = document.createElement('div'); tag.className = 'cover-tag';
+    tag.textContent = '🏰 ' + ((world && world.name) || '知识之塔');
+    wrap.appendChild(tag);
   }
 
   /* ========== 7. 章节封面动态包裹 + 入场 + 符号雨 ========== */
@@ -289,15 +428,15 @@
         var zh = ['一','二','三','四','五','六','七','八','九','十','十一','十二','十三'][n - 1] || (n + '');
         wrap.setAttribute('data-num', roman);
         wrap.setAttribute('data-zh', zh);
-        rain(wrap, 18, 16, 32, 18, 36, 0.14, 0.26);
-        injectCoverEmblemStyles();
+        rain(wrap, 12, 13, 24, 22, 42, 0.08, 0.16);
+        injectCoverSceneStyles();
         var _f = (CHAPTER_FORMULAS[BOOKKEY] && CHAPTER_FORMULAS[BOOKKEY][n]) || [];
-        function _drawEmblem() {
-          if (!window.TowerGame || !window.TowerGame.chapterPalette) return false;
-          buildCoverEmblem(wrap, n, window.TowerGame.chapterPalette(n), _f);
+        function _drawScene() {
+          if (!window.TowerGame || !window.TowerGame.chapterWorld) return false;
+          buildCoverScene(wrap, n, window.TowerGame.chapterWorld(n), _f);
           return true;
         }
-        if (!_drawEmblem()) { var _cv = setInterval(function () { if (_drawEmblem()) clearInterval(_cv); }, 60); setTimeout(function () { clearInterval(_cv); }, 5000); }
+        if (!_drawScene()) { var _cv = setInterval(function () { if (_drawScene()) clearInterval(_cv); }, 60); setTimeout(function () { clearInterval(_cv); }, 5000); }
         requestAnimationFrame(function () { wrap.classList.add('in'); });
       }
     }

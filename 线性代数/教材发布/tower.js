@@ -31,6 +31,45 @@
     peak: { name: '多元雪峰', sky: ['#eaf4f7', '#cfe8f0'], ground: '#dfeef5', water: 'transparent', decor: 'peak', ambient: 'snow', boss: 'titan' }
   };
 
+  /* ---------- 颜色工具：让每章世界在配色上也与众不同 ---------- */
+  function hexToRgb(hex) {
+    var h = (hex || '#000000').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  function rgbToHex(r, g, b) {
+    function c(x) { var s = Math.max(0, Math.min(255, Math.round(x))).toString(16); return s.length < 2 ? '0' + s : s; }
+    return '#' + c(r) + c(g) + c(b);
+  }
+  function hueRotate(hex, deg) {
+    if (!hex || hex === 'transparent' || hex[0] !== '#') return hex;
+    var rgb = hexToRgb(hex), r = rgb[0] / 255, g = rgb[1] / 255, b = rgb[2] / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min, h = 0, s = 0, l = (max + min) / 2;
+    if (d !== 0) {
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      if (max === r) h = ((g - b) / d) % 6; else if (max === g) h = (b - r) / d + 2; else h = (r - g) / d + 4;
+      h *= 60; if (h < 0) h += 360;
+    }
+    h = (h + deg) % 360; if (h < 0) h += 360;
+    var c2 = (1 - Math.abs(2 * l - 1)) * s, x = c2 * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c2 / 2, rr = 0, gg = 0, bb = 0;
+    if (h < 60) { rr = c2; gg = x; } else if (h < 120) { rr = x; gg = c2; } else if (h < 180) { gg = c2; bb = x; }
+    else if (h < 240) { gg = x; bb = c2; } else if (h < 300) { rr = x; bb = c2; } else { rr = c2; bb = x; }
+    return rgbToHex((rr + m) * 255, (gg + m) * 255, (bb + m) * 255);
+  }
+  function shade(hex, amt) {
+    if (!hex || hex[0] !== '#') return hex;
+    var rgb = hexToRgb(hex);
+    return rgbToHex(rgb[0] + amt * 255, rgb[1] + amt * 255, rgb[2] + amt * 255);
+  }
+  /* 每章装饰子类型：同族（林/谷/海/星/峰）不同章用不同植被/地貌，视觉上明显区分 */
+  var DECOR_VARS = {
+    forest: ['cherry', 'pine', 'bamboo', 'maple', 'ginkgo'],
+    canyon: ['mesa', 'dune', 'arch', 'spire'],
+    sea:    ['coral', 'kelp', 'ice', 'shell', 'reef'],
+    star:   ['nebula', 'comet', 'planet', 'galaxy'],
+    peak:   ['snow', 'icefield', 'aurora', 'crag']
+  };
+
   /* ---------- 每章独立世界（差异化世界地图核心） ---------- */
   /* 确定性伪随机：同一 ch 永远得到同一张地图，刷新不跳变 */
   function makeRng(seed) {
@@ -48,13 +87,22 @@
     var base = CFG.worldOf[ch] || 'forest';
     var W = WORLDS[base];
     var suf = WORLD_SUFFIX[(ch - 1) % WORLD_SUFFIX.length];
-    /* 每章微调配色（色相沿章节轻柔旋转），使同族不同章在配色上也略有区分 */
+    /* 每章微调：色相旋转（±25°）+ 轻量明暗，使同族不同章在配色上区分，又保留族身份 */
+    var shift = ((ch * 23) % 50) - 25;
+    var lit = ((ch * 17) % 18) / 100 - 0.09; /* -0.09 .. +0.08 */
+    var sky0 = hueRotate(W.sky[0], shift), sky1 = hueRotate(W.sky[1], shift);
+    var ground = shade(hueRotate(W.ground, shift), lit);
+    var water = W.water === 'transparent' ? W.water : hueRotate(W.water, shift);
+    var vars = DECOR_VARS[base] || ['tree'];
+    var dvar = vars[(ch - 1) % vars.length];
+    var accent = shade(ground, 0.14);
+    /* 封面粒子配色直接由地图 ground/sky 派生 → 封面主色 == 世界图主色 */
+    var particle = [ground, shade(ground, -0.14), accent, shade(sky0, 0.06), '#ffffff'];
     return {
-      base: base,
-      name: W.name + suf,
-      sky: W.sky, ground: W.ground, water: W.water,
+      base: base, name: W.name + suf,
+      sky: [sky0, sky1], ground: ground, water: water,
       decor: W.decor, ambient: W.ambient, boss: W.boss,
-      ch: ch
+      decorVar: dvar, ch: ch, accent: accent, particle: particle
     };
   }
 
@@ -383,6 +431,37 @@
     }
     return { T: T, hero: hero, stairs: stairs, monster: monster, blind: blind, world: base, W: chapterWorld(ch), ch: ch, cols: cols, rows: rows };
   }
+  /* ---------- 每章装饰子类型小图标（由 decorVar 决定，使同族不同章视觉各异） ---------- */
+  function tileDecor(dvar, x, y, sz, big) {
+    var u = big ? 1.5 : 1;
+    var s = '<g transform="translate(' + x + ',' + y + ')">';
+    switch (dvar) {
+      case 'cherry':   s += '<circle cx="-4" cy="2" r="' + (1.6 * u) + '" fill="#ff9ec4"/><circle cx="4" cy="-1" r="' + (1.4 * u) + '" fill="#ffc2d6"/>'; break;
+      case 'pine':     s += '<path d="M0 ' + (-5 * u) + ' L' + (4 * u) + ' ' + (4 * u) + ' L' + (-4 * u) + ' ' + (4 * u) + ' Z" fill="#3f8f57"/><rect x="-1" y="' + (3 * u) + '" width="2" height="3" fill="#7a4a2e"/>'; break;
+      case 'bamboo':   s += '<path d="M-3 5 L-3 -5" stroke="#5fae6a" stroke-width="' + (1.4 * u) + '" fill="none"/><path d="M3 5 L3 -4" stroke="#7bc47f" stroke-width="' + (1.2 * u) + '" fill="none"/>'; break;
+      case 'maple':    s += '<path d="M0 -5 L2 -1 L5 -2 L2 1 L3 5 L0 3 L-3 5 L-2 1 L-5 -2 L-2 -1 Z" fill="#e8703a"/>'; break;
+      case 'ginkgo':   s += '<path d="M0 5 L-5 -2 Q0 -6 5 -2 Z" fill="#f2c83c"/>'; break;
+      case 'mesa':     s += '<path d="M-5 5 L-4 -2 L4 -2 L5 5 Z" fill="#c87a4a"/>'; break;
+      case 'dune':     s += '<path d="M-5 5 Q0 0 5 5 Z" fill="#e8c483"/>'; break;
+      case 'arch':     s += '<path d="M-4 5 L-4 -1 Q0 -5 4 -1 L4 5" stroke="#d99a5a" stroke-width="' + (1.6 * u) + '" fill="none"/>'; break;
+      case 'spire':    s += '<path d="M0 5 L-2 -4 L2 -4 Z" fill="#b9743f"/>'; break;
+      case 'coral':    s += '<path d="M0 5 L0 -3 M0 -1 L-3 -4 M0 -1 L3 -4" stroke="#ff8fae" stroke-width="' + (1.4 * u) + '" fill="none"/>'; break;
+      case 'kelp':     s += '<path d="M0 5 Q-3 0 0 -4 Q3 -1 0 -5" stroke="#3fae8f" stroke-width="' + (1.4 * u) + '" fill="none"/>'; break;
+      case 'ice':      s += '<path d="M0 5 L-3 -3 L0 -5 L3 -3 Z" fill="#bfe9ff" opacity=".9"/>'; break;
+      case 'shell':    s += '<path d="M0 4 Q-4 0 0 -3 Q4 0 0 4" fill="#ffd9c2"/>'; break;
+      case 'reef':     s += '<path d="M-4 5 L-2 -2 L1 2 L4 -3 L5 5 Z" fill="#e08a6a"/>'; break;
+      case 'nebula':   s += '<circle cx="0" cy="0" r="' + (3 * u) + '" fill="#cdbfff" opacity=".7"/><circle cx="2" cy="-2" r="' + (1.6 * u) + '" fill="#bfe0ff" opacity=".7"/>'; break;
+      case 'comet':    s += '<path d="M-5 -4 L4 4" stroke="#fff" stroke-width="' + (1.6 * u) + '" opacity=".8"/><circle cx="5" cy="5" r="' + (1.6 * u) + '" fill="#fff"/>'; break;
+      case 'planet':   s += '<circle cx="0" cy="0" r="' + (3.4 * u) + '" fill="#9b8bff"/><ellipse cx="0" cy="0" rx="' + (5 * u) + '" ry="' + (1.6 * u) + '" fill="none" stroke="#c9b6ff" stroke-width="1"/>'; break;
+      case 'galaxy':   s += '<path d="M0 0 Q4 -3 2 3 Q-2 5 -3 -1 Q-3 -4 0 0" fill="#bfa9ff" opacity=".7"/>'; break;
+      case 'snow':     s += '<g stroke="#bcd9ee" stroke-width="' + (1.2 * u) + '"><path d="M0 -4 L0 4 M-3 -2 L3 2 M-3 2 L3 -2"/></g>'; break;
+      case 'icefield': s += '<path d="M-4 4 L-1 -3 L2 2 L4 -2 L5 4 Z" fill="#dff0ff"/>'; break;
+      case 'aurora':   s += '<path d="M-5 3 Q0 -4 5 3" stroke="#7bffb0" stroke-width="' + (1.6 * u) + '" fill="none" opacity=".7"/>'; break;
+      case 'crag':     s += '<path d="M-4 5 L-1 -3 L3 -1 L5 5 Z" fill="#9aa6b2"/>'; break;
+      default:         s += '<circle cx="-3" cy="2" r="' + (1.4 * u) + '" fill="#ffd24d"/><circle cx="3" cy="-1" r="' + (1.3 * u) + '" fill="#ff8fa8"/>';
+    }
+    return s + '</g>';
+  }
   /* ---------- 地图渲染（big=true 时放大为大图模式） ---------- */
   function mapSVG(layout, m, big) {
     var W = layout.W || WORLDS[layout.world];
@@ -413,14 +492,12 @@
       else if (t === 'chasm') { s += '<rect x="' + (x - sz / 2) + '" y="' + (y - sz / 2) + '" width="' + sz + '" height="' + sz + '" rx="7" fill="#3a2a1a"/><path d="M ' + (x - sz / 2 + 5) + ' ' + (y - sz / 2 + 5) + ' Q ' + x + ' ' + (y + 4) + ' ' + (x + sz / 2 - 5) + ' ' + (y + sz / 2 - 5) + '" stroke="rgba(255,255,255,.1)" stroke-width="1.6" fill="none"/>'; }
       else {
         var lit = m.rate > 0.05 ? (m.rate > 0.5 ? 1 : 0.5) : 0;
-        var hash = ((c * 7 + r * 13 + layout.world.length + curCh * 3) % 5);
+        var dvar = (layout.W && layout.W.decorVar) || 'tree';
         s += '<rect x="' + (x - sz / 2) + '" y="' + (y - sz / 2) + '" width="' + sz + '" height="' + sz + '" rx="10" fill="' + W.ground + '" opacity="' + (0.35 + 0.5 * lit) + '"/>';
         if (lit >= 1) s += '<rect x="' + (x - sz / 2 + 3) + '" y="' + (y - sz / 2 + 2) + '" width="' + (sz - 6) + '" height="5" rx="2.5" fill="#fff" opacity=".2"/>';
-        // 地面纹理：小花/小草/石子（大图模式更明显）
-        var tsz = big ? 2.4 : 1.7;
-        if (hash === 0) { s += '<circle cx="' + (x - 5) + '" cy="' + (y - 2) + '" r="' + tsz + '" fill="#ffd24d" opacity=".9"/><circle cx="' + (x + 4) + '" cy="' + (y + 3) + '" r="' + (tsz * 0.9) + '" fill="#ff8fa8" opacity=".9"/>'; }
-        else if (hash === 1) { s += '<path d="M ' + (x - 6) + ' ' + y + ' Q ' + (x - 5) + ' ' + (y - 6) + ' ' + (x - 4) + ' ' + y + '" stroke="#5fae6a" stroke-width="1.5" fill="none"/><path d="M ' + (x + 3) + ' ' + y + ' Q ' + (x + 4.5) + ' ' + (y - 5) + ' ' + (x + 6) + ' ' + y + '" stroke="#5fae6a" stroke-width="1.5" fill="none"/>'; }
-        else if (hash === 2) { s += '<ellipse cx="' + (x + 4) + '" cy="' + (y + 1) + '" rx="3" ry="2" fill="#9aa0a8" opacity=".5"/>'; }
+        // 地面装饰：按本章 decorVar 稀疏点缀（每章图案不同，大图更明显）
+        var decMask = ((r * 5 + c * 3 + (layout.ch || 0)) % 4);
+        if (decMask === 0 || decMask === 1) s += tileDecor(dvar, x, y, sz, big);
       }
     }
     // 怪（该章未通关 → 显示；通关 → ✓）
@@ -919,10 +996,14 @@
         mapSVG(lay, m) + '</svg>';
     },
     worldName: function (ch) { return chapterWorld(ch || this.currentChapter()).name; },
+    chapterWorld: function (ch) { return chapterWorld(ch || this.currentChapter()); },
     chapterPalette: function (ch) {
       ch = ch || this.currentChapter();
       var W = chapterWorld(ch);
-      return { ground: W.ground, sky: W.sky, water: W.water, name: W.name, base: W.base };
+      return {
+        ground: W.ground, sky: W.sky, water: W.water, name: W.name, base: W.base,
+        decorVar: W.decorVar, accent: W.accent, particle: W.particle, ambient: W.ambient
+      };
     },
     chapterName: function (ch) { return CFG.chNames[ch || this.currentChapter()]; },
     openBigMap: function () { if (typeof openBigMap === 'function') openBigMap(); }
