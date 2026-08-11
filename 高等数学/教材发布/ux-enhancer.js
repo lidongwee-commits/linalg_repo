@@ -238,6 +238,28 @@
     var b = Math.max(0, Math.min(255, Math.round(parseInt(h.slice(4,6),16) + amt*255)));
     return '#' + [r,g,b].map(function(c){var s=c.toString(16);return s.length<2?'0'+s:s}).join('');
   }
+  /* HSL 暗化：保留色相/饱和度，仅把明度降到目标 L，得到“有色但很暗”的主题背景（线性减法会把中等亮度色直接钳成纯黑） */
+  function hexToHsl(hex) {
+    if (!hex || hex[0] !== '#') return [0, 0, 0];
+    var h = hex.slice(1); if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    var r = parseInt(h.slice(0,2),16)/255, g = parseInt(h.slice(2,4),16)/255, b = parseInt(h.slice(4,6),16)/255;
+    var max = Math.max(r,g,b), min = Math.min(r,g,b), d = max-min, hue = 0, s = 0, l = (max+min)/2;
+    if (d !== 0) { s = l > 0.5 ? d/(2-max-min) : d/(max+min); if (max === r) hue = (g-b)/d; else if (max === g) hue = (b-r)/d+2; else hue = (r-g)/d+4; hue *= 60; if (hue < 0) hue += 360; }
+    return [hue, s, l];
+  }
+  function hslToHex(h, s, l) {
+    h = ((h % 360) + 360) % 360; s = Math.max(0, Math.min(1, s)); l = Math.max(0, Math.min(1, l));
+    var c = (1 - Math.abs(2*l - 1)) * s, x = c * (1 - Math.abs((h/60) % 2 - 1)), m = l - c/2, r = 0, g = 0, b = 0;
+    if (h < 60) { r = c; g = x; } else if (h < 120) { r = x; g = c; } else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; } else if (h < 300) { r = x; b = c; } else { r = c; b = x; }
+    var C = function (v) { var s2 = Math.max(0, Math.min(255, Math.round(v*255))).toString(16); return s2.length < 2 ? '0'+s2 : s2; };
+    return '#' + C(r+m) + C(g+m) + C(b+m);
+  }
+  function darkTint(hex, L) {
+    if (!hex || hex[0] !== '#') return '#0e1216';
+    var hsl = hexToHsl(hex);
+    return hslToHex(hsl[0], hsl[1], Math.max(0.02, Math.min(0.5, L)));
+  }
   function renderFormula(el, tex) {
     if (window.katex && window.katex.renderToString) {
       try { el.innerHTML = window.katex.renderToString(tex, { throwOnError: false, displayMode: false }); return; } catch (e) {}
@@ -264,9 +286,12 @@
     var palette = (world && world.particle && world.particle.length) ? world.particle : (def.palette || SCENE.forest.palette);
     var grassCol = (world && world.ground) ? world.ground : '#78b46e';
     var weedCol = (world && world.water && world.water !== 'transparent') ? world.water : '#5aaa8c';
-    /* 封面容器背景：取本章世界 ground 色的深暗版本，让整张封面有主题色调 */
-    var coverBg = (world && world.ground) ? shadeHex(world.ground, -0.68) : '#0a0f0a';
-    wrap.style.background = 'linear-gradient(160deg,' + coverBg + ',' + shadeHex(coverBg, -0.12) + ')';
+    /* 封面容器背景：取本章世界 ground 色做 HSL 暗化（保留色相，仅降明度），整张封面有主题色调而非纯黑 */
+    var isDark = document.documentElement.classList.contains('dark');
+    var ground = (world && world.ground) ? world.ground : '#3a7d5a';
+    var coverBg1 = isDark ? darkTint(ground, 0.20) : '#eef3f0';
+    var coverBg2 = isDark ? darkTint(ground, 0.11) : '#f7faf8';
+    wrap.style.background = 'linear-gradient(160deg,' + coverBg1 + ',' + coverBg2 + ')';
     var DPR = Math.min(2, window.devicePixelRatio || 1);
     var cv = document.createElement('canvas'); cv.className = 'cover-scene';
     wrap.insertBefore(cv, wrap.firstChild);
@@ -446,9 +471,24 @@
         rain(wrap, 12, 13, 24, 22, 42, 0.08, 0.16);
         injectCoverSceneStyles();
         var _f = (CHAPTER_FORMULAS[BOOKKEY] && CHAPTER_FORMULAS[BOOKKEY][n]) || [];
+        /* 整页主题背景：用本章世界 ground/sky 做 HSL 暗化渐变，dark 模式上深色主题底，亮色模式上浅色主题底 */
+        function themeChapterPage(w) {
+          var page = $('.page'); if (!page) return;
+          var dk = document.documentElement.classList.contains('dark');
+          var ground = (w && w.ground) ? w.ground : '#3a7d5a';
+          var sky = (w && w.sky && w.sky[0]) ? w.sky[0] : '#9fc6ff';
+          if (dk) {
+            var p1 = darkTint(ground, 0.135), p2 = darkTint(ground, 0.075);
+            page.style.background = 'radial-gradient(130% 70% at 50% -8%,' + hexA(sky, 0.16) + ',transparent 55%),linear-gradient(180deg,' + p1 + ',' + p2 + ')';
+          } else {
+            page.style.background = 'linear-gradient(180deg,' + hexA(ground, 0.10) + ',' + hexA(ground, 0.035) + ')';
+          }
+        }
         function _drawScene() {
           if (!window.TowerGame || !window.TowerGame.chapterWorld) return false;
-          buildCoverScene(wrap, n, window.TowerGame.chapterWorld(n), _f);
+          var w = window.TowerGame.chapterWorld(n);
+          buildCoverScene(wrap, n, w, _f);
+          themeChapterPage(w);
           return true;
         }
         if (!_drawScene()) { var _cv = setInterval(function () { if (_drawScene()) clearInterval(_cv); }, 60); setTimeout(function () { clearInterval(_cv); }, 5000); }
