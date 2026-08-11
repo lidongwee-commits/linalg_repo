@@ -289,8 +289,8 @@
     /* 封面容器背景：取本章世界 ground 色做 HSL 暗化（保留色相，仅降明度），整张封面有主题色调而非纯黑 */
     var isDark = document.documentElement.classList.contains('dark');
     var ground = (world && world.ground) ? world.ground : '#3a7d5a';
-    var coverBg1 = isDark ? darkTint(ground, 0.20) : '#eef3f0';
-    var coverBg2 = isDark ? darkTint(ground, 0.11) : '#f7faf8';
+    var coverBg1 = isDark ? darkTint(ground, 0.26) : '#eef3f0';
+    var coverBg2 = isDark ? darkTint(ground, 0.16) : '#f7faf8';
     wrap.style.background = 'linear-gradient(160deg,' + coverBg1 + ',' + coverBg2 + ')';
     var DPR = Math.min(2, window.devicePixelRatio || 1);
     var cv = document.createElement('canvas'); cv.className = 'cover-scene';
@@ -478,8 +478,8 @@
           var ground = (w && w.ground) ? w.ground : '#3a7d5a';
           var sky = (w && w.sky && w.sky[0]) ? w.sky[0] : '#9fc6ff';
           if (dk) {
-            var p1 = darkTint(ground, 0.135), p2 = darkTint(ground, 0.075);
-            page.style.background = 'radial-gradient(130% 70% at 50% -8%,' + hexA(sky, 0.16) + ',transparent 55%),linear-gradient(180deg,' + p1 + ',' + p2 + ')';
+            var p1 = darkTint(ground, 0.22), p2 = darkTint(ground, 0.12);
+            page.style.background = 'radial-gradient(130% 70% at 50% -8%,' + hexA(sky, 0.20) + ',transparent 55%),linear-gradient(180deg,' + p1 + ',' + p2 + ')';
           } else {
             page.style.background = 'linear-gradient(180deg,' + hexA(ground, 0.10) + ',' + hexA(ground, 0.035) + ')';
           }
