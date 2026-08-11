@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高等数学 · 数字教材</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<style>
+/* ===== 首页专属封面（深洋青渐变 + 底部柔光过渡） ===== */
+.hero{background:linear-gradient(135deg,#071521 0%,#0a2a3a 20%,#0c4a52 45%,#0f6b5c 70%,#1a9470 88%,#4ab892 100%);background-size:350% 350%;animation:heroFlow 14s ease infinite;color:#eafdfb;padding:68px 28px 60px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to top,#e9ecef 30%,transparent 100%);pointer-events:none;z-index:1}
+@keyframes heroFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.hero::before{content:"";position:absolute;top:-20%;right:-10%;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(94,234,212,.12) 0%,transparent 70%);pointer-events:none;animation:orbFloat1 8s ease-in-out infinite}
+.hero::after{content:"";position:absolute;bottom:-15%;left:-8%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.08) 0%,transparent 70%);pointer-events:none;animation:orbFloat2 10s ease-in-out infinite}
+@keyframes orbFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)}}
+@keyframes orbFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(25px,-15px)}}
+.hero-in{max-width:840px;margin:0 auto;position:relative;z-index:1}
+.hero .kicker{color:#7df9ff;font-size:14px;font-weight:600;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.hero .kicker::before{content:"";display:inline-block;width:32px;height:2px;background:linear-gradient(90deg,#5eead4,#38bdf8);border-radius:2px}
+.hero .kicker::after{content:"";display:inline-block;width:48px;height:2px;background:linear-gradient(90deg,#38bdf8,transparent);border-radius:2px}
+.hero .title{color:#fff;margin:4px 0 14px;font-size:44px;line-height:1.2;letter-spacing:-0.5px;text-shadow:0 2px 20px rgba(0,0,0,.2)}
+.hero .title .en{display:block;color:#9fe8d4;font-size:15px;font-weight:400;letter-spacing:.8px;margin-top:10px;text-shadow:0 1px 12px rgba(0,0,0,.18)}
+.hero .lede{color:#c5ebe4;font-size:17px;max-width:720px;line-height:1.85}
+.hero-cta{margin-top:4px}
+.btn-hero{display:inline-block;margin:18px 10px 0 0;padding:12px 26px;border-radius:10px;font-size:15px;text-decoration:none;color:#06281f;background:linear-gradient(135deg,#4ade80,#2dd4bf);font-weight:700;box-shadow:0 6px 20px rgba(34,179,146,.4),inset 0 1px 0 rgba(255,255,255,.2);transition:.2s}
+.btn-hero:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(34,179,146,.5),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-hero.ghost{background:rgba(255,255,255,.08);color:#eafdfb;border:1.5px solid rgba(234,253,251,.35);backdrop-filter:blur(4px)}
+.btn-hero.ghost:hover{border-color:#eafdfb;background:rgba(255,255,255,.08)}
+.hero-stats{margin-top:22px;display:flex;gap:26px;flex-wrap:wrap;font-family:-apple-system,"Microsoft YaHei",sans-serif}
+.hero-stats span{font-size:13px;color:#bdf3ec}
+.hero-stats b{font-size:22px;color:#fff;margin-right:4px}
+/* 首页二级标题目录 —— 深青墨色系，适配浅色页面背景 */
+.sec-h{font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:20px;color:#1a3a3f;margin:36px 0 6px;font-weight:700;letter-spacing:.3px;border-bottom:2px solid rgba(14,124,124,.12);padding-bottom:6px;display:block}
+.home-chdesc{color:#4f6272;font-size:14.5px;margin:2px 0 10px;max-width:760px;line-height:1.75}
+.home-secs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.home-sec{font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:13px;text-decoration:none;color:#1e7a6a;background:rgba(14,124,124,.07);border:1px solid rgba(14,124,124,.16);padding:5px 13px;border-radius:999px;transition:.18s}
+.home-sec:hover{background:#0e7c7c;color:#fff;border-color:#0e7c7c}
+.home-go{display:inline-block;font-family:-apple-system,"Microsoft YaHei",sans-serif;font-size:13.5px;font-weight:700;color:#0a7a64;margin-bottom:8px;letter-spacing:.3px}
+.home-go:hover{color:#085e4c;text-decoration:underline}
+/* 首页 Hero 插画（参考线代：干净 SVG 替代文字符号堆叠） */
+.hero-art{position:absolute;top:0;right:0;width:320px;height:200px;opacity:.45;pointer-events:none;z-index:0}
+@media(max-width:800px){.hero-art{display:none}}
+</style>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><a href="../../portal.html" title="教材总览" style="color:#9fe8d4;font-size:15px;text-decoration:none;margin-left:4px;font-weight:600">← 总览</a><div id="eb-slot-m"></div></div>
+<div class="hero">
+  <div class="hero-deco"></div>
+  <svg class="hero-art" viewBox="0 0 280 180" aria-hidden="true">
+    <!-- 坐标网格 -->
+    <g stroke="#5eead4" stroke-opacity=".25" stroke-width=".8" fill="none">
+      <path d="M30 150 H258 M30 150 V18"/>
+      <path d="M70 150 V28 M110 150 V28 M150 150 V28 M190 150 V28 M230 150 V28"/>
+      <path d="M30 115 H248 M30 80 H248 M30 45 H248"/>
+    </g>
+    <!-- 函数曲线 f(x) -->
+    <path d="M38 138 Q75 128 108 88 T168 48 T245 32" stroke="#7df9ff" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <!-- 积分面积（曲线下方填充） -->
+    <path d="M95 150 L95 92 Q128 62 158 52 T218 36 L218 150 Z" fill="#5eead4" fill-opacity=".10" stroke="#5eead4" stroke-opacity=".25" stroke-width=".8"/>
+    <!-- 切线 -->
+    <line x1="118" y1="84" x2="205" y2="60" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="4 3" stroke-linecap="round"/>
+    <!-- 切点 -->
+    <circle cx="152" cy="66" r="3.5" fill="#fbbf24"/>
+    <!-- 微分标记 -->
+    <text x="172" y="58" fill="#fbbf24" font-size="9" opacity=".5" font-family="-apple-system,sans-serif">dy/dx</text>
+    <!-- 积分符号装饰 -->
+    <text x="130" y="132" fill="#5eead4" font-size="20" opacity=".12" font-family="Times New Roman,serif">∫</text>
+    <!-- 极限箭头装饰 -->
+    <path d="M48 145 L48 125 L44 130 M48 125 L52 130" stroke="#a78bfa" stroke-width="1.2" fill="none" opacity=".4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="hero-in">
+<div class="kicker">Advanced Mathematics</div>
+<h1 class="title">高等数学<span class="en">Calculus &amp; Mathematical Analysis for Science &amp; Engineering</span></h1>
+<p class="lede">从函数与极限到无穷级数，十三章层层递进.每一节都配有交互式可视化、即时练习反馈与智能题库追踪.这是一套为深度学习而生的原生数字教材，建议从第一章开始逐章学习.</p>
+<div class="hero-cta">
+  <a class="btn-hero" href="ch1.html">▸ 从第一章开始</a>
+  <a class="btn-hero ghost" href="exam.html">题库与考试系统</a>
+</div>
+<div class="hero-stats">
+  <span><b>13</b> 章</span><span><b>1115</b> 题</span><span><b>∞</b> 交互演示</span>
+</div>
+</div>
+</div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<a href="../../portal.html" style="display:inline-block;margin:3px 0 14px;font-size:13px;color:#06281f;background:#5eead4;text-decoration:none;padding:5px 13px;border-radius:999px;font-weight:600">← 总览</a>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第1章 · 函数</div>
+<a href="ch1.html">整章</a>
+<a href="ch1.html#adv1">考研选讲</a>
+<a href="ch1.html#cq1">本章测试</a>
+<div class="ch">第2章 · 极限与连续</div>
+<a href="ch2.html">整章</a>
+<a href="ch2.html#adv2">考研选讲</a>
+<a href="ch2.html#cq2">本章测试</a>
+<div class="ch">第3章 · 一元函数微分学</div>
+<a href="ch3.html">整章</a>
+<a href="ch3.html#adv3">考研选讲</a>
+<a href="ch3.html#cq3">本章测试</a>
+<div class="ch">第4章 · 一元函数微分学的应用</div>
+<a href="ch4.html">整章</a>
+<a href="ch4.html#adv4">考研选讲</a>
+<a href="ch4.html#cq4">本章测试</a>
+<div class="ch">第5章 · 一元函数积分学</div>
+<a href="ch5.html">整章</a>
+<a href="ch5.html#adv5">考研选讲</a>
+<a href="ch5.html#cq5">本章测试</a>
+<div class="ch">第6章 · 一元函数积分学的应用</div>
+<a href="ch6.html">整章</a>
+<a href="ch6.html#adv6">考研选讲</a>
+<a href="ch6.html#cq6">本章测试</a>
+<div class="ch">第7章 · 常微分方程</div>
+<a href="ch7.html">整章</a>
+<a href="ch7.html#adv7">考研选讲</a>
+<a href="ch7.html#cq7">本章测试</a>
+<div class="ch">第8章 · 向量代数与空间解析几何</div>
+<a href="ch8.html">整章</a>
+<a href="ch8.html#adv8">考研选讲</a>
+<a href="ch8.html#cq8">本章测试</a>
+<div class="ch">第9章 · 多元函数微分学</div>
+<a href="ch9.html">整章</a>
+<a href="ch9.html#adv9">考研选讲</a>
+<a href="ch9.html#cq9">本章测试</a>
+<div class="ch">第10章 · 重积分</div>
+<a href="ch10.html">整章</a>
+<a href="ch10.html#adv10">考研选讲</a>
+<a href="ch10.html#cq10">本章测试</a>
+<div class="ch">第11章 · 曲线积分</div>
+<a href="ch11.html">整章</a>
+<a href="ch11.html#adv11">考研选讲</a>
+<a href="ch11.html#cq11">本章测试</a>
+<div class="ch">第12章 · 曲面积分</div>
+<a href="ch12.html">整章</a>
+<a href="ch12.html#adv12">考研选讲</a>
+<a href="ch12.html#cq12">本章测试</a>
+<div class="ch">第13章 · 无穷级数</div>
+<a href="ch13.html">整章</a>
+<a href="ch13.html#adv13">考研选讲</a>
+<a href="ch13.html#cq13">本章测试</a>
+</aside>
+  <div class="page"><div class="col">
+    <h2 class="sec-h">第1章 · 函数</h2>
+<p class="home-chdesc">函数的概念与几种特性、反函数与复合函数，以及初等函数.</p>
+<div class="home-secs"><a class="home-sec" href="ch1.html#s011">1.1 函数的概念</a><a class="home-sec" href="ch1.html#s012">1.2 函数的几种特性</a><a class="home-sec" href="ch1.html#s013">1.3 反函数与复合函数</a><a class="home-sec" href="ch1.html#s014">1.4 初等函数</a></div>
+<a class="home-go" href="ch1.html">▸ 进入第1章学习</a>
+<h2 class="sec-h">第2章 · 极限与连续</h2>
+<p class="home-chdesc">数列与函数极限、运算法则、无穷小与无穷大、两个重要极限，以及函数的连续性.</p>
+<div class="home-secs"><a class="home-sec" href="ch2.html#s021">2.1 数列的极限</a><a class="home-sec" href="ch2.html#s022">2.2 函数的极限</a><a class="home-sec" href="ch2.html#s023">2.3 极限的性质与运算法则</a><a class="home-sec" href="ch2.html#s024">2.4 无穷小与无穷大</a><a class="home-sec" href="ch2.html#s025">2.5 极限的存在准则与两个重要极限</a><a class="home-sec" href="ch2.html#s026">2.6 函数的连续性</a></div>
+<a class="home-go" href="ch2.html">▸ 进入第2章学习</a>
+<h2 class="sec-h">第3章 · 一元函数微分学</h2>
+<p class="home-chdesc">导数概念与求导法则、高阶导数、隐函数与参数方程的求导，以及函数的微分.</p>
+<div class="home-secs"><a class="home-sec" href="ch3.html#s031">3.1 导数的概念</a><a class="home-sec" href="ch3.html#s032">3.2 求导的运算法则</a><a class="home-sec" href="ch3.html#s033">3.3 高阶导数</a><a class="home-sec" href="ch3.html#s034">3.4 隐函数与参数方程的求导</a><a class="home-sec" href="ch3.html#s035">3.5 函数的微分</a></div>
+<a class="home-go" href="ch3.html">▸ 进入第3章学习</a>
+<h2 class="sec-h">第4章 · 一元函数微分学的应用</h2>
+<p class="home-chdesc">微分中值定理、洛必达法则、泰勒公式，以及单调性、极值、凹凸性与不等式证明.</p>
+<div class="home-secs"><a class="home-sec" href="ch4.html#s041">4.1 微分中值定理</a><a class="home-sec" href="ch4.html#s042">4.2 洛必达法则</a><a class="home-sec" href="ch4.html#s043">4.3 泰勒中值定理</a><a class="home-sec" href="ch4.html#s044">4.4 函数的单调性与极值</a><a class="home-sec" href="ch4.html#s045">4.5 曲线的凹凸性与拐点</a><a class="home-sec" href="ch4.html#s046">4.6 函数图形的描绘</a><a class="home-sec" href="ch4.html#s047">4.7 导数在不等式证明中的应用</a><a class="home-sec" href="ch4.html#s048">4.8 相关变化率</a></div>
+<a class="home-go" href="ch4.html">▸ 进入第4章学习</a>
+<h2 class="sec-h">第5章 · 一元函数积分学</h2>
+<p class="home-chdesc">定积分与不定积分概念、微积分基本定理，换元与分部积分，以及反常积分.</p>
+<div class="home-secs"><a class="home-sec" href="ch5.html#s051">5.1 定积分的概念及性质</a><a class="home-sec" href="ch5.html#s052">5.2 微积分基本定理</a><a class="home-sec" href="ch5.html#s053">5.3 不定积分的概念与性质</a><a class="home-sec" href="ch5.html#s054">5.4 换元积分法</a><a class="home-sec" href="ch5.html#s055">5.5 分部积分法</a><a class="home-sec" href="ch5.html#s056">5.6 几类特殊类型函数的积分</a><a class="home-sec" href="ch5.html#s057">5.7 反常积分</a></div>
+<a class="home-go" href="ch5.html">▸ 进入第5章学习</a>
+<h2 class="sec-h">第6章 · 一元函数积分学的应用</h2>
+<p class="home-chdesc">定积分的微元法在几何学与物理学中的典型应用.</p>
+<div class="home-secs"><a class="home-sec" href="ch6.html#s061">6.1 定积分的微元法</a><a class="home-sec" href="ch6.html#s062">6.2 几何学中的应用</a><a class="home-sec" href="ch6.html#s063">6.3 物理学中的应用</a></div>
+<a class="home-go" href="ch6.html">▸ 进入第6章学习</a>
+<h2 class="sec-h">第7章 · 常微分方程</h2>
+<p class="home-chdesc">常微分方程的基本概念、一阶与可降阶方程、线性微分方程的解法与应用.</p>
+<div class="home-secs"><a class="home-sec" href="ch7.html#s071">7.1 常微分方程的基本概念</a><a class="home-sec" href="ch7.html#s072">7.2 一阶微分方程的常见类型及解法</a><a class="home-sec" href="ch7.html#s073">7.3 二阶线性微分方程</a><a class="home-sec" href="ch7.html#s074">7.4 高阶微分方程的解法</a></div>
+<a class="home-go" href="ch7.html">▸ 进入第7章学习</a>
+<h2 class="sec-h">第8章 · 向量代数与空间解析几何</h2>
+<p class="home-chdesc">空间向量及其运算、平面与直线方程，以及曲面与空间曲线的方程.</p>
+<div class="home-secs"><a class="home-sec" href="ch8.html#s081">8.1 空间向量及其线性运算</a><a class="home-sec" href="ch8.html#s082">8.2 向量的乘积</a><a class="home-sec" href="ch8.html#s083">8.3 空间平面</a><a class="home-sec" href="ch8.html#s084">8.4 空间直线</a><a class="home-sec" href="ch8.html#s085">8.5 空间曲面</a><a class="home-sec" href="ch8.html#s086">8.6 空间曲线</a></div>
+<a class="home-go" href="ch8.html">▸ 进入第8章学习</a>
+<h2 class="sec-h">第9章 · 多元函数微分学</h2>
+<p class="home-chdesc">多元函数概念、偏导数与全微分、复合与隐函数求导，方向导数与极值应用.</p>
+<div class="home-secs"><a class="home-sec" href="ch9.html#s091">9.1 多元函数的概念</a><a class="home-sec" href="ch9.html#s092">9.2 二元函数的极限与连续</a><a class="home-sec" href="ch9.html#s093">9.3 偏导数</a><a class="home-sec" href="ch9.html#s094">9.4 全微分</a><a class="home-sec" href="ch9.html#s095">9.5 多元复合函数的求导法则</a><a class="home-sec" href="ch9.html#s096">9.6 隐函数的微分法</a><a class="home-sec" href="ch9.html#s097">9.7 方向导数与梯度</a><a class="home-sec" href="ch9.html#s098">9.8 泰勒公式与极值应用</a><a class="home-sec" href="ch9.html#s099">9.9 多元微分学的几何应用</a></div>
+<a class="home-go" href="ch9.html">▸ 进入第9章学习</a>
+<h2 class="sec-h">第10章 · 重积分</h2>
+<p class="home-chdesc">二重与三重积分的概念、计算，及其在几何与物理中的应用.</p>
+<div class="home-secs"><a class="home-sec" href="ch10.html#s101">10.1 二重积分的概念与性质</a><a class="home-sec" href="ch10.html#s102">10.2 二重积分的计算</a><a class="home-sec" href="ch10.html#s103">10.3 三重积分的概念与性质</a><a class="home-sec" href="ch10.html#s104">10.4 三重积分的计算</a><a class="home-sec" href="ch10.html#s105">10.5 重积分的应用</a></div>
+<a class="home-go" href="ch10.html">▸ 进入第10章学习</a>
+<h2 class="sec-h">第11章 · 曲线积分</h2>
+<p class="home-chdesc">两类曲线积分、格林公式，以及曲线积分与路径无关的条件和应用.</p>
+<div class="home-secs"><a class="home-sec" href="ch11.html#s111">11.1 对弧长的曲线积分</a><a class="home-sec" href="ch11.html#s112">11.2 对坐标的曲线积分</a><a class="home-sec" href="ch11.html#s113">11.3 格林公式</a><a class="home-sec" href="ch11.html#s114">11.4 曲线积分与路径无关的条件</a><a class="home-sec" href="ch11.html#s115">11.5 曲线积分的应用</a></div>
+<a class="home-go" href="ch11.html">▸ 进入第11章学习</a>
+<h2 class="sec-h">第12章 · 曲面积分</h2>
+<p class="home-chdesc">两类曲面积分、高斯公式与斯托克斯公式，以及曲面积分的应用.</p>
+<div class="home-secs"><a class="home-sec" href="ch12.html#s121">12.1 对面积的曲面积分</a><a class="home-sec" href="ch12.html#s122">12.2 对坐标的曲面积分</a><a class="home-sec" href="ch12.html#s123">12.3 高斯公式与斯托克斯公式</a><a class="home-sec" href="ch12.html#s124">12.4 曲面积分的应用</a></div>
+<a class="home-go" href="ch12.html">▸ 进入第12章学习</a>
+<h2 class="sec-h">第13章 · 无穷级数</h2>
+<p class="home-chdesc">常数项级数审敛、幂级数展开与应用，以及傅里叶级数.</p>
+<div class="home-secs"><a class="home-sec" href="ch13.html#s131">13.1 常数项级数的概念与性质</a><a class="home-sec" href="ch13.html#s132">13.2 正项级数及其审敛法</a><a class="home-sec" href="ch13.html#s133">13.3 级数的绝对收敛与条件收敛</a><a class="home-sec" href="ch13.html#s134">13.4 幂级数</a><a class="home-sec" href="ch13.html#s135">13.5 函数的幂级数展开式</a><a class="home-sec" href="ch13.html#s136">13.6 幂级数的应用</a><a class="home-sec" href="ch13.html#s137">13.7 傅里叶级数</a></div>
+<a class="home-go" href="ch13.html">▸ 进入第13章学习</a>
+
+    <footer class="site-footer">
+      <div class="cp">高等数学 · 数字教材 | 原生交互式学习平台</div>
+    </footer>
+  </div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<a href="../../portal.html" style="display:inline-block;margin:3px 0 14px;font-size:13px;color:#06281f;background:#5eead4;text-decoration:none;padding:5px 13px;border-radius:999px;font-weight:600">← 总览</a>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第1章 · 函数</div>
+<a href="ch1.html">整章</a>
+<a href="ch1.html#s011">1.1 函数的概念</a>
+<a href="ch1.html#s012">1.2 函数的几种特性</a>
+<a href="ch1.html#s013">1.3 反函数与复合函数</a>
+<a href="ch1.html#s014">1.4 初等函数</a>
+<a href="ch1.html#adv1">考研选讲</a>
+<a href="ch1.html#cq1">本章测试</a>
+<div class="ch">第2章 · 极限与连续</div>
+<a href="ch2.html">整章</a>
+<a href="ch2.html#s021">2.1 数列的极限</a>
+<a href="ch2.html#s022">2.2 函数的极限</a>
+<a href="ch2.html#s023">2.3 极限的性质与运算法则</a>
+<a href="ch2.html#s024">2.4 无穷小与无穷大</a>
+<a href="ch2.html#s025">2.5 极限的存在准则与两个重要极限</a>
+<a href="ch2.html#s026">2.6 函数的连续性</a>
+<a href="ch2.html#adv2">考研选讲</a>
+<a href="ch2.html#cq2">本章测试</a>
+<div class="ch">第3章 · 一元函数微分学</div>
+<a href="ch3.html">整章</a>
+<a href="ch3.html#s031">3.1 导数的概念</a>
+<a href="ch3.html#s032">3.2 求导的运算法则</a>
+<a href="ch3.html#s033">3.3 高阶导数</a>
+<a href="ch3.html#s034">3.4 隐函数与参数方程的求导</a>
+<a href="ch3.html#s035">3.5 函数的微分</a>
+<a href="ch3.html#adv3">考研选讲</a>
+<a href="ch3.html#cq3">本章测试</a>
+<div class="ch">第4章 · 一元函数微分学的应用</div>
+<a href="ch4.html">整章</a>
+<a href="ch4.html#s041">4.1 微分中值定理</a>
+<a href="ch4.html#s042">4.2 洛必达法则</a>
+<a href="ch4.html#s043">4.3 泰勒中值定理</a>
+<a href="ch4.html#s044">4.4 函数的单调性与极值</a>
+<a href="ch4.html#s045">4.5 曲线的凹凸性与拐点</a>
+<a href="ch4.html#s046">4.6 函数图形的描绘</a>
+<a href="ch4.html#s047">4.7 导数在不等式证明中的应用</a>
+<a href="ch4.html#s048">4.8 相关变化率</a>
+<a href="ch4.html#adv4">考研选讲</a>
+<a href="ch4.html#cq4">本章测试</a>
+<div class="ch">第5章 · 一元函数积分学</div>
+<a href="ch5.html">整章</a>
+<a href="ch5.html#s051">5.1 定积分的概念及性质</a>
+<a href="ch5.html#s052">5.2 微积分基本定理</a>
+<a href="ch5.html#s053">5.3 不定积分的概念与性质</a>
+<a href="ch5.html#s054">5.4 换元积分法</a>
+<a href="ch5.html#s055">5.5 分部积分法</a>
+<a href="ch5.html#s056">5.6 几类特殊类型函数的积分</a>
+<a href="ch5.html#s057">5.7 反常积分</a>
+<a href="ch5.html#adv5">考研选讲</a>
+<a href="ch5.html#cq5">本章测试</a>
+<div class="ch">第6章 · 一元函数积分学的应用</div>
+<a href="ch6.html">整章</a>
+<a href="ch6.html#s061">6.1 定积分的微元法</a>
+<a href="ch6.html#s062">6.2 几何学中的应用</a>
+<a href="ch6.html#s063">6.3 物理学中的应用</a>
+<a href="ch6.html#adv6">考研选讲</a>
+<a href="ch6.html#cq6">本章测试</a>
+<div class="ch">第7章 · 常微分方程</div>
+<a href="ch7.html">整章</a>
+<a href="ch7.html#s071">7.1 常微分方程的基本概念</a>
+<a href="ch7.html#s072">7.2 一阶微分方程的常见类型及解法</a>
+<a href="ch7.html#s073">7.3 二阶线性微分方程</a>
+<a href="ch7.html#s074">7.4 高阶微分方程的解法</a>
+<a href="ch7.html#adv7">考研选讲</a>
+<a href="ch7.html#cq7">本章测试</a>
+<div class="ch">第8章 · 向量代数与空间解析几何</div>
+<a href="ch8.html">整章</a>
+<a href="ch8.html#s081">8.1 空间向量及其线性运算</a>
+<a href="ch8.html#s082">8.2 向量的乘积</a>
+<a href="ch8.html#s083">8.3 空间平面</a>
+<a href="ch8.html#s084">8.4 空间直线</a>
+<a href="ch8.html#s085">8.5 空间曲面</a>
+<a href="ch8.html#s086">8.6 空间曲线</a>
+<a href="ch8.html#adv8">考研选讲</a>
+<a href="ch8.html#cq8">本章测试</a>
+<div class="ch">第9章 · 多元函数微分学</div>
+<a href="ch9.html">整章</a>
+<a href="ch9.html#s091">9.1 多元函数的概念</a>
+<a href="ch9.html#s092">9.2 二元函数的极限与连续</a>
+<a href="ch9.html#s093">9.3 偏导数</a>
+<a href="ch9.html#s094">9.4 全微分</a>
+<a href="ch9.html#s095">9.5 多元复合函数的求导法则</a>
+<a href="ch9.html#s096">9.6 隐函数的微分法</a>
+<a href="ch9.html#s097">9.7 方向导数与梯度</a>
+<a href="ch9.html#s098">9.8 泰勒公式与极值应用</a>
+<a href="ch9.html#s099">9.9 多元微分学的几何应用</a>
+<a href="ch9.html#adv9">考研选讲</a>
+<a href="ch9.html#cq9">本章测试</a>
+<div class="ch">第10章 · 重积分</div>
+<a href="ch10.html">整章</a>
+<a href="ch10.html#s101">10.1 二重积分的概念与性质</a>
+<a href="ch10.html#s102">10.2 二重积分的计算</a>
+<a href="ch10.html#s103">10.3 三重积分的概念与性质</a>
+<a href="ch10.html#s104">10.4 三重积分的计算</a>
+<a href="ch10.html#s105">10.5 重积分的应用</a>
+<a href="ch10.html#adv10">考研选讲</a>
+<a href="ch10.html#cq10">本章测试</a>
+<div class="ch">第11章 · 曲线积分</div>
+<a href="ch11.html">整章</a>
+<a href="ch11.html#s111">11.1 对弧长的曲线积分</a>
+<a href="ch11.html#s112">11.2 对坐标的曲线积分</a>
+<a href="ch11.html#s113">11.3 格林公式</a>
+<a href="ch11.html#s114">11.4 曲线积分与路径无关的条件</a>
+<a href="ch11.html#s115">11.5 曲线积分的应用</a>
+<a href="ch11.html#adv11">考研选讲</a>
+<a href="ch11.html#cq11">本章测试</a>
+<div class="ch">第12章 · 曲面积分</div>
+<a href="ch12.html">整章</a>
+<a href="ch12.html#s121">12.1 对面积的曲面积分</a>
+<a href="ch12.html#s122">12.2 对坐标的曲面积分</a>
+<a href="ch12.html#s123">12.3 高斯公式与斯托克斯公式</a>
+<a href="ch12.html#s124">12.4 曲面积分的应用</a>
+<a href="ch12.html#adv12">考研选讲</a>
+<a href="ch12.html#cq12">本章测试</a>
+<div class="ch">第13章 · 无穷级数</div>
+<a href="ch13.html">整章</a>
+<a href="ch13.html#s131">13.1 常数项级数的概念与性质</a>
+<a href="ch13.html#s132">13.2 正项级数及其审敛法</a>
+<a href="ch13.html#s133">13.3 级数的绝对收敛与条件收敛</a>
+<a href="ch13.html#s134">13.4 幂级数</a>
+<a href="ch13.html#s135">13.5 函数的幂级数展开式</a>
+<a href="ch13.html#s136">13.6 幂级数的应用</a>
+<a href="ch13.html#s137">13.7 傅里叶级数</a>
+<a href="ch13.html#adv13">考研选讲</a>
+<a href="ch13.html#cq13">本章测试</a>
+</nav></nav>
+<script src="app.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+<script src="energy_bar.js"></script>
+<script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script src="tower.js" defer></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var f = document.querySelector('.site-footer .cp');
+    if(f){ f.textContent = slogans[Math.floor(Math.random()*slogans.length)]; f.style.cursor='pointer';
+      f.addEventListener('click', function(){ this.textContent = slogans[Math.floor(Math.random()*slogans.length)]; }); }
+  })();
+  </script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教师管理端 · 线性代数数字教材</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<style>
+  /* —— 教师管理端专属样式（其余复用 style.css 的 topbar/layout/side/page/col/kicker/title/lede/panel/ex-*）—— */
+  .gate{position:fixed;inset:0;background:linear-gradient(135deg,#0f2740,#1b3547);display:flex;align-items:center;justify-content:center;z-index:200}
+  .gate-box{background:#fff;border-radius:18px;padding:32px 36px;width:340px;max-width:90vw;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .gate-ic{font-size:40px}
+  .gate-box h2{margin:6px 0 2px;color:#1b3547}
+  .gate-sub{color:#789;font-size:13px;margin:0 0 16px}
+  .gate-input{width:100%;padding:11px 12px;border:1px solid #dde6ec;border-radius:9px;font-size:15px;margin-bottom:12px;box-sizing:border-box}
+  .gate-err{color:#d9534f;font-size:13px;min-height:18px;margin-bottom:6px}
+  .gate-tip{color:#9ab;font-size:12px;margin-top:14px;line-height:1.6}
+  .gate-tip code{background:#eef3f6;padding:1px 5px;border-radius:4px;color:#1b3547}
+  .adm-stats{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+  .adm-stat{background:#f3f8f7;border:1px solid #d9ece8;border-radius:11px;padding:8px 14px;font-size:13px;color:#1b3547}
+  .adm-stat b{font-size:18px;color:#178377;margin-right:4px}
+  .adm-banner{background:#fff7e6;border:1px solid #ffe1a8;color:#8a6d3b;border-radius:10px;padding:8px 14px;font-size:13px;margin-bottom:12px;line-height:1.6}
+  .q-edit{cursor:pointer}
+  .q-edit:hover{box-shadow:0 3px 12px rgba(14,124,124,.14);border-color:#26a69a}
+  .ed-form{display:grid;grid-template-columns:120px 1fr;gap:12px 14px;align-items:start;margin:8px 0}
+  .ed-label{font-size:14px;color:#345;font-weight:600;padding-top:7px}
+  .ed-input,.ed-area{width:100%;padding:9px 11px;border:1px solid #dde6ec;border-radius:8px;font-size:14px;font-family:inherit;box-sizing:border-box}
+  .ed-area{min-height:80px;resize:vertical}
+  .ed-actions{display:flex;gap:10px;margin:6px 0 4px}
+  .ed-preview{border:1px dashed #dde6ec;border-radius:10px;padding:12px 14px;margin-top:8px;background:#fbfdfe}
+  .ed-hint{font-size:12px;color:#9ab;margin-top:2px}
+  .sub-card{border:1px solid #e6edf2;border-radius:12px;padding:14px 16px;background:#fff}
+  .sub-meta{font-size:12px;color:#789;margin-bottom:6px}
+  .sub-imgs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .sub-imgs img{max-width:130px;max-height:130px;border:1px solid #e6edf2;border-radius:8px}
+  .sub-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+  .sub-row input[type=text]{padding:7px 10px;border:1px solid #dde6ec;border-radius:8px;font-size:14px}
+  .sub-row .sub-score{width:90px}
+  .sub-row textarea{flex:1;min-height:38px;padding:7px 10px;border:1px solid #dde6ec;border-radius:8px;font-size:14px;font-family:inherit}
+  details{background:#fbfdfe;border:1px solid #e6edf2;border-radius:10px;padding:8px 14px;margin-top:6px}
+  summary{cursor:pointer;font-weight:600;color:#1b3547;font-size:14px}
+  details p,details li{font-size:13.5px;color:#456;line-height:1.8}
+  details code{background:#eef3f6;padding:1px 5px;border-radius:4px}
+  .adm-tag{display:inline-block;font-size:11px;color:#fff;background:#64748b;border-radius:6px;padding:2px 8px;margin-left:8px}
+</style>
+</head>
+<body>
+
+<!-- 密码门 -->
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-ic">🔐</div>
+    <h2>教师 / 管理端</h2>
+    <p class="gate-sub">请输入管理口令以查看与编辑题库</p>
+    <input type="password" id="gate-pwd" class="gate-input" placeholder="管理口令" autofocus>
+    <button id="gate-btn" class="btn">进入</button>
+    <div id="gate-err" class="gate-err"></div>
+    <p class="gate-tip">默认口令 <code>teacher2026</code>（可在 <code>admin_app.js</code> 顶部修改）.本题库仅教师可见，学生端不提供入口.</p>
+  </div>
+</div>
+
+<!-- 主界面（解锁后显示） -->
+<div id="app" hidden>
+  <div class="topbar"><b>线性代数 · 数字教材</b><span>教师管理端</span></div>
+  <div class="layout">
+    <aside class="side">
+      <h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
+      <div class="sub">教师管理端</div>
+      <a href="index.html">← 教材目录</a>
+      <div class="ch">管理</div>
+      <a href="#sec-browse" data-nav="browse" style="background:#1b3547;color:#fff">题库编辑</a>
+      <a href="#sec-submit" data-nav="submit">学生提交记录</a>
+      <a href="#sec-help" data-nav="help">使用说明</a>
+      <div class="ch">学习工具</div>
+      <a href="exam.html">题库与考试</a>
+    </aside>
+    <div class="page"><div class="col">
+      <div class="kicker">Teacher Console</div>
+      <h1 class="title">教师管理端<span class="en">题库编辑 · 学生作答复核</span></h1>
+
+      <div id="adm-banner" class="adm-banner" hidden></div>
+
+      <section class="panel" id="sec-browse">
+        <h2>题库编辑 <span class="adm-tag">共 <span id="adm-total">0</span> 题</span></h2>
+        <div class="adm-stats" id="adm-stats"></div>
+        <div class="ex-filters">
+          <select id="af-ch"><option value="0">全部章节</option></select>
+          <select id="af-type"><option value="0">全部题型</option></select>
+          <select id="af-src"><option value="0">全部来源</option><option value="hw">习题</option><option value="test">本章测试</option></select>
+          <select id="af-diff"><option value="0">全部难度</option><option value="1">易</option><option value="2">中</option><option value="3">难</option></select>
+          <input id="af-q" class="ex-search" placeholder="搜索题干关键字…">
+          <button class="btn" id="af-go">筛选</button>
+          <button class="btn btn-ghost" id="af-new">+ 新增题目</button>
+          <button class="btn" id="af-export">⬇ 导出 exam_data.js</button>
+        </div>
+        <div id="af-list" class="ex-list"></div>
+      </section>
+
+      <section class="panel" id="sec-editor" hidden>
+        <h2 id="ed-title">编辑题目</h2>
+        <div class="ed-form">
+          <div class="ed-label">章节</div>
+          <select id="ed-ch" class="ed-input"></select>
+          <div class="ed-label">题型</div>
+          <select id="ed-type" class="ed-input">
+            <option value="mc">选择题</option><option value="fill">填空题</option>
+            <option value="calc">计算题</option><option value="proof">证明题</option><option value="app">应用拓展</option>
+          </select>
+          <div class="ed-label">来源</div>
+          <select id="ed-src" class="ed-input"><option value="hw">习题</option><option value="test">本章测试</option></select>
+          <div class="ed-label">难度</div>
+          <select id="ed-diff" class="ed-input"><option value="1">易</option><option value="2">中</option><option value="3">难</option></select>
+          <div class="ed-label">题干</div>
+          <textarea id="ed-stem" class="ed-area" placeholder="支持 LaTeX：\( a^2+b^2=c^2 \)"></textarea>
+          <div class="ed-label">选项</div>
+          <div>
+            <textarea id="ed-opts" class="ed-area" placeholder="仅选择题需要，每行一个：&#10;A. 选项一&#10;B. 选项二"></textarea>
+            <div class="ed-hint">每行格式：字母. 内容（例如 A. 正确）.其他选项题型可留空.</div>
+          </div>
+          <div class="ed-label">参考答案</div>
+          <input id="ed-ans" class="ed-input" placeholder="选择题填字母，填空填结果，主观题可留空">
+          <div class="ed-label">解析 / 解答</div>
+          <textarea id="ed-fb" class="ed-area" placeholder="解题过程 / 评分要点（学生交卷后可见）"></textarea>
+        </div>
+        <div class="ed-actions">
+          <button class="btn" id="ed-save">保存</button>
+          <button class="btn btn-ghost" id="ed-del">删除</button>
+          <button class="btn btn-ghost" id="ed-cancel">取消</button>
+        </div>
+        <div class="ed-preview"><div class="ed-hint">实时预览：</div><div id="ed-preview"></div></div>
+      </section>
+
+      <section class="panel" id="sec-submit" hidden>
+        <h2>学生提交记录（本机浏览器）</h2>
+        <p class="muted">此处显示在<strong>本浏览器</strong>内学生作答（图片 + 文字）的存档，教师可手动评定并回写.跨设备共享需配合后端，或导出后统一录入.</p>
+        <div id="sub-list" class="ex-list"></div>
+      </section>
+
+      <section class="panel" id="sec-help" hidden>
+        <h2>使用说明</h2>
+        <details open>
+          <summary>如何更新题库并生效？</summary>
+          <p>1. 在「题库编辑」中筛选、新增或修改题目，点「保存」.<br>
+          2. 修改仅暂存在本浏览器；点「⬇ 导出 exam_data.js」下载最新题库文件.<br>
+          3. 将下载的 <code>exam_data.js</code> 放回站点根目录并重新部署（或运行 <code>build_chapters.py</code>），学生端即可见到更新.</p>
+        </details>
+        <details>
+          <summary>学生端如何对照 / 批改？</summary>
+          <p>计算 / 证明 / 应用题在学生端为「自查明解」模式：</p>
+          <ul>
+            <li>交卷后，学生可上传解答图片 + 文字作答，存档于本机浏览器.</li>
+            <li>学生点「对照参考解答」按钮即可展开本题参考答案与完整解题过程，并奖励少量能量（标记"做了对照"）.</li>
+            <li>若学生把握不准，可把图片/文字带去请教师复核，或后续接入 AI 批改（需另部署后端，暂未启用）.</li>
+          </ul>
+          <p>目前学生作答会存档于本机，教师可在本页「学生提交记录」手动评定.</p>
+        </details>
+        <details>
+          <summary>权限说明</summary>
+          <p>本题库页面 <code>admin.html</code> 通过前端口令保护，<strong>学生端不提供任何入口</strong>（考试页 exam.html 不展示答案与解析）.前端口令仅作"可见性"隔离，无法替代服务端鉴权；请勿将含有敏感数据的接口密钥写入前端代码.</p>
+        </details>
+      </section>
+
+    </div></div>
+  </div>
+</div>
+
+<script src="exam_data.js"></script>
+<script src="admin_app.js"></script>
+<script src="energy_bar.js"></script>
+</body>
+</html>

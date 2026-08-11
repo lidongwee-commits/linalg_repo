@@ -1,0 +1,318 @@
+/* ============================================================
+   高等数学数字教材 · 夜间模式（沉稳深色阅读主题 · 正常夜间模式）
+   本文件在 <head> 最后加载，优先级压过 style.css / energy_bar.css /
+   _layout_fix.css / _premium_css.css。所有表面覆盖均带 !important，
+   确保不被任何来源的反向覆盖。
+   切换由 <html class="night"> 触发，记忆在 localStorage('hfut-theme')。
+   说明：这是教材自身的“正常夜间模式”——沉稳、低饱和、护眼的深色阅读风，
+   并非霓虹。霓虹暗色是游戏（营救之塔）的夜间皮肤，与本书无关。
+   ============================================================ */
+
+/* ---------- 切换按钮：侧栏顶栏内联（.side > .sub 的子元素） ---------- */
+/* 让 .sub 变成 flex 容器，使按钮能靠右 */
+.side > .sub{ display:flex !important; align-items:center; gap:6px; }
+.theme-toggle{
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-left:auto; /* 推到右侧 */
+  padding:5px 10px; border-radius:10px;
+  font-size:17px; line-height:1; cursor:pointer;
+  background:none; border:1px solid transparent;
+  transition:all .18s ease; vertical-align:middle;
+}
+.theme-toggle:hover{ background:rgba(91,179,166,.12); border-color:rgba(91,179,166,.3); transform:scale(1.12); }
+html.night .theme-toggle:hover{ background:rgba(91,179,166,.15); border-color:rgba(127,209,196,.35); }
+
+/* ============================================================
+   核心：变量重定义为沉稳深色；硬写死颜色逐条覆盖
+   ============================================================ */
+html.night{
+  color-scheme:dark;
+  /* 文字 */
+  --ink:#d8dce4; --soft-ink:#aab2c0; --muted:#7e8a99; --line:#2b303a;
+  /* 纸张/表面 */
+  --paper:#181c23;
+  /* 沉稳强调色（低饱和，非霓虹） */
+  --accent:#5bb3a6;   --accent-soft:#10211f;
+  --case:#a98fd6;     --case-soft:#1e1830;
+  --hist:#d49a5e;     --hist-soft:#241a10;
+  --dark:#0f1116;
+  --demo:#6fbf8f;     --demo-soft:#10211a;
+}
+
+/* 平滑过渡 */
+html.night body,
+html.night .side,
+html.night .topbar,
+html.night details,
+html.night .hw,
+html.night .quiz,
+html.night .card,
+html.night .note,
+html.night .ex,
+html.night .prf,
+html.night .case,
+html.night .hist,
+html.night .sec-quiz,
+html.night .aiguide,
+html.night table.dt,
+html.night code,
+html.night .ky,
+html.night .sq-drawer,
+html.night .cviz-btns,
+html.night .mb-msg{ transition:background-color .25s ease, border-color .25s ease, color .25s ease; }
+
+html.night{ scrollbar-color:#2b303a #0f1116; }
+html.night ::-webkit-scrollbar{ width:10px; height:10px; }
+html.night ::-webkit-scrollbar-track{ background:#0f1116; }
+html.night ::-webkit-scrollbar-thumb{ background:#2b303a; border-radius:6px; }
+
+/* ---------- 基础容器 ---------- */
+html.night body{ background:#121419 !important; color:var(--ink) !important; }
+html.night .side{ background:#0f1116 !important; color:#9aa4b2 !important; }
+html.night .side h1{ color:#f0f2f6 !important; }
+html.night .side .sub{ color:#6b7280 !important; }
+html.night .side .ch{ color:#7fd1c4 !important; }
+html.night .side a{ color:#9aa4b2 !important; }
+html.night .side a:hover{ background:#1a1f27 !important; color:#f0f2f6 !important; }
+html.night .side a[style*="5eead4"]{ color:#7fd1c4 !important; }
+html.night .topbar{ background:#0f1116 !important; color:#f0f2f6 !important; }
+html.night .topbar b{ color:#f0f2f6 !important; }
+html.night .topbar span{ color:#8a93a0 !important; }
+html.night footer{ color:#6b7280 !important; border-top-color:var(--line) !important; }
+
+/* ---------- 广义表面：只覆盖背景+文字，保留其左侧强调色边框 ---------- */
+html.night details,
+html.night .hw,
+html.night .quiz,
+html.night .rgb-mix,
+html.night .card,
+html.night .ex-card,
+html.night .ex-opt,
+html.night .sec-quiz,
+html.night .ky,
+html.night .aiguide,
+html.night .aiguide li,
+html.night table.dt,
+html.night .figrow>svg,
+html.night code,
+html.night .sq-drawer,
+html.night .eb-floating .eb-bar-mini,
+html.night .eb-stat,
+html.night .eb-hint,
+html.night .eb-ch .eb-track,
+html.night .eb-gh-card,
+html.night .eb-radar-tag,
+html.night .eb-rate-bar,
+html.night .qn-item,
+html.night .qn-row select,
+html.night .rd-hero,
+html.night .cviz canvas,
+html.night .cviz-btns,
+html.night .mb-msg,
+html.night .sq-opt,
+html.night .ex-paper-prev,
+html.night .ex-grid,
+html.night .cards,
+html.night .site-footer,
+html.night .col pre,
+html.night .note,
+html.night .ex,
+html.night .prf,
+html.night .prf-b,
+html.night .prf-idea .prf-b,
+html.night .prf-b .bey,
+html.night .case,
+html.night .hist,
+html.night .labx,
+html.night .ky-hint,
+html.night .ky-q .sol,
+html.night .rd,
+html.night [class*="rd-"]{
+  background:#181c23 !important;
+  color:var(--ink) !important;
+}
+/* 上述里用边框/左侧强调色的，单独把边框压暗 */
+html.night .note{ border-left-color:#3a4150 !important; }
+html.night .ex{ border-left-color:var(--line) !important; }
+html.night .prf{ border-top-color:var(--line) !important; }
+html.night .prf-b{ border-left-color:var(--line) !important; }
+html.night .prf-idea .prf-b{ border-left-color:#5a4a1f !important; }
+html.night .prf-b .bey{ border-left-color:#5a4a1f !important; background:#1c1b12 !important; color:#d9c98a !important; }
+html.night .rgb-swatch{ border-color:#2b303a !important; }
+html.night .rgb-presets .chip{ background:#1c2029 !important; border-color:var(--line) !important; color:var(--ink) !important; }
+html.night .rgb-presets .chip:hover{ border-color:var(--accent) !important; background:#10211f !important; color:var(--accent) !important; }
+html.night .figrow>svg{ border-color:var(--line) !important; }
+html.night .cviz canvas{ border-color:var(--line) !important; }
+html.night .aiguide{ border-color:#2b303a !important; background:linear-gradient(135deg,#161a22,#12161e) !important; }
+html.night .aiguide li{ border-color:#2b303a !important; box-shadow:none !important; }
+html.night .aiguide li:hover{ border-color:var(--accent) !important; background:#131b1d !important; }
+html.night .mb-msg{ border-color:var(--line) !important; }
+html.night .mb-msg:hover{ background:#1a1f27 !important; }
+html.night .ex-opt{ border-color:var(--line) !important; background:#1a1f27 !important; }
+html.night .ex-opt:hover{ border-color:var(--accent) !important; background:#10211f !important; }
+html.night .sq-drawer{ box-shadow:-4px 0 24px rgba(0,0,0,.5) !important; }
+html.night .ky{ border-color:var(--line) !important; background:#181c23 !important; }
+html.night .ky-hint{ border-left-color:#5a4a1f !important; background:#1c1b12 !important; color:#d9c98a !important; }
+html.night .ky-q .sol{ border-left-color:#1f6b4a !important; background:#0e1f1a !important; color:#9fe7c8 !important; }
+html.night [class*="rd-"]{ border-color:var(--line) !important; }
+
+/* ---------- 写死文字色 → 沉稳语义色（低饱和，护眼） ---------- */
+html.night h3{ color:#7fd1c4 !important; }
+html.night .ex .lab{ color:#6cc0b2 !important; }
+html.night .ex .sol .mk{ color:#7fd1c4 !important; }
+html.night .prf>summary{ color:#6cc0b2 !important; }
+html.night .prf>summary:hover{ color:#7fd1c4 !important; }
+html.night .prf-b .stp{ color:#7fd1c4 !important; }
+html.night .prf-b .qed{ color:#6cc0b2 !important; }
+html.night .prf-idea>summary{ color:#d9b35e !important; }
+html.night .prf-idea>summary:hover{ color:#e6c074 !important; }
+html.night .prf-idea .prf-b .qed{ color:#d9b35e !important; }
+html.night details>summary{ color:#6cc0b2 !important; }
+html.night .def .lab{ color:#5bb3a6 !important; }
+html.night .case .lab{ color:#a98fd6 !important; }
+html.night .hist .lab{ color:#d49a5e !important; }
+html.night .hist details>summary{ color:#d49a5e !important; }
+html.night .kicker{ color:#5bb3a6 !important; }
+html.night .hw .grp{ color:#5bb3a6 !important; }
+html.night .quiz h4{ color:#5bb3a6 !important; }
+html.night .hw h4{ color:var(--ink) !important; }
+html.night .aiguide .ag-lab{ color:#90b4e0 !important; background:#16202c !important; border-color:#2a3f54 !important; }
+html.night .aiguide li b{ color:#90b4e0 !important; }
+html.night .ex-ua{ color:#d9b35e !important; }
+html.night .ex-ca{ color:#6fbf8f !important; }
+html.night .q .src{ color:var(--muted) !important; }
+html.night .px-cap{ color:var(--muted) !important; }
+html.night .muted{ color:var(--muted) !important; }
+html.night .lede{ color:var(--soft-ink) !important; }
+html.night .title .en{ color:var(--muted) !important; }
+
+/* ---------- 表格细节 ---------- */
+html.night table.dt th{ background:var(--accent-soft) !important; color:#8fd6cb !important; border-bottom-color:var(--line) !important; }
+html.night table.dt td{ color:var(--soft-ink) !important; border-bottom-color:#1c2029 !important; }
+html.night table.dt tbody tr:nth-child(even){ background:#14181f !important; }
+html.night table.dt tbody tr:last-child td{ border-bottom:none !important; }
+html.night .col table td, html.night .col table th{ color:var(--soft-ink) !important; }
+
+/* ---------- 代码/预格式化 ---------- */
+html.night code{ background:#1b2029 !important; color:#9fd9d0 !important; border:1px solid #283040 !important; }
+html.night .col pre{ background:#14181f !important; color:var(--soft-ink) !important; }
+
+/* ---------- 细节汇总表 / 题库 ---------- */
+html.night .ex-grid th{ background:var(--accent-soft) !important; color:#8fd6cb !important; }
+html.night .ex-grid td{ border-color:var(--line) !important; }
+html.night .ex-tab{ background:#1a1f27 !important; color:var(--soft-ink) !important; border-color:var(--line) !important; }
+html.night .ex-tab:hover{ border-color:var(--accent) !important; color:var(--accent) !important; }
+html.night .ex-tab.active{ background:var(--accent) !important; color:#06231f !important; border-color:var(--accent) !important; }
+html.night .ex-filters select, html.night .ex-search{ background:#1a1f27 !important; color:var(--ink) !important; border-color:var(--line) !important; }
+html.night .ex-num{ background:#1a1f27 !important; color:var(--ink) !important; border-color:var(--line) !important; }
+html.night .ex-ta, html.night .ex-fill-in{ background:#1a1f27 !important; color:var(--ink) !important; border-color:var(--line) !important; }
+html.night .ex-rev, html.night .ex-row{ color:var(--soft-ink) !important; }
+html.night .ex-badge{ color:#8fd6cb !important; background:var(--accent-soft) !important; }
+html.night .ex-qstem{ color:var(--ink) !important; }
+html.night .ex-fb{ color:var(--soft-ink) !important; }
+html.night .ex-ol{ color:var(--accent) !important; }
+html.night .ex-scores li{ border-bottom-color:var(--line) !important; color:var(--soft-ink) !important; }
+html.night .ex-exam-bar{ background:var(--accent-soft) !important; }
+html.night .ex-timer{ color:#d9b35e !important; }
+
+/* ---------- 学完就练（sec-quiz / sq-*） ---------- */
+html.night .sec-quiz .sq-header{ color:var(--ink) !important; }
+html.night .sec-quiz .sq-btn{ background:var(--accent) !important; color:#06231f !important; }
+html.night .sec-quiz .sq-btn:hover{ background:#4aa191 !important; }
+html.night .sq-drawer .sq-dtitle{ color:#d8dce4 !important; }
+html.night .sq-drawer .sq-dprog{ color:#7e8a99 !important; }
+html.night .sq-drawer .sq-close{ color:#f0f2f6 !important; }
+html.night .sq-fb.ok{ background:#10211a !important; border-left-color:#2e7d5b !important; color:#9fe7c8 !important; }
+html.night .sq-fb.bad{ background:#241616 !important; border-left-color:#c0573f !important; color:#f0b3a8 !important; }
+html.night .sq-fb .sq-exp{ color:var(--soft-ink) !important; }
+html.night .sq-opt.right{ background:#16291f !important; border-color:#2e7d5b !important; }
+html.night .sq-opt.wrongpick{ background:#2a1a18 !important; border-color:#c0573f !important; }
+
+/* ---------- details 通用（demo / 折叠） ---------- */
+html.night details{ border-color:var(--line) !important; background:#181c23 !important; }
+html.night details.demo{ border-color:#1f6b4a !important; background:var(--demo-soft) !important; }
+html.night details>summary{ color:#6cc0b2 !important; }
+html.night details .body{ border-top-color:var(--line) !important; color:var(--soft-ink) !important; }
+html.night details.demo .body{ border-top-color:#1f6b4a !important; }
+html.night .case details{ border-color:#3a2c52 !important; }
+html.night .hist details{ border-color:#5a3a1f !important; background:#1c140c !important; }
+html.night .hist details>summary{ color:#d49a5e !important; }
+
+/* ---------- 自测题（.q） ---------- */
+html.night .q{ border-bottom-color:var(--line) !important; }
+html.night .q .qt{ color:var(--ink) !important; }
+html.night .q label, html.night .hw li > label{ color:var(--soft-ink) !important; }
+html.night .q label:hover, html.night .hw li > label:hover{ color:var(--accent) !important; }
+html.night .q label > input[type=radio], html.night .hw li > label > input[type=radio]{ border-color:#3a4250 !important; background:#1a1f27 !important; }
+html.night .q label > b, html.night .hw li > label > b{ color:var(--muted) !important; }
+html.night .q .fb{ color:var(--soft-ink) !important; }
+html.night .q.correct .fb{ color:#6fbf8f !important; }
+html.night .q.wrong .fb{ color:#ef8b7b !important; }
+html.night .score{ color:var(--accent) !important; }
+html.night .qopts>span{ color:var(--soft-ink) !important; }
+html.night .qopts>span:hover{ color:var(--accent) !important; }
+html.night .qopts>span::before{ border-color:#3a4250 !important; background:#1a1f27 !important; }
+
+/* ---------- 首页 hero / 卡片（沉稳深色渐变，非霓虹） ---------- */
+html.night .hero{ background:linear-gradient(135deg,#10151d 0%,#15212b 35%,#1a2b2f 70%,#1d2f2c 100%) !important; }
+html.night .card{ border-color:var(--line) !important; }
+html.night .card:hover{ border-color:var(--accent) !important; box-shadow:0 10px 26px rgba(91,179,166,.15) !important; }
+html.night .card .cn{ color:#8fd6cb !important; }
+html.night .card .en{ color:var(--muted) !important; }
+html.night .site-footer{ background-color:#0e1116 !important; color:#6b7280 !important; border-top-color:var(--line) !important; }
+html.night .exam-entry-btn{ color:#06231f !important; }
+
+/* ---------- 知识地图箭头 ---------- */
+html.night .aiguide li::before{ opacity:.9; }
+
+/* ---------- energy_bar（蓝色 HUD，仅压暗表面，保留蓝强调） ---------- */
+html.night .eb-floating{ background:transparent !important; }
+html.night .eb-toggle{ background:#2a5bbf !important; color:#fff !important; }
+html.night .eb-btn{ background:#2a5bbf !important; color:#fff !important; }
+html.night .eb-hint{ color:#aab4c2 !important; }
+html.night .eb-stat{ color:#cdd6e4 !important; }
+html.night .eb-ch .eb-label, html.night .eb-ch .eb-name{ color:#cdd6e4 !important; }
+html.night .qn-row button{ background:#2f7d63 !important; color:#fff !important; }
+html.night .qn-close:hover{ background:#1e293b !important; color:#cbd5e1 !important; }
+
+/* ---------- 习题 / 概念块（.hw / .def） ---------- */
+html.night .def{ background:var(--accent-soft) !important; border-left-color:var(--accent) !important; }
+html.night .def .lab{ color:#5bb3a6 !important; }
+html.night .hw{ border-color:var(--line) !important; }
+html.night .hw p, html.night .hw li{ color:var(--ink) !important; }
+
+/* ---------- 公式：KaTeX 默认继承 currentColor，切换后自动变亮 ---------- */
+html.night .katex{ color:var(--ink); }
+html.night .katex-display{ color:var(--ink); }
+
+/* ---------- 移动端抽屉 ---------- */
+html.night .drawer-nav{ background:#0f1116 !important; }
+html.night .drawer-nav a{ color:#9aa4b2 !important; }
+html.night .drawer-nav a:hover{ background:#1a1f27 !important; color:#f0f2f6 !important; }
+html.night .nav-drawer{ background:#0f1116 !important; }
+html.night .nav-mask{ background:rgba(0,0,0,.55) !important; }
+html.night .nav-close{ color:#cbd5e1 !important; }
+
+/* ---------- 交互实验框 labx ---------- */
+html.night .labx{ background:#0b0f18 !important; }
+html.night .labx .lab{ color:#7fd1c4 !important; }
+html.night .labx .desc{ color:#9aa4b2 !important; }
+html.night .labx .out{ background:#10171f !important; color:#7fd8cb !important; }
+html.night .labx .out b{ color:#7fd1c4 !important; }
+html.night .labx textarea, html.night .labx .matrix-in input{ background:#10171f !important; color:#e6f0f5 !important; border-color:#2a3a48 !important; }
+html.night .labx .btn{ background:#6cc0b2 !important; color:#06231f !important; }
+html.night .labx .btn.ghost{ background:#10171f !important; color:#9fe9df !important; border-color:#2a4a48 !important; }
+html.night canvas{ background:#0a1118 !important; }
+
+/* ---------- 高级模块残留亮面（cviz / rd / 等，尽量覆盖） ---------- */
+html.night .cviz-btns button{ background:#1a1f27 !important; color:#aab2c0 !important; }
+html.night .cviz-btns button:hover{ background:#222b35 !important; }
+html.night .cviz-btns button.on{ background:#2f7d63 !important; color:#fff !important; }
+html.night .rd-hero{ background:#101b2e !important; }
+html.night .rd-act-n{ color:#f0f2f6 !important; }
+html.night [class*="rd-modal"],[class*="rd-box"],[class*="rd-tip"],[class*="rd-note"]{ background:#181c23 !important; color:var(--ink) !important; border-color:var(--line) !important; }
+html.night .sq-drawer .sq-dhead{ color:#d8dce4 !important; }
+
+/* ---------- 规则线 / 分隔 ---------- */
+html.night .rule{ background:var(--line) !important; }
+html.night hr{ background:var(--line) !important; border-color:var(--line) !important; }

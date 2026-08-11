@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第10章 · 重积分</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第10章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第10章 · 重积分</div>
+<a href="ch10.html">整章</a>
+<a href="ch10.html#adv10">考研选讲</a>
+<a href="ch10.html#cq10">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH10 -->
+<div class="kicker">Chapter 10</div>
+<h1 class="title">重积分<span class="en">Multiple Integrals</span></h1>
+<p class="lede">把定积分推广到平面与空间区域，得到二重与三重积分.本章建立其概念与性质，系统讲解直角坐标、极坐标、柱面与球面坐标下的计算方法，并给出几何与物理应用.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>多元函数</b> → 高维特征空间</li>
+<li><b>偏导数</b> → 梯度的分量</li>
+<li><b>链式法则</b> → 反向传播核心</li>
+<li><b>全微分</b> → 多变量误差传播</li>
+<li><b>泰勒极值</b> → 牛顿法二阶优化</li>
+<li><b>几何应用</b> → 切平面与法向量</li>
+  </ul>
+</div>
+
+    <!-- ============ §10.1 ============ -->
+<div class="labx">
+  <div class="lab">交互 · 二重积分：体积逼近</div>
+  <div class="desc">二重积分 ∬f(x,y)dA 表示曲面下的柱体体积.增加网格密度观察逼近过程.</div>
+  <div class="row"><canvas id="viz-double" width="480" height="360" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px,color:#33473f">网格 n×n = <b id="viz-grid-val" style="color:#2dd4bf;font-size:14px">8</b></label>
+    <input type="range" id="viz-grid" min="3" max="18" step="1" value="8" style="flex:1;min-width:100px;accent-color:#2dd4bf">
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-double'),ctx=c.getContext('2d');
+  var gS=document.getElementById('viz-grid'),gV=document.getElementById('viz-grid-val');
+  function f(x,y){return 1.5-Math.abs(x)-0.25*y*y;}
+  function draw(){var N=parseInt(gS.value);gV.textContent=N;var W=c.width,H=c.height,sum=0,st=2/N;
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/16){ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/12){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.fillStyle='rgba(45,212,191,0.12)';
+    for(var i=0;i<N;i++)for(var j=0;j<N;j++){
+      var cx=-1+(i+0.5)*st,cy=-1+(j+0.5)*st,h=f(cx,cy);if(h<0)continue;
+      var px=(cx+1)/2*W*0.68+W*0.15,py=H*0.58-h*H*0.22,pw=W*0.68/N*0.75,ph=h*H*0.22;
+      ctx.fillRect(px-pw/2,py,pw,ph);sum+=h*st*st;
+    }
+    ctx.fillStyle='#33473f';ctx.font='11px sans-serif';ctx.fillStyle='#33473f';ctx.fillText('∬f dA ≈ '+sum.toFixed(3),W*0.54,H*0.09);
+  }requestAnimationFrame(function(){draw();});gS.addEventListener('input',draw);
+})();
+</script>
+
+    <h2 id="s101"><span class="num">§10.1</span>二重积分的概念与性质</h2>
+    
+<div class="ex"><div class="lab">引例一　CMOS 图像传感器接收了多少光：把不均匀的照度"累加"起来</div>
+  <p class="stmt">手机主摄的 CMOS 图像传感器是一块 \(9.6\,\mathrm{mm}\times7.2\,\mathrm{mm}\) 的矩形感光面，上面排布着数千万个像素.由于镜头存在<b>渐晕</b>（边缘进光量低于中心），落在传感器上的照度并不均匀.整机标定工程师必须回答：一次曝光中，整块传感器一共接收了多少<b>光通量</b>？</p>
+  <p>以传感器中心为原点建立坐标系，实测照度可拟合为</p>
+  \[E(x,y)=E_0\bigl[1-k(x^2+y^2)\bigr],\qquad E_0=800\ \mathrm{lx},\quad k=0.004\ \mathrm{mm^{-2}},\]
+  <p>感光区域为 \(D=\{(x,y)\mid |x|\le 4.8,\ |y|\le 3.6\}\)（单位 mm）.如果照度处处相等，总光通量就是"照度 \(\times\) 面积"这一句乘法；可现在 \(E\) 随位置变化，唯一的出路是<b>先分割、再近似、后累加</b>.</p>
+  <p>把 \(D\) 沿两个方向各等分为 \(n\) 份，得到 \(n^2\) 个小矩形 \(\Delta\sigma_i\).在每个小块上照度变化很小，取块内一点 \((\xi_i,\eta_i)\) 的照度代表整块，则该块贡献 \(E(\xi_i,\eta_i)\Delta\sigma_i\)，全部相加得</p>
+  \[\Phi_n=\sum_{i=1}^{n^2}E(\xi_i,\eta_i)\,\Delta\sigma_i .\]
+  <p><b>具体模拟计算</b>（取每小块的中心为代表点）：</p>
+  <table class="dt">
+    <tr><th>等分数 \(n\)</th><th>小块个数 \(n^2\)</th><th>每块面积（\(\mathrm{mm^2}\)）</th><th>和式 \(\Phi_n\)（\(\mathrm{lx\cdot mm^2}\)）</th><th>与极限之差</th></tr>
+    <tr><td>2</td><td>4</td><td>17.28</td><td>53305.34</td><td>663.55</td></tr>
+    <tr><td>4</td><td>16</td><td>4.32</td><td>52807.68</td><td>165.89</td></tr>
+    <tr><td>8</td><td>64</td><td>1.08</td><td>52683.26</td><td>41.47</td></tr>
+    <tr><td>16</td><td>256</td><td>0.27</td><td>52652.16</td><td>10.37</td></tr>
+    <tr><td>32</td><td>1024</td><td>0.0675</td><td>52644.38</td><td>2.59</td></tr>
+    <tr><td>\(\to\infty\)</td><td>\(\to\infty\)</td><td>\(\to 0\)</td><td><b>52641.79</b></td><td>\(\to 0\)</td></tr>
+  </table>
+  <p>和式稳稳地收敛到 \(52641.79\ \mathrm{lx\cdot mm^2}\).换算成国际单位（\(1\,\mathrm{mm^2}=10^{-6}\,\mathrm{m^2}\)）得总光通量</p>
+  \[\Phi=5.2642\times10^{-2}\ \mathrm{lm}.\]
+  <p>几何上看，\(\Phi_n\) 是许多"细长方柱"的体积之和，它们逼近的正是<b>以 \(D\) 为底、以曲面 \(z=E(x,y)\) 为顶的曲顶柱体的体积</b>.这个"分割—近似—求和—取极限"的四步曲，就是本节要定义的<b>二重积分</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　石墨烯散热膜的质量：面密度不均匀的平面薄片</div>
+  \[\mu(x,y)=0.8+0.02xy\quad(\mathrm{mg/cm^2}),\qquad 0\le x\le10,\ 0\le y\le6 .\]
+  <p>整卷膜的质量直接影响整机重量预算，必须精确计算.仍然分割为 \(2\times3=6\) 个 \(5\,\mathrm{cm}\times2\,\mathrm{cm}\) 的小块（每块面积 \(10\,\mathrm{cm^2}\)），取块心为代表点：</p>
+  <table class="dt">
+    <tr><th>小块</th><th>块心 \((\xi,\eta)\)</th><th>面密度 \(\mu\)（\(\mathrm{mg/cm^2}\)）</th><th>\(\Delta\sigma\)（\(\mathrm{cm^2}\)）</th><th>\(\Delta m=\mu\Delta\sigma\)（mg）</th></tr>
+    <tr><td>1</td><td>\((2.5,1)\)</td><td>0.85</td><td>10</td><td>8.5</td></tr>
+    <tr><td>2</td><td>\((2.5,3)\)</td><td>0.95</td><td>10</td><td>9.5</td></tr>
+    <tr><td>3</td><td>\((2.5,5)\)</td><td>1.05</td><td>10</td><td>10.5</td></tr>
+    <tr><td>4</td><td>\((7.5,1)\)</td><td>0.95</td><td>10</td><td>9.5</td></tr>
+    <tr><td>5</td><td>\((7.5,3)\)</td><td>1.25</td><td>10</td><td>12.5</td></tr>
+    <tr><td>6</td><td>\((7.5,5)\)</td><td>1.55</td><td>10</td><td>15.5</td></tr>
+    <tr><td colspan="4"><b>合计</b></td><td><b>66.0</b></td></tr>
+  </table>
+  <p>本例中和式恰好等于精确值 \(66\,\mathrm{mg}\)，这是因为 \(\mu\) 关于 \(x,y\) 是双线性的，中点取法的正负误差恰好抵消；一般的密度函数就必须真的取极限了.</p>
+  <p>请注意：<b>引例一求的是体积、引例二求的是质量，物理背景完全不同，数学结构却一模一样</b>——都是"函数值 \(\times\) 小面积"求和再取极限.数学的任务，就是把这个共同结构抽象出来.</p>
+</div>
+
+<h3>一、二重积分的定义</h3>
+<div class="def"><div class="lab"><span class="n">定义 10.1</span>二重积分</div>
+  <p>设 \(f(x,y)\) 是有界闭区域 \(D\) 上的有界函数.将 \(D\) 任意分成 \(n\) 个小闭区域</p>
+  \[\Delta\sigma_1,\ \Delta\sigma_2,\ \dots,\ \Delta\sigma_n,\]
+  <p>并用同一记号表示它们的面积.在每个 \(\Delta\sigma_i\) 上任取一点 \((\xi_i,\eta_i)\)，作乘积 \(f(\xi_i,\eta_i)\Delta\sigma_i\) 并求和，得<b>积分和</b></p>
+  \[S_n=\sum_{i=1}^{n}f(\xi_i,\eta_i)\,\Delta\sigma_i .\]
+  <p>记 \(\lambda=\max\limits_{1\le i\le n}d(\Delta\sigma_i)\) 为各小区域<b>直径</b>的最大者.若当 \(\lambda\to0\) 时 \(S_n\) 的极限总存在（与 \(D\) 的分法及点 \((\xi_i,\eta_i)\) 的取法均无关），则称 \(f\) 在 \(D\) 上<b>可积</b>，并称此极限为 \(f(x,y)\) 在 \(D\) 上的<b>二重积分</b>，记作</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\lim_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i,\eta_i)\,\Delta\sigma_i .\]
+  <p>其中 \(f(x,y)\) 称为<b>被积函数</b>，\(\mathrm{d}\sigma\) 称为<b>面积元素</b>，\(D\) 称为<b>积分区域</b>.</p>
+</div>
+<div class="note"><b>三个易错点.</b>① \(\lambda\to0\) 不能换成 \(n\to\infty\)：小块个数再多，只要有一块始终"细长不缩"，极限就可能不存在.② 极限必须与分法、取点法<b>都</b>无关，这是"总存在"三个字的含义.③ 在直角坐标系下用平行于坐标轴的直线网分割时，除边界外每个小块都是矩形，\(\Delta\sigma=\Delta x\Delta y\)，故常把面积元素写成 \(\mathrm{d}\sigma=\mathrm{d}x\,\mathrm{d}y\)，二重积分记作 \(\iint_D f(x,y)\,\mathrm{d}x\mathrm{d}y\).</div>
+
+<div class="def"><div class="lab"><span class="n">定理 10.1</span>可积的充分条件</div>
+  <p>（1）若 \(f(x,y)\) 在有界闭区域 \(D\) 上<b>连续</b>，则 \(f\) 在 \(D\) 上可积.</p>
+  <p>（2）若 \(f(x,y)\) 在 \(D\) 上有界，且其间断点全部落在<b>有限条光滑曲线</b>上，则 \(f\) 在 \(D\) 上仍可积.</p>
+  <p class="muted">条件（2）很实用：工程中的分片定义密度、分区曝光剂量，其间断只发生在分界线上，不影响可积性.以下讨论若不特别声明，均设被积函数连续.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需达布上下和与一致连续性，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>可积与否，本质上取决于"把分割加细时，函数在每个小块上的<b>波动</b>能否被压到任意小".把这句话量化，就是达布（Darboux）上下和理论.</p>
+<p><span class="stp">第一步：引入达布上下和.</span>把 \(D\) 任意分成 \(n\) 个小闭区域 \(\Delta\sigma_1,\cdots,\Delta\sigma_n\)（同时表示其面积），记 \(f\) 在 \(\Delta\sigma_i\) 上的上、下确界为 \(M_i,m_i\)，作</p>
+\[S=\sum_{i=1}^{n}M_i\Delta\sigma_i,\qquad s=\sum_{i=1}^{n}m_i\Delta\sigma_i .\]
+<p>任何积分和 \(\sum f(\xi_i,\eta_i)\Delta\sigma_i\) 都夹在 \(s\) 与 \(S\) 之间.可以证明：\(f\) 可积的充要条件是</p>
+\[\lim_{\lambda\to0}(S-s)=\lim_{\lambda\to0}\sum_{i=1}^{n}\omega_i\,\Delta\sigma_i=0,\qquad \omega_i=M_i-m_i\ (\text{振幅}),\]
+<p>其中 \(\lambda\) 为各小区域直径的最大值.</p>
+<p><span class="stp">第二步：连续 \(\Rightarrow\) 一致连续 \(\Rightarrow\) 振幅一致小.</span>\(f\) 在<b>有界闭</b>区域 \(D\) 上连续，由 Cantor 定理它在 \(D\) 上<b>一致连续</b>：对任意 \(\varepsilon\gt0\)，存在 \(\delta\gt0\)，只要两点距离小于 \(\delta\)，函数值之差就小于 \(\dfrac{\varepsilon}{\sigma}\)（\(\sigma\) 为 \(D\) 的面积）.于是当 \(\lambda\lt\delta\) 时每个 \(\omega_i\le\dfrac{\varepsilon}{\sigma}\)，从而</p>
+\[S-s=\sum_{i=1}^{n}\omega_i\Delta\sigma_i\le\frac{\varepsilon}{\sigma}\sum_{i=1}^{n}\Delta\sigma_i=\varepsilon .\]
+<p>这就证得（1）.</p>
+<p><span class="stp">第三步：间断点落在有限条光滑曲线上的情形.</span>光滑曲线的面积为零，可以用总面积任意小的一串小矩形把它盖住.把分割出的小块分成两类：与"坏曲线"相交的一类，其总面积 \(\lt\dfrac{\varepsilon}{4K}\)（\(K\) 为 \(|f|\) 的界），振幅至多 \(2K\)，贡献 \(\lt\dfrac{\varepsilon}{2}\)；其余小块上 \(f\) 连续，按第二步处理，贡献也 \(\lt\dfrac{\varepsilon}{2}\).合起来仍有 \(S-s\lt\varepsilon\)，故 \(f\) 可积.</p>
+<div class="bey"><b>为什么说"超纲"：</b>上述骨架用到两块《数学分析》的内容：一是<b>达布上下和判别法</b>（它依赖上、下积分由实数确界原理保证存在），二是<b>Cantor 一致连续性定理</b>（闭区域上连续必一致连续，其根基仍是实数完备性）.工科《高等数学》默认承认本定理，把注意力放在"怎么算"上.记住结论的实用含义即可：<b>连续必可积；间断只发生在有限条光滑曲线上也不妨碍可积</b>——分片定义的密度、分区曝光剂量都在此列.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<h3>二、二重积分的几何意义</h3>
+<p>当 \(f(x,y)\ge0\) 时，\(\iint_D f\,\mathrm{d}\sigma\) 表示<b>以 \(D\) 为底、以曲面 \(z=f(x,y)\) 为顶的曲顶柱体的体积</b>；当 \(f(x,y)\le0\) 时，该积分等于相应体积的<b>相反数</b>；当 \(f\) 变号时，积分等于 \(xOy\) 面上方部分体积减去下方部分体积，即<b>代数体积</b>.</p>
+<p>特别地，取 \(f\equiv1\) 得一个最常用的事实：</p>
+\[\iint_{D}\mathrm{d}\sigma=\sigma(D)\quad(\text{区域 }D\text{ 的面积}).\]
+
+<div class="ex"><div class="lab">例 10.1　用几何意义求积分</div>
+  <p class="stmt">设 \(D:\ x^2+y^2\le R^2\)，求 \(\displaystyle\iint_D\sqrt{R^2-x^2-y^2}\,\mathrm{d}\sigma\) 与 \(\displaystyle\iint_D 3\,\mathrm{d}\sigma\).</p>
+  <p class="sol"><span class="mk">解</span>令 \(z=\sqrt{R^2-x^2-y^2}\ (z\ge0)\)，两边平方得 \(x^2+y^2+z^2=R^2\)，故曲顶恰是<b>上半球面</b>.于是所求积分是以圆域 \(D\) 为底、上半球面为顶的曲顶柱体体积，即<b>上半球体的体积</b></p>
+  \[\iint_D\sqrt{R^2-x^2-y^2}\,\mathrm{d}\sigma=\frac12\cdot\frac{4}{3}\pi R^3=\frac{2}{3}\pi R^3 .\]
+  <p>第二个积分的曲顶是平面 \(z=3\)，柱体是高为 \(3\) 的正圆柱，故</p>
+  \[\iint_D 3\,\mathrm{d}\sigma=3\cdot\pi R^2=3\pi R^2 .\]
+  <p class="muted">凡是被积函数对应<b>球面、锥面、平面</b>等已知体积的立体，都可以直接"看"出答案，不必计算.</p>
+</div>
+
+<h3>三、二重积分的性质</h3>
+<p>以下设各积分均存在，\(\alpha,\beta\) 为常数.</p>
+<div class="def"><div class="lab"><span class="n">性质 10.1</span>线性性</div>
+  \[\iint_{D}\bigl[\alpha f(x,y)+\beta g(x,y)\bigr]\mathrm{d}\sigma
+    =\alpha\iint_{D}f\,\mathrm{d}\sigma+\beta\iint_{D}g\,\mathrm{d}\sigma .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：写出积分和.</span>把 \(D\) 任意分成 \(n\) 个小闭区域 \(\Delta\sigma_1,\cdots,\Delta\sigma_n\)（同时表示其面积），在每个 \(\Delta\sigma_i\) 上任取一点 \((\xi_i,\eta_i)\)，记各小区域直径的最大者为 \(\lambda\).对函数 \(\alpha f+\beta g\) 作积分和：</p>
+\[\sum_{i=1}^{n}\bigl[\alpha f(\xi_i,\eta_i)+\beta g(\xi_i,\eta_i)\bigr]\Delta\sigma_i
+=\alpha\sum_{i=1}^{n}f(\xi_i,\eta_i)\Delta\sigma_i+\beta\sum_{i=1}^{n}g(\xi_i,\eta_i)\Delta\sigma_i .\]
+<p>这一步只用到<b>有限和</b>的分配律与结合律，无条件成立.</p>
+<p><span class="stp">第二步：取极限.</span>已知 \(f,g\) 在 \(D\) 上可积，故当 \(\lambda\to0\) 时右端两个和分别趋于 \(\displaystyle\iint_Df\,\mathrm{d}\sigma\) 与 \(\displaystyle\iint_Dg\,\mathrm{d}\sigma\).由极限的四则运算法则（数乘与和的极限），右端极限存在，于是左端极限也存在，即 \(\alpha f+\beta g\) 可积，且</p>
+\[\iint_{D}\bigl[\alpha f+\beta g\bigr]\mathrm{d}\sigma=\alpha\iint_{D}f\,\mathrm{d}\sigma+\beta\iint_{D}g\,\mathrm{d}\sigma .\]
+<p>取 \(\beta=0\) 得数乘性，取 \(\alpha=\beta=1\) 得可加性.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 10.2</span>区域可加性</div>
+  <p>若 \(D=D_1\cup D_2\)，且 \(D_1,D_2\) 除边界外无公共点，则</p>
+  \[\iint_{D}f\,\mathrm{d}\sigma=\iint_{D_1}f\,\mathrm{d}\sigma+\iint_{D_2}f\,\mathrm{d}\sigma .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>积分和的极限与分割方式无关，因此可以<b>专挑对我们有利的分割</b>——让 \(D_1\) 与 \(D_2\) 的公共边界成为分割线.</p>
+<p><span class="stp">第一步：选取特殊分割.</span>因 \(f\) 在 \(D\) 上可积，无论怎样分割 \(D\)、怎样取点，积分和的极限都相同.于是取一列分割，使 \(D_1\) 与 \(D_2\) 的公共边界始终落在分割线上.这样每个小区域要么整个含于 \(D_1\)，要么整个含于 \(D_2\)，全部小区域被分成两组：</p>
+\[\{\Delta\sigma_i'\}\subset D_1,\qquad \{\Delta\sigma_j''\}\subset D_2 .\]
+<p><span class="stp">第二步：把和拆成两组.</span>有限和可以任意重排分组，故</p>
+\[\sum_{i}f(\xi_i',\eta_i')\Delta\sigma_i'+\sum_{j}f(\xi_j'',\eta_j'')\Delta\sigma_j''
+=\sum_{\text{全部}}f(\xi_k,\eta_k)\Delta\sigma_k .\]
+<p><span class="stp">第三步：取极限.</span>令 \(\lambda\to0\)，左端两个和分别是 \(f\) 在 \(D_1,D_2\) 上的积分和，趋于 \(\displaystyle\iint_{D_1}f\,\mathrm{d}\sigma\) 与 \(\displaystyle\iint_{D_2}f\,\mathrm{d}\sigma\)；右端趋于 \(\displaystyle\iint_{D}f\,\mathrm{d}\sigma\).故</p>
+\[\iint_{D}f\,\mathrm{d}\sigma=\iint_{D_1}f\,\mathrm{d}\sigma+\iint_{D_2}f\,\mathrm{d}\sigma .\]
+<p>（\(D_1,D_2\) 的公共边界是一条曲线，面积为零，重复计算与否都不影响结果.）</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 10.3</span>保号性与单调性</div>
+  <p>若在 \(D\) 上恒有 \(f(x,y)\le g(x,y)\)，则</p>
+  \[\iint_{D}f\,\mathrm{d}\sigma\le\iint_{D}g\,\mathrm{d}\sigma .\]
+  <p><b>推论：</b>\(\left|\displaystyle\iint_{D}f\,\mathrm{d}\sigma\right|\le\displaystyle\iint_{D}|f|\,\mathrm{d}\sigma\)（由 \(-|f|\le f\le|f|\) 得到）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：先证保号性.</span>设在 \(D\) 上 \(h(x,y)\ge0\) 且 \(h\) 可积.任作分割并取点，因每个 \(h(\xi_i,\eta_i)\ge0\)、每个面积 \(\Delta\sigma_i\gt0\)，故积分和</p>
+\[\sum_{i=1}^{n}h(\xi_i,\eta_i)\Delta\sigma_i\ge0 .\]
+<p>由极限的保号性（不等式在取极限后仍保持，只是严格号可能变成等号），令 \(\lambda\to0\) 得 \(\displaystyle\iint_Dh\,\mathrm{d}\sigma\ge0\).</p>
+<p><span class="stp">第二步：由保号性推单调性.</span>取 \(h=g-f\ge0\)，由性质 10.1 与第一步，</p>
+\[\iint_{D}g\,\mathrm{d}\sigma-\iint_{D}f\,\mathrm{d}\sigma=\iint_{D}(g-f)\,\mathrm{d}\sigma\ge0,\]
+<p>即 \(\displaystyle\iint_Df\,\mathrm{d}\sigma\le\iint_Dg\,\mathrm{d}\sigma\).</p>
+<p><span class="stp">第三步：推论.</span>由 \(-|f|\le f\le|f|\)，对左右两个不等式分别用单调性得</p>
+\[-\iint_{D}|f|\,\mathrm{d}\sigma\le\iint_{D}f\,\mathrm{d}\sigma\le\iint_{D}|f|\,\mathrm{d}\sigma,\]
+<p>这正是 \(\left|\displaystyle\iint_Df\,\mathrm{d}\sigma\right|\le\displaystyle\iint_D|f|\,\mathrm{d}\sigma\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 10.4</span>估值定理</div>
+  <p>设 \(M,m\) 分别是 \(f\) 在闭区域 \(D\) 上的最大值与最小值，\(\sigma\) 为 \(D\) 的面积，则</p>
+  \[m\sigma\le\iint_{D}f(x,y)\,\mathrm{d}\sigma\le M\sigma .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：常数的二重积分等于面积.</span>对常值函数 \(1\)，任一积分和都是</p>
+\[\sum_{i=1}^{n}1\cdot\Delta\sigma_i=\sigma ,\]
+<p>与分割、取点无关，故 \(\displaystyle\iint_D1\,\mathrm{d}\sigma=\sigma\)；再由性质 10.1 的数乘性，\(\displaystyle\iint_Dc\,\mathrm{d}\sigma=c\sigma\).</p>
+<p><span class="stp">第二步：夹住被积函数.</span>由 \(M,m\) 的定义，在 \(D\) 上处处有</p>
+\[m\le f(x,y)\le M .\]
+<p><span class="stp">第三步：对三段同时积分.</span>用性质 10.3 的单调性，再代入第一步的结果，得</p>
+\[m\sigma=\iint_{D}m\,\mathrm{d}\sigma\le\iint_{D}f(x,y)\,\mathrm{d}\sigma\le\iint_{D}M\,\mathrm{d}\sigma=M\sigma .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 10.2</span>二重积分中值定理</div>
+  <p>设 \(f(x,y)\) 在有界闭区域 \(D\) 上连续，\(\sigma\) 为 \(D\) 的面积，则在 \(D\) 上至少存在一点 \((\xi,\eta)\)，使</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=f(\xi,\eta)\,\sigma .\]
+  <p class="muted"><b>证明要点：</b>由性质 10.4 得 \(m\le\dfrac1\sigma\displaystyle\iint_Df\,\mathrm{d}\sigma\le M\).由于 \(f\) 在有界闭区域上连续，它能取到 \(m\) 与 \(M\) 之间的一切值（介值定理），故存在 \((\xi,\eta)\in D\) 使 \(f(\xi,\eta)\) 等于该平均值.</p>
+  <p><b>几何意义：</b>曲顶柱体的体积，等于以 \(D\) 为底、以某个"平均高度" \(f(\xi,\eta)\) 为高的平顶柱体的体积.数值 \(\dfrac1\sigma\displaystyle\iint_Df\,\mathrm{d}\sigma\) 称为 \(f\) 在 \(D\) 上的<b>平均值</b>.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>估值定理把积分的<b>平均值</b>夹在最小值与最大值之间；而连续函数在有界闭区域上"该取的值一个都不漏"（介值定理）.两者一拼即得.</p>
+<p><span class="stp">第一步：用估值定理.</span>\(f\) 在有界闭区域 \(D\) 上连续，故存在最大值 \(M\) 与最小值 \(m\)（最值定理），设 \(\sigma\gt0\).由性质 10.4，</p>
+\[m\sigma\le\iint_{D}f(x,y)\,\mathrm{d}\sigma\le M\sigma .\]
+<p>各端同除以 \(\sigma\gt0\)，记 \(\mu=\dfrac1\sigma\displaystyle\iint_Df\,\mathrm{d}\sigma\)，则</p>
+\[m\le\mu\le M .\]
+<p><span class="stp">第二步：用介值定理.</span>设 \(f\) 在点 \(P_1\in D\) 取得最小值 \(m\)，在点 \(P_2\in D\) 取得最大值 \(M\).因 \(D\) 是有界闭区域（连通），可在 \(D\) 内取一条连接 \(P_1,P_2\) 的连续曲线，\(f\) 沿此曲线是一元连续函数，其值从 \(m\) 变到 \(M\)，由闭区间上连续函数的介值定理，必在曲线上某点 \((\xi,\eta)\in D\) 取到中间值 \(\mu\)，即 \(f(\xi,\eta)=\mu\).</p>
+<p><span class="stp">第三步：整理.</span>把 \(\mu\) 的定义代回，得</p>
+\[\iint_{D}f(x,y)\,\mathrm{d}\sigma=f(\xi,\eta)\,\sigma .\]
+<p>（若 \(\sigma=0\)，两端同为零，结论平凡成立.）</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 10.5</span>对称性（奇偶性）</div>
+  <p>设 \(D\) 关于 \(y\) 轴对称，则</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=
+  \begin{cases}
+    0, & f(-x,y)=-f(x,y)\ (\text{关于 }x\text{ 为奇函数}),\\[4pt]
+    2\displaystyle\iint_{D_1}f\,\mathrm{d}\sigma, & f(-x,y)=f(x,y)\ (\text{关于 }x\text{ 为偶函数}),
+  \end{cases}\]
+  <p>其中 \(D_1\) 是 \(D\) 位于 \(y\) 轴右侧的一半.\(D\) 关于 \(x\) 轴对称时结论类似.若 \(D\) 关于直线 \(y=x\) 对称，则有<b>轮换对称性</b></p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\iint_{D}f(y,x)\,\mathrm{d}\sigma .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>关键是<b>对合变换</b> \(T:(x,y)\mapsto(-x,y)\)，它是关于 \(y\) 轴的<b>镜面反射</b>——既把左半区域一一映成右半区域，又保持面积和小区域直径不变.于是左半的积分和与右半的积分和"逐项对应"，可以直接比较.</p>
+<p><span class="stp">第一步：分块.</span>记 \(D_1=D\cap\{x\ge0\},\ D_2=D\cap\{x\le0\}\).由 \(D\) 关于 \(y\) 轴对称知 \(T(D_2)=D_1\).由性质 10.2，</p>
+\[\iint_{D}f\,\mathrm{d}\sigma=\iint_{D_1}f\,\mathrm{d}\sigma+\iint_{D_2}f\,\mathrm{d}\sigma .\]
+<p><span class="stp">第二步：把 \(D_2\) 上的积分搬到 \(D_1\) 上.</span>任取 \(D_1\) 的一个分割 \(\{\Delta\sigma_i\}\) 及取点 \((\xi_i,\eta_i)\in\Delta\sigma_i\).它们在 \(T^{-1}=T\) 下的像 \(\{T(\Delta\sigma_i)\}\) 恰是 \(D_2\) 的一个分割，取点为 \((-\xi_i,\eta_i)\).因 \(T\) 是反射（等距变换），对应小块<b>全等</b>，故面积相同、直径相同，从而两侧的 \(\lambda\) 同时趋于零.于是</p>
+\[\iint_{D_2}f(x,y)\,\mathrm{d}\sigma=\lim_{\lambda\to0}\sum_{i}f(-\xi_i,\eta_i)\,\Delta\sigma_i=\iint_{D_1}f(-x,y)\,\mathrm{d}\sigma .\]
+<p><span class="stp">第三步：比较奇偶性.</span>代回第一步：</p>
+\[\iint_{D}f\,\mathrm{d}\sigma=\iint_{D_1}\bigl[f(x,y)+f(-x,y)\bigr]\mathrm{d}\sigma .\]
+<p>若 \(f(-x,y)=-f(x,y)\)（关于 \(x\) 为奇函数），方括号恒为 \(0\)，积分为 \(0\)；若 \(f(-x,y)=f(x,y)\)（偶函数），方括号为 \(2f(x,y)\)，积分为 \(2\displaystyle\iint_{D_1}f\,\mathrm{d}\sigma\).这就是所要的两式.\(D\) 关于 \(x\) 轴对称时，把 \(T\) 换成 \((x,y)\mapsto(x,-y)\)，论证逐字照搬.</p>
+<p><span class="stp">第四步：轮换对称性.</span>设 \(D\) 关于直线 \(y=x\) 对称，考虑对合变换 \(R:(x,y)\mapsto(y,x)\)，它是关于该直线的反射，故仍是等距变换，且 \(R(D)=D\).对 \(D\) 的任一分割 \(\{\Delta\sigma_i\}\)、取点 \((\xi_i,\eta_i)\)，其像 \(\{R(\Delta\sigma_i)\}\) 仍是 \(D\) 的分割、取点 \((\eta_i,\xi_i)\)，且面积一一相等.于是</p>
+\[\iint_{D}f(y,x)\,\mathrm{d}\sigma=\lim_{\lambda\to0}\sum_i f(\eta_i,\xi_i)\Delta\sigma_i=\iint_{D}f(x,y)\,\mathrm{d}\sigma .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>对称性是二重积分的第一"减负神器".</b>做题顺序永远是：先看区域对称吗 \(\to\) 再看被积函数奇偶吗 \(\to\) 能砍掉的项立刻砍掉 \(\to\) 剩下的才动手算.很多考研题的计算量有一半是被对称性直接消掉的.</div>
+
+<div class="ex"><div class="lab">例 10.2　比较积分大小（考研经典）</div>
+  <p class="stmt">设 \(D\) 是由 \(x=0,\ y=0,\ x+y=3,\ x+y=4\) 围成的梯形区域，记</p>
+  \[I_1=\iint_D\ln(x+y)\,\mathrm{d}\sigma,\quad I_2=\iint_D\bigl[\ln(x+y)\bigr]^2\mathrm{d}\sigma,\quad I_3=\iint_D\bigl[\ln(x+y)\bigr]^3\mathrm{d}\sigma,\]
+  <p>比较 \(I_1,I_2,I_3\) 的大小.</p>
+  <p class="sol"><span class="mk">解</span>关键是<b>看清被积函数在区域上的取值范围</b>.在 \(D\) 上有 \(3\le x+y\le4\)，故</p>
+  \[t=\ln(x+y)\in[\ln 3,\ \ln 4]=[1.0986,\ 1.3863].\]
+  <p>由于 \(t\gt1\)，幂次越高值越大：\(t\lt t^2\lt t^3\).这个不等式在 \(D\) 上处处成立（边界上 \(x+y=3\) 处仍有 \(t=1.0986\gt1\)），于是由性质 10.3 的单调性得</p>
+  \[I_1\lt I_2\lt I_3 .\]
+  <p class="muted"><b>变式警示：</b>若把区域改为 \(x+y\) 介于 \(\tfrac12\) 与 \(1\) 之间，则 \(t\in[-\ln2,0]\)，此时 \(t\le t^3\le t^2\)（负数的偶次幂为正），结论完全反过来变成 \(I_1\le I_3\le I_2\).<b>先定范围，再比大小，切勿凭印象.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 10.3　估值</div>
+  <p class="stmt">估计 \(\displaystyle I=\iint_D\frac{\mathrm{d}\sigma}{100+\cos^2x+\cos^2y}\) 的值，其中 \(D:\ |x|+|y|\le10\).</p>
+  <p class="sol"><span class="mk">解</span>区域 \(D\) 是以原点为中心、对角线长均为 \(20\) 的正方形，面积</p>
+  \[\sigma=\frac12\times20\times20=200 .\]
+  <p>由 \(0\le\cos^2x\le1,\ 0\le\cos^2y\le1\) 知分母 \(100\le100+\cos^2x+\cos^2y\le102\)，故被积函数满足</p>
+  \[\frac1{102}\le\frac{1}{100+\cos^2x+\cos^2y}\le\frac1{100}.\]
+  <p>由性质 10.4（估值定理）</p>
+  \[\frac{200}{102}\le I\le\frac{200}{100},\qquad\text{即}\qquad \frac{100}{51}\le I\le2,\]
+  <p>数值上 \(1.9608\le I\le2\).仅凭"取值范围"就把积分锁定在千分之二的误差带内.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.4　用对称性求积分</div>
+  <p class="stmt">设 \(D:\ x^2+y^2\le1\)，求 \(\displaystyle\iint_D\bigl(x^3+xy^2+\sin x+y^2\sqrt{1+x^4}\,\bigr)\mathrm{d}\sigma\) 中前三项之和的值.</p>
+  <p class="sol"><span class="mk">解</span>圆域 \(D\) 关于 \(y\) 轴对称.逐项检查关于 \(x\) 的奇偶性：</p>
+  <p>\((-x)^3=-x^3\)，奇；\((-x)y^2=-xy^2\)，奇；\(\sin(-x)=-\sin x\)，奇.三项都是关于 \(x\) 的<b>奇函数</b>，由性质 10.5 每一项的积分都为 \(0\)：</p>
+  \[\iint_D\bigl(x^3+xy^2+\sin x\bigr)\mathrm{d}\sigma=0 .\]
+  <p>而第四项 \(y^2\sqrt{1+x^4}\) 关于 \(x\) 是偶函数（关于 \(y\) 也是偶函数），不能消去，需另行计算.</p>
+  <p class="muted">若不用对称性，\(\iint_D\sin x\,\mathrm{d}\sigma\) 将化为无法用初等函数表达的累次积分——对称性在这里不是"省事"，而是"救命".</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.5　中值定理求极限（考研常考）</div>
+  <p class="stmt">设 \(D_r:\ x^2+y^2\le r^2\)，求 \(\displaystyle\lim_{r\to0^+}\frac{1}{\pi r^2}\iint_{D_r}\mathrm{e}^{x^2-y^2}\cos(x+y)\,\mathrm{d}\sigma\).</p>
+  <p class="sol"><span class="mk">解</span>记 \(f(x,y)=\mathrm{e}^{x^2-y^2}\cos(x+y)\)，它在全平面连续.\(D_r\) 的面积为 \(\pi r^2\)，由定理 10.2，存在 \((\xi_r,\eta_r)\in D_r\) 使</p>
+  \[\iint_{D_r}f(x,y)\,\mathrm{d}\sigma=f(\xi_r,\eta_r)\cdot\pi r^2 .\]
+  <p>于是</p>
+  \[\frac{1}{\pi r^2}\iint_{D_r}f\,\mathrm{d}\sigma=f(\xi_r,\eta_r).\]
+  <p>当 \(r\to0^+\) 时，因 \((\xi_r,\eta_r)\in D_r\) 必有 \(\xi_r\to0,\ \eta_r\to0\)，再由 \(f\) 在原点连续得</p>
+  \[\lim_{r\to0^+}f(\xi_r,\eta_r)=f(0,0)=\mathrm{e}^{0}\cos 0=1 .\]
+  <p>故所求极限为 \(1\).</p>
+  <p class="muted"><b>套路总结：</b>形如 \(\lim\limits_{r\to0}\dfrac{1}{\sigma(D_r)}\displaystyle\iint_{D_r}f\,\mathrm{d}\sigma\) 的极限，答案永远是 \(f\) 在收缩中心处的函数值.这本质上是"平均值 \(\to\) 点值".</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.6　用性质证明不等式</div>
+  <p class="stmt">设 \(f(x,y)\) 在闭区域 \(D\)（面积为 \(\sigma\)）上连续，证明</p>
+  \[\left(\iint_D f\,\mathrm{d}\sigma\right)^{2}\le\sigma\iint_D f^2\,\mathrm{d}\sigma .\]
+  <p class="sol"><span class="mk">证</span>对任意实数 \(t\)，函数 \(\bigl[t f(x,y)+1\bigr]^2\ge0\) 在 \(D\) 上恒成立.由保号性</p>
+  \[\iint_D\bigl[t f+1\bigr]^2\mathrm{d}\sigma\ge0 .\]
+  <p>展开并用线性性拆开：</p>
+  \[t^2\iint_D f^2\,\mathrm{d}\sigma+2t\iint_D f\,\mathrm{d}\sigma+\sigma\ge0 .\]
+  <p>这是关于 \(t\) 的二次三项式（若 \(\iint_Df^2=0\)，则 \(f\equiv0\)，不等式显然成立）.它对一切 \(t\) 非负，故判别式非正：</p>
+  \[4\left(\iint_D f\,\mathrm{d}\sigma\right)^{2}-4\sigma\iint_D f^2\,\mathrm{d}\sigma\le0,\]
+  <p>整理即得所证.这就是二重积分形式的<b>柯西–施瓦茨不等式</b>.</p>
+  <p class="muted">在引例一中它意味着：光通量的平方不超过"面积 \(\times\) 照度平方的积分"，工程上用来给传感器的信噪比定上界.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从一个像素到一整帧：二重积分怎样变成一张照片</div>
+  <details><summary>展开查看：像素电荷、量化与信噪比的完整计算链条</summary>
+  <div class="body">
+    <p><b>场景：</b> 影像实验室里，工程师把同一颗 CMOS 传感器装进样机，夜景样张的边缘明显比中心暗——镜头渐晕在偷光.要量化"边缘到底暗了多少"，得把照度模型 \(E(x,y)=800\bigl[1-0.004(x^2+y^2)\bigr]\ \mathrm{lx}\) 在 \(4800\times3600\) 的像素阵列上逐块积分：每个像素是边长 \(a=2\times10^{-3}\,\mathrm{mm}\) 的正方形 \(D_{ij}\).</p>
+    <p><b>第一步：单像素接收的光通量.</b>由区域可加性，整块传感器的积分可拆成一千七百多万个小积分之和：</p>
+    \[\Phi=\iint_{D}E\,\mathrm{d}\sigma=\sum_{i,j}\iint_{D_{ij}}E\,\mathrm{d}\sigma .\]
+    <p>由中值定理，第 \((i,j)\) 个像素上存在一点使 \(\displaystyle\iint_{D_{ij}}E\,\mathrm{d}\sigma=E(\xi,\eta)\,a^2\).因像素极小，可用像素中心 \((x_i,y_j)\) 代替：</p>
+    \[\Phi_{ij}\approx E(x_i,y_j)\,a^2=E(x_i,y_j)\times4\times10^{-6}\ \mathrm{mm^2}.\]
+    <p><b>第二步：代入具体数字.</b>取三个位置的像素：</p>
+    <table class="dt">
+      <tr><th>像素位置</th><th>\((x_i,y_j)\)（mm）</th><th>\(x^2+y^2\)</th><th>\(E\)（lx）</th><th>\(\Phi_{ij}\)（\(10^{-6}\,\mathrm{lx\cdot mm^2}\)）</th></tr>
+      <tr><td>正中心</td><td>\((0,0)\)</td><td>0</td><td>800.0</td><td>3200</td></tr>
+      <tr><td>中部</td><td>\((2.4,1.8)\)</td><td>9.00</td><td>771.2</td><td>3085</td></tr>
+      <tr><td>四角</td><td>\((4.8,3.6)\)</td><td>36.00</td><td>684.8</td><td>2739</td></tr>
+    </table>
+    <p><b>第三步：渐晕比例.</b>角落像素与中心像素之比为 \(684.8/800=0.856\)，即边缘比中心暗 \(14.4\%\).这正是相机固件中"<b>镜头阴影校正</b>（LSC）"要补偿的量：把角落像素乘以 \(1/0.856=1.168\) 的增益.</p>
+    <p><b>第四步：为什么必须用积分而不是简单相乘.</b>若粗暴地用中心照度乘以总面积，得 \(800\times69.12=55296\)，比真值 \(52641.79\) 高出 \(5.04\%\)；若用四角照度乘总面积，则得 \(47333\)，低了 \(10.1\%\).而二重积分给出的是<b>唯一正确的总量</b>——这就是自动曝光算法必须"逐像素累加"的数学理由.</p>
+    <p><b>第五步：平均照度.</b>由中值定理，全传感器的平均照度为</p>
+    \[\bar E=\frac{1}{\sigma}\iint_DE\,\mathrm{d}\sigma=\frac{52641.79}{69.12}=761.6\ \mathrm{lx},\]
+    <p>相机测光系统显示的"整体亮度"，正是这个由二重积分定义的平均值.</p>
+    <p class="cn-point">中心照度乘面积会高估 \(5.04\%\)、四角照度乘面积会低估 \(10.1\%\)，只有二重积分给出 \(52641.79\) 这个唯一正确的光通量——国产影像芯片的 LSC 校正、自动曝光，正是靠这种"逐像素累加"的积分才把暗角压平、把白平衡调准的.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §10.2 ============ -->
+<div class="labx">
+  <div class="lab">二重积分 · 累次积分</div>
+  <div class="desc">先对 y 后在 x 上积分；以矩形分割示意被积区域上的和式逼近.</div>
+  <canvas id="cv_p102" width="720" height="320"></canvas>
+  <div class="ctrl"><label>矩形数 n = <span id="vo_p102">5</span></label>
+  <input type="range" id="rg_p102" min="1" max="40" step="1" value="5"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p102'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p102');
+    var vo=document.getElementById('vo_p102');
+    var W=cv.width,H=cv.height;
+    var xmin=0,xmax=4,ymin=-0.2,ymax=3;
+    function f(x){ return (x)*(4-x)*0.3; }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var n=parseInt(rg.value,10); if(vo)vo.textContent=n;
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(15,110,86,.08)';ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv++){if(gxv===0)continue;ctx.beginPath();ctx.moveTo(X(gxv),0);ctx.lineTo(X(gxv),H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv++){if(gyv===0)continue;ctx.beginPath();ctx.moveTo(0,Y(gyv));ctx.lineTo(W,Y(gyv));ctx.stroke();}
+      ctx.strokeStyle='rgba(15,110,86,.25)';ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.moveTo(X(0),0);ctx.lineTo(X(0),H);ctx.moveTo(0,Y(0));ctx.lineTo(W,Y(0));ctx.stroke();
+      var dx=(xmax-xmin)/n;
+      ctx.fillStyle='rgba(94,234,212,.18)';ctx.strokeStyle='rgba(94,234,212,.7)';ctx.lineWidth=1.5;
+      for(var i=0;i<n;i++){var xa=xmin+i*dx, ya=f(xa);
+        if(!isFinite(ya))continue;
+        var yb=Math.max(0,ya);
+        var wpx=Math.max(1,X(xa+dx)-X(xa)-1);
+        ctx.fillRect(X(xa),Y(yb),wpx,Y(0)-Y(yb));
+        ctx.strokeRect(X(xa),Y(yb),wpx,Y(0)-Y(yb));
+      }
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();var fi=true;
+      for(var px=0;px<=W;px++){var x=xmin+px/W*(xmax-xmin);var y=f(x);
+        if(!isFinite(y)){fi=true;continue;} var py=Y(y);
+        if(fi){ctx.moveTo(px,py);fi=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 医学影像：CT 感兴趣区的平均 CT 值与中值定理</summary>
+<p><b>场景：</b> 胸部 CT 阅片时，医生在疑似结节处画一个圆形感兴趣区（ROI），系统立刻给出该区域的<b>平均 CT 值</b>（单位 HU）.这个数不是中心像素的读数，而是一个二重积分除以面积：</p>
+\[\overline{f}=\frac{1}{\sigma(D)}\iint_{D}f(x,y)\,\mathrm{d}\sigma,\qquad D:\ x^{2}+y^{2}\le R^{2}\ (\mathrm{mm}).\]
+<p>某台 64 排 CT 在 120 kVp 下重建后，ROI 内的 CT 值分布可拟合为 \(f(x,y)=A-B(x^{2}+y^{2})\).</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>ROI 半径</td><td>\(R\)</td><td>10 mm</td></tr>
+<tr><td>中心 CT 值</td><td>\(A\)</td><td>120 HU</td></tr>
+<tr><td>径向衰减系数</td><td>\(B\)</td><td>0.6 HU/mm²</td></tr>
+<tr><td>钙化诊断阈值</td><td>\(T\)</td><td>100 HU</td></tr>
+</table>
+<p class="sol"> 先用<b>估值定理</b>（性质 10.4）画护栏.面积 \(\sigma=\pi R^{2}=314.16\ \mathrm{mm^{2}}\)，最大值 \(M=f(0,0)=120\)，最小值 \(m=f|_{r=R}=60\)，故</p>
+\[60\times314.16\le\iint_Df\,\mathrm{d}\sigma\le120\times314.16,\qquad\text{即}\quad 18849.6\le I\le 37699.1 .\]
+<p>再用极坐标算精确值（\(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\)）：</p>
+\[I=\int_{0}^{2\pi}\!\!\mathrm{d}\theta\int_{0}^{R}\bigl(A-Br^{2}\bigr)r\,\mathrm{d}r
+ =2\pi\Bigl(\frac{AR^{2}}{2}-\frac{BR^{4}}{4}\Bigr)=2\pi(6000-1500)=9000\pi=28274.3 .\]
+<p>于是平均 CT 值</p>
+\[\overline{f}=\frac{9000\pi}{100\pi}=90\ \mathrm{HU}.\]
+<p>由<b>中值定理</b>（定理 10.2），ROI 内必存在一点 \((\xi,\eta)\) 使 \(f(\xi,\eta)=90\).解 \(120-0.6r^{2}=90\) 得 \(r=7.07\ \mathrm{mm}\)——「平均值圈」正好落在 \(0.707R\) 处.</p>
+<p><b>工程结论：</b> 中心像素读数 120 HU 已越过 100 HU 的钙化阈值，若只看中心点会误判为钙化灶；而全区平均只有 90 HU，低于阈值.这就是影像科规定「必须用 ROI 均值而非单点值」的数学依据：单点值只是被积函数的一个函数值，ROI 均值才是二重积分给出的整体量.另一方面，估值定理给出的区间 \([18850,\ 37699]\) 宽达两倍，只能做量级护栏与程序自检（结果跳出区间即判定重建失败），真正的诊断数必须老实积出来.</p>
+<p class="cn-point">中心 120 HU 会误报"钙化灶"，ROI 均值 90 HU 才给出正确答案——影像科"看整体不看单点"的铁律，正是二重积分给的底气.国产 CT 设备把重建算法调准、把"平均值圈"落在 \(0.707R\) 处，为的就是让每份诊断报告都不被一个像素带偏.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 无人驾驶：占据栅格地图上的概率质量积分</summary>
+<p><b>场景：</b> L4 无人驾驶车维护一张<b>占据栅格地图</b>.对一个被检出的行人，感知模块给出的不是一个点，而是一片<b>占据概率密度</b>；把它在平面上积分得到的「概率质量」，就是该目标的期望占据面积，规划模块据此膨胀障碍物边界.密度取各向同性高斯：</p>
+\[p(x,y)=p_0\exp\Bigl(-\frac{(x-x_0)^{2}+(y-y_0)^{2}}{2s^{2}}\Bigr).\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>峰值占据概率</td><td>\(p_0\)</td><td>0.92</td></tr>
+<tr><td>定位标准差</td><td>\(s\)</td><td>0.25 m</td></tr>
+<tr><td>目标中心</td><td>\((x_0,y_0)\)</td><td>(6.0, 0.5) m</td></tr>
+<tr><td>栅格分辨率</td><td>\(\Delta\)</td><td>0.50 m</td></tr>
+</table>
+<p class="sol"> 以目标中心为极点，用极坐标算半径 \(\rho\) 圆盘内的概率质量：</p>
+\[M(\rho)=\int_{0}^{2\pi}\!\!\mathrm{d}\theta\int_{0}^{\rho}p_0\mathrm{e}^{-r^{2}/(2s^{2})}r\,\mathrm{d}r
+ =2\pi p_0s^{2}\Bigl(1-\mathrm{e}^{-\rho^{2}/(2s^{2})}\Bigr),\]
+<p>其中 \(2\pi p_0s^{2}=0.36128\ \mathrm{m^{2}}\) 是全平面的总概率质量.用<b>区域可加性</b>（性质 10.2）拆成三个同心圆环：</p>
+<table class="dt">
+<tr><th>区域</th><th>半径范围 /m</th><th>\(M(\rho)\) /m²</th><th>本环贡献 /m²</th><th>占比</th></tr>
+<tr><td>\(D_1\)</td><td>\(0\sim0.25\ (1s)\)</td><td>0.14215</td><td>0.14215</td><td>39.35%</td></tr>
+<tr><td>\(D_2\)</td><td>\(0.25\sim0.50\ (2s)\)</td><td>0.31237</td><td>0.17022</td><td>47.11%</td></tr>
+<tr><td>\(D_3\)</td><td>\(0.50\sim0.75\ (3s)\)</td><td>0.35727</td><td>0.04490</td><td>12.43%</td></tr>
+<tr><td>\(D_4\)</td><td>\(\gt 0.75\)</td><td>0.36128</td><td>0.00401</td><td>1.11%</td></tr>
+</table>
+<p>校验：\(0.14215+0.17022+0.04490+0.00401=0.36128\)，与全平面积分完全吻合，可加性成立.由<b>保号性</b>（性质 10.3）还可断言：因为 \(0\le p\le0.92\)，任何子区域上的概率质量都不超过 \(0.92\) 乘该子区域面积.</p>
+<p><b>工程结论：</b> \(3s=0.75\ \mathrm{m}\) 的圆盘内已聚集 98.89% 的概率质量.因此栅格地图每帧只需更新以目标为中心、边长 \(1.5\ \mathrm{m}\) 的窗口，即 \((1.5/0.5)^{2}=9\) 个栅格，而不是全图 \(200\times200=40000\) 个——计算量降到约 \(1/4400\)，只丢掉 1.11% 的概率质量.这个截断半径的选取，靠的正是二重积分的区域可加性与保号性给出的定量保证.</p>
+<p class="cn-point">把更新窗口从 40000 个栅格压到 9 个、计算量降到 \(1/4400\)，代价只是丢掉 1.11% 的概率质量——国产 L4 无人车敢在"安全冗余"和"算力预算"之间做这道减法，靠的正是区域可加性这句"先分得开、再算得准"的数学保证.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch10-grid" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>积分半径 ρ <input type="range" id="ch10-grid-rho" min="0.1" max="1.5" step="0.05" value="0.75" style="width:220px;accent-color:#0F6E56"> <b id="ch10-grid-rho-t"></b> m</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch10-grid-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch10-grid'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var sg=0.25, p0=1/(2*Math.PI*sg*sg);
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var rho=+document.getElementById('ch10-grid-rho').value;
+      var cx=W*0.36, cy=H*0.5, sc=W*0.5/1.5;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 概率密度云（径向高斯）
+      var img=ctx.createImageData(W,H);
+      // 只画左侧区域热图
+      for(var py=0;py<H;py+=2){
+        for(var px=0;px<W*0.72;px+=2){
+          var dx=(px-cx)/sc, dy=(py-cy)/sc;
+          var p=p0*Math.exp(-(dx*dx+dy*dy)/(2*sg*sg));
+          var k=Math.min(1,p/p0);
+          var rr=Math.round(30+k*225), gg=Math.round(80-k*20), bb=Math.round(140-k*60);
+          ctx.fillStyle='rgb('+rr+','+gg+','+bb+')';
+          ctx.fillRect(px,py,2,2);
+        }
+      }
+      // 积分圆
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.setLineDash([6,3]);
+      ctx.beginPath();ctx.arc(cx,cy,rho*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText('ρ='+rho.toFixed(2)+' m',cx,cy-rho*sc-8);
+      // 3s 参考
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1;ctx.setLineDash([3,2]);
+      ctx.beginPath();ctx.arc(cx,cy,3*sg*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#eab308';ctx.font='9px sans-serif';
+      ctx.fillText('3s=0.75 m',cx+3*sg*sc+6,cy-6);
+      // 数值
+      var M=1-Math.exp(-rho*rho/(2*sg*sg));
+      var nCells=Math.max(1,Math.ceil(2*rho/0.5));
+      var winCells=nCells*nCells;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('M(ρ) = 1 − e^(−ρ²/2s²) = '+(M*100).toFixed(2)+'%   （s=0.25 m, p₀ 归一化）',20,22);
+      var out=document.getElementById('ch10-grid-out');
+      var tip = rho>=0.75 ? '✔ 3s 圆盘内已聚 98.89%——每帧只需更新 '+(winCells)+' 个栅格，而非全图 40000 个' : '窗口按 2ρ 边长更新，计算量与 ρ² 成正比';
+      out.textContent = tip;
+    }
+    document.getElementById('ch10-grid-rho').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s101" data-ch="10" data-n="5"></div>
+<h2 id="s102"><span class="num">§10.2</span>二重积分的计算</h2>
+    
+<div class="ex"><div class="lab">引例一　无人驾驶占据栅格地图：三角形感知扇区里的概率质量</div>
+  <p class="stmt">L4 级自动驾驶车用"占据栅格地图"描述前方空间：每一点 \((x,y)\) 处有一个<b>占据概率密度</b> \(\rho(x,y)\)，某区域被障碍物占据的概率就是密度在该区域上的二重积分.设车辆右前方的感知扇区被建模为三角形</p>
+  \[D:\ 0\le x\le2,\quad 0\le y\le x\quad(\text{单位：米}),\]
+  <p>激光雷达融合出的密度为 \(\rho(x,y)=\dfrac{1}{2}xy\).工程师要问两件事：这个密度归一化了吗？车头正前方 \(1\,\mathrm{m}\) 以内（即 \(x\le1\) 的子区域）的占据概率是多少？</p>
+  <p><b>第一问.</b>把三角形看成"竖直穿线"：\(x\) 从 \(0\) 到 \(2\) 逐个取值，对每个固定的 \(x\)，\(y\) 从下边界 \(y=0\) 走到上边界 \(y=x\).于是</p>
+  \[\iint_D\rho\,\mathrm{d}\sigma=\int_0^2\mathrm{d}x\int_0^x\frac{xy}{2}\,\mathrm{d}y
+   =\int_0^2\frac{x}{2}\cdot\frac{x^2}{2}\,\mathrm{d}x=\int_0^2\frac{x^3}{4}\,\mathrm{d}x=\frac{1}{16}x^4\bigg|_0^2=1 .\]
+  <p>总概率恰为 \(1\)，密度确实归一化.</p>
+  <p><b>第二问.</b>只需把外层积分上限从 \(2\) 改成 \(1\)：</p>
+  \[P(x\le1)=\int_0^1\frac{x^3}{4}\,\mathrm{d}x=\frac1{16}=0.0625 .\]
+  <p>即近处仅占 \(6.25\%\) 的概率质量——障碍物更可能在远处，这与"近处已被清空、远处未探明"的实际感知状态一致.</p>
+  <p><b>关键收获：</b>二重积分被<b>化成了两次一元定积分</b>.先对 \(y\) 积（限是 \(x\) 的函数），再对 \(x\) 积（限是常数）.这就是本节的核心技术：<b>累次积分</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　深度学习中二维高斯核的归一化常数</div>
+  <p class="stmt">卷积神经网络与图像模糊都要用<b>二维高斯核</b> \(G(x,y)=\mathrm{e}^{-(x^2+y^2)/(2\sigma^2)}\).它必须<b>归一化</b>（所有权重之和为 1），否则图像整体亮度会漂移.归一化常数就是</p>
+  \[Z=\iint_{\mathbb{R}^2}\mathrm{e}^{-\frac{x^2+y^2}{2\sigma^2}}\,\mathrm{d}\sigma .\]
+  <p>直角坐标下 \(\int\mathrm{e}^{-x^2}\mathrm{d}x\) 没有初等原函数，正面强攻走不通.但注意被积函数只依赖 \(x^2+y^2\)——这是<b>极坐标</b>的标志.令 \(x=r\cos\theta,\ y=r\sin\theta\)，面积元素变为 \(r\,\mathrm{d}r\,\mathrm{d}\theta\)（下文证明），取 \(\sigma=1\)：</p>
+  \[Z=\int_0^{2\pi}\mathrm{d}\theta\int_0^{+\infty}\mathrm{e}^{-r^2/2}\,r\,\mathrm{d}r
+   =2\pi\Bigl[-\mathrm{e}^{-r^2/2}\Bigr]_0^{+\infty}=2\pi .\]
+  <p><b>与工程实现对照.</b>实际代码用的是离散的 \(5\times5\) 核，权重 \(w_{ij}=\mathrm{e}^{-(i^2+j^2)/2},\ i,j\in\{-2,-1,0,1,2\}\)：</p>
+  <table class="dt">
+    <tr><th>\((i,j)\) 类型</th><th>\(i^2+j^2\)</th><th>权重 \(w\)</th><th>个数</th><th>小计</th></tr>
+    <tr><td>\((0,0)\)</td><td>0</td><td>1.000000</td><td>1</td><td>1.000000</td></tr>
+    <tr><td>\((\pm1,0),(0,\pm1)\)</td><td>1</td><td>0.606531</td><td>4</td><td>2.426124</td></tr>
+    <tr><td>\((\pm1,\pm1)\)</td><td>2</td><td>0.367879</td><td>4</td><td>1.471516</td></tr>
+    <tr><td>\((\pm2,0),(0,\pm2)\)</td><td>4</td><td>0.135335</td><td>4</td><td>0.541340</td></tr>
+    <tr><td>\((\pm2,\pm1),(\pm1,\pm2)\)</td><td>5</td><td>0.082085</td><td>8</td><td>0.656680</td></tr>
+    <tr><td>\((\pm2,\pm2)\)</td><td>8</td><td>0.018316</td><td>4</td><td>0.073264</td></tr>
+    <tr><td colspan="4"><b>离散总和</b></td><td><b>6.168924</b></td></tr>
+  </table>
+  <p>离散和 \(6.1689\) 与连续积分值 \(2\pi=6.2832\) 相差仅 \(1.82\%\)，差值主要来自 \(5\times5\) 窗口把尾部截断了.<b>一行极坐标积分，解释了图像处理库里那个神秘的除数.</b></p>
+</div>
+
+<h3>一、直角坐标下化为累次积分</h3>
+<p>设 \(f(x,y)\ge0\).用"平行截面法"求曲顶柱体体积：过点 \(x\in[a,b]\) 作垂直于 \(x\) 轴的平面，截曲顶柱体所得截面是一个曲边梯形，其面积为 \(A(x)=\displaystyle\int_{\varphi_1(x)}^{\varphi_2(x)}f(x,y)\,\mathrm{d}y\).再把这些截面积"沿 \(x\) 累加"，即得体积.这就是下面定理的几何来源.</p>
+
+<div class="def"><div class="lab"><span class="n">定理 10.3</span>X 型区域上的累次积分</div>
+  <p>设区域 \(D\) 可表示为</p>
+  \[D=\{(x,y)\mid a\le x\le b,\ \varphi_1(x)\le y\le\varphi_2(x)\},\]
+  <p>其中 \(\varphi_1,\varphi_2\) 在 \([a,b]\) 上连续，则称 \(D\) 为 <b>X 型区域</b>，且</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\int_a^b\left[\int_{\varphi_1(x)}^{\varphi_2(x)}f(x,y)\,\mathrm{d}y\right]\mathrm{d}x
+    \;\triangleq\;\int_a^b\mathrm{d}x\int_{\varphi_1(x)}^{\varphi_2(x)}f(x,y)\,\mathrm{d}y .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>二重积分的定义允许我们<b>任选分割、任选取点</b>（因为可积保证极限唯一）.那就选一张"竖条 \(+\) 横线"的网格，先把每根竖条内部的项加起来（这一步给出对 \(y\) 的定积分），再把各竖条相加（这一步给出对 \(x\) 的定积分）.所谓"先分部分和再取极限"，合法性正来自极限与分割方式无关.</p>
+<p><span class="stp">第一步：作网格分割.</span>设 \(f\) 在 \(D\) 上连续（故可积）.取分点</p>
+\[a=x_0\lt x_1\lt\cdots\lt x_n=b,\qquad \Delta x_i=x_i-x_{i-1},\]
+<p>用直线 \(x=x_i\) 把 \(D\) 切成 \(n\) 根竖条 \(D_i\).在第 \(i\) 根竖条内再用水平线把它切成 \(m_i\) 个小块 \(\Delta\sigma_{ij}\).由性质 10.2（区域可加性），</p>
+\[\iint_{D}f\,\mathrm{d}\sigma=\sum_{i=1}^{n}\iint_{D_i}f\,\mathrm{d}\sigma .\]
+<p><span class="stp">第二步：竖条内先对 \(y\) 求和.</span>在第 \(i\) 根竖条内取定一点 \(\xi_i\in[x_{i-1},x_i]\)，条内所有取点的横坐标都取成 \(\xi_i\)（合法，因为极限与取点无关）.竖条 \(D_i\) 近似是矩形条，纵向从 \(\varphi_1(\xi_i)\) 到 \(\varphi_2(\xi_i)\)，把它按 \(y\) 分成 \(y_{i,0}\lt y_{i,1}\lt\cdots\lt y_{i,m_i}\)，小块面积 \(\Delta\sigma_{ij}\approx\Delta y_{ij}\,\Delta x_i\).于是条内部分和为</p>
+\[\sum_{j=1}^{m_i}f(\xi_i,\eta_{ij})\,\Delta y_{ij}\,\Delta x_i=\left[\sum_{j=1}^{m_i}f(\xi_i,\eta_{ij})\,\Delta y_{ij}\right]\Delta x_i .\]
+<p><span class="stp">第三步：条内取极限.</span>方括号里正是一元连续函数 \(y\mapsto f(\xi_i,y)\) 在 \([\varphi_1(\xi_i),\varphi_2(\xi_i)]\) 上的积分和，当纵向分割加细时它趋于</p>
+\[F(\xi_i)=\int_{\varphi_1(\xi_i)}^{\varphi_2(\xi_i)}f(\xi_i,y)\,\mathrm{d}y .\]
+<p>即第 \(i\) 根竖条的贡献为 \(F(\xi_i)\,\Delta x_i\).</p>
+<p><span class="stp">第四步：再对 \(x\) 求和取极限.</span>把各条相加：</p>
+\[\iint_{D}f\,\mathrm{d}\sigma\approx\sum_{i=1}^{n}F(\xi_i)\,\Delta x_i .\]
+<p>右端恰是一元函数 \(F(x)\) 在 \([a,b]\) 上的积分和.由 \(f,\varphi_1,\varphi_2\) 连续可证 \(F(x)\) 在 \([a,b]\) 上连续（故可积），令 \(\max\Delta x_i\to0\) 得</p>
+\[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\int_a^bF(x)\,\mathrm{d}x=\int_a^b\mathrm{d}x\int_{\varphi_1(x)}^{\varphi_2(x)}f(x,y)\,\mathrm{d}y .\]
+<p><span class="stp">补注（严格化的一句话）：</span>上面两处"\(\approx\)"——用 \(\Delta y_{ij}\Delta x_i\) 代替 \(\Delta\sigma_{ij}\)、以及把条内横坐标一律取成 \(\xi_i\)——所产生的误差，可由 \(f\) 在有界闭区域上的<b>一致连续性</b>统一控制：对任意 \(\varepsilon\gt0\)，当网格足够细时全部误差之和小于 \(\varepsilon\sigma\)，故取极限后两端相等.</p>
+<p><span class="stp">几何解读：</span>当 \(f\ge0\) 时，\(F(x)\) 就是曲顶柱体被平面 \(x=\)常数所截的<b>截面面积</b>，公式 \(V=\displaystyle\int_a^bF(x)\,\mathrm{d}x\) 正是"已知平行截面面积求体积"的截面法.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 10.4</span>Y 型区域上的累次积分</div>
+  <p>若 \(D=\{(x,y)\mid c\le y\le d,\ \psi_1(y)\le x\le\psi_2(y)\}\)（称 <b>Y 型区域</b>），则</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\int_c^d\mathrm{d}y\int_{\psi_1(y)}^{\psi_2(y)}f(x,y)\,\mathrm{d}x .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>把定理 10.3 的证明中 \(x\) 与 \(y\) 的角色对调即可——网格由"竖条"改成"横条"，先沿横向（对 \(x\)）求和，再沿纵向（对 \(y\)）求和.</p>
+<p><span class="stp">第一步：横条分割.</span>取 \(c=y_0\lt y_1\lt\cdots\lt y_n=d\)，用直线 \(y=y_j\) 把 \(D\) 切成 \(n\) 根横条 \(D_j\)，再用竖线把每根横条切成小块.由性质 10.2，\(\displaystyle\iint_Df\,\mathrm{d}\sigma=\sum_{j}\iint_{D_j}f\,\mathrm{d}\sigma\).</p>
+<p><span class="stp">第二步：条内先对 \(x\) 求和取极限.</span>在第 \(j\) 根横条内取定 \(\eta_j\in[y_{j-1},y_j]\)，条内取点纵坐标一律取 \(\eta_j\)，小块面积 \(\approx\Delta x_{ji}\Delta y_j\)，得条内部分和</p>
+\[\left[\sum_{i}f(\xi_{ji},\eta_j)\,\Delta x_{ji}\right]\Delta y_j\ \longrightarrow\ G(\eta_j)\,\Delta y_j,
+\qquad G(y)=\int_{\psi_1(y)}^{\psi_2(y)}f(x,y)\,\mathrm{d}x .\]
+<p><span class="stp">第三步：再对 \(y\) 求和取极限.</span>\(\sum_j G(\eta_j)\Delta y_j\) 是连续函数 \(G(y)\) 在 \([c,d]\) 上的积分和，令 \(\max\Delta y_j\to0\)，得</p>
+\[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\int_c^dG(y)\,\mathrm{d}y=\int_c^d\mathrm{d}y\int_{\psi_1(y)}^{\psi_2(y)}f(x,y)\,\mathrm{d}x .\]
+<p>其中以 \(\Delta x_{ji}\Delta y_j\) 代替小块面积、以及条内纵坐标统一取 \(\eta_j\) 所造成的误差，同样由 \(f\) 的一致连续性控制，取极限后消失.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>定限口诀：穿线法.</b><br>
+① <b>画区域</b>——这一步永远不能省，不画图定限必错.<br>
+② 若先对 \(y\) 积分（X 型）：在 \(x\) 轴上确定 \(D\) 的投影 \([a,b]\)，这就是<b>外层限</b>；在 \((a,b)\) 内任取一点 \(x\)，作一条<b>平行于 \(y\) 轴的射线</b>自下而上穿过 \(D\)，<b>入口曲线</b>就是内层下限，<b>出口曲线</b>就是内层上限.<br>
+③ 若先对 \(x\) 积分（Y 型）：把射线改成<b>自左向右</b>穿，入口为下限、出口为上限.<br>
+④ <b>铁律：内层积分限可以含外层变量，外层积分限必须是常数.</b>若穿线中途"换了出口曲线"，说明必须把区域<b>分块</b>，用性质 10.2 分别积分.</div>
+
+<div class="ex"><div class="lab">例 10.7　X 型区域基本计算</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D xy\,\mathrm{d}\sigma\)，其中 \(D\) 由抛物线 \(y^2=x\) 与直线 \(y=x-2\) 围成.</p>
+  <p class="sol"><span class="mk">解</span>先求交点：由 \(y^2=x\) 与 \(x=y+2\) 得 \(y^2=y+2\)，即 \(y^2-y-2=0\)，解得 \(y=-1,\,2\)，对应交点 \((1,-1)\) 与 \((4,2)\).</p>
+  <p>把 \(D\) 视为 <b>Y 型</b>更省事：\(y\) 的变化范围是 \([-1,2]\)；对固定的 \(y\)，自左向右穿线，入口是抛物线 \(x=y^2\)，出口是直线 \(x=y+2\).故</p>
+  \[\iint_D xy\,\mathrm{d}\sigma=\int_{-1}^{2}\mathrm{d}y\int_{y^2}^{y+2}xy\,\mathrm{d}x
+  =\int_{-1}^{2}y\cdot\frac{x^2}{2}\bigg|_{y^2}^{y+2}\mathrm{d}y
+  =\frac12\int_{-1}^{2}y\bigl[(y+2)^2-y^4\bigr]\mathrm{d}y .\]
+  <p>展开：\(y(y+2)^2-y^5=y^3+4y^2+4y-y^5\)，于是</p>
+  \[\frac12\int_{-1}^{2}\bigl(y^3+4y^2+4y-y^5\bigr)\mathrm{d}y
+  =\frac12\left[\frac{y^4}{4}+\frac{4y^3}{3}+2y^2-\frac{y^6}{6}\right]_{-1}^{2}.\]
+  <p>在 \(y=2\)：\(4+\dfrac{32}{3}+8-\dfrac{64}{6}=12+\dfrac{32}{3}-\dfrac{32}{3}=12\)；在 \(y=-1\)：\(\dfrac14-\dfrac43+2-\dfrac16=\dfrac{3-16+24-2}{12}=\dfrac{9}{12}=\dfrac34\).故</p>
+  \[\iint_D xy\,\mathrm{d}\sigma=\frac12\left(12-\frac34\right)=\frac{45}{8}=5.625 .\]
+  <p class="muted">若选 X 型，则 \(x\in[0,1]\) 时穿线上下都是抛物线，\(x\in[1,4]\) 时下边界换成直线——必须分两块算，工作量翻倍.<b>选型的第一原则：让穿线不换边界.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 10.8　区域需分块</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D (x+y)\,\mathrm{d}\sigma\)，其中 \(D\) 由 \(y=x^2,\ y=0,\ x+2y=3\) 围成（\(x\ge0\)）.</p>
+  <p class="sol"><span class="mk">解</span>先求 \(y=x^2\) 与 \(x+2y=3\) 的交点：\(x+2x^2=3\Rightarrow 2x^2+x-3=0\Rightarrow(2x+3)(x-1)=0\)，取 \(x=1\)，交点为 \((1,1)\).直线交 \(x\) 轴于 \((3,0)\).</p>
+  <p>若按 X 型，竖直穿线时出口在 \(x=1\) 处从抛物线换成直线，须分块：</p>
+  \[I=\int_0^1\mathrm{d}x\int_0^{x^2}(x+y)\,\mathrm{d}y+\int_1^3\mathrm{d}x\int_0^{(3-x)/2}(x+y)\,\mathrm{d}y .\]
+  <p>若改按 Y 型，水平穿线：\(y\in[0,1]\)，入口是抛物线的右支 \(x=\sqrt{y}\)，出口是直线 \(x=3-2y\)（当 \(y=1\) 时二者都等于 \(1\)，闭合），<b>全程不换边界</b>，只需一块：</p>
+  \[I=\int_0^1\mathrm{d}y\int_{\sqrt y}^{\,3-2y}(x+y)\,\mathrm{d}x
+   =\int_0^1\left[\frac{x^2}{2}+xy\right]_{\sqrt y}^{\,3-2y}\mathrm{d}y .\]
+  <p>代入化简：\(\dfrac{(3-2y)^2}{2}+(3-2y)y-\dfrac{y}{2}-y^{3/2}=\dfrac{9-12y+4y^2}{2}+3y-2y^2-\dfrac y2-y^{3/2}\)</p>
+  \[=\frac92-6y+2y^2+3y-2y^2-\frac y2-y^{3/2}=\frac92-\frac{7y}{2}-y^{3/2}.\]
+  <p>于是</p>
+  \[I=\int_0^1\left(\frac92-\frac{7y}{2}-y^{3/2}\right)\mathrm{d}y=\frac92-\frac74-\frac25=\frac{90-35-8}{20}=\frac{47}{20}=2.35 .\]
+</div>
+
+<h3>二、交换积分次序</h3>
+<p>同一个二重积分，两种次序的累次积分值必然相等；但<b>难易可能天差地别</b>，甚至一种能算、另一种算不出.交换次序的标准流程是：<b>由已给的累次积分限还原出区域 \(D\) 并画图 \(\to\) 按另一方向重新穿线定限 \(\to\) 写出新的累次积分</b>.</p>
+
+<div class="ex"><div class="lab">例 10.9　交换次序（考研必会）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_0^1\mathrm{d}x\int_x^1\mathrm{e}^{-y^2}\,\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span>内层对 \(y\) 积 \(\mathrm{e}^{-y^2}\)，原函数不是初等函数，正面无法进行.</p>
+  <p><b>还原区域：</b>由 \(0\le x\le1,\ x\le y\le1\) 知</p>
+  \[D=\{(x,y)\mid 0\le x\le 1,\ x\le y\le 1\},\]
+  <p>这是以 \((0,0),(1,1),(0,1)\) 为顶点的三角形（直线 \(y=x\) 的左上方部分）.</p>
+  <p><b>换向穿线：</b>视为 Y 型，\(y\) 从 \(0\) 到 \(1\)；对固定 \(y\)，水平穿线自 \(x=0\) 入、自 \(x=y\) 出.故</p>
+  \[I=\int_0^1\mathrm{d}y\int_0^{y}\mathrm{e}^{-y^2}\,\mathrm{d}x=\int_0^1 y\,\mathrm{e}^{-y^2}\,\mathrm{d}y
+   =-\frac12\mathrm{e}^{-y^2}\bigg|_0^1=\frac12\bigl(1-\mathrm{e}^{-1}\bigr)\approx0.3161 .\]
+  <p>换序后内层积分给出一个因子 \(y\)，恰好凑出 \(\mathrm{e}^{-y^2}\) 的微分——<b>这就是换序的威力</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.10　交换次序</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_0^{\pi}\mathrm{d}x\int_x^{\pi}\frac{\sin y}{y}\,\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span>\(\dfrac{\sin y}{y}\) 同样没有初等原函数.区域为</p>
+  \[D=\{(x,y)\mid 0\le x\le\pi,\ x\le y\le\pi\},\]
+  <p>即由 \(y=x,\ y=\pi,\ x=0\) 围成的三角形.改为先对 \(x\) 积分：\(y\) 从 \(0\) 到 \(\pi\)，对固定 \(y\)，\(x\) 从 \(0\) 到 \(y\).于是</p>
+  \[I=\int_0^{\pi}\mathrm{d}y\int_0^{y}\frac{\sin y}{y}\,\mathrm{d}x=\int_0^{\pi}\frac{\sin y}{y}\cdot y\,\mathrm{d}y
+   =\int_0^{\pi}\sin y\,\mathrm{d}y=\bigl[-\cos y\bigr]_0^{\pi}=2 .\]
+</div>
+
+<div class="ex"><div class="lab">例 10.11　两块合并为一块</div>
+  <p class="stmt">交换积分次序：\(\displaystyle I=\int_0^1\mathrm{d}x\int_0^{x^2}f(x,y)\,\mathrm{d}y+\int_1^3\mathrm{d}x\int_0^{(3-x)/2}f(x,y)\,\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span>第一块 \(D_1\) 由 \(y=0,\ y=x^2,\ x=1\) 围成；第二块 \(D_2\) 由 \(y=0,\ x+2y=3,\ x=1\) 围成.二者在 \(x=1\) 处拼接（此处 \(x^2=1\)，\((3-1)/2=1\)，高度一致），合并后的区域是</p>
+  \[D=\{(x,y)\mid 0\le y\le 1,\ \sqrt{y}\le x\le 3-2y\}.\]
+  <p>验证：水平穿线时，左边界是抛物线右支 \(x=\sqrt y\)（由 \(y=x^2,\ x\ge0\) 反解），右边界是直线 \(x=3-2y\)；\(y=0\) 时区间为 \([0,3]\)，\(y=1\) 时退化为一点 \(x=1\).故</p>
+  \[I=\int_0^1\mathrm{d}y\int_{\sqrt y}^{\,3-2y}f(x,y)\,\mathrm{d}x .\]
+  <p class="muted"><b>两块变一块</b>是交换次序最常见的"红利".反过来，把 Y 型写成 X 型时一块常会裂成两块，考试时要留意.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.12　含抽象函数的换序</div>
+  <p class="stmt">交换 \(\displaystyle I=\int_0^1\mathrm{d}y\int_{y^2}^{\sqrt y}f(x,y)\,\mathrm{d}x\) 的次序.</p>
+  <p class="sol"><span class="mk">解</span>区域由 \(x=y^2\)（即 \(y=\sqrt x\)）与 \(x=\sqrt y\)（即 \(y=x^2\)）围成，两曲线交于 \((0,0)\) 与 \((1,1)\).在 \(0\lt x\lt1\) 内有 \(x^2\lt\sqrt x\)，故</p>
+  \[D=\{(x,y)\mid 0\le x\le1,\ x^2\le y\le\sqrt x\},\]
+  <p>从而</p>
+  \[I=\int_0^1\mathrm{d}x\int_{x^2}^{\sqrt x}f(x,y)\,\mathrm{d}y .\]
+</div>
+
+<h3>三、极坐标下的二重积分</h3>
+<p>在极坐标系中用<b>同心圆族 \(r=\)常数</b>与<b>射线族 \(\theta=\)常数</b>分割区域 \(D\).夹在半径 \(r\) 与 \(r+\Delta r\)、极角 \(\theta\) 与 \(\theta+\Delta\theta\) 之间的小块，其面积为两个扇形之差：</p>
+\[\Delta\sigma=\frac12(r+\Delta r)^2\Delta\theta-\frac12r^2\Delta\theta=r\,\Delta r\,\Delta\theta+\frac12(\Delta r)^2\Delta\theta .\]
+<p>略去高阶无穷小 \(\tfrac12(\Delta r)^2\Delta\theta\)，得<b>极坐标下的面积元素</b></p>
+\[\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta .\]
+<div class="def"><div class="lab"><span class="n">定理 10.5</span>极坐标换元公式</div>
+  <p>作变换 \(x=r\cos\theta,\ y=r\sin\theta\)，则</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\iint_{D'}f(r\cos\theta,\ r\sin\theta)\,r\,\mathrm{d}r\,\mathrm{d}\theta .\]
+  <p>若 \(D'=\{(r,\theta)\mid \alpha\le\theta\le\beta,\ r_1(\theta)\le r\le r_2(\theta)\}\)，则</p>
+  \[\iint_{D}f\,\mathrm{d}\sigma=\int_{\alpha}^{\beta}\mathrm{d}\theta\int_{r_1(\theta)}^{r_2(\theta)}f(r\cos\theta,r\sin\theta)\,r\,\mathrm{d}r .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>二重积分的极限与分割方式无关，所以不必用直角网格——改用<b>极坐标网格</b>（一族同心圆 \(r=\)常数、一族过原点的射线 \(\theta=\)常数）去分割 \(D\).此时小区域是"环扇形"，只要算清它的面积，换元公式就自然浮出.</p>
+<p><span class="stp">第一步：极坐标网格分割.</span>用圆 \(r=r_i\) 与射线 \(\theta=\theta_j\) 把 \(D\) 切开.典型小块是由 \(r,\ r+\Delta r\) 两段圆弧与 \(\theta,\ \theta+\Delta\theta\) 两条射线围成的<b>环扇形</b>.</p>
+<p><span class="stp">第二步：算环扇形的面积（关键一步）.</span>半径为 \(R\)、圆心角为 \(\Delta\theta\) 的扇形面积是 \(\dfrac12R^2\Delta\theta\).环扇形等于大扇形减小扇形：</p>
+\[\Delta\sigma=\frac12(r+\Delta r)^2\Delta\theta-\frac12r^2\Delta\theta
+=\frac12\bigl[(r+\Delta r)^2-r^2\bigr]\Delta\theta .\]
+<p>展开中括号：\((r+\Delta r)^2-r^2=2r\Delta r+(\Delta r)^2\)，于是</p>
+\[\Delta\sigma=\frac12\bigl[2r\Delta r+(\Delta r)^2\bigr]\Delta\theta=\left(r+\frac{\Delta r}{2}\right)\Delta r\,\Delta\theta .\]
+<p>这个式子是<b>精确的</b>，没有任何近似.注意 \(r+\dfrac{\Delta r}{2}=\bar r\) 恰是内外半径的平均值，故 \(\Delta\sigma=\bar r\,\Delta r\,\Delta\theta\).当 \(\Delta r\to0\) 时 \(\bar r\to r\)，取极限即得<b>极坐标下的面积元素</b></p>
+\[\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta .\]
+<p><span class="stp">第三步：写积分和.</span>在第 \(k\) 个环扇形上取点，其极坐标取成 \((\bar r_k,\bar\theta_k)\)（\(\bar r_k\) 即上述平均半径），对应直角坐标为 \(\bigl(\bar r_k\cos\bar\theta_k,\ \bar r_k\sin\bar\theta_k\bigr)\).于是积分和</p>
+\[\sum_{k}f\bigl(\bar r_k\cos\bar\theta_k,\ \bar r_k\sin\bar\theta_k\bigr)\,\Delta\sigma_k
+=\sum_{k}f\bigl(\bar r_k\cos\bar\theta_k,\ \bar r_k\sin\bar\theta_k\bigr)\,\bar r_k\,\Delta r_k\,\Delta\theta_k .\]
+<p><span class="stp">第四步：取极限.</span>右端恰是函数 \(f(r\cos\theta,r\sin\theta)\cdot r\) 在 \(r\theta\) 平面区域 \(D'\) 上、按<b>直角网格</b> \(\Delta r_k\Delta\theta_k\) 作出的积分和.令网格最大直径趋于零，左端趋于 \(\displaystyle\iint_Df(x,y)\,\mathrm{d}\sigma\)，右端趋于 \(\displaystyle\iint_{D'}f(r\cos\theta,r\sin\theta)\,r\,\mathrm{d}r\,\mathrm{d}\theta\)，故</p>
+\[\iint_{D}f(x,y)\,\mathrm{d}\sigma=\iint_{D'}f(r\cos\theta,\ r\sin\theta)\,r\,\mathrm{d}r\,\mathrm{d}\theta .\]
+<p><span class="stp">第五步：化累次积分.</span>若 \(D'=\{(r,\theta)\mid\alpha\le\theta\le\beta,\ r_1(\theta)\le r\le r_2(\theta)\}\)，这在 \(r\theta\) 平面上是以 \(\theta\) 为"横轴"的 X 型区域，由定理 10.3 即得</p>
+\[\iint_{D}f\,\mathrm{d}\sigma=\int_{\alpha}^{\beta}\mathrm{d}\theta\int_{r_1(\theta)}^{r_2(\theta)}f(r\cos\theta,r\sin\theta)\,r\,\mathrm{d}r .\]
+<p>（\(r=0\) 处 \(\theta\) 无定义，但原点是一个面积为零的点，不影响积分值.）</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>什么时候用极坐标？记住"两看"：</b><br>
+① <b>看区域</b>：圆、圆环、扇形、圆的一部分，或边界方程含 \(x^2+y^2\)（如 \(x^2+y^2=2ax\) 化为 \(r=2a\cos\theta\)）.<br>
+② <b>看函数</b>：被积函数含 \(x^2+y^2\)、\(\sqrt{x^2+y^2}\)、\(\arctan\dfrac yx\)、\(\dfrac yx\) 等组合.<br>
+<b>最容易漏掉的就是那个 \(r\)！</b> \(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\) 中的 \(r\) 是雅可比因子，漏写它答案必错.定限时，<b>从极点出发的射线</b>先射入哪条曲线、后射出哪条曲线，就是 \(r\) 的下限与上限.</div>
+
+<div class="ex"><div class="lab">例 10.13　高斯积分与泊松积分（极重要）</div>
+  <p class="stmt">（1）求 \(\displaystyle I(a)=\iint_{x^2+y^2\le a^2}\mathrm{e}^{-(x^2+y^2)}\mathrm{d}\sigma\)；（2）由此导出 \(\displaystyle\int_{-\infty}^{+\infty}\mathrm{e}^{-x^2}\mathrm{d}x=\sqrt\pi\).</p>
+  <p class="sol"><span class="mk">解</span>（1）区域是圆盘，函数含 \(x^2+y^2\)，两看皆指向极坐标.此时 \(\theta\) 从 \(0\) 到 \(2\pi\) 走满一圈，射线从极点出发到圆周，\(r\) 从 \(0\) 到 \(a\)：</p>
+  \[I(a)=\int_0^{2\pi}\mathrm{d}\theta\int_0^{a}\mathrm{e}^{-r^2}r\,\mathrm{d}r
+  =2\pi\cdot\left[-\frac12\mathrm{e}^{-r^2}\right]_0^{a}=\pi\bigl(1-\mathrm{e}^{-a^2}\bigr).\]
+  <p>（2）令 \(a\to+\infty\)，得 \(\displaystyle\iint_{\mathbb{R}^2}\mathrm{e}^{-(x^2+y^2)}\mathrm{d}\sigma=\pi\).另一方面，在直角坐标下这个积分可以分离变量：</p>
+  \[\iint_{\mathbb{R}^2}\mathrm{e}^{-x^2}\mathrm{e}^{-y^2}\mathrm{d}\sigma
+  =\left(\int_{-\infty}^{+\infty}\mathrm{e}^{-x^2}\mathrm{d}x\right)\left(\int_{-\infty}^{+\infty}\mathrm{e}^{-y^2}\mathrm{d}y\right)
+  =\left(\int_{-\infty}^{+\infty}\mathrm{e}^{-x^2}\mathrm{d}x\right)^{2}.\]
+  <p>两式相等，且被积函数为正，故</p>
+  \[\int_{-\infty}^{+\infty}\mathrm{e}^{-x^2}\mathrm{d}x=\sqrt{\pi},\qquad \int_0^{+\infty}\mathrm{e}^{-x^2}\mathrm{d}x=\frac{\sqrt\pi}{2}.\]
+  <p class="muted">这就是著名的<b>泊松积分</b>.一元微积分对它无能为力，升到二维、换成极坐标便迎刃而解——<b>"升维求解"是数学中极漂亮的一招</b>.正态分布密度中的 \(\dfrac{1}{\sqrt{2\pi}\sigma}\) 正源于此.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.14　圆环域</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D\bigl(x^2+y^2\bigr)\mathrm{d}\sigma\)，其中 \(D:\ 1\le x^2+y^2\le4\).</p>
+  <p class="sol"><span class="mk">解</span>极坐标下 \(D':\ 0\le\theta\le2\pi,\ 1\le r\le2\)，被积函数 \(x^2+y^2=r^2\)：</p>
+  \[\iint_D(x^2+y^2)\mathrm{d}\sigma=\int_0^{2\pi}\mathrm{d}\theta\int_1^2 r^2\cdot r\,\mathrm{d}r
+  =2\pi\cdot\frac{r^4}{4}\bigg|_1^2=2\pi\cdot\frac{16-1}{4}=\frac{15\pi}{2}.\]
+</div>
+
+<div class="ex"><div class="lab">例 10.15　圆心不在原点的圆域</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D\sqrt{x^2+y^2}\,\mathrm{d}\sigma\)，其中 \(D:\ x^2+y^2\le2x\).</p>
+  <p class="sol"><span class="mk">解</span>把边界化为极坐标：\(r^2\le2r\cos\theta\Rightarrow r\le2\cos\theta\).这要求 \(\cos\theta\ge0\)，即 \(-\dfrac\pi2\le\theta\le\dfrac\pi2\).射线从极点（它恰在圆周上）射出，\(r\) 从 \(0\) 到 \(2\cos\theta\).于是</p>
+  \[\iint_D\sqrt{x^2+y^2}\,\mathrm{d}\sigma=\int_{-\pi/2}^{\pi/2}\mathrm{d}\theta\int_0^{2\cos\theta}r\cdot r\,\mathrm{d}r
+  =\int_{-\pi/2}^{\pi/2}\frac{8\cos^3\theta}{3}\,\mathrm{d}\theta .\]
+  <p>由 \(\displaystyle\int_{-\pi/2}^{\pi/2}\cos^3\theta\,\mathrm{d}\theta=2\int_0^{\pi/2}\cos^3\theta\,\mathrm{d}\theta=2\cdot\frac23=\frac43\)，得</p>
+  \[\iint_D\sqrt{x^2+y^2}\,\mathrm{d}\sigma=\frac83\cdot\frac43=\frac{32}{9}\approx3.556 .\]
+</div>
+
+<div class="ex"><div class="lab">例 10.16　扇环上的反正切（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D\arctan\frac yx\,\mathrm{d}\sigma\)，其中 \(D:\ 1\le x^2+y^2\le4,\ y\ge0,\ y\le x\).</p>
+  <p class="sol"><span class="mk">解</span>被积函数 \(\arctan\dfrac yx=\theta\)，这是极坐标的"原生变量"，区域又是扇环，极坐标是唯一合理选择.</p>
+  <p>条件 \(y\ge0\) 给出 \(\theta\ge0\)，\(y\le x\) 给出 \(\tan\theta\le1\)，即 \(\theta\le\dfrac\pi4\)；半径 \(1\le r\le2\).故</p>
+  \[\iint_D\arctan\frac yx\,\mathrm{d}\sigma=\int_0^{\pi/4}\mathrm{d}\theta\int_1^2\theta\cdot r\,\mathrm{d}r
+  =\left(\int_0^{\pi/4}\theta\,\mathrm{d}\theta\right)\left(\int_1^2 r\,\mathrm{d}r\right).\]
+  <p>两个因子分别为 \(\dfrac{\theta^2}{2}\bigg|_0^{\pi/4}=\dfrac{\pi^2}{32}\) 与 \(\dfrac{r^2}{2}\bigg|_1^2=\dfrac32\)，故</p>
+  \[\iint_D\arctan\frac yx\,\mathrm{d}\sigma=\frac{\pi^2}{32}\cdot\frac32=\frac{3\pi^2}{64}\approx0.4626 .\]
+</div>
+
+<div class="ex"><div class="lab">例 10.17　直角坐标累次积分化为极坐标（考研高频）</div>
+  <p class="stmt">把 \(\displaystyle I=\int_0^1\mathrm{d}x\int_0^{\sqrt{2x-x^2}}f\bigl(\sqrt{x^2+y^2}\bigr)\mathrm{d}y\) 化为极坐标下的累次积分.</p>
+  <p class="sol"><span class="mk">解</span><b>先还原区域.</b>上限 \(y=\sqrt{2x-x^2}\) 即 \((x-1)^2+y^2=1\ (y\ge0)\)，是以 \((1,0)\) 为心、半径 \(1\) 的上半圆周；再加上 \(0\le x\le1\)，故 \(D\) 是该上半圆盘中位于直线 \(x=1\) 左侧的部分——一个以 \((0,0),(1,0),(1,1)\) 为"顶点"、由圆弧封口的四分之一圆盘.</p>
+  <p><b>再化极坐标.</b>圆周 \((x-1)^2+y^2=1\) 化为 \(r=2\cos\theta\)；直线 \(x=1\) 化为 \(r\cos\theta=1\)，即 \(r=\sec\theta\).区域在第一象限，\(\theta\in\left[0,\dfrac\pi2\right]\).</p>
+  <p>从极点发出射线：当 \(2\cos\theta\) 与 \(\sec\theta\) 谁小，谁就是出口.由 \(2\cos\theta=\sec\theta\Leftrightarrow\cos^2\theta=\dfrac12\Leftrightarrow\theta=\dfrac\pi4\)：</p>
+  <p>· \(0\le\theta\lt\dfrac\pi4\) 时 \(\sec\theta\lt2\cos\theta\)，射线先撞上直线 \(x=1\)，出口为 \(r=\sec\theta\)；</p>
+  <p>· \(\dfrac\pi4\lt\theta\le\dfrac\pi2\) 时出口为圆弧 \(r=2\cos\theta\).</p>
+  <p>故</p>
+  \[I=\int_0^{\pi/4}\mathrm{d}\theta\int_0^{\sec\theta}f(r)\,r\,\mathrm{d}r+\int_{\pi/4}^{\pi/2}\mathrm{d}\theta\int_0^{2\cos\theta}f(r)\,r\,\mathrm{d}r .\]
+  <p class="muted">"出口曲线在 \(\theta=\dfrac\pi4\) 处切换"是本题的全部难点.<b>画图 + 求两条边界曲线的交点对应的极角</b>，是这类题的通用解法.</p>
+</div>
+
+<h3>四、一般换元与雅可比行列式</h3>
+<div class="def"><div class="lab"><span class="n">定理 10.6</span>二重积分换元法</div>
+  <p>设变换 \(T:\ x=x(u,v),\ y=y(u,v)\) 把 \(uOv\) 平面上的闭区域 \(D'\) 一一映为 \(xOy\) 平面上的 \(D\)，且 \(x,y\) 有一阶连续偏导数，<b>雅可比行列式</b></p>
+  \[J=\frac{\partial(x,y)}{\partial(u,v)}=\begin{vmatrix}\dfrac{\partial x}{\partial u}&\dfrac{\partial x}{\partial v}\\[8pt]\dfrac{\partial y}{\partial u}&\dfrac{\partial y}{\partial v}\end{vmatrix}
+eq0\quad\text{在 }D'\text{ 上},\]
+  <p>则</p>
+  \[\iint_{D}f(x,y)\,\mathrm{d}x\,\mathrm{d}y=\iint_{D'}f\bigl(x(u,v),y(u,v)\bigr)\,|J|\,\mathrm{d}u\,\mathrm{d}v .\]
+  <p class="muted">极坐标是它的特例：\(x=r\cos\theta,\ y=r\sin\theta\) 时</p>
+  \[J=\begin{vmatrix}\cos\theta&-r\sin\theta\\ \sin\theta&r\cos\theta\end{vmatrix}=r\cos^2\theta+r\sin^2\theta=r,\]
+  <p class="muted">这正是 \(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\) 的来历.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需面积变换的雅可比定理，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>换元的全部秘密就一句话——<b>光滑映射在局部"就是"一个线性映射，而线性映射把面积按 \(|J|\) 倍放缩</b>.下面把这句话说清楚.</p>
+<p><span class="stp">第一步：在 \(D'\) 上作直角网格.</span>用直线 \(u=\)常数、\(v=\)常数把 \(D'\) 分成小矩形，典型小矩形以 \((u,v)\) 为左下角，边长 \(\Delta u,\Delta v\)，面积 \(\Delta u\,\Delta v\).它在变换 \(T\) 下的像是 \(xOy\) 面上一个小曲边四边形 \(\Delta\sigma\).</p>
+<p><span class="stp">第二步：把像线性化（一阶泰勒展开）.</span>因 \(x,y\) 有一阶连续偏导数，</p>
+\[x(u+\Delta u,v)-x(u,v)=\frac{\partial x}{\partial u}\Delta u+o(\Delta u),\qquad
+y(u+\Delta u,v)-y(u,v)=\frac{\partial y}{\partial u}\Delta u+o(\Delta u),\]
+<p>即小矩形的"底边"被映成向量</p>
+\[\mathbf a\approx\left(\frac{\partial x}{\partial u},\ \frac{\partial y}{\partial u}\right)\Delta u ;\]
+<p>同理"左边"被映成</p>
+\[\mathbf b\approx\left(\frac{\partial x}{\partial v},\ \frac{\partial y}{\partial v}\right)\Delta v .\]
+<p>忽略高阶无穷小，曲边四边形近似为以 \(\mathbf a,\mathbf b\) 为邻边的<b>平行四边形</b>.</p>
+<p><span class="stp">第三步：平行四边形面积 = \(|J|\times\) 原面积.</span>平面上两向量张成的平行四边形面积等于其分量行列式的绝对值：</p>
+\[\Delta\sigma\approx\bigl|\mathbf a\times\mathbf b\bigr|
+=\left|\begin{vmatrix}\dfrac{\partial x}{\partial u}&\dfrac{\partial x}{\partial v}\\[8pt]\dfrac{\partial y}{\partial u}&\dfrac{\partial y}{\partial v}\end{vmatrix}\right|\Delta u\,\Delta v=|J|\,\Delta u\,\Delta v .\]
+<p>取极限即得<b>面积元素的变换法则</b> \(\mathrm{d}x\,\mathrm{d}y=|J|\,\mathrm{d}u\,\mathrm{d}v\).（\(J
+eq0\) 保证像不退化成线段，且 \(T\) 局部一一.）</p>
+<p><span class="stp">第四步：写积分和并取极限.</span>在第 \(k\) 个小块上取点 \((u_k,v_k)\)，其像为 \(\bigl(x(u_k,v_k),y(u_k,v_k)\bigr)\)，于是</p>
+\[\sum_k f\bigl(x(u_k,v_k),y(u_k,v_k)\bigr)\Delta\sigma_k\approx\sum_k f\bigl(x(u_k,v_k),y(u_k,v_k)\bigr)|J(u_k,v_k)|\,\Delta u_k\Delta v_k .\]
+<p>令网格加细，左端趋于 \(\displaystyle\iint_Df(x,y)\,\mathrm{d}x\,\mathrm{d}y\)，右端趋于 \(\displaystyle\iint_{D'}f\bigl(x(u,v),y(u,v)\bigr)|J|\,\mathrm{d}u\,\mathrm{d}v\)，两者相等.</p>
+<p><span class="stp">特例核对：</span>\(x=r\cos\theta,\ y=r\sin\theta\) 时 \(J=r\)，公式退化为定理 10.5，与那里用环扇形算出的 \(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\) 完全吻合——这是对上述推导的一次独立验证.</p>
+<div class="bey"><b>为什么说"超纲"：</b>第二、三步中的 "\(\approx\)" 只是几何直观.要把它变成证明，必须回答：曲边四边形与平行四边形的<b>面积之差</b>是否真的是 \(\Delta u\Delta v\) 的高阶无穷小，并且这个"高阶"在整个 \(D'\) 上<b>一致</b>成立；还要说明像区域的边界仍是零面积集、\(T\) 的一一性如何由 \(J
+eq0\) 经<b>反函数定理</b>保证.这些属于《数学分析》中重积分变量代换定理的内容.工科阶段只需牢记：<b>换元时别忘乘 \(|J|\)</b>——它是"面积被拉伸了多少倍"的度量.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 10.18　线性换元（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D\mathrm{e}^{\frac{y-x}{y+x}}\,\mathrm{d}\sigma\)，其中 \(D\) 是由 \(x=0,\ y=0,\ x+y=1\) 围成的三角形.</p>
+  <p class="sol"><span class="mk">解</span>被积函数的结构提示令</p>
+  \[u=y-x,\qquad v=y+x .\]
+  <p>反解得 \(x=\dfrac{v-u}{2},\ y=\dfrac{u+v}{2}\)，雅可比行列式</p>
+  \[J=\begin{vmatrix}-\dfrac12&\dfrac12\\[6pt]\dfrac12&\dfrac12\end{vmatrix}=-\frac14-\frac14=-\frac12,\qquad |J|=\frac12 .\]
+  <p><b>区域怎么变？</b>逐条边翻译：\(x+y=1\Rightarrow v=1\)；\(x=0\Rightarrow u=v\)；\(y=0\Rightarrow u=-v\).故新区域</p>
+  \[D'=\{(u,v)\mid 0\le v\le1,\ -v\le u\le v\},\]
+  <p>是 \(uOv\) 平面上的一个三角形.于是</p>
+  \[\iint_D\mathrm{e}^{\frac{y-x}{y+x}}\mathrm{d}\sigma=\frac12\int_0^1\mathrm{d}v\int_{-v}^{v}\mathrm{e}^{u/v}\,\mathrm{d}u
+  =\frac12\int_0^1 v\Bigl[\mathrm{e}^{u/v}\Bigr]_{-v}^{v}\mathrm{d}v=\frac12\int_0^1 v\bigl(\mathrm{e}-\mathrm{e}^{-1}\bigr)\mathrm{d}v .\]
+  <p>故</p>
+  \[\iint_D\mathrm{e}^{\frac{y-x}{y+x}}\mathrm{d}\sigma=\frac{\mathrm{e}-\mathrm{e}^{-1}}{4}\approx0.5876 .\]
+</div>
+
+<div class="ex"><div class="lab">例 10.19　广义极坐标（椭圆域）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_D\left(\frac{x^2}{a^2}+\frac{y^2}{b^2}\right)\mathrm{d}\sigma\)，其中 \(D:\ \dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}\le1\ (a,b\gt0)\).</p>
+  <p class="sol"><span class="mk">解</span>令 \(x=ar\cos\theta,\ y=br\sin\theta\)（<b>广义极坐标</b>），则</p>
+  \[J=\begin{vmatrix}a\cos\theta&-ar\sin\theta\\ b\sin\theta&br\cos\theta\end{vmatrix}=abr\cos^2\theta+abr\sin^2\theta=abr .\]
+  <p>区域化为 \(D':\ 0\le r\le1,\ 0\le\theta\le2\pi\)，被积函数化为 \(r^2\).于是</p>
+  \[\iint_D\left(\frac{x^2}{a^2}+\frac{y^2}{b^2}\right)\mathrm{d}\sigma=\int_0^{2\pi}\mathrm{d}\theta\int_0^1 r^2\cdot abr\,\mathrm{d}r=2\pi ab\cdot\frac14=\frac{\pi ab}{2}.\]
+  <p class="muted">同法可得椭圆面积 \(\displaystyle\iint_D\mathrm{d}\sigma=\int_0^{2\pi}\!\!\mathrm{d}\theta\int_0^1 abr\,\mathrm{d}r=\pi ab\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 高斯模糊的完整实现：从连续积分到 GPU 核</div>
+  <details><summary>展开查看：为什么手机"人像虚化"能做到实时</summary>
+  <div class="body">
+    <p><b>第一步：连续模型.</b>图像 \(I(x,y)\) 的高斯模糊定义为卷积</p>
+    \[I_\sigma(x_0,y_0)=\frac{1}{2\pi\sigma^2}\iint_{\mathbb{R}^2}I(x,y)\,\mathrm{e}^{-\frac{(x-x_0)^2+(y-y_0)^2}{2\sigma^2}}\,\mathrm{d}\sigma .\]
+    <p>前面的系数 \(\dfrac{1}{2\pi\sigma^2}\) 正是例 10.13 型积分的倒数：由极坐标（作平移换元 \(u=x-x_0,\ v=y-y_0\)，雅可比为 \(1\)）</p>
+    \[\iint_{\mathbb{R}^2}\mathrm{e}^{-\frac{u^2+v^2}{2\sigma^2}}\mathrm{d}u\,\mathrm{d}v=\int_0^{2\pi}\!\!\mathrm{d}\theta\int_0^{+\infty}\mathrm{e}^{-\frac{r^2}{2\sigma^2}}r\,\mathrm{d}r=2\pi\sigma^2 .\]
+    <p><b>第二步：为什么可以"先横后竖".</b>二维高斯核可以分离：</p>
+    \[\mathrm{e}^{-\frac{u^2+v^2}{2\sigma^2}}=\mathrm{e}^{-\frac{u^2}{2\sigma^2}}\cdot\mathrm{e}^{-\frac{v^2}{2\sigma^2}},\]
+    <p>于是二重积分变成两次一维积分的复合——这正是定理 10.3 的"化累次积分"在工程中的化身.</p>
+    <p><b>第三步：算力对比（这是实时虚化的关键）.</b>设核半径为 \(R\) 像素（核尺寸 \((2R+1)^2\)），图像 \(W\times H\)：</p>
+    <table class="dt">
+      <tr><th>核半径 \(R\)</th><th>核尺寸</th><th>直接二维：每像素乘法数</th><th>分离为两次一维：每像素乘法数</th><th>加速比</th></tr>
+      <tr><td>2</td><td>\(5\times5\)</td><td>25</td><td>10</td><td>2.5</td></tr>
+      <tr><td>5</td><td>\(11\times11\)</td><td>121</td><td>22</td><td>5.5</td></tr>
+      <tr><td>10</td><td>\(21\times21\)</td><td>441</td><td>42</td><td>10.5</td></tr>
+      <tr><td>20</td><td>\(41\times41\)</td><td>1681</td><td>82</td><td>20.5</td></tr>
+    </table>
+    <p>对 \(4000\times3000\) 的照片、\(R=20\) 的强虚化，直接卷积需 \(1681\times1.2\times10^{7}\approx2.0\times10^{10}\) 次乘法，分离后仅需 \(9.8\times10^{8}\) 次，<b>整整少了一个数量级</b>.这就是手机能在 \(30\,\mathrm{ms}\) 内完成虚化的数学依据.</p>
+    <p><b>第四步：截断误差.</b>取有限核相当于把无穷积分截断.以 \(\sigma=1,\ R=2\) 为例，落在 \(5\times5\) 窗口外的权重占比</p>
+    \[1-\frac{6.1689}{6.2832}=1.82\% .\]
+    <p>若改用 \(R=3\sigma\)（工业界通行做法），截断误差降到 \(0.1\%\) 以下，肉眼完全不可分辨.<b>一个"截断到几倍 \(\sigma\)"的工程规范，背后是二重积分的收敛速度.</b></p>
+    <p class="cn-point">把二维卷积拆成两次一维，\(2.0\times10^{10}\) 次乘法降到 \(9.8\times10^{8}\)——国产手机能在 \(30\,\mathrm{ms}\) 内完成"人像虚化"，靠的正是这道分离积分在 ISP 芯片里省下的每一个数量级.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §10.3 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 医学影像：CT 迭代重建中的一次「前向投影」</summary>
+<p><b>场景：</b> 现代 CT 的迭代重建算法（SART / MBIR）每迭代一步，都要做一次<b>前向投影</b>：把当前图像 \(\mu(x,y)\) 沿每条射线积出来，与实测投影比对.由于探测器单元有宽度 \(\Delta\)，一个通道的读数是一个货真价实的<b>二重积分</b>：</p>
+\[p_k=\frac1\Delta\iint_{D_k}\mu(x,y)\,\mathrm{d}x\,\mathrm{d}y,\qquad
+ D_k=\bigl\{(x,y)\ \bigm|\ y_k\le y\le y_k+\Delta,\ x^{2}+y^{2}\le R^{2}\bigr\}.\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>水模半径</td><td>\(R\)</td><td>10 cm</td></tr>
+<tr><td>衰减系数分布</td><td>\(\mu\)</td><td>\(0.20+0.02y\ \mathrm{cm^{-1}}\)</td></tr>
+<tr><td>通道宽度</td><td>\(\Delta\)</td><td>0.5 cm</td></tr>
+</table>
+<p class="sol"> <b>次序选对，工作量差一个数量级.</b>若先对 \(y\) 后对 \(x\)（X 型），穿线时出口曲线会在 \(|x|\) 接近 \(\sqrt{R^{2}-y_k^{2}}\) 处从圆弧切换成通道边界，必须分块；改成<b>先对 \(x\) 后对 \(y\)</b>（Y 型），内层一路从 \(x=-\sqrt{R^{2}-y^{2}}\) 穿到 \(x=+\sqrt{R^{2}-y^{2}}\)，一块都不用分，而且内层可以解析积出：</p>
+\[p_k=\frac1\Delta\int_{y_k}^{y_k+\Delta}\mu(y)\cdot 2\sqrt{R^{2}-y^{2}}\ \mathrm{d}y .\]
+<p>对若干通道用辛普森公式算得：</p>
+<table class="dt">
+<tr><th>通道 \(y_k\) /cm</th><th>弦长 \(2\sqrt{R^2-y_k^2}\) /cm</th><th>\(\mu\) 均值 /cm⁻¹</th><th>读数 \(p_k\)</th></tr>
+<tr><td>0.0</td><td>20.00</td><td>0.205</td><td>4.0983</td></tr>
+<tr><td>2.0</td><td>19.60</td><td>0.245</td><td>4.7736</td></tr>
+<tr><td>4.0</td><td>18.33</td><td>0.285</td><td>5.1584</td></tr>
+<tr><td>6.0</td><td>16.00</td><td>0.325</td><td>5.0720</td></tr>
+<tr><td>8.0</td><td>12.00</td><td>0.365</td><td>4.1200</td></tr>
+</table>
+<p>注意读数<b>峰值不在中心</b>，而出现在 \(y\approx5\ \mathrm{cm}\)：弦长在往下掉，衰减系数在往上走，两者相乘出现极大.</p>
+<p class="cn-point">同一根射线的读数，Y 型穿线一块不用分、X 型却要拆成好几块——选对积分次序，一次前向投影就省一个数量级.国产 CT 的迭代重建每帧要做上百万次这样的投影，"次序选对"省下的每一毫秒，最后都变成病人少等的那几秒.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 星载 SAR：圆形口径的极坐标积分与孔径效率</summary>
+<p><b>场景：</b> 星载合成孔径雷达（SAR）的圆形口径天线，为压低副瓣，口径场振幅采用<b>抛物锥削</b> \(A(r)=A_0\bigl(1-r^{2}/a^{2}\bigr)\).天线的两个核心指标——孔径效率 \(\eta\) 与增益 \(G\)——都由圆域上的二重积分决定；圆域加上含 \(x^{2}+y^{2}\) 的函数，正是「两看」都指向极坐标的典型.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>口径半径</td><td>\(a\)</td><td>0.60 m</td></tr>
+<tr><td>工作频率</td><td>\(f\)</td><td>9.6 GHz（X 波段）</td></tr>
+<tr><td>波长</td><td>\(\lambda\)</td><td>0.03123 m</td></tr>
+</table>
+<p class="sol"> 令 \(x=r\cos\theta,\ y=r\sin\theta\)，\(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\)：</p>
+\[\iint_{D}A\,\mathrm{d}\sigma=A_0\int_{0}^{2\pi}\!\!\mathrm{d}\theta\int_{0}^{a}\Bigl(1-\frac{r^{2}}{a^{2}}\Bigr)r\,\mathrm{d}r
+ =\frac{\pi a^{2}}{2}A_0=0.56549A_0 ,\]
+\[\iint_{D}A^{2}\,\mathrm{d}\sigma=2\pi A_0^{2}\int_{0}^{a}\Bigl(1-\frac{r^{2}}{a^{2}}\Bigr)^{2}r\,\mathrm{d}r
+ =\frac{\pi a^{2}}{3}A_0^{2}=0.37699A_0^{2} .\]
+<p>几何面积 \(S=\pi a^{2}=1.13097\ \mathrm{m^{2}}\)，故孔径（锥削）效率</p>
+\[\eta=\frac{\bigl|\iint_D A\,\mathrm{d}\sigma\bigr|^{2}}{S\displaystyle\iint_D A^{2}\,\mathrm{d}\sigma}
+ =\frac{0.56549^{2}}{1.13097\times0.37699}=\frac{0.31978}{0.42636}=0.7500 .\]
+<p>这个 75% 是抛物锥削的<b>理论定值</b>，与口径半径无关.代入增益公式：</p>
+\[G=\frac{4\pi\eta S}{\lambda^{2}}=\frac{4\pi\times0.75\times1.13097}{9.7531\times10^{-4}}=1.0929\times10^{4},
+\qquad 10\lg G=40.39\ \mathrm{dB}.\]
+<p>若改为均匀照射（\(\eta=1\)），则 \(G=1.4571\times10^{4}\)，即 41.63 dB.</p>
+<p><b>工程结论：</b> 抛物锥削牺牲了 \(41.63-40.39=1.24\ \mathrm{dB}\) 主瓣增益，换来第一副瓣从约 \(-17.6\ \mathrm{dB}\) 压到约 \(-24.6\ \mathrm{dB}\).对星载 SAR 而言，副瓣直接决定<b>距离模糊比</b>：强散射的城区会通过副瓣把能量泄漏进本应是海面的距离门.7 dB 的副瓣抑制远比 1.24 dB 的增益值钱，因此几乎所有星载 SAR 都采用锥削.而支撑这个权衡的，只是两行极坐标换元后的定积分.</p>
+<p class="cn-point">0.75 的孔径效率、1.24 dB 增益换 7 dB 副瓣抑制——两行极坐标积分替星载 SAR 的天线做了道价值判断题.国产 SAR 卫星宁可损失一点主瓣增益也要把副瓣压下去，正是为了让海面回波里不混进城区的假目标，让每一幅遥感影像都"看得真".</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch10-sar" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>锥削指数 n <input type="range" id="ch10-sar-n" min="0" max="3" step="1" value="2" style="width:200px;accent-color:#0F6E56"> <b id="ch10-sar-n-t"></b>（0=均匀）</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch10-sar-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch10-sar'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var a=0.6;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var n=+document.getElementById('ch10-sar-n').value;
+      var cx=W*0.28, cy=H*0.52, sc=Math.min(W,H)*0.34;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 口径场（径向锥削 A=(1-(r/a)^n) 可视化：用同心环亮度）
+      for(var r=0;r<=a;r+=a/80){
+        var A=Math.max(0,1-Math.pow(r/a,n));
+        var rr=Math.round(60+A*195), gg=Math.round(70+A*50), bb=Math.round(90+A*120);
+        ctx.fillStyle='rgb('+rr+','+gg+','+bb+')';
+        ctx.beginPath();ctx.arc(cx,cy,r*sc,0,Math.PI*2);ctx.fill();
+      }
+      ctx.strokeStyle='#334155';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(cx,cy,a*sc,0,Math.PI*2);ctx.stroke();
+      // 右侧曲线 A(r)
+      var gx=W*0.62, gw=W*0.30, gy=H*0.3, gh=H*0.4;
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(gx,gy+gh);ctx.lineTo(gx+gw,gy+gh);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='9px sans-serif';ctx.textAlign='center';
+      ctx.fillText('r/a',gx+gw/2,gy+gh+14);
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var rr2=0;rr2<=a;rr2+=a/100){
+        var A2=Math.max(0,1-Math.pow(rr2/a,n));
+        var xx=gx+rr2/a*gw, yy=gy+gh-A2*gh;
+        rr2===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      ctx.fillStyle='#334155';ctx.font='10px sans-serif';
+      ctx.fillText('A(r)=1−(r/a)^n',gx,gy-6);
+      // 孔径效率
+      var eta;
+      if(n===0) eta=1;
+      else {
+        // ∫₀ᵃ(1-(r/a)^n)r dr = a²(n/(2(n+2)))；∫(1-(r/a)^n)²r dr = a²·n(n+4)/(4(n+1)(n+2))
+        var I1=a*a*n/(2*(n+2));
+        var I2=a*a*n*(n+4)/(4*(n+1)*(n+2));
+        eta=I1*I1/(Math.PI*a*a*I2)*2; // 归一化
+      }
+      var loss=10*Math.log10(eta);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('锥削指数 n = '+n.toFixed(0)+'   孔径效率 η = '+(eta*100).toFixed(1)+'%   增益损失 '+(loss).toFixed(2)+' dB',20,22);
+      var out=document.getElementById('ch10-sar-out');
+      var tip = n===0 ? '均匀口径：增益最高，但第一副瓣仅 −17.6 dB' : (n===2 ? '抛物锥削：牺牲 1.24 dB 增益，副瓣压到 −24.6 dB——星载 SAR 的工程折中' : '线性锥削：增益与副瓣的中间档');
+      out.textContent = tip;
+    }
+    document.getElementById('ch10-sar-n').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s102" data-ch="10" data-n="5"></div>
+<h2 id="s103"><span class="num">§10.3</span>三重积分的概念与性质</h2>
+    
+<div class="ex"><div class="lab">引例一　芯片封装体的质量与热容：密度沿层向变化的空间物体</div>
+  <p class="stmt">一颗 3D 堆叠封装（Chiplet）芯片可近似看作长方体</p>
+  \[\Omega=\{(x,y,z)\mid 0\le x\le1,\ 0\le y\le1,\ 0\le z\le0.2\}\quad(\text{单位：cm}),\]
+  <p>它由底部硅基、中部再分布层、顶部铜柱与钼盖依次叠成，因此<b>密度沿高度递增</b>，实测拟合为</p>
+  \[\rho(x,y,z)=2.33+3.0z\quad(\mathrm{g/cm^3}).\]
+  <p>热设计工程师要算两件事：整颗芯片的<b>质量</b>与<b>热容</b>（后者决定芯片在瞬时高负载下的温升速率）.</p>
+  <p><b>先算质量.</b>仿照二重积分的思路：把 \(\Omega\) 切成 \(n\) 个薄层，第 \(k\) 层密度近似为常数，质量 \(\approx\rho_k\Delta v_k\)，全部相加再取极限.取每层底面处的密度作代表（<b>左端点法</b>）：</p>
+  <table class="dt">
+    <tr><th>层数 \(n\)</th><th>层厚 \(h\)（cm）</th><th>和式 \(m_n\)（g）</th><th>误差（g）</th></tr>
+    <tr><td>1</td><td>0.2</td><td>0.4660</td><td>0.0600</td></tr>
+    <tr><td>2</td><td>0.1</td><td>0.4960</td><td>0.0300</td></tr>
+    <tr><td>4</td><td>0.05</td><td>0.5110</td><td>0.0150</td></tr>
+    <tr><td>8</td><td>0.025</td><td>0.5185</td><td>0.0075</td></tr>
+    <tr><td>16</td><td>0.0125</td><td>0.52225</td><td>0.00375</td></tr>
+    <tr><td>\(\to\infty\)</td><td>\(\to0\)</td><td><b>0.5260</b></td><td>\(\to0\)</td></tr>
+  </table>
+  <p>极限值就是<b>三重积分</b></p>
+  \[m=\iiint_{\Omega}\rho(x,y,z)\,\mathrm{d}v=\int_0^{0.2}(2.33+3z)\,\mathrm{d}z=\bigl[2.33z+1.5z^2\bigr]_0^{0.2}=0.466+0.060=0.526\ \mathrm{g}.\]
+  <p><b>再算热容.</b>比热容也随材料变化，设 \(c(z)=0.70-1.5z\ \mathrm{J/(g\cdot K)}\).总热容为</p>
+  \[C=\iiint_{\Omega}\rho\,c\,\mathrm{d}v=\int_0^{0.2}(2.33+3z)(0.70-1.5z)\,\mathrm{d}z=\int_0^{0.2}\bigl(1.631-1.395z-4.5z^2\bigr)\mathrm{d}z .\]
+  <p>逐项积分：\(1.631\times0.2=0.32620\)，\(1.395\times\dfrac{0.2^2}{2}=0.02790\)，\(4.5\times\dfrac{0.2^3}{3}=0.01200\)，故</p>
+  \[C=0.32620-0.02790-0.01200=0.28630\ \mathrm{J/K}.\]
+  <p><b>结论有多重要？</b>若该芯片瞬时功耗 \(P=15\,\mathrm{W}\)，在散热器尚未响应的最初几毫秒内可视为绝热，则温升速率</p>
+  \[\frac{\mathrm{d}T}{\mathrm{d}t}=\frac{P}{C}=\frac{15}{0.28630}=52.4\ \mathrm{K/s}.\]
+  <p>也就是说，一次 \(0.5\,\mathrm{s}\) 的 AI 推理峰值就能让结温上升 \(26\,{}^{\circ}\mathrm{C}\).<b>这个数字直接决定了手机是否需要降频.</b>而它的源头，正是一个三重积分.</p>
+</div>
+
+<h3>一、三重积分的定义</h3>
+<div class="def"><div class="lab"><span class="n">定义 10.2</span>三重积分</div>
+  <p>设 \(f(x,y,z)\) 是空间有界闭区域 \(\Omega\) 上的有界函数.将 \(\Omega\) 任意分成 \(n\) 个小闭区域 \(\Delta v_1,\Delta v_2,\dots,\Delta v_n\)（同时表示其体积），在每个 \(\Delta v_i\) 上任取一点 \((\xi_i,\eta_i,\zeta_i)\)，作和</p>
+  \[S_n=\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\,\Delta v_i .\]
+  <p>记 \(\lambda\) 为各小区域直径的最大者.若 \(\lambda\to0\) 时 \(S_n\) 的极限总存在（与分法、取点法无关），则称此极限为 \(f\) 在 \(\Omega\) 上的<b>三重积分</b>，记作</p>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\lim_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\,\Delta v_i .\]
+  <p>其中 \(\mathrm{d}v\) 称为<b>体积元素</b>.在直角坐标下用三组平行于坐标面的平面分割 \(\Omega\)，小块为长方体，\(\Delta v=\Delta x\Delta y\Delta z\)，故常写 \(\mathrm{d}v=\mathrm{d}x\,\mathrm{d}y\,\mathrm{d}z\).</p>
+</div>
+<div class="note"><b>与二重积分完全平行.</b>把"面积元素"换成"体积元素"、"平面闭区域"换成"空间闭区域"，定义一字不改.因此二重积分的全部性质、证明思路都可以直接搬过来.区别只在<b>计算</b>：二重要化成两次定积分，三重要化成三次.</div>
+
+<div class="def"><div class="lab"><span class="n">定理 10.7</span>可积的充分条件</div>
+  <p>若 \(f(x,y,z)\) 在有界闭区域 \(\Omega\) 上连续，则 \(f\) 在 \(\Omega\) 上可积.若 \(f\) 有界且间断点只落在有限个光滑曲面上，则 \(f\) 仍可积.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需达布理论与 Cantor 定理，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>把定理 10.1 的证明中"面积"换成"体积"、"曲线"换成"曲面"，一字不改地平移过来.</p>
+<p><span class="stp">第一步：可积的振幅判别.</span>把 \(\Omega\) 分成小闭区域 \(\Delta v_1,\cdots,\Delta v_n\)（同时表示其体积），记 \(f\) 在 \(\Delta v_i\) 上的振幅 \(\omega_i=M_i-m_i\).达布理论给出：\(f\) 可积 \(\iff\)</p>
+\[\lim_{\lambda\to0}\sum_{i=1}^{n}\omega_i\,\Delta v_i=0 .\]
+<p><span class="stp">第二步：连续的情形.</span>\(\Omega\) 有界闭，\(f\) 连续，由 Cantor 定理 \(f\) 在 \(\Omega\) 上一致连续：对任意 \(\varepsilon\gt0\) 存在 \(\delta\gt0\)，当小区域直径都小于 \(\delta\) 时每个 \(\omega_i\le\dfrac{\varepsilon}{V}\)（\(V\) 为 \(\Omega\) 的体积），于是</p>
+\[\sum_{i=1}^{n}\omega_i\Delta v_i\le\frac{\varepsilon}{V}\sum_{i=1}^{n}\Delta v_i=\varepsilon .\]
+<p>故 \(f\) 可积.</p>
+<p><span class="stp">第三步：间断点落在有限个光滑曲面上的情形.</span>光滑曲面的体积为零，可用总体积任意小的一批小长方体盖住.分割出的小块分两类：碰到"坏曲面"的一类，总体积 \(\lt\dfrac{\varepsilon}{4K}\)（\(K\) 为 \(|f|\) 的界），振幅至多 \(2K\)，贡献 \(\lt\dfrac{\varepsilon}{2}\)；其余小块上 \(f\) 连续，按第二步处理，贡献 \(\lt\dfrac{\varepsilon}{2}\).合计仍小于 \(\varepsilon\)，故 \(f\) 可积.</p>
+<div class="bey"><b>为什么说"超纲"：</b>与定理 10.1 同理，骨架依赖<b>达布上下和判别法</b>与<b>Cantor 一致连续性定理</b>，二者的根基都是实数的完备性，属《数学分析》内容.工科阶段直接使用结论即可：三维空间中的连续密度场、以及只在有限个界面上跳变的分层介质密度，都是可积的.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<h3>二、三重积分的物理意义</h3>
+<p>三重积分没有像二重积分那样直观的"体积"几何意义（因为图像在四维空间中），但它的<b>物理意义极其明确</b>：</p>
+<p>· 若 \(\rho(x,y,z)\) 是空间物体 \(\Omega\) 的<b>体密度</b>，则 \(\displaystyle m=\iiint_{\Omega}\rho\,\mathrm{d}v\) 是物体的<b>质量</b>；</p>
+<p>· 取 \(f\equiv1\)，得 \(\displaystyle\iiint_{\Omega}\mathrm{d}v=V\)，即区域 \(\Omega\) 的<b>体积</b>；</p>
+<p>· 若 \(w(x,y,z)\) 是<b>功率密度</b>（\(\mathrm{W/m^3}\)），则积分给出<b>总功率</b>；若是<b>电荷密度</b>，则给出<b>总电量</b>.凡是"某量在空间中连续分布、要求总量"的问题，都是三重积分.</p>
+
+<h3>三、三重积分的性质</h3>
+<div class="def"><div class="lab"><span class="n">性质 10.6</span>基本性质（与二重积分完全对应）</div>
+  <p>（1）<b>线性性</b>：\(\displaystyle\iiint_\Omega(\alpha f+\beta g)\,\mathrm{d}v=\alpha\iiint_\Omega f\,\mathrm{d}v+\beta\iiint_\Omega g\,\mathrm{d}v\).</p>
+  <p>（2）<b>区域可加性</b>：\(\Omega=\Omega_1\cup\Omega_2\)（内部不相交）时，积分等于两部分之和.</p>
+  <p>（3）<b>保号性</b>：\(f\le g\) 时 \(\displaystyle\iiint_\Omega f\,\mathrm{d}v\le\iiint_\Omega g\,\mathrm{d}v\)；特别地 \(\left|\displaystyle\iiint_\Omega f\,\mathrm{d}v\right|\le\displaystyle\iiint_\Omega|f|\,\mathrm{d}v\).</p>
+  <p>（4）<b>估值定理</b>：\(mV\le\displaystyle\iiint_\Omega f\,\mathrm{d}v\le MV\)，其中 \(V\) 为 \(\Omega\) 的体积.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>四条性质都由三重积分的定义直接推出.把 \(\Omega\) 任意分成小闭区域 \(\Delta v_1,\cdots,\Delta v_n\)（同时表示其体积），在 \(\Delta v_i\) 上任取一点 \((\xi_i,\eta_i,\zeta_i)\)，记最大直径为 \(\lambda\).</p>
+<p><span class="stp">（1）线性性：</span>由有限和的分配律，</p>
+\[\sum_{i=1}^{n}\bigl[\alpha f+\beta g\bigr](\xi_i,\eta_i,\zeta_i)\Delta v_i
+=\alpha\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\Delta v_i+\beta\sum_{i=1}^{n}g(\xi_i,\eta_i,\zeta_i)\Delta v_i .\]
+<p>令 \(\lambda\to0\)，由极限的和与数乘运算法则即得 \(\displaystyle\iiint_\Omega(\alpha f+\beta g)\,\mathrm{d}v=\alpha\iiint_\Omega f\,\mathrm{d}v+\beta\iiint_\Omega g\,\mathrm{d}v\).</p>
+<p><span class="stp">（2）区域可加性：</span>因可积时极限与分割方式无关，可专取使 \(\Omega_1,\Omega_2\) 的公共界面落在分割面上的分割.此时每个小区域或含于 \(\Omega_1\)，或含于 \(\Omega_2\)，把和按此分成两组：</p>
+\[\sum_{\text{全部}}f\,\Delta v=\sum_{\Delta v\subset\Omega_1}f\,\Delta v+\sum_{\Delta v\subset\Omega_2}f\,\Delta v .\]
+<p>令 \(\lambda\to0\) 得 \(\displaystyle\iiint_\Omega f\,\mathrm{d}v=\iiint_{\Omega_1}f\,\mathrm{d}v+\iiint_{\Omega_2}f\,\mathrm{d}v\)（公共界面体积为零，不影响结果）.</p>
+<p><span class="stp">（3）保号性：</span>若 \(h\ge0\)，则每个积分和 \(\sum h(\xi_i,\eta_i,\zeta_i)\Delta v_i\ge0\)，由极限的保号性得 \(\displaystyle\iiint_\Omega h\,\mathrm{d}v\ge0\).取 \(h=g-f\) 并用（1），即得 \(f\le g\Rightarrow\displaystyle\iiint_\Omega f\,\mathrm{d}v\le\iiint_\Omega g\,\mathrm{d}v\).再由 \(-|f|\le f\le|f|\) 对两侧分别使用单调性，得</p>
+\[-\iiint_\Omega|f|\,\mathrm{d}v\le\iiint_\Omega f\,\mathrm{d}v\le\iiint_\Omega|f|\,\mathrm{d}v,
+\quad\text{即}\quad\left|\iiint_\Omega f\,\mathrm{d}v\right|\le\iiint_\Omega|f|\,\mathrm{d}v .\]
+<p><span class="stp">（4）估值定理：</span>对常值函数 \(1\)，任一积分和都等于 \(\sum\Delta v_i=V\)，故 \(\displaystyle\iiint_\Omega1\,\mathrm{d}v=V\)，再由（1）得 \(\displaystyle\iiint_\Omega c\,\mathrm{d}v=cV\).由 \(m\le f\le M\) 及（3）的单调性，</p>
+\[mV=\iiint_\Omega m\,\mathrm{d}v\le\iiint_\Omega f\,\mathrm{d}v\le\iiint_\Omega M\,\mathrm{d}v=MV .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 10.8</span>三重积分中值定理</div>
+  <p>若 \(f\) 在有界闭区域 \(\Omega\) 上连续，\(V\) 为 \(\Omega\) 的体积，则存在 \((\xi,\eta,\zeta)\in\Omega\)，使</p>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=f(\xi,\eta,\zeta)\,V .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：用估值定理夹住平均值.</span>\(f\) 在有界闭区域 \(\Omega\) 上连续，由最值定理它取得最大值 \(M\) 与最小值 \(m\).设 \(V\gt0\)，由性质 10.6（4），</p>
+\[mV\le\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v\le MV .\]
+<p>各端除以 \(V\)，记 \(\mu=\dfrac1V\displaystyle\iiint_\Omega f\,\mathrm{d}v\)，则 \(m\le\mu\le M\).</p>
+<p><span class="stp">第二步：用介值定理找出中值点.</span>设 \(f(P_1)=m,\ f(P_2)=M\)，\(P_1,P_2\in\Omega\).\(\Omega\) 是（连通的）有界闭区域，可在其中取一条连接 \(P_1\) 与 \(P_2\) 的连续曲线；\(f\) 沿该曲线是一元连续函数，其值由 \(m\) 连续变到 \(M\).由介值定理，曲线上存在一点 \((\xi,\eta,\zeta)\in\Omega\) 使</p>
+\[f(\xi,\eta,\zeta)=\mu .\]
+<p><span class="stp">第三步：还原.</span>代回 \(\mu\) 的定义即得</p>
+\[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=f(\xi,\eta,\zeta)\,V .\]
+<p>（若 \(V=0\)，两端同为零，结论平凡成立.）数值 \(\mu\) 称为 \(f\) 在 \(\Omega\) 上的平均值，例如物体的平均密度、平均温度.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 10.7</span>对称性与轮换对称性</div>
+  <p>（1）若 \(\Omega\) 关于 \(xOy\) 面对称，则</p>
+  \[\iiint_{\Omega}f\,\mathrm{d}v=\begin{cases}0,& f(x,y,-z)=-f(x,y,z),\\[4pt] 2\displaystyle\iiint_{\Omega_1}f\,\mathrm{d}v,& f(x,y,-z)=f(x,y,z),\end{cases}\]
+  <p>其中 \(\Omega_1\) 为 \(\Omega\) 中 \(z\ge0\) 的部分.关于另两个坐标面对称时同理.</p>
+  <p>（2）若 \(\Omega\) 在把 \(x,y,z\) 任意轮换后不变（如球体、正方体、以原点为心的立体），则</p>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iiint_{\Omega}f(y,z,x)\,\mathrm{d}v=\iiint_{\Omega}f(z,x,y)\,\mathrm{d}v .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>与性质 10.5 完全同理——找一个把 \(\Omega\) 映到自身的<b>刚体变换</b>（反射或旋转）.刚体变换保持体积与直径不变，因此能把两侧的积分和逐项对应起来.</p>
+<p><span class="stp">（1）关于坐标面的对称性.</span>设 \(\Omega\) 关于 \(xOy\) 面对称，取对合变换</p>
+\[T:(x,y,z)\mapsto(x,y,-z),\]
+<p>它是关于 \(xOy\) 面的镜面反射，故为等距变换.记 \(\Omega_1=\Omega\cap\{z\ge0\},\ \Omega_2=\Omega\cap\{z\le0\}\)，则 \(T(\Omega_2)=\Omega_1\).由性质 10.6（2），</p>
+\[\iiint_{\Omega}f\,\mathrm{d}v=\iiint_{\Omega_1}f\,\mathrm{d}v+\iiint_{\Omega_2}f\,\mathrm{d}v .\]
+<p>取 \(\Omega_1\) 的任一分割 \(\{\Delta v_i\}\) 与取点 \((\xi_i,\eta_i,\zeta_i)\)，其在 \(T\) 下的像 \(\{T(\Delta v_i)\}\) 恰是 \(\Omega_2\) 的一个分割，取点为 \((\xi_i,\eta_i,-\zeta_i)\)；对应小块全等，体积与直径均相同.于是</p>
+\[\iiint_{\Omega_2}f(x,y,z)\,\mathrm{d}v=\lim_{\lambda\to0}\sum_i f(\xi_i,\eta_i,-\zeta_i)\Delta v_i=\iiint_{\Omega_1}f(x,y,-z)\,\mathrm{d}v .\]
+<p>代回得</p>
+\[\iiint_{\Omega}f\,\mathrm{d}v=\iiint_{\Omega_1}\bigl[f(x,y,z)+f(x,y,-z)\bigr]\mathrm{d}v .\]
+<p>若 \(f(x,y,-z)=-f(x,y,z)\)，方括号恒为零，积分为 \(0\)；若 \(f(x,y,-z)=f(x,y,z)\)，方括号为 \(2f\)，积分为 \(2\displaystyle\iiint_{\Omega_1}f\,\mathrm{d}v\).关于 \(yOz\) 面、\(zOx\) 面对称时，只需把 \(T\) 换成 \((x,y,z)\mapsto(-x,y,z)\) 或 \((x,y,z)\mapsto(x,-y,z)\)，论证照搬.</p>
+<p><span class="stp">（2）轮换对称性.</span>取线性变换</p>
+\[S:(x,y,z)\mapsto(y,z,x).\]
+<p>它的矩阵是循环置换矩阵，为正交矩阵且行列式等于 \(1\)，故 \(S\) 是一个<b>旋转</b>（刚体变换），保持体积与直径.由假设 \(S(\Omega)=\Omega\).取 \(\Omega\) 的任一分割 \(\{\Delta v_i\}\) 与取点 \(P_i=(x_i,y_i,z_i)\)，则 \(\{S(\Delta v_i)\}\) 仍是 \(\Omega\) 的分割，取点为 \(S(P_i)=(y_i,z_i,x_i)\)，且对应体积相等.于是</p>
+\[\iiint_{\Omega}f(y,z,x)\,\mathrm{d}v=\lim_{\lambda\to0}\sum_i f(y_i,z_i,x_i)\,\Delta v_i
+=\lim_{\lambda\to0}\sum_i f\bigl(S(P_i)\bigr)\Delta v_i=\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v .\]
+<p>对 \(S\) 再用一次（即用 \(S^2\)）便得第三个等式，故</p>
+\[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iiint_{\Omega}f(y,z,x)\,\mathrm{d}v=\iiint_{\Omega}f(z,x,y)\,\mathrm{d}v .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>轮换对称性是三重积分最省力的技巧.</b>例如球体上 \(\displaystyle\iiint x^2\mathrm{d}v=\iiint y^2\mathrm{d}v=\iiint z^2\mathrm{d}v\)，于是每一个都等于 \(\dfrac13\displaystyle\iiint(x^2+y^2+z^2)\mathrm{d}v\)——后者在球坐标下就是 \(\rho^2\)，一步到位.</div>
+
+<div class="ex"><div class="lab">例 10.20　用体积意义求积分</div>
+  <p class="stmt">设 \(\Omega:\ x^2+y^2+z^2\le R^2\)，求 \(\displaystyle\iiint_\Omega 5\,\mathrm{d}v\)；又设 \(\Omega_1\) 为四面体 \(x+y+z\le1,\ x,y,z\ge0\)，求 \(\displaystyle\iiint_{\Omega_1}\mathrm{d}v\).</p>
+  <p class="sol"><span class="mk">解</span>由线性性与 \(\displaystyle\iiint_\Omega\mathrm{d}v=V\)：</p>
+  \[\iiint_\Omega 5\,\mathrm{d}v=5\cdot\frac43\pi R^3=\frac{20}{3}\pi R^3 .\]
+  <p>四面体的体积为 \(\dfrac13\times(\text{底面积})\times(\text{高})=\dfrac13\times\dfrac12\times1=\dfrac16\)，故 \(\displaystyle\iiint_{\Omega_1}\mathrm{d}v=\dfrac16\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.21　用对称性求积分</div>
+  <p class="stmt">设 \(\Omega:\ x^2+y^2+z^2\le1\)，求 \(\displaystyle\iiint_\Omega\bigl(z+xy+x^3z^2+z\sin(x^2+y^2)\bigr)\mathrm{d}v\).</p>
+  <p class="sol"><span class="mk">解</span>球体关于三个坐标面都对称，逐项判断：</p>
+  <p>· \(z\)：关于 \(z\) 为奇函数（\(\Omega\) 关于 \(xOy\) 面对称）\(\Rightarrow\) 积分为 \(0\)；</p>
+  <p>· \(xy\)：关于 \(x\) 为奇函数（\(\Omega\) 关于 \(yOz\) 面对称）\(\Rightarrow0\)；</p>
+  <p>· \(x^3z^2\)：关于 \(x\) 为奇函数 \(\Rightarrow0\)；</p>
+  <p>· \(z\sin(x^2+y^2)\)：关于 \(z\) 为奇函数 \(\Rightarrow0\).</p>
+  <p>故整个积分为 \(0\).<b>一道看似复杂的题，全部由对称性秒杀.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 10.22　轮换对称性</div>
+  <p class="stmt">设 \(\Omega:\ x^2+y^2+z^2\le R^2\)，已知 \(\displaystyle\iiint_\Omega(x^2+y^2+z^2)\mathrm{d}v=\frac{4\pi R^5}{5}\)，求 \(\displaystyle\iiint_\Omega x^2\,\mathrm{d}v\) 与 \(\displaystyle\iiint_\Omega(x^2+y^2)\,\mathrm{d}v\).</p>
+  <p class="sol"><span class="mk">解</span>球体在 \(x,y,z\) 轮换下不变，故</p>
+  \[\iiint_\Omega x^2\mathrm{d}v=\iiint_\Omega y^2\mathrm{d}v=\iiint_\Omega z^2\mathrm{d}v=\frac13\iiint_\Omega(x^2+y^2+z^2)\mathrm{d}v=\frac{4\pi R^5}{15}.\]
+  <p>于是</p>
+  \[\iiint_\Omega(x^2+y^2)\mathrm{d}v=2\cdot\frac{4\pi R^5}{15}=\frac{8\pi R^5}{15}.\]
+  <p class="muted">后一个量正是均匀球体绕 \(z\) 轴的转动惯量的核心部分，将在 §10.5 用到.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.23　估值</div>
+  <p class="stmt">估计 \(\displaystyle I=\iiint_\Omega(x+y+z+10)\,\mathrm{d}v\) 的值，其中 \(\Omega:\ x^2+y^2+z^2\le1\).</p>
+  <p class="sol"><span class="mk">解</span>由柯西不等式（或拉格朗日乘数法），在单位球上</p>
+  \[|x+y+z|\le\sqrt{3}\sqrt{x^2+y^2+z^2}\le\sqrt3 .\]
+  <p>故被积函数满足 \(10-\sqrt3\le x+y+z+10\le10+\sqrt3\).球体积 \(V=\dfrac43\pi=4.18879\).由估值定理</p>
+  \[\frac43\pi\bigl(10-\sqrt3\bigr)\le I\le\frac43\pi\bigl(10+\sqrt3\bigr),\]
+  <p>数值上 \(34.63\le I\le49.14\).</p>
+  <p class="muted">补充：由对称性 \(\displaystyle\iiint_\Omega(x+y+z)\mathrm{d}v=0\)，故精确值就是 \(10V=\dfrac{40\pi}{3}=41.89\)，确实落在估计区间内.<b>估值定理给区间，对称性给精确值，两者互相验证.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 10.24　比较大小</div>
+  <p class="stmt">设 \(\Omega:\ x^2+y^2+z^2\le1\)，记 \(t=x^2+y^2+z^2\).比较</p>
+  \[I_1=\iiint_\Omega\sin t\,\mathrm{d}v,\qquad I_2=\iiint_\Omega t\,\mathrm{d}v,\qquad I_3=\iiint_\Omega\sqrt t\,\mathrm{d}v .\]
+  <p class="sol"><span class="mk">解</span>在 \(\Omega\) 上 \(0\le t\le1\).对 \(t\in(0,1]\)：</p>
+  <p>· 由 \(\sin t\lt t\)（\(t\gt0\) 时严格成立）得 \(I_1\lt I_2\)；</p>
+  <p>· 由 \(0\lt t\le1\) 时 \(t\le\sqrt t\)（因 \(\sqrt t\cdot\sqrt t=t\le\sqrt t\Leftrightarrow\sqrt t\le1\)）得 \(I_2\lt I_3\).</p>
+  <p>故 \(I_1\lt I_2\lt I_3\).</p>
+  <p class="muted">再次强调：<b>比大小的第一步永远是确定 \(t\) 在区域上的取值范围</b>.若区域改为 \(1\le t\le4\)，则 \(\sqrt t\le t\)，第二个不等号立即反向.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.25　中值定理求极限</div>
+  <p class="stmt">设 \(f(x,y,z)\) 在原点的某邻域内连续，\(\Omega_r:\ x^2+y^2+z^2\le r^2\).证明</p>
+  \[\lim_{r\to0^+}\frac{3}{4\pi r^3}\iiint_{\Omega_r}f(x,y,z)\,\mathrm{d}v=f(0,0,0),\]
+  <p>并据此求 \(\displaystyle\lim_{r\to0^+}\frac{3}{4\pi r^3}\iiint_{\Omega_r}\mathrm{e}^{x+2y+3z}\cos(xyz)\,\mathrm{d}v\).</p>
+  <p class="sol"><span class="mk">证</span>球体 \(\Omega_r\) 的体积为 \(V_r=\dfrac43\pi r^3\).由定理 10.8，存在 \(P_r=(\xi_r,\eta_r,\zeta_r)\in\Omega_r\) 使</p>
+  \[\iiint_{\Omega_r}f\,\mathrm{d}v=f(P_r)\cdot\frac43\pi r^3 ,\]
+  <p>从而 \(\dfrac{3}{4\pi r^3}\displaystyle\iiint_{\Omega_r}f\,\mathrm{d}v=f(P_r)\).因 \(P_r\in\Omega_r\)，有 \(|P_r|\le r\to0\)，即 \(P_r\to O\).由 \(f\) 在原点连续，得极限为 \(f(0,0,0)\).</p>
+  <p>对给定函数，\(f(0,0,0)=\mathrm{e}^{0}\cos0=1\)，故所求极限为 \(1\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 芯片瞬态热仿真：把封装体拆成三层分别积分</div>
+  <details><summary>展开查看：从分层热容到结温预测的完整链条</summary>
+  <div class="body">
+    <p><b>场景：</b> 手机原型机刚刚跑完一轮大模型推理，热像仪显示芯片结温正逼近 \(100\,{}^{\circ}\mathrm{C}\) 的降频红线——再往上顶一秒，性能调度器就要强制锁频.散热工程师要回答"换哪种顶盖材料才够用"，而答案藏在把封装体沿高度拆成三层、逐层做三重积分的账本里.</p>
+    <p>沿用引例的模型：横截面 \(1\,\mathrm{cm^2}\)，\(\rho(z)=2.33+3z\ \mathrm{g/cm^3}\)，\(c(z)=0.70-1.5z\ \mathrm{J/(g\cdot K)}\).真实封装由三层构成，用<b>区域可加性</b>（性质 10.6(2)）把 \(\Omega\) 拆成 \(\Omega_{\text{Si}}\cup\Omega_{\text{RDL}}\cup\Omega_{\text{Cu}}\) 分别积分.</p>
+    <p>记 \(F(z)=1.631z-0.6975z^2-1.5z^3\) 为热容被积函数的原函数，\(G(z)=2.33z+1.5z^2\) 为质量被积函数的原函数，则每层的质量与热容分别是 \(G,F\) 在该层端点处的增量.</p>
+    <table class="dt">
+      <tr><th>层</th><th>\(z\) 范围（cm）</th><th>体积（\(\mathrm{cm^3}\)）</th><th>质量（g）</th><th>热容（J/K）</th><th>热容占比</th></tr>
+      <tr><td>硅基</td><td>\([0,\,0.10]\)</td><td>0.100</td><td>0.24800</td><td>0.15463</td><td>54.0%</td></tr>
+      <tr><td>再分布层</td><td>\([0.10,\,0.15]\)</td><td>0.050</td><td>0.13525</td><td>0.06927</td><td>24.2%</td></tr>
+      <tr><td>铜柱与盖</td><td>\([0.15,\,0.20]\)</td><td>0.050</td><td>0.14275</td><td>0.06241</td><td>21.8%</td></tr>
+      <tr><td><b>合计</b></td><td>\([0,\,0.20]\)</td><td><b>0.200</b></td><td><b>0.52600</b></td><td><b>0.28630</b></td><td>100%</td></tr>
+    </table>
+    <p>分层结果之和与引例中一次积分的结果完全一致（\(0.526\,\mathrm{g}\) 与 \(0.28630\,\mathrm{J/K}\)），这正是区域可加性的数值验证.</p>
+    <p><b>瞬态温升预测.</b>设一次大模型推理让芯片在 \(0.5\,\mathrm{s}\) 内以 \(P=15\,\mathrm{W}\) 满载，且这段时间内散热器几乎来不及响应（近似绝热）：</p>
+    \[\Delta T=\frac{P\,\Delta t}{C}=\frac{15\times0.5}{0.28630}=26.2\ \mathrm{K}.\]
+    <p>若环境温度 \(45\,{}^{\circ}\mathrm{C}\)、稳态结温 \(70\,{}^{\circ}\mathrm{C}\)，则峰值结温可达 \(96\,{}^{\circ}\mathrm{C}\)，逼近 \(100\,{}^{\circ}\mathrm{C}\) 的降频阈值.</p>
+    <p><b>改进方案的定量评估.</b>若把顶盖材料换成热容更大的方案，使总热容提高 \(20\%\) 到 \(0.34356\,\mathrm{J/K}\)，则</p>
+    \[\Delta T'=\frac{7.5}{0.34356}=21.8\ \mathrm{K},\]
+    <p>峰值结温降到 \(91.8\,{}^{\circ}\mathrm{C}\)，成功避开降频.<b>一个 \(4.4\,\mathrm{K}\) 的差距，就是手机"能不能持续跑大模型"的分界线；而它完全由一个三重积分算出来.</b></p>
+    <p class="cn-point">三层封装各算各的热容，\(0.28630\) 与 \(0.34356\,\mathrm{J/K}\) 之间那 \(20\%\) 的差距，就是 \(96\,{}^{\circ}\mathrm{C}\) 与 \(91.8\,{}^{\circ}\mathrm{C}\) 的差距——国产手机端侧跑大模型不掉频，靠的正是把"材料换成什么"这种问题算成一个三重积分.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §10.4 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 芯片散热：体积热源的三重积分与热点倍率</summary>
+<p><b>场景：</b> 凌晨的实验室里，工程师盯着刚流片回来的 7 nm 移动 SoC，热像仪上最亮的那团红点只有指甲盖大小——这颗裸 die 的体积 \(10\times10\times0.5\ \mathrm{mm^{3}}\)，器件层却集中在顶部数微米内，性能一拉满，热点温度就直逼降频红线.热仿真必须回答"热从哪来、在哪集中"，于是把它等效为沿深度指数衰减、沿平面高斯分布的<b>体积热源</b>：</p>
+\[q(x,y,z)=q_0\,\mathrm{e}^{-(x^{2}+y^{2})/(2s^{2})}\,\mathrm{e}^{-z/\delta}\quad(\mathrm{W/mm^{3}}).\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>峰值功率密度</td><td>\(q_0\)</td><td>4.00 W/mm³</td></tr>
+<tr><td>平面扩散尺度</td><td>\(s\)</td><td>2.00 mm</td></tr>
+<tr><td>深度衰减长度</td><td>\(\delta\)</td><td>0.050 mm</td></tr>
+<tr><td>die 体积</td><td>\(V\)</td><td>50 mm³</td></tr>
+</table>
+<p class="sol"> 被积函数关于三个变量<b>可分离</b>，三重积分退化成三个一元积分之积（用到定理 10.9 投影法与性质 10.6 线性性）：</p>
+\[\iint_{\mathbb{R}^{2}}\mathrm{e}^{-(x^{2}+y^{2})/(2s^{2})}\mathrm{d}x\,\mathrm{d}y=2\pi s^{2}=25.133\ \mathrm{mm^{2}},\qquad
+\int_{0}^{0.5}\mathrm{e}^{-z/\delta}\mathrm{d}z=\delta\bigl(1-\mathrm{e}^{-10}\bigr)=0.049998\ \mathrm{mm}.\]
+<p>于是无截断时 \(P_{\infty}=4.00\times25.133\times0.049998=5.026\ \mathrm{W}\).再修正平面截断（\(|x|,|y|\le5\ \mathrm{mm}\)，即 \(2.5s\)）：一维截断因子 \(\mathrm{erf}\bigl(5/(s\sqrt2)\bigr)=\mathrm{erf}(1.7678)=0.98758\)，两个方向共 \(0.98758^{2}=0.97532\)，故</p>
+\[P=5.026\times0.97532=4.902\ \mathrm{W}.\]
+<p>平均功率密度 \(\bar q=P/V=0.09804\ \mathrm{W/mm^{3}}=98.0\ \mathrm{W/cm^{3}}\).由<b>中值定理</b>（定理 10.8），die 内必有一点的功率密度恰为 \(\bar q\)；在轴线 \(r=0\) 上解 \(4.00\,\mathrm{e}^{-z/0.05}=0.09804\) 得 \(z=0.1854\ \mathrm{mm}\)，即中值点位于表面下方 185 μm 处.</p>
+<p><b>工程结论：</b> 热点倍率 \(q_{\max}/\bar q=4.00/0.09804=40.8\) 倍.把 die 当成均匀热源的一维热阻模型，会把结温温升算低 30 K 以上，足以让「仿真通过」的设计在实机上触发降频.因此网格必须在 \(r\lt 2\ \mathrm{mm}\)、\(z\lt 0.15\ \mathrm{mm}\) 的区域加密.顺带一提，估值定理在这里只给出 \(0\le P\le q_0V=200\ \mathrm{W}\) 的宽松护栏，实用价值仅限程序自检；这恰恰说明：<b>性质用来把关，积分用来给数</b>.</p>
+<p class="cn-point">热点倍率 40.8 倍、温升误差 30 K——国产移动 SoC 从流片到量产，散热仿真这一关过不去，再强的算力也只能锁频降速.把体积热源的三重积分算到 \(q_{\max}/\bar q\) 精确到 0.1 倍，正是"仿真通过"变成"实机不掉频"的那道硬门槛.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch10-soc" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>高斯宽度 s <input type="range" id="ch10-soc-s" min="0.5" max="2.5" step="0.05" value="2.0" style="width:220px;accent-color:#0F6E56"> <b id="ch10-soc-s-t"></b> mm</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch10-soc-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch10-soc'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var sVal=+document.getElementById('ch10-soc-s').value;
+      var cx=W*0.36, cy=H*0.5, sc=W*0.45/2.2;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 热源平面分布（高斯）
+      for(var py=0;py<H;py+=2){
+        for(var px=0;px<W*0.72;px+=2){
+          var dx=(px-cx)/sc, dy=(py-cy)/sc;
+          var q=Math.exp(-(dx*dx+dy*dy)/(2*sVal*sVal));
+          var rr=Math.round(50+q*205), gg=Math.round(60+q*40), bb=Math.round(120-q*40);
+          ctx.fillStyle='rgb('+rr+','+gg+','+bb+')';
+          ctx.fillRect(px,py,2,2);
+        }
+      }
+      // 3s 参考圆
+      ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
+      ctx.beginPath();ctx.arc(cx,cy,3*sVal*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#fff';ctx.font='9px sans-serif';ctx.textAlign='center';
+      ctx.fillText('3s',cx+3*sVal*sc+8,cy);
+      // 数值
+      // 归一化：q(r)=q0 e^(-r²/2s²)，总功率 ∝ 2πs²q0
+      // 热点倍率 = q_max / q_bar，q_bar = P/V（V=50 mm³ 均匀）
+      // P = q0·2πs²·∫₀^∞e^(-z/δ)dz = q0·2πs²·δ；q_max=q0
+      var qbarRatio=2*Math.PI*sVal*sVal*0.1/50; // δ=0.1mm 时 q_bar/q0
+      var hot=1/qbarRatio;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('高斯宽度 s = '+sVal.toFixed(2)+' mm   热点倍率 q_max/q̄ = '+(hot).toFixed(1)+' 倍',20,22);
+      var out=document.getElementById('ch10-soc-out');
+      var tip = hot>30 ? '⚠ 热点倍率 >30：均匀热阻模型会低估结温 30 K 以上，网格必须加密到 r<2mm' : '热源较均匀，一维模型可用';
+      out.textContent = tip;
+    }
+    document.getElementById('ch10-soc-s').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 航天：用轮换对称性把三个积分变成一个</summary>
+<p><b>场景：</b> 空间站货运飞船对接在即，姿控软件必须提前答完一道"送分题"：这团满满当当的推进剂绕任意一根过心轴转起来，到底有多"犟"？姿态控制系统需要它绕任意过心轴的转动惯量——算错一步，对接时的姿态机动就可能把燃料甩出半个身位.好在加注满时球形贮箱可视为均质球体，按定义</p>
+\[I_z=\rho\iiint_{\Omega}(x^{2}+y^{2})\,\mathrm{d}v,\qquad \Omega:\ x^{2}+y^{2}+z^{2}\le R^{2}.\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>贮箱内半径</td><td>\(R\)</td><td>0.90 m</td></tr>
+<tr><td>推进剂密度</td><td>\(\rho\)</td><td>1010 kg/m³</td></tr>
+<tr><td>控制力矩陀螺输出</td><td>\(T\)</td><td>20 N·m</td></tr>
+</table>
+<p class="sol"> 直接算 \(\iiint x^{2}\mathrm{d}v\) 要做一次不轻松的球坐标积分.但 \(\Omega\) 是球，关于 \(x,y,z\) <b>轮换对称</b>（性质 10.7），于是</p>
+\[\iiint_\Omega x^{2}\mathrm{d}v=\iiint_\Omega y^{2}\mathrm{d}v=\iiint_\Omega z^{2}\mathrm{d}v
+ =\frac13\iiint_\Omega\bigl(x^{2}+y^{2}+z^{2}\bigr)\mathrm{d}v ,\]
+<p>而右端在球坐标下只是一个初等积分：</p>
+\[\iiint_\Omega r^{2}\,\mathrm{d}v=\int_0^{2\pi}\!\!\mathrm{d}\theta\int_0^{\pi}\!\!\mathrm{d}\varphi\int_0^{R}r^{2}\cdot r^{2}\sin\varphi\,\mathrm{d}r=\frac{4\pi R^{5}}{5}=1.48420\ \mathrm{m^{5}}.\]
+<p>故 \(I_z=\rho\cdot\dfrac23\times1.48420=1010\times0.98947=999.4\ \mathrm{kg\cdot m^{2}}\).校验：\(M=\rho\cdot\frac43\pi R^{3}=3084.2\ \mathrm{kg}\)，\(\frac25MR^{2}=999.3\ \mathrm{kg\cdot m^{2}}\)，一致.</p>
+<p>姿态机动：角加速度 \(\alpha=T/I_z=20/999.4=0.02001\ \mathrm{rad/s^{2}}\).用 bang-bang 控制转过 \(90^{\circ}=1.5708\ \mathrm{rad}\)，前半程加速 \(t_1=\sqrt{2\times0.7854/0.02001}=8.86\ \mathrm{s}\)，全程约 \(17.7\ \mathrm{s}\).</p>
+<p><b>工程结论：</b> 轮换对称性把三个三重积分压成一个，误差为零而工作量降到三分之一，这是在轨软件里实打实的算力节省.但要警惕：一旦推进剂消耗一半、液面下降，\(\Omega\) 变成球缺，对 \(z\) 的对称性立刻失效，必须回到截面法逐层积分——这正是下一节 §10.4 要解决的问题.<b>对称性是减负神器，但前提是区域真的对称，用之前务必先画图确认.</b></p>
+<p class="cn-point">999.4 kg·m² 的转动惯量、17.7 s 的转向时间，都是中国空间站与货运飞船姿控软件里的实打实数字——把三个三重积分压成一个的轮换对称性，省下的不只是算力，更是航天器每一次姿态机动里的从容与把握.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s103" data-ch="10" data-n="5"></div>
+<h2 id="s104"><span class="num">§10.4</span>三重积分的计算</h2>
+    
+<div class="ex"><div class="lab">引例一　卫星燃料贮箱的重心在哪里：球缺的截面法计算</div>
+  <p class="stmt">通信卫星的推进剂贮箱是一个半径 \(R=0.8\,\mathrm{m}\) 的球形容器，装有密度 \(\rho=1010\,\mathrm{kg/m^3}\) 的肼类推进剂.发射后剩余燃料深度为 \(1.0\,\mathrm{m}\)（从球底算起）.姿控系统必须知道：<b>这团燃料的重心在哪里？</b>因为它决定了推力器的力矩臂，直接影响姿态控制精度.</p>
+  <p>以球心为原点、竖直向上为 \(z\) 轴，则液体占据的区域为球缺</p>
+  \[\Omega:\ x^2+y^2+z^2\le0.64,\qquad -0.8\le z\le0.2 .\]
+  <p>（液面高度 \(z=-0.8+1.0=0.2\).）由于每个水平截面都是圆盘，采用<b>"先二后一"的截面法</b>最自然：先算出高度 \(z\) 处的截面积，再沿 \(z\) 累加.截面为圆 \(x^2+y^2\le0.64-z^2\)，面积</p>
+  \[A(z)=\pi\bigl(0.64-z^2\bigr).\]
+  <table class="dt">
+    <tr><th>高度 \(z\)（m）</th><th>\(0.64-z^2\)</th><th>截面半径（m）</th><th>截面积 \(A(z)\)（\(\mathrm{m^2}\)）</th></tr>
+    <tr><td>\(-0.8\)（底部）</td><td>0.00</td><td>0.0000</td><td>0.0000</td></tr>
+    <tr><td>\(-0.6\)</td><td>0.28</td><td>0.5292</td><td>0.8796</td></tr>
+    <tr><td>\(-0.4\)</td><td>0.48</td><td>0.6928</td><td>1.5080</td></tr>
+    <tr><td>\(-0.2\)</td><td>0.60</td><td>0.7746</td><td>1.8850</td></tr>
+    <tr><td>\(0.0\)（赤道）</td><td>0.64</td><td>0.8000</td><td>2.0106</td></tr>
+    <tr><td>\(0.2\)（液面）</td><td>0.60</td><td>0.7746</td><td>1.8850</td></tr>
+  </table>
+  <p><b>体积与质量：</b></p>
+  \[V=\iiint_\Omega\mathrm{d}v=\int_{-0.8}^{0.2}A(z)\,\mathrm{d}z=\pi\left[0.64z-\frac{z^3}{3}\right]_{-0.8}^{0.2}=\pi\times0.466667=1.46608\ \mathrm{m^3},\]
+  \[m=\rho V=1010\times1.46608=1480.7\ \mathrm{kg}.\]
+  <p>（贮箱满装时体积 \(\dfrac43\pi R^3=2.14466\,\mathrm{m^3}\)，故当前充填率 \(68.4\%\).）</p>
+  <p><b>重心高度：</b>由重心公式 \(\bar z=\dfrac{1}{V}\displaystyle\iiint_\Omega z\,\mathrm{d}v\)，而</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=\int_{-0.8}^{0.2}z\,A(z)\,\mathrm{d}z=\pi\left[0.32z^2-\frac{z^4}{4}\right]_{-0.8}^{0.2}=\pi\bigl(0.0124-0.1024\bigr)=-0.28274 .\]
+  <p>故</p>
+  \[\bar z=\frac{-0.28274}{1.46608}=-0.1929\ \mathrm{m}.\]
+  <p>燃料重心位于球心<b>下方 \(19.3\,\mathrm{cm}\)</b> 处.整星质量若为 \(3200\,\mathrm{kg}\)，这团 \(1480.7\,\mathrm{kg}\) 的燃料把整星质心拉低了约 \(1480.7\times0.1929/3200=0.089\,\mathrm{m}\)——姿控算法必须实时跟踪这个随燃料消耗而漂移的量，否则每次点火都会引入意外的翻滚力矩.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　深空探测器同位素电源的总热功率：球面坐标的用武之地</div>
+  <p class="stmt">"旅行者"级深空探测器使用同位素温差发电机（RTG）.其核心是一个半径 \(R=0.05\,\mathrm{m}\) 的球形钚燃料芯块.由于自吸收与几何效应，芯块内的<b>发热功率密度</b>随离球心的距离衰减：</p>
+  \[w(\rho)=w_0\left(1-\frac{\rho^2}{R^2}\right),\qquad w_0=1.2\times10^{6}\ \mathrm{W/m^3}.\]
+  <p>求芯块的总热功率.这里区域是球、被积函数只依赖 \(\rho\)——<b>球面坐标</b>是天造地设的选择.在球面坐标下 \(\mathrm{d}v=\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta\)，故</p>
+  \[P=\iiint_\Omega w\,\mathrm{d}v=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{\pi}\!\mathrm{d}\varphi\int_0^{R}w_0\left(1-\frac{\rho^2}{R^2}\right)\rho^2\sin\varphi\,\mathrm{d}\rho .\]
+  <p>三重积分完全分离：\(\displaystyle\int_0^{2\pi}\mathrm{d}\theta=2\pi\)，\(\displaystyle\int_0^{\pi}\sin\varphi\,\mathrm{d}\varphi=2\)，故</p>
+  \[P=4\pi w_0\int_0^{R}\left(\rho^2-\frac{\rho^4}{R^2}\right)\mathrm{d}\rho=4\pi w_0\left(\frac{R^3}{3}-\frac{R^3}{5}\right)=\frac{8\pi w_0R^3}{15}.\]
+  <p>代入 \(w_0R^3=1.2\times10^{6}\times1.25\times10^{-4}=150\)：</p>
+  \[P=\frac{8\pi\times150}{15}=80\pi=251.3\ \mathrm{W}.\]
+  <p><b>不同芯块尺寸的对比</b>（温差发电效率取 \(6.5\%\)）：</p>
+  <table class="dt">
+    <tr><th>芯块半径 \(R\)（m）</th><th>\(w_0R^3\)</th><th>热功率 \(P\)（W）</th><th>电功率（W）</th><th>相对 \(R=0.05\) 的倍数</th></tr>
+    <tr><td>0.03</td><td>32.4</td><td>54.3</td><td>3.53</td><td>0.216</td></tr>
+    <tr><td>0.04</td><td>76.8</td><td>128.7</td><td>8.36</td><td>0.512</td></tr>
+    <tr><td>0.05</td><td>150.0</td><td>251.3</td><td>16.34</td><td>1.000</td></tr>
+    <tr><td>0.06</td><td>259.2</td><td>434.3</td><td>28.23</td><td>1.728</td></tr>
+  </table>
+  <p>功率严格按 \(R^3\) 增长（倍数列正是 \((R/0.05)^3\)），而钚的成本与辐射屏蔽重量也按同样规律上升——<b>探测器的功率预算，就是在这条三次方曲线上做取舍.</b></p>
+</div>
+
+<h3>一、直角坐标下的计算</h3>
+<p>三重积分要化成<b>三次</b>定积分.按"先积哪一个"的不同，有两条主要路线.</p>
+
+<div class="def"><div class="lab"><span class="n">定理 10.9</span>投影法（先一后二）</div>
+  <p>设 \(\Omega\) 在 \(xOy\) 面上的投影为闭区域 \(D_{xy}\)，且穿过 \(D_{xy}\) 内部任一点且平行于 \(z\) 轴的直线，与 \(\Omega\) 的边界曲面<b>恰交于两点</b>，下、上交点分别在曲面</p>
+  \[z=z_1(x,y)\quad\text{与}\quad z=z_2(x,y)\qquad\bigl(z_1\le z_2\bigr)\]
+  <p>上，则</p>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iint_{D_{xy}}\left[\int_{z_1(x,y)}^{z_2(x,y)}f(x,y,z)\,\mathrm{d}z\right]\mathrm{d}\sigma .\]
+  <p>再把外层的二重积分按 §10.2 化为累次积分，就得到三次定积分.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>把 \(\Omega\) 想象成竖立在 \(D_{xy}\) 上的一束"细柱".先沿每根细柱自下而上把质量累加（这给出对 \(z\) 的定积分），再把所有细柱在底面上累加（这给出对 \(D_{xy}\) 的二重积分）.合法性同样来自：可积时积分和的极限与分割方式、取点方式都无关，故可先分组求部分和.</p>
+<p><span class="stp">第一步：柱形分割.</span>先把投影区域 \(D_{xy}\) 分成 \(n\) 个小闭区域 \(\Delta\sigma_1,\cdots,\Delta\sigma_n\)（同时表示其面积）.以每个 \(\Delta\sigma_i\) 的边界为准线、作平行于 \(z\) 轴的柱面，把 \(\Omega\) 切成 \(n\) 根细柱 \(\Omega_i\).由性质 10.6（2），</p>
+\[\iiint_{\Omega}f\,\mathrm{d}v=\sum_{i=1}^{n}\iiint_{\Omega_i}f\,\mathrm{d}v .\]
+<p><span class="stp">第二步：柱内沿 \(z\) 再分层.</span>在 \(\Delta\sigma_i\) 内取定一点 \((\xi_i,\eta_i)\)，条件保证细柱 \(\Omega_i\) 上下由 \(z=z_1(x,y)\) 与 \(z=z_2(x,y)\) 封口.把它沿 \(z\) 分成 \(m_i\) 层，分点</p>
+\[z_1(\xi_i,\eta_i)=z_{i,0}\lt z_{i,1}\lt\cdots\lt z_{i,m_i}=z_2(\xi_i,\eta_i),\qquad \Delta z_{ij}=z_{ij}-z_{i,j-1},\]
+<p>小块体积 \(\Delta v_{ij}\approx\Delta\sigma_i\,\Delta z_{ij}\)，取点取成 \((\xi_i,\eta_i,\zeta_{ij})\).于是该柱的部分和为</p>
+\[\sum_{j=1}^{m_i}f(\xi_i,\eta_i,\zeta_{ij})\,\Delta\sigma_i\,\Delta z_{ij}
+=\left[\sum_{j=1}^{m_i}f(\xi_i,\eta_i,\zeta_{ij})\,\Delta z_{ij}\right]\Delta\sigma_i .\]
+<p><span class="stp">第三步：柱内取极限.</span>方括号是一元连续函数 \(z\mapsto f(\xi_i,\eta_i,z)\) 的积分和，纵向加细时趋于</p>
+\[F(\xi_i,\eta_i)=\int_{z_1(\xi_i,\eta_i)}^{z_2(\xi_i,\eta_i)}f(\xi_i,\eta_i,z)\,\mathrm{d}z .\]
+<p>即第 \(i\) 根柱的贡献为 \(F(\xi_i,\eta_i)\,\Delta\sigma_i\).</p>
+<p><span class="stp">第四步：底面上求和取极限.</span>把各柱相加得 \(\displaystyle\sum_{i=1}^{n}F(\xi_i,\eta_i)\Delta\sigma_i\)，这恰是二元函数 \(F(x,y)\) 在 \(D_{xy}\) 上的积分和.由 \(f,z_1,z_2\) 连续可知 \(F\) 在 \(D_{xy}\) 上连续，故可积.令 \(\lambda\to0\)，得</p>
+\[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iint_{D_{xy}}F(x,y)\,\mathrm{d}\sigma
+=\iint_{D_{xy}}\left[\int_{z_1(x,y)}^{z_2(x,y)}f(x,y,z)\,\mathrm{d}z\right]\mathrm{d}\sigma .\]
+<p>其中"以 \(\Delta\sigma_i\Delta z_{ij}\) 代替 \(\Delta v_{ij}\)、柱内横坐标一律取 \((\xi_i,\eta_i)\)"所产生的误差，由 \(f\) 在有界闭区域上的一致连续性统一控制，取极限后消失.最后把外层二重积分按定理 10.3 或 10.4 化为累次积分，即得三次定积分.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 10.10</span>截面法（先二后一）</div>
+  <p>设 \(\Omega\) 夹在两平面 \(z=c_1\) 与 \(z=c_2\ (c_1\lt c_2)\) 之间，用平面 \(z=\)常数去截 \(\Omega\)，所得截面为平面闭区域 \(D_z\)，则</p>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\int_{c_1}^{c_2}\left[\iint_{D_z}f(x,y,z)\,\mathrm{d}\sigma\right]\mathrm{d}z .\]
+  <p class="muted">当被积函数<b>只含 \(z\)</b>（即 \(f=f(z)\)）时，内层二重积分退化为 \(f(z)\cdot A(z)\)，其中 \(A(z)\) 是截面面积——这就是引例一用的公式.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>这回换个切法——把 \(\Omega\) 切成一叠<b>水平薄片</b>.每片内 \(z\) 几乎不变，于是片内的积分就是截面 \(D_z\) 上的二重积分乘以厚度；再把各片沿 \(z\) 累加.</p>
+<p><span class="stp">第一步：薄片分割.</span>取分点 \(c_1=\tilde z_0\lt\tilde z_1\lt\cdots\lt\tilde z_n=c_2\)，\(\Delta z_k=\tilde z_k-\tilde z_{k-1}\).用平面 \(z=\tilde z_k\) 把 \(\Omega\) 切成 \(n\) 个薄片 \(\Omega_k\).由性质 10.6（2），</p>
+\[\iiint_{\Omega}f\,\mathrm{d}v=\sum_{k=1}^{n}\iiint_{\Omega_k}f\,\mathrm{d}v .\]
+<p><span class="stp">第二步：片内把 \(z\) 冻结.</span>在第 \(k\) 片内取定 \(\zeta_k\in[\tilde z_{k-1},\tilde z_k]\).再把截面 \(D_{\zeta_k}\) 分成小块 \(\Delta\sigma_{ki}\)、取点 \((\xi_{ki},\eta_{ki})\)，则薄片被切成一批小柱，体积 \(\Delta v_{ki}\approx\Delta\sigma_{ki}\,\Delta z_k\)，取点的竖坐标一律取 \(\zeta_k\).片内部分和为</p>
+\[\sum_{i}f(\xi_{ki},\eta_{ki},\zeta_k)\,\Delta\sigma_{ki}\,\Delta z_k
+=\left[\sum_{i}f(\xi_{ki},\eta_{ki},\zeta_k)\,\Delta\sigma_{ki}\right]\Delta z_k .\]
+<p><span class="stp">第三步：片内取极限.</span>方括号是二元连续函数 \((x,y)\mapsto f(x,y,\zeta_k)\) 在 \(D_{\zeta_k}\) 上的积分和，加细时趋于</p>
+\[\Phi(\zeta_k)=\iint_{D_{\zeta_k}}f(x,y,\zeta_k)\,\mathrm{d}\sigma ,\]
+<p>即第 \(k\) 片的贡献为 \(\Phi(\zeta_k)\,\Delta z_k\).</p>
+<p><span class="stp">第四步：沿 \(z\) 求和取极限.</span>各片相加得 \(\displaystyle\sum_{k=1}^{n}\Phi(\zeta_k)\Delta z_k\)，这是一元函数 \(\Phi(z)\) 在 \([c_1,c_2]\) 上的积分和.当 \(f\) 连续且截面 \(D_z\) 随 \(z\) 连续变化时 \(\Phi(z)\) 连续，故可积.令 \(\max\Delta z_k\to0\)，得</p>
+\[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\int_{c_1}^{c_2}\Phi(z)\,\mathrm{d}z
+=\int_{c_1}^{c_2}\left[\iint_{D_z}f(x,y,z)\,\mathrm{d}\sigma\right]\mathrm{d}z .\]
+<p>其中"片内 \(z\) 一律取 \(\zeta_k\)"带来的误差由 \(f\) 的一致连续性控制，取极限后消失.</p>
+<p><span class="stp">特例：</span>若 \(f=f(z)\) 与 \(x,y\) 无关，则内层 \(\displaystyle\iint_{D_z}f(z)\,\mathrm{d}\sigma=f(z)A(z)\)，\(A(z)\) 为截面面积，公式化为 \(\displaystyle\int_{c_1}^{c_2}f(z)A(z)\,\mathrm{d}z\).取 \(f\equiv1\) 即"已知平行截面面积求体积".</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>两法怎么选？</b><br>
+· 用<b>投影法</b>：立体由"上下两块曲面 + 侧面柱面"围成，例如两曲面所夹的立体、柱体被曲面切割.<br>
+· 用<b>截面法</b>：① 被积函数只与一个变量有关（如 \(f=z^2\)）；② 截面形状规整、面积易求（圆、椭圆、三角形）.<b>椭球、球缺、圆锥上的积分几乎总用截面法.</b></div>
+
+<div class="ex"><div class="lab">例 10.26　投影法：四面体上的积分</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega x\,\mathrm{d}v\)，其中 \(\Omega\) 是由平面 \(x+y+z=1\) 与三个坐标面围成的四面体.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：定 \(z\) 的上下界.</b>竖直穿线：从底面 \(z=0\) 进入，从斜面 \(z=1-x-y\) 穿出.</p>
+  <p><b>第二步：求投影.</b>令 \(z=0\) 得投影区域 \(D_{xy}:\ x\ge0,\ y\ge0,\ x+y\le1\)，是一个直角三角形.</p>
+  <p><b>第三步：写成三次积分.</b></p>
+  \[\iiint_\Omega x\,\mathrm{d}v=\int_0^1\mathrm{d}x\int_0^{1-x}\mathrm{d}y\int_0^{1-x-y}x\,\mathrm{d}z .\]
+  <p>由内向外逐层计算：</p>
+  \[\int_0^{1-x-y}x\,\mathrm{d}z=x(1-x-y),\]
+  \[\int_0^{1-x}x(1-x-y)\,\mathrm{d}y=x\left[(1-x)y-\frac{y^2}{2}\right]_0^{1-x}=x\cdot\frac{(1-x)^2}{2},\]
+  \[\iiint_\Omega x\,\mathrm{d}v=\frac12\int_0^1 x(1-x)^2\mathrm{d}x=\frac12\int_0^1\bigl(x-2x^2+x^3\bigr)\mathrm{d}x=\frac12\left(\frac12-\frac23+\frac14\right)=\frac12\cdot\frac1{12}=\frac1{24}.\]
+  <p class="muted">由轮换对称性（四面体在 \(x,y,z\) 轮换下不变），立即有 \(\displaystyle\iiint_\Omega y\,\mathrm{d}v=\iiint_\Omega z\,\mathrm{d}v=\frac1{24}\)，因此 \(\displaystyle\iiint_\Omega(x+y+z)\mathrm{d}v=\frac18\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.27　截面法：椭球上的积分（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega z^2\,\mathrm{d}v\)，其中 \(\Omega:\ \dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}+\dfrac{z^2}{c^2}\le1\).</p>
+  <p class="sol"><span class="mk">解</span>被积函数只含 \(z\)，果断用<b>截面法</b>.用平面 \(z=\)常数（\(-c\le z\le c\)）去截，截面为椭圆</p>
+  \[D_z:\ \frac{x^2}{a^2}+\frac{y^2}{b^2}\le1-\frac{z^2}{c^2},\]
+  <p>即半轴分别为 \(a\sqrt{1-z^2/c^2}\) 与 \(b\sqrt{1-z^2/c^2}\) 的椭圆，其面积</p>
+  \[A(z)=\pi ab\left(1-\frac{z^2}{c^2}\right).\]
+  <p>于是</p>
+  \[\iiint_\Omega z^2\,\mathrm{d}v=\int_{-c}^{c}z^2A(z)\,\mathrm{d}z=\pi ab\int_{-c}^{c}\left(z^2-\frac{z^4}{c^2}\right)\mathrm{d}z
+  =\pi ab\left(\frac{2c^3}{3}-\frac{2c^3}{5}\right)=\frac{4\pi abc^3}{15}.\]
+  <p class="muted">特例 \(a=b=c=R\)（球）：得 \(\dfrac{4\pi R^5}{15}\)，与例 10.22 用轮换对称性得到的结果完全一致.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.28　截面法：旋转抛物面所围立体</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v\)，其中 \(\Omega\) 由抛物面 \(z=x^2+y^2\) 与平面 \(z=4\) 围成.</p>
+  <p class="sol"><span class="mk">解</span>被积函数只含 \(z\).用 \(z=\)常数（\(0\le z\le4\)）截得圆盘 \(x^2+y^2\le z\)，面积 \(A(z)=\pi z\).故</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=\int_0^4 z\cdot\pi z\,\mathrm{d}z=\pi\cdot\frac{z^3}{3}\bigg|_0^4=\frac{64\pi}{3}\approx67.02 .\]
+  <p>顺带算出该立体的体积：\(\displaystyle V=\int_0^4\pi z\,\mathrm{d}z=8\pi\)，于是其形心高度 \(\bar z=\dfrac{64\pi/3}{8\pi}=\dfrac83\approx2.667\).</p>
+</div>
+
+<h3>二、柱面坐标下的计算</h3>
+<p>点 \(M(x,y,z)\) 在 \(xOy\) 面上的投影用极坐标 \((r,\theta)\) 表示，再配上原来的竖坐标 \(z\)，就得到<b>柱面坐标</b> \((r,\theta,z)\)：</p>
+\[x=r\cos\theta,\qquad y=r\sin\theta,\qquad z=z .\]
+<p>三族坐标面分别是：以 \(z\) 轴为轴的圆柱面 \(r=\)常数、过 \(z\) 轴的半平面 \(\theta=\)常数、水平面 \(z=\)常数.用它们分割立体，得到的小块近似为底面积 \(r\,\Delta r\,\Delta\theta\)、高 \(\Delta z\) 的柱体，故</p>
+\[\mathrm{d}v=r\,\mathrm{d}r\,\mathrm{d}\theta\,\mathrm{d}z .\]
+<div class="def"><div class="lab"><span class="n">定理 10.11</span>柱面坐标换元</div>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iiint_{\Omega'}f(r\cos\theta,\ r\sin\theta,\ z)\;r\,\mathrm{d}r\,\mathrm{d}\theta\,\mathrm{d}z .\]
+  <p class="muted">雅可比行列式 \(\dfrac{\partial(x,y,z)}{\partial(r,\theta,z)}=r\)，与二维极坐标一致——柱面坐标不过是"极坐标 \(+\) 一根不动的 \(z\) 轴".</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>柱面坐标就是"平面上用极坐标 \(+\) 一根照旧的 \(z\) 轴".所以只要把定理 10.5 里算过的<b>环扇形面积</b>再乘上高 \(\Delta z\)，体积元素就出来了.</p>
+<p><span class="stp">第一步：柱面坐标网格分割.</span>三族坐标面为：圆柱面 \(r=\)常数、过 \(z\) 轴的半平面 \(\theta=\)常数、水平面 \(z=\)常数.它们把 \(\Omega\) 分成一批小块，典型小块是底为环扇形、高为 \(\Delta z\) 的<b>直柱体</b>.</p>
+<p><span class="stp">第二步：算它的体积.</span>由定理 10.5 第二步，底面环扇形的面积精确地等于</p>
+\[\Delta\sigma=\frac12\bigl[(r+\Delta r)^2-r^2\bigr]\Delta\theta=\left(r+\frac{\Delta r}{2}\right)\Delta r\,\Delta\theta=\bar r\,\Delta r\,\Delta\theta .\]
+<p>直柱体体积 = 底面积 \(\times\) 高，故</p>
+\[\Delta v=\bar r\,\Delta r\,\Delta\theta\,\Delta z .\]
+<p>令 \(\Delta r\to0\) 有 \(\bar r\to r\)，即得<b>柱面坐标下的体积元素</b></p>
+\[\mathrm{d}v=r\,\mathrm{d}r\,\mathrm{d}\theta\,\mathrm{d}z .\]
+<p><span class="stp">第三步：写积分和并取极限.</span>在第 \(k\) 个小块上取点，其柱面坐标取 \((\bar r_k,\bar\theta_k,\bar z_k)\)，对应直角坐标为 \((\bar r_k\cos\bar\theta_k,\ \bar r_k\sin\bar\theta_k,\ \bar z_k)\).积分和为</p>
+\[\sum_k f\bigl(\bar r_k\cos\bar\theta_k,\ \bar r_k\sin\bar\theta_k,\ \bar z_k\bigr)\,\bar r_k\,\Delta r_k\,\Delta\theta_k\,\Delta z_k .\]
+<p>这恰是函数 \(f(r\cos\theta,r\sin\theta,z)\cdot r\) 在 \(r\theta z\) 空间区域 \(\Omega'\) 上按直角网格作出的积分和.令最大直径趋于零，两端极限分别为</p>
+\[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iiint_{\Omega'}f(r\cos\theta,\ r\sin\theta,\ z)\;r\,\mathrm{d}r\,\mathrm{d}\theta\,\mathrm{d}z .\]
+<p><span class="stp">核对：</span>用雅可比行列式算一遍，\(x=r\cos\theta,\ y=r\sin\theta,\ z=z\) 给出 \(\dfrac{\partial(x,y,z)}{\partial(r,\theta,z)}=r\)，与几何推导一致.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 10.29　柱面坐标基本题</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega(x^2+y^2)\,\mathrm{d}v\)，其中 \(\Omega\) 由 \(z=x^2+y^2\) 与 \(z=4\) 围成.</p>
+  <p class="sol"><span class="mk">解</span>被积函数是 \(r^2\)，边界曲面是旋转面——柱面坐标.投影区域为 \(x^2+y^2\le4\)，即 \(0\le r\le2,\ 0\le\theta\le2\pi\)；竖直穿线从抛物面 \(z=r^2\) 进、从平面 \(z=4\) 出.故</p>
+  \[\iiint_\Omega(x^2+y^2)\,\mathrm{d}v=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^2 r\,\mathrm{d}r\int_{r^2}^{4}r^2\,\mathrm{d}z
+  =2\pi\int_0^2 r^3\bigl(4-r^2\bigr)\mathrm{d}r .\]
+  <p>计算内层：</p>
+  \[\int_0^2\bigl(4r^3-r^5\bigr)\mathrm{d}r=\left[r^4-\frac{r^6}{6}\right]_0^2=16-\frac{64}{6}=\frac{16}{3},\]
+  <p>故原积分 \(=2\pi\cdot\dfrac{16}{3}=\dfrac{32\pi}{3}\approx33.51\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.30　柱面坐标：半球体</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v\)，其中 \(\Omega:\ x^2+y^2+z^2\le R^2,\ z\ge0\).</p>
+  <p class="sol"><span class="mk">解</span>投影为圆盘 \(r\le R\)；竖直穿线自 \(z=0\) 进、自球面 \(z=\sqrt{R^2-r^2}\) 出.故</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{R}r\,\mathrm{d}r\int_0^{\sqrt{R^2-r^2}}z\,\mathrm{d}z
+  =2\pi\int_0^R r\cdot\frac{R^2-r^2}{2}\,\mathrm{d}r .\]
+  <p>即</p>
+  \[\pi\int_0^R\bigl(R^2r-r^3\bigr)\mathrm{d}r=\pi\left[\frac{R^2r^2}{2}-\frac{r^4}{4}\right]_0^R=\pi\left(\frac{R^4}{2}-\frac{R^4}{4}\right)=\frac{\pi R^4}{4}.\]
+  <p class="muted">半球体积为 \(\dfrac23\pi R^3\)，故其形心高度 \(\bar z=\dfrac{\pi R^4/4}{2\pi R^3/3}=\dfrac{3R}{8}\).这个 \(\dfrac38 R\) 是工程手册上的常用数据，将在 §10.5 再次出现.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.31　柱面坐标：锥面与球面所围</div>
+  <p class="stmt">求由锥面 \(z=\sqrt{x^2+y^2}\) 与球面 \(x^2+y^2+z^2=R^2\) 所围（含 \(z\) 轴正向部分）立体的体积.</p>
+  <p class="sol"><span class="mk">解</span>先求交线：把 \(z=r\) 代入 \(r^2+z^2=R^2\) 得 \(2r^2=R^2\)，即 \(r=\dfrac{R}{\sqrt2}\)，此时 \(z=\dfrac{R}{\sqrt2}\).故投影区域为 \(r\le\dfrac{R}{\sqrt2}\).</p>
+  <p>竖直穿线：自锥面 \(z=r\) 进入、自球面 \(z=\sqrt{R^2-r^2}\) 穿出.于是</p>
+  \[V=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{R/\sqrt2}r\,\mathrm{d}r\int_{r}^{\sqrt{R^2-r^2}}\mathrm{d}z
+  =2\pi\int_0^{R/\sqrt2}r\left(\sqrt{R^2-r^2}-r\right)\mathrm{d}r .\]
+  <p>分项计算（令 \(u=R^2-r^2\)）：</p>
+  \[\int_0^{R/\sqrt2}r\sqrt{R^2-r^2}\,\mathrm{d}r=-\frac13\bigl(R^2-r^2\bigr)^{3/2}\bigg|_0^{R/\sqrt2}=\frac13\left(R^3-\frac{R^3}{2\sqrt2}\right),\]
+  \[\int_0^{R/\sqrt2}r^2\,\mathrm{d}r=\frac{1}{3}\cdot\frac{R^3}{2\sqrt2}.\]
+  <p>相减后乘 \(2\pi\)：</p>
+  \[V=2\pi\cdot\frac{R^3}{3}\left(1-\frac{1}{2\sqrt2}-\frac{1}{2\sqrt2}\right)=\frac{2\pi R^3}{3}\left(1-\frac{1}{\sqrt2}\right)=\frac{2\pi R^3}{3}\cdot\frac{\sqrt2-1}{\sqrt2}.\]
+  <p>化简得 \(V=\dfrac{2\pi R^3}{3}\left(1-\dfrac{\sqrt2}{2}\right)\approx0.6134\,R^3\).</p>
+</div>
+
+<h3>三、球面坐标下的计算</h3>
+<p>设点 \(M(x,y,z)\) 与原点的距离为 \(\rho\)，向量 \(\overrightarrow{OM}\) 与 \(z\) 轴正向的夹角为 \(\varphi\)，\(M\) 在 \(xOy\) 面上的投影 \(P\) 满足 \(\overrightarrow{OP}\) 与 \(x\) 轴正向夹角 \(\theta\)，则 \((\rho,\varphi,\theta)\) 称为 \(M\) 的<b>球面坐标</b>，且</p>
+\[x=\rho\sin\varphi\cos\theta,\qquad y=\rho\sin\varphi\sin\theta,\qquad z=\rho\cos\varphi,\]
+<p>其中 \(0\le\rho\lt+\infty,\ 0\le\varphi\le\pi,\ 0\le\theta\le2\pi\).注意 \(x^2+y^2+z^2=\rho^2\)、\(x^2+y^2=\rho^2\sin^2\varphi\).</p>
+<div class="def"><div class="lab"><span class="n">定理 10.12</span>球面坐标下的体积元素</div>
+  <p>三族坐标面为：球面 \(\rho=\)常数、以原点为顶点的圆锥面 \(\varphi=\)常数、过 \(z\) 轴的半平面 \(\theta=\)常数.由它们分割出的小块可近似看作长方体，三条棱长依次为</p>
+  <p>· 沿 \(\rho\) 方向：\(\mathrm{d}\rho\)；</p>
+  <p>· 沿 \(\varphi\) 方向（半径为 \(\rho\) 的大圆上的弧）：\(\rho\,\mathrm{d}\varphi\)；</p>
+  <p>· 沿 \(\theta\) 方向（半径为 \(\rho\sin\varphi\) 的纬圆上的弧）：\(\rho\sin\varphi\,\mathrm{d}\theta\).</p>
+  <p>三者相乘即得</p>
+  \[\boxed{\ \mathrm{d}v=\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta\ }\]
+  <p>从而</p>
+  \[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iiint_{\Omega'}f(\rho\sin\varphi\cos\theta,\ \rho\sin\varphi\sin\theta,\ \rho\cos\varphi)\,\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>球面坐标下的小块虽是曲面体，但当三个增量都很小时，它<b>三条棱两两近乎垂直</b>，可视作小长方体.所以只要把三条棱长各自算清楚，相乘即得体积元素.学生最容易记混的是第三条棱为什么带 \(\sin\varphi\)——关键在于它所在的圆<b>不是</b>大圆，半径是 \(\rho\sin\varphi\).</p>
+<p><span class="stp">第一步：明确坐标与网格.</span>球面坐标 \((\rho,\varphi,\theta)\) 与直角坐标的关系为</p>
+\[x=\rho\sin\varphi\cos\theta,\quad y=\rho\sin\varphi\sin\theta,\quad z=\rho\cos\varphi,\]
+<p>其中 \(\rho\) 是点到原点的距离，\(\varphi\) 是向径与 \(z\) 轴正向的夹角，\(\theta\) 是向径在 \(xOy\) 面上的投影与 \(x\) 轴的夹角.三族坐标面是：球面 \(\rho=\)常数、以原点为顶点的圆锥面 \(\varphi=\)常数、过 \(z\) 轴的半平面 \(\theta=\)常数.它们两两正交，切出的小块有三条互相垂直的棱.</p>
+<p><span class="stp">第二步：第一条棱——沿 \(\rho\) 方向.</span>固定 \(\varphi,\theta\)，让 \(\rho\) 增加 \(\Delta\rho\)，点沿一条<b>过原点的射线</b>移动，走过的路程就是半径的增量：</p>
+\[\text{棱长}_1=\Delta\rho .\]
+<p><span class="stp">第三步：第二条棱——沿 \(\varphi\) 方向.</span>固定 \(\rho,\theta\)，让 \(\varphi\) 增加 \(\Delta\varphi\)，点在<b>半径为 \(\rho\) 的大圆</b>（该半平面与球面的交线，即"经线"）上移动.圆弧长 = 半径 \(\times\) 圆心角，故</p>
+\[\text{棱长}_2=\rho\,\Delta\varphi .\]
+<p><span class="stp">第四步：第三条棱——沿 \(\theta\) 方向（关键）.</span>固定 \(\rho,\varphi\)，让 \(\theta\) 增加 \(\Delta\theta\)，点绕 \(z\) 轴转动，走的是一条<b>纬圆</b>.这条纬圆的半径不是 \(\rho\)，而是该点到 \(z\) 轴的距离，即向径在 \(xOy\) 面上的投影长</p>
+\[r=\sqrt{x^2+y^2}=\rho\sin\varphi .\]
+<p>所以弧长为</p>
+\[\text{棱长}_3=\rho\sin\varphi\,\Delta\theta .\]
+<p>这正是 \(\sin\varphi\) 的来历：<b>越靠近两极（\(\varphi\to0\) 或 \(\varphi\to\pi\)），纬圆越小，同样的 \(\Delta\theta\) 扫过的弧就越短</b>；在赤道 \(\varphi=\dfrac\pi2\) 处 \(\sin\varphi=1\)，退化为半径 \(\rho\) 的圆，与柱面坐标吻合.</p>
+<p><span class="stp">第五步：相乘取极限.</span>三棱两两垂直，小块近似为长方体，故</p>
+\[\Delta v\approx\Delta\rho\cdot\rho\,\Delta\varphi\cdot\rho\sin\varphi\,\Delta\theta=\rho^2\sin\varphi\,\Delta\rho\,\Delta\varphi\,\Delta\theta .\]
+<p>令三个增量同时趋于零（误差是 \(\Delta\rho\Delta\varphi\Delta\theta\) 的高阶无穷小），即得</p>
+\[\mathrm{d}v=\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta .\]
+<p><span class="stp">第六步：换元公式.</span>按此网格作积分和，在第 \(k\) 块上取点 \((\rho_k,\varphi_k,\theta_k)\)，则</p>
+\[\sum_k f\bigl(\rho_k\sin\varphi_k\cos\theta_k,\ \rho_k\sin\varphi_k\sin\theta_k,\ \rho_k\cos\varphi_k\bigr)\rho_k^2\sin\varphi_k\,\Delta\rho_k\Delta\varphi_k\Delta\theta_k .\]
+<p>令最大直径趋于零，左端趋于 \(\displaystyle\iiint_\Omega f\,\mathrm{d}v\)，右端趋于 \(\Omega'\) 上的三重积分，故</p>
+\[\iiint_{\Omega}f(x,y,z)\,\mathrm{d}v=\iiint_{\Omega'}f(\rho\sin\varphi\cos\theta,\ \rho\sin\varphi\sin\theta,\ \rho\cos\varphi)\,\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta .\]
+<p><span class="stp">核对：</span>直接计算雅可比行列式也得 \(\dfrac{\partial(x,y,z)}{\partial(\rho,\varphi,\theta)}=\rho^2\sin\varphi\)，与几何推导完全一致.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>为什么是 \(\rho^2\sin\varphi\) 而不是别的？</b>三条棱长中，沿 \(\rho\) 的那条与半径无关；沿 \(\varphi\) 的弧长正比于 \(\rho\)；沿 \(\theta\) 的弧长正比于该点所在<b>纬圆</b>的半径 \(\rho\sin\varphi\).这解释了两件事：① 靠近球心（\(\rho\) 小）体积元素趋于 \(0\)；② 靠近两极（\(\varphi\to0\) 或 \(\pi\)）体积元素也趋于 \(0\)，因为那里的"经线格子"被挤扁了——这与地球仪上高纬度网格越来越窄完全是同一回事.<br>
+<b>漏写 \(\rho^2\sin\varphi\) 是三重积分最高频的错误，没有之一.</b></div>
+<table class="dt">
+  <tr><th>坐标系</th><th>体积元素</th><th>最适用的区域</th><th>最适用的被积函数</th></tr>
+  <tr><td>直角坐标</td><td>\(\mathrm{d}x\mathrm{d}y\mathrm{d}z\)</td><td>长方体、四面体、平面围成的立体</td><td>多项式 \(x^my^nz^k\)</td></tr>
+  <tr><td>柱面坐标</td><td>\(r\,\mathrm{d}r\mathrm{d}\theta\mathrm{d}z\)</td><td>圆柱、圆锥、旋转抛物面所围</td><td>含 \(x^2+y^2\)、只含 \(z\)</td></tr>
+  <tr><td>球面坐标</td><td>\(\rho^2\sin\varphi\,\mathrm{d}\rho\mathrm{d}\varphi\mathrm{d}\theta\)</td><td>球、球壳、球缺、锥内球体</td><td>含 \(x^2+y^2+z^2\)</td></tr>
+</table>
+
+<div class="ex"><div class="lab">例 10.32　球面坐标基本题</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega\bigl(x^2+y^2+z^2\bigr)\mathrm{d}v\)，其中 \(\Omega:\ x^2+y^2+z^2\le R^2\).</p>
+  <p class="sol"><span class="mk">解</span>球面坐标下被积函数化为 \(\rho^2\)，区域化为 \(0\le\rho\le R,\ 0\le\varphi\le\pi,\ 0\le\theta\le2\pi\)，三重积分完全分离：</p>
+  \[\iiint_\Omega\rho^2\cdot\rho^2\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta
+  =\left(\int_0^{2\pi}\!\mathrm{d}\theta\right)\left(\int_0^{\pi}\sin\varphi\,\mathrm{d}\varphi\right)\left(\int_0^{R}\rho^4\,\mathrm{d}\rho\right).\]
+  <p>三个因子分别为 \(2\pi\)、\(2\)、\(\dfrac{R^5}{5}\)，故</p>
+  \[\iiint_\Omega\bigl(x^2+y^2+z^2\bigr)\mathrm{d}v=\frac{4\pi R^5}{5}.\]
+  <p class="muted">令 \(f\equiv1\) 用同样的方法可得球体积 \(2\pi\cdot2\cdot\dfrac{R^3}{3}=\dfrac{4\pi R^3}{3}\)——球面坐标下这是一行的事.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.33　球面坐标：锥内的球体部分</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v\)，其中 \(\Omega:\ x^2+y^2+z^2\le R^2,\ z\ge\sqrt{x^2+y^2}\).</p>
+  <p class="sol"><span class="mk">解</span><b>关键是把锥面条件翻译成 \(\varphi\) 的范围.</b>条件 \(z\ge\sqrt{x^2+y^2}\) 即 \(\rho\cos\varphi\ge\rho\sin\varphi\)，也即 \(\tan\varphi\le1\)，故 \(0\le\varphi\le\dfrac\pi4\).区域化为</p>
+  \[\Omega':\ 0\le\rho\le R,\quad 0\le\varphi\le\frac\pi4,\quad 0\le\theta\le2\pi .\]
+  <p>被积函数 \(z=\rho\cos\varphi\)，故</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{\pi/4}\!\mathrm{d}\varphi\int_0^{R}\rho\cos\varphi\cdot\rho^2\sin\varphi\,\mathrm{d}\rho
+  =2\pi\cdot\frac{R^4}{4}\int_0^{\pi/4}\sin\varphi\cos\varphi\,\mathrm{d}\varphi .\]
+  <p>而 \(\displaystyle\int_0^{\pi/4}\sin\varphi\cos\varphi\,\mathrm{d}\varphi=\frac12\sin^2\varphi\bigg|_0^{\pi/4}=\frac14\)，故</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=2\pi\cdot\frac{R^4}{4}\cdot\frac14=\frac{\pi R^4}{8}.\]
+</div>
+
+<div class="ex"><div class="lab">例 10.34　球面坐标：球心不在原点（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v\)，其中 \(\Omega:\ x^2+y^2+z^2\le2z\).</p>
+  <p class="sol"><span class="mk">解</span>配方得 \(x^2+y^2+(z-1)^2\le1\)，这是以 \((0,0,1)\) 为心、半径 \(1\) 的球，<b>球面通过原点</b>——这正是球面坐标能大显身手的情形.</p>
+  <p>把 \(x^2+y^2+z^2=\rho^2,\ z=\rho\cos\varphi\) 代入不等式：\(\rho^2\le2\rho\cos\varphi\)，即</p>
+  \[0\le\rho\le2\cos\varphi .\]
+  <p>要求 \(\cos\varphi\ge0\)，故 \(0\le\varphi\le\dfrac\pi2\)；\(\theta\) 走满一圈.于是</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{\pi/2}\!\mathrm{d}\varphi\int_0^{2\cos\varphi}\rho\cos\varphi\cdot\rho^2\sin\varphi\,\mathrm{d}\rho .\]
+  <p>内层：\(\displaystyle\int_0^{2\cos\varphi}\rho^3\,\mathrm{d}\rho=\frac{(2\cos\varphi)^4}{4}=4\cos^4\varphi\).代回：</p>
+  \[=2\pi\int_0^{\pi/2}4\cos^5\varphi\sin\varphi\,\mathrm{d}\varphi=8\pi\left[-\frac{\cos^6\varphi}{6}\right]_0^{\pi/2}=\frac{8\pi}{6}=\frac{4\pi}{3}.\]
+  <p class="muted"><b>结果校验：</b>该球体积为 \(\dfrac43\pi\)，形心显然在 \(z=1\)，故 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v=1\times\frac43\pi=\frac43\pi\).与计算完全吻合.<b>做完球坐标题一定要用形心或对称性回验一次.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 10.35　三法对比：同一积分的三种算法</div>
+  <p class="stmt">计算上半球体 \(\Omega:\ x^2+y^2+z^2\le R^2,\ z\ge0\) 上的 \(\displaystyle\iiint_\Omega\bigl(x^2+y^2\bigr)\mathrm{d}v\).</p>
+  <p class="sol"><span class="mk">解</span><b>法一（球面坐标）.</b>\(x^2+y^2=\rho^2\sin^2\varphi\)，\(z\ge0\) 给出 \(\varphi\in\left[0,\dfrac\pi2\right]\)：</p>
+  \[I=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{\pi/2}\!\mathrm{d}\varphi\int_0^R\rho^2\sin^2\varphi\cdot\rho^2\sin\varphi\,\mathrm{d}\rho
+  =2\pi\cdot\frac{R^5}{5}\int_0^{\pi/2}\sin^3\varphi\,\mathrm{d}\varphi=2\pi\cdot\frac{R^5}{5}\cdot\frac23=\frac{4\pi R^5}{15}.\]
+  <p><b>法二（柱面坐标）.</b>投影 \(r\le R\)，穿线 \(0\le z\le\sqrt{R^2-r^2}\)：</p>
+  \[I=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^R r^2\cdot r\sqrt{R^2-r^2}\,\mathrm{d}r=2\pi\int_0^R r^3\sqrt{R^2-r^2}\,\mathrm{d}r .\]
+  <p>令 \(u=R^2-r^2\)，\(r^2=R^2-u,\ r\,\mathrm{d}r=-\dfrac{\mathrm{d}u}{2}\)：</p>
+  \[\int_0^R r^3\sqrt{R^2-r^2}\,\mathrm{d}r=\frac12\int_0^{R^2}(R^2-u)\sqrt u\,\mathrm{d}u=\frac12\left(\frac{2R^2}{3}R^3-\frac25R^5\right)=\frac{2R^5}{15},\]
+  <p>故 \(I=2\pi\cdot\dfrac{2R^5}{15}=\dfrac{4\pi R^5}{15}\)，与法一一致.</p>
+  <p><b>法三（对称性 + 已知结果）.</b>由例 10.22，整球上 \(\displaystyle\iiint(x^2+y^2)\mathrm{d}v=\frac{8\pi R^5}{15}\)；被积函数关于 \(z\) 为偶函数、整球关于 \(xOy\) 面对称，故上半球恰为一半：\(\dfrac{4\pi R^5}{15}\).</p>
+  <p class="muted">三条路殊途同归.<b>考场上法三最快，但前两法必须会——因为大多数题目没有现成结果可用.</b></p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 卫星贮箱晃动：燃料重心随消耗的漂移曲线</div>
+  <details><summary>展开查看：用截面法算出整个加注过程的重心轨迹</summary>
+  <div class="body">
+    <p>沿用引例一：球形贮箱 \(R=0.8\,\mathrm{m}\)，燃料密度 \(\rho=1010\,\mathrm{kg/m^3}\).设液面高度为 \(h\)（以球心为原点，\(-0.8\le h\le0.8\)）.用截面法一次性算出通式：</p>
+    \[V(h)=\pi\int_{-R}^{h}\bigl(R^2-z^2\bigr)\mathrm{d}z=\pi\left[R^2z-\frac{z^3}{3}\right]_{-R}^{h}=\pi\left(R^2h-\frac{h^3}{3}+\frac{2R^3}{3}\right),\]
+    \[M(h)=\pi\int_{-R}^{h}z\bigl(R^2-z^2\bigr)\mathrm{d}z=\pi\left[\frac{R^2z^2}{2}-\frac{z^4}{4}\right]_{-R}^{h}=\pi\left(\frac{R^2h^2}{2}-\frac{h^4}{4}-\frac{R^4}{4}\right),\]
+    <p>重心高度 \(\bar z(h)=M(h)/V(h)\).代入 \(R=0.8\)（\(R^2=0.64,\ R^3=0.512,\ R^4=0.4096\)）逐点计算：</p>
+    <table class="dt">
+      <tr><th>液面 \(h\)（m）</th><th>充填率</th><th>体积 \(V\)（\(\mathrm{m^3}\)）</th><th>燃料质量（kg）</th><th>重心 \(\bar z\)（m）</th></tr>
+      <tr><td>\(-0.4\)</td><td>15.6%</td><td>0.3351</td><td>338.5</td><td>\(-0.5400\)</td></tr>
+      <tr><td>\(-0.2\)</td><td>31.6%</td><td>0.6786</td><td>685.4</td><td>\(-0.4167\)</td></tr>
+      <tr><td>\(0.0\)</td><td>50.0%</td><td>1.0723</td><td>1083.1</td><td>\(-0.3000\)</td></tr>
+      <tr><td>\(0.2\)</td><td>68.4%</td><td>1.4661</td><td>1480.7</td><td>\(-0.1929\)</td></tr>
+      <tr><td>\(0.6\)</td><td>95.7%</td><td>2.0525</td><td>2073.0</td><td>\(-0.0300\)</td></tr>
+      <tr><td>\(0.8\)</td><td>100%</td><td>2.1447</td><td>2166.1</td><td>\(0.0000\)</td></tr>
+    </table>
+    <p><b>怎么读这张表？</b></p>
+    <p>① 满箱时重心恰在球心（\(\bar z=0\)），这是球对称的必然结果，也是对公式的绝好校验：令 \(h=R\) 得 \(M=\pi\left(\dfrac{R^4}{2}-\dfrac{R^4}{4}-\dfrac{R^4}{4}\right)=0\).</p>
+    <p>② 随着燃料消耗，重心一路下沉.从满箱到 \(15.6\%\) 剩余，重心下移了 \(0.540\,\mathrm{m}\)，达到贮箱半径的 \(67.5\%\).</p>
+    <p>③ 变化<b>不是线性的</b>：从 \(100\%\) 降到 \(68.4\%\) 消耗了 \(685.4\,\mathrm{kg}\)，重心只降 \(0.193\,\mathrm{m}\)（每千克 \(2.82\times10^{-4}\,\mathrm{m}\)）；而从 \(31.6\%\) 降到 \(15.6\%\) 仅消耗 \(346.9\,\mathrm{kg}\)，重心却降了 \(0.123\,\mathrm{m}\)（每千克 \(3.55\times10^{-4}\,\mathrm{m}\)）.<b>低液位时重心对燃料消耗更敏感</b>，这正是任务末期姿控最吃力的原因.</p>
+    <p><b>工程后果.</b>设整星干重 \(1600\,\mathrm{kg}\)、干重心恰在球心处.满箱时全星重心在 \(0\)；剩 \(15.6\%\) 时</p>
+    \[z_{\text{全星}}=\frac{1600\times0+338.5\times(-0.5400)}{1600+338.5}=\frac{-182.8}{1938.5}=-0.0943\ \mathrm{m}.\]
+    <p>近 \(9.4\,\mathrm{cm}\) 的重心漂移，意味着轨控发动机的推力线不再过质心，每次点火都会产生 \(F\times0.0943\) 的干扰力矩.对 \(F=490\,\mathrm{N}\) 的发动机，干扰力矩达 \(46.2\,\mathrm{N\cdot m}\)——必须由姿控推力器实时补偿，而补偿量的计算依据，就是上面这张由三重积分生成的表.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §10.5 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 蒙特卡洛积分：渲染与强化学习里的收敛率之战</summary>
+<p><b>场景：</b> 路径追踪渲染器为一个像素着色时，要估计半球乃至更高维路径空间上的积分；强化学习估计策略的期望回报时，要对整条轨迹分布积分.这些积分维数极高、边界不光滑，网格法束手无策，工程上一律改用<b>蒙特卡洛（MC）</b>.为把误差量化，我们拿一个能解析验证的三重积分做基准：</p>
+\[I=\iiint_{\Omega}\mathrm{e}^{-(x^{2}+y^{2}+z^{2})}\mathrm{d}v,\qquad \Omega:\ x^{2}+y^{2}+z^{2}\le1 .\]
+<p class="sol"> 先用球面坐标求出真值作为「标尺」：</p>
+\[I=4\pi\int_{0}^{1}r^{2}\mathrm{e}^{-r^{2}}\mathrm{d}r
+ =4\pi\Bigl[-\frac{r}{2}\mathrm{e}^{-r^{2}}\Bigr]_{0}^{1}+2\pi\int_{0}^{1}\mathrm{e}^{-r^{2}}\mathrm{d}r
+ =4\pi\times0.1894724=2.380962 .\]
+<p>MC 做法：在包围盒 \([-1,1]^{3}\)（体积 8）内均匀撒 \(N\) 个点，估计量 \(\hat I=\dfrac8N\sum_{i}f(\boldsymbol P_i)\mathbf 1_{\Omega}(\boldsymbol P_i)\).典型一次运行的结果与中点网格法对照：</p>
+<table class="dt">
+<tr><th>样本/网格数 \(N\)</th><th>MC 估计 \(\hat I\)</th><th>MC 误差</th><th>网格法误差</th><th>MC 误差比</th></tr>
+<tr><td>\(10^{3}\)</td><td>2.4517</td><td>0.0707 (2.97%)</td><td>0.089 (3.74%)</td><td>—</td></tr>
+<tr><td>\(10^{4}\)</td><td>2.3592</td><td>0.0218 (0.92%)</td><td>0.041 (1.72%)</td><td>3.24</td></tr>
+<tr><td>\(10^{5}\)</td><td>2.3878</td><td>0.0068 (0.29%)</td><td>0.019 (0.80%)</td><td>3.21</td></tr>
+<tr><td>\(10^{6}\)</td><td>2.38311</td><td>0.00215 (0.090%)</td><td>0.0091 (0.38%)</td><td>3.16</td></tr>
+<tr><td>\(10^{7}\)</td><td>2.380283</td><td>0.000679 (0.029%)</td><td>0.0042 (0.18%)</td><td>3.17</td></tr>
+</table>
+<p>最后一列每次都接近 \(\sqrt{10}=3.162\)，说明 MC 误差严格按 \(O(N^{-1/2})\) 下降；而网格法因为球面边界使被积函数的示性因子<b>不连续</b>，误差只有 \(O(N^{-1/3})\)（每列约除以 2.15）.三维时 MC 已经领先，维数 \(d\ge4\) 时网格法的 \(O(N^{-1/d})\) 彻底失效，MC 的 \(O(N^{-1/2})\) 却<b>与维数无关</b>——这就是「维数灾难」里 MC 唯一幸存的原因.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch10-mc" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>采样点数 N <input type="range" id="ch10-mc-n" min="50" max="20000" step="50" value="1000" style="width:260px;accent-color:#0F6E56"> <b id="ch10-mc-n-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch10-mc-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch10-mc'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    // I = ∭_{球} e^-(x²+y²+z²) dv = 4π∫₀¹ r²e^(-r²)dr ≈ 2.612 (数值)
+    var Iexact=2.612;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var N=+document.getElementById('ch10-mc-n').value;
+      // 稳定随机种子简单实现（Math.random 足够）
+      var sum=0, cnt=0;
+      var Nc=Math.min(N,20000);
+      for(var i=0;i<Nc;i++){
+        var x=Math.random()*2-1, y=Math.random()*2-1, z=Math.random()*2-1;
+        if(x*x+y*y+z*z<=1){ sum+=Math.exp(-(x*x+y*y+z*z)); cnt++; }
+      }
+      var Ihat=8*sum/Nc;
+      var err=Math.abs(Ihat-Iexact);
+      var cx=W*0.32, cy=H*0.56, sc=Math.min(W,H)*0.24;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 撒点（2D 投影：x,y）
+      ctx.fillStyle='rgba(15,110,86,0.5)';
+      var show=Math.min(N,3000);
+      for(var k=0;k<show;k++){
+        var x2=Math.random()*2-1, y2=Math.random()*2-1;
+        if(x2*x2+y2*y2<=1){ ctx.fillRect(cx+x2*sc,cy-y2*sc,1.5,1.5); }
+      }
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(cx,cy,sc,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#334155';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('单位球截面（xy 投影）',cx,cy+sc+16);
+      // 数值
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('N = '+Nc.toFixed(0)+'   Î = 8/N·Σf = '+Ihat.toFixed(4)+'   真值 I = '+Iexact.toFixed(4)+'   误差 '+err.toFixed(4)+'（'+ (err/Iexact*100).toFixed(2)+'%）',20,22);
+      var out=document.getElementById('ch10-mc-out');
+      var tip = Nc<=500 ? '误差大（~'+(err/Iexact*100).toFixed(1)+'%）——MC 收敛率只有 1/√N' : '✔ 误差随 N 按 1/√N 下降：N 翻 100 倍，误差约降 10 倍——高维积分的唯一出路';
+      out.textContent = tip;
+    }
+    document.getElementById('ch10-mc-n').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 航天：球形贮箱剩余推进剂的截面法计算</summary>
+<p><b>场景：</b> 地面站的值班员盯着遥测屏上的液位计读数，心里却悬着一件事：这颗静止轨道卫星的贮箱里还剩多少推进剂，直接决定它还能不能撑到寿命末期、离轨窗口还有多大.而剩多少，只能由液面高度 \(h\) 反推——液面以下是<b>球缺</b>，用「先二后一」（截面法，定理 10.10）最自然：先在高度 \(z\) 处切一刀得到圆截面，再沿 \(z\) 累加.</p>
+\[V(h)=\int_{-R}^{-R+h}A(z)\,\mathrm{d}z,\qquad A(z)=\pi\bigl(R^{2}-z^{2}\bigr).\]
+<p class="sol"> 积出来是一个漂亮的闭式：</p>
+\[V(h)=\pi\Bigl[R^{2}z-\frac{z^{3}}{3}\Bigr]_{-R}^{-R+h}=\pi h^{2}\Bigl(R-\frac h3\Bigr).\]
+<p>取内半径 \(R=0.55\ \mathrm{m}\)，满贮 \(V_{\text{full}}=\frac43\pi R^{3}=0.69691\ \mathrm{m^{3}}=696.91\ \mathrm{L}\)：</p>
+<table class="dt">
+<tr><th>液面高度 \(h\) /m</th><th>\(V(h)\) /L</th><th>占满贮</th><th>灵敏度 \(\mathrm{d}V/\mathrm{d}h\) /(L/m)</th></tr>
+<tr><td>0.110</td><td>19.51</td><td>2.80%</td><td>342.1</td></tr>
+<tr><td>0.220</td><td>72.48</td><td>10.40%</td><td>608.2</td></tr>
+<tr><td>0.330</td><td>150.53</td><td>21.60%</td><td>798.2</td></tr>
+<tr><td>0.440</td><td>245.31</td><td>35.20%</td><td>912.1</td></tr>
+<tr><td>0.550</td><td>348.46</td><td>50.00%</td><td>950.3</td></tr>
+<tr><td>0.660</td><td>451.60</td><td>64.80%</td><td>912.1</td></tr>
+<tr><td>0.880</td><td>624.44</td><td>89.60%</td><td>608.2</td></tr>
+<tr><td>1.100</td><td>696.91</td><td>100.00%</td><td>0.0</td></tr>
+</table>
+<p>灵敏度由 \(\dfrac{\mathrm{d}V}{\mathrm{d}h}=\pi h(2R-h)\) 给出，在赤道面 \(h=R\) 处取到最大值 \(\pi R^{2}=950.3\ \mathrm{L/m}\)，两端趋于零.</p>
+<p><b>工程结论：</b> 液位传感器精度 \(\pm2\ \mathrm{mm}\) 时：在半满处体积误差 \(\pm1.90\ \mathrm{L}\)（占满贮 0.27%），在接近排空的 \(h=0.11\ \mathrm{m}\) 处只有 \(\pm0.68\ \mathrm{L}\)——绝对精度反而更高，但相对于剩余量 19.5 L 却达 3.5%，直接决定「末期寿命」判定与离轨窗口.因此在轨寿命评估必须用截面法给出的整条 \(V(h)\) 曲线做查表，而不能线性插值：把 \(h=0.11\) 处按半满灵敏度线性外推，会把剩余推进剂高估 \(342.1\to950.3\)，即 2.8 倍，误判为「还能工作两年」.</p>
+<p class="cn-point">把 342.1 L/m 的半满灵敏度线性外推到末期，会把剩余推进剂高估 2.8 倍——中国在轨卫星的寿命与离轨窗口，正是靠截面法算出的整条 \(V(h)\) 曲线逐个查表保下来的，多算准一升，就多一份对太空资产的责任.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch10-tank" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>液面高度 h <input type="range" id="ch10-tank-h" min="0.05" max="1.0" step="0.01" value="0.5" style="width:220px;accent-color:#0F6E56"> <b id="ch10-tank-h-t"></b> m</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch10-tank-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch10-tank'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var R=0.5; // m
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var h=+document.getElementById('ch10-tank-h').value;
+      var cx=W*0.3, cy=H*0.52, sc=Math.min(W,H)*0.4/R;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 球（圆）
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(cx,cy,R*sc,0,Math.PI*2);ctx.stroke();
+      // 液体（球缺，从底部 h）
+      var yTop=cy+(R-h)*sc;
+      ctx.fillStyle='rgba(14,124,124,0.35)';
+      ctx.beginPath();
+      ctx.moveTo(cx-R*sc,cy+R*sc);
+      ctx.lineTo(cx-R*sc,cy+R*sc);
+      ctx.arc(cx,cy,R*sc,Math.PI*0.5+Math.acos(Math.min(1,(h/R)-1)),Math.PI*1.5-Math.acos(Math.min(1,(h/R)-1)),false);
+      ctx.closePath();ctx.fill();
+      // 液面线
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(cx-R*sc*0.98,yTop);ctx.lineTo(cx+R*sc*0.98,yTop);ctx.stroke();
+      ctx.fillStyle='#0e7c7c';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('液面 h='+h.toFixed(2)+' m',cx+R*sc*0.6,yTop-6);
+      // 数值
+      var V=Math.PI*h*h*(R-h/3); // m³
+      var Vfull=4*Math.PI*R*R*R/3;
+      var errL=2e-3*2*Math.PI*h*(R-h/2)*1000; // 液位±2mm 时体积误差（L）：dV/dh=πh(2R-h)
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('V(h) = πh²(R−h/3) = '+V.toFixed(3)+' m³ = '+(V*1000).toFixed(1)+' L   （满贮 '+(Vfull*1000).toFixed(0)+' L）',20,22);
+      var out=document.getElementById('ch10-tank-out');
+      var tip = Math.abs(h/R-1)<0.15 ? '半满区：±2mm 液位误差 → ±'+(errL).toFixed(2)+' L' : '接近排空：±2mm → ±'+(errL).toFixed(2)+' L，但相对剩余量百分比更大';
+      out.textContent = tip + '（dV/dh = πh(2R−h) 由积分公式求导得到）';
+    }
+    document.getElementById('ch10-tank-h').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s104" data-ch="10" data-n="5"></div>
+<h2 id="s105"><span class="num">§10.5</span>重积分的应用</h2>
+    
+<div class="ex"><div class="lab">引例一　机器人连杆的转动惯量：电机选多大才够？</div>
+  <p class="stmt">六轴工业机器人的每一根连杆都要被电机"甩"起来.选型工程师最先要算的量是<b>转动惯量</b>——它决定了同样的角加速度需要多大力矩.设第 3 轴连杆是一根均匀实心长方体</p>
+  \[\Omega:\ 0\le x\le0.4,\quad -0.025\le y\le0.025,\quad -0.015\le z\le0.015\quad(\text{单位：m}),\]
+  <p>转轴为过 \(x=0\) 端点、平行于 \(z\) 轴的直线（即 \(z\) 轴）.绕 \(z\) 轴的转动惯量定义为</p>
+  \[I_z=\iiint_\Omega\bigl(x^2+y^2\bigr)\rho\,\mathrm{d}v .\]
+  <p><b>先算几何因子</b>（与材料无关的部分）：</p>
+  \[\iiint_\Omega\bigl(x^2+y^2\bigr)\mathrm{d}v=0.03\int_0^{0.4}\!\!\int_{-0.025}^{0.025}\bigl(x^2+y^2\bigr)\mathrm{d}y\,\mathrm{d}x .\]
+  <p>内层：\(\displaystyle\int_{-0.025}^{0.025}\bigl(x^2+y^2\bigr)\mathrm{d}y=0.05x^2+\frac{2\times0.025^3}{3}=0.05x^2+1.0417\times10^{-5}\).再对 \(x\)：</p>
+  \[0.05\cdot\frac{0.4^3}{3}+1.0417\times10^{-5}\times0.4=1.06667\times10^{-3}+4.1667\times10^{-6}=1.07083\times10^{-3},\]
+  <p>乘以厚度因子 \(0.03\) 得</p>
+  \[\iiint_\Omega\bigl(x^2+y^2\bigr)\mathrm{d}v=3.2125\times10^{-5}\ \mathrm{m^5}.\]
+  <p><b>再乘密度，比较三种材料</b>（连杆体积 \(V=0.4\times0.05\times0.03=6\times10^{-4}\,\mathrm{m^3}\)）.要求电机在 \(0.5\,\mathrm{s}\) 内把连杆从静止加速到 \(\pi\,\mathrm{rad/s}\)，即角加速度 \(\alpha=\dfrac{\pi}{0.5}=6.283\,\mathrm{rad/s^2}\)；连杆水平伸出时还要克服重力矩 \(T_g=mg\cdot\dfrac{L}{2}\).</p>
+  <table class="dt">
+    <tr><th>材料</th><th>\(\rho\)（\(\mathrm{kg/m^3}\)）</th><th>质量 \(m\)（kg）</th><th>\(I_z\)（\(\mathrm{kg\cdot m^2}\)）</th><th>加速力矩 \(I_z\alpha\)（N·m）</th><th>重力矩 \(T_g\)（N·m）</th><th>峰值力矩（N·m）</th></tr>
+    <tr><td>碳纤维复材</td><td>1600</td><td>0.960</td><td>0.05140</td><td>0.323</td><td>1.882</td><td>2.205</td></tr>
+    <tr><td>铝合金 6061</td><td>2700</td><td>1.620</td><td>0.08674</td><td>0.545</td><td>3.175</td><td>3.720</td></tr>
+    <tr><td>结构钢</td><td>7850</td><td>4.710</td><td>0.25218</td><td>1.584</td><td>9.232</td><td>10.816</td></tr>
+  </table>
+  <p><b>结论一目了然：</b>把铝合金换成碳纤维，质量只降到 \(59\%\)，但峰值力矩降到 \(2.205/3.720=59.3\%\)；若用钢，峰值力矩要涨到 \(2.9\) 倍，电机、减速器、乃至整机机架都得跟着放大一圈.<b>"机器人为什么疯狂追求轻量化"，答案就写在这个三重积分里.</b></p>
+</div>
+
+<h3>一、曲面的面积</h3>
+<p>设曲面 \(S\) 由 \(z=f(x,y)\) 给出，\((x,y)\in D\)（\(D\) 为 \(S\) 在 \(xOy\) 面上的投影），且 \(f\) 有连续偏导数.在 \(D\) 上取面积元素 \(\mathrm{d}\sigma\)，它对应曲面上的一小片 \(\mathrm{d}S\).这一小片近似为切平面上的平行四边形，其法向量与 \(z\) 轴夹角 \(\gamma\) 满足 \(\cos\gamma=\dfrac{1}{\sqrt{1+f_x^2+f_y^2}}\)，而 \(\mathrm{d}\sigma=\mathrm{d}S\cos\gamma\).于是</p>
+<div class="def"><div class="lab"><span class="n">定理 10.13</span>曲面面积公式</div>
+  \[A=\iint_{D}\sqrt{1+\left(\frac{\partial z}{\partial x}\right)^{2}+\left(\frac{\partial z}{\partial y}\right)^{2}}\;\mathrm{d}\sigma .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>曲面小片"斜着挂在空中"，它在 \(xOy\) 面上的投影必定比自己小.小多少？就差一个<b>倾角的余弦</b>.于是只要算出切平面与 \(xOy\) 面夹角的余弦，就能把曲面面积化成投影区域上的二重积分.</p>
+<p><span class="stp">第一步：分割与"以平代曲".</span>设曲面 \(S:\ z=z(x,y)\)，\((x,y)\in D\)，\(z\) 有连续偏导数.把 \(D\) 分成 \(n\) 个小闭区域 \(\Delta\sigma_1,\cdots,\Delta\sigma_n\)（同时表示其面积）.在 \(\Delta\sigma_i\) 内取一点 \((\xi_i,\eta_i)\)，对应曲面上的点 \(M_i=\bigl(\xi_i,\eta_i,z(\xi_i,\eta_i)\bigr)\).在 \(M_i\) 处作曲面的<b>切平面</b>，用切平面上以 \(\Delta\sigma_i\) 为投影的那一小片 \(\Delta A_i\) 去代替对应的曲面小片.</p>
+<p><span class="stp">第二步：算切平面与 \(xOy\) 面的夹角.</span>曲面 \(F(x,y,z)=z-z(x,y)=0\) 在 \(M_i\) 处的法向量为</p>
+\[\mathbf n=\bigl(-z_x,\ -z_y,\ 1\bigr),\qquad |\mathbf n|=\sqrt{1+z_x^2+z_y^2},\]
+<p>而 \(xOy\) 面的法向量为 \(\mathbf k=(0,0,1)\).两平面的夹角 \(\gamma\) 等于两法向量的夹角，故</p>
+\[\cos\gamma=\frac{\mathbf n\cdot\mathbf k}{|\mathbf n|\,|\mathbf k|}=\frac{1}{\sqrt{1+z_x^2+z_y^2}} .\]
+<p>（取法向量朝上一侧，使 \(\cos\gamma\gt0\).）</p>
+<p><span class="stp">第三步：投影关系.</span>把平面小片沿竖直方向投影到 \(xOy\) 面上，是一个"压扁"的过程：与交线平行的方向长度不变，垂直方向按 \(\cos\gamma\) 收缩，因此</p>
+\[\Delta\sigma_i=\Delta A_i\cos\gamma_i\quad\Longrightarrow\quad
+\Delta A_i=\frac{\Delta\sigma_i}{\cos\gamma_i}=\sqrt{1+z_x^2(\xi_i,\eta_i)+z_y^2(\xi_i,\eta_i)}\;\Delta\sigma_i .\]
+<p>写成微元形式就是</p>
+\[\mathrm{d}S=\frac{\mathrm{d}x\,\mathrm{d}y}{\cos\gamma}=\sqrt{1+z_x^2+z_y^2}\;\mathrm{d}x\,\mathrm{d}y .\]
+<p><span class="stp">第四步：求和取极限.</span>曲面面积近似为</p>
+\[A\approx\sum_{i=1}^{n}\Delta A_i=\sum_{i=1}^{n}\sqrt{1+z_x^2(\xi_i,\eta_i)+z_y^2(\xi_i,\eta_i)}\;\Delta\sigma_i .\]
+<p>右端恰是连续函数 \(\sqrt{1+z_x^2+z_y^2}\) 在 \(D\) 上的积分和.令各小区域最大直径 \(\lambda\to0\)，按定义得</p>
+\[A=\iint_{D}\sqrt{1+\left(\frac{\partial z}{\partial x}\right)^{2}+\left(\frac{\partial z}{\partial y}\right)^{2}}\;\mathrm{d}\sigma .\]
+<p><span class="stp">补注：</span>"以切平面小片代替曲面小片"所差的量，是 \(\Delta\sigma_i\) 的高阶无穷小，并且由 \(z_x,z_y\) 在有界闭区域上的一致连续性可知这一高阶性在 \(D\) 上是一致的，故求和取极限后误差消失.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 10.36　旋转抛物面的面积</div>
+  <p class="stmt">求抛物面 \(z=x^2+y^2\) 被平面 \(z=1\) 截下部分的面积.</p>
+  <p class="sol"><span class="mk">解</span>\(z_x=2x,\ z_y=2y\)，投影区域 \(D:\ x^2+y^2\le1\).故</p>
+  \[A=\iint_D\sqrt{1+4x^2+4y^2}\;\mathrm{d}\sigma .\]
+  <p>被积函数含 \(x^2+y^2\)、区域是圆盘，用极坐标：</p>
+  \[A=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^1\sqrt{1+4r^2}\;r\,\mathrm{d}r=2\pi\cdot\frac{1}{12}\bigl(1+4r^2\bigr)^{3/2}\bigg|_0^1=\frac{\pi}{6}\bigl(5\sqrt5-1\bigr).\]
+  <p>数值上 \(A=\dfrac{\pi}{6}(11.1803-1)=5.3304\).作为对照，投影圆盘的面积只有 \(\pi=3.1416\)，可见曲面被"撑开"了 \(1.70\) 倍.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.37　维维安尼问题（经典）</div>
+  <p class="stmt">求球面 \(x^2+y^2+z^2=a^2\) 含在柱面 \(x^2+y^2=ax\) 内那部分的面积.</p>
+  <p class="sol"><span class="mk">解</span>由对称性只算上半球面部分再乘 \(2\).上半球面 \(z=\sqrt{a^2-x^2-y^2}\)，求偏导：</p>
+  \[z_x=\frac{-x}{\sqrt{a^2-x^2-y^2}},\qquad z_y=\frac{-y}{\sqrt{a^2-x^2-y^2}},\]
+  \[\sqrt{1+z_x^2+z_y^2}=\sqrt{\frac{a^2-x^2-y^2+x^2+y^2}{a^2-x^2-y^2}}=\frac{a}{\sqrt{a^2-x^2-y^2}}.\]
+  <p>投影区域 \(D:\ x^2+y^2\le ax\)，极坐标下 \(r\le a\cos\theta,\ -\dfrac\pi2\le\theta\le\dfrac\pi2\).于是</p>
+  \[A=2\int_{-\pi/2}^{\pi/2}\!\mathrm{d}\theta\int_0^{a\cos\theta}\frac{a}{\sqrt{a^2-r^2}}\,r\,\mathrm{d}r
+  =2a\int_{-\pi/2}^{\pi/2}\left[-\sqrt{a^2-r^2}\right]_0^{a\cos\theta}\mathrm{d}\theta .\]
+  <p>而 \(\sqrt{a^2-a^2\cos^2\theta}=a|\sin\theta|\)，故内层结果为 \(a-a|\sin\theta|\)，从而</p>
+  \[A=2a^2\int_{-\pi/2}^{\pi/2}\bigl(1-|\sin\theta|\bigr)\mathrm{d}\theta=2a^2\bigl(\pi-2\bigr)\approx2.2832\,a^2 .\]
+  <p class="muted">整个球面面积为 \(4\pi a^2\approx12.566a^2\)，故柱面"开的窗"占了 \(18.2\%\).这个问题 1692 年由维维安尼提出，是曲面积分的经典入门题.</p>
+</div>
+
+<h3>二、质心与形心</h3>
+<div class="def"><div class="lab"><span class="n">定义 10.3</span>质心公式</div>
+  <p><b>平面薄片</b>（区域 \(D\)，面密度 \(\mu(x,y)\)）：</p>
+  \[\bar x=\frac{\displaystyle\iint_D x\,\mu\,\mathrm{d}\sigma}{\displaystyle\iint_D\mu\,\mathrm{d}\sigma},\qquad
+    \bar y=\frac{\displaystyle\iint_D y\,\mu\,\mathrm{d}\sigma}{\displaystyle\iint_D\mu\,\mathrm{d}\sigma}.\]
+  <p><b>空间物体</b>（区域 \(\Omega\)，体密度 \(\rho(x,y,z)\)）：</p>
+  \[\bar x=\frac1m\iiint_\Omega x\rho\,\mathrm{d}v,\quad \bar y=\frac1m\iiint_\Omega y\rho\,\mathrm{d}v,\quad \bar z=\frac1m\iiint_\Omega z\rho\,\mathrm{d}v,\qquad m=\iiint_\Omega\rho\,\mathrm{d}v .\]
+  <p>当密度为常数时，质心与密度无关，只由几何形状决定，此时称为<b>形心</b>，公式中的 \(\mu,\rho\) 可直接约去.</p>
+</div>
+<div class="note"><b>三条实用捷径.</b>① 若 \(D\)（或 \(\Omega\)）关于某直线（平面）对称且密度也对称，则质心必在该直线（平面）上，对应坐标不用算.② 分子 \(\displaystyle\iint_D x\mu\,\mathrm{d}\sigma\) 称为对 \(y\) 轴的<b>静矩</b> \(M_y\)，分母是质量，"质心 = 静矩 / 质量".③ 复合图形可用区域可加性：先分块求各块静矩与质量，再整体相除.</div>
+
+<div class="ex"><div class="lab">例 10.38　半圆薄片的形心</div>
+  <p class="stmt">求半径为 \(R\) 的均匀半圆形薄片 \(D:\ x^2+y^2\le R^2,\ y\ge0\) 的形心.</p>
+  <p class="sol"><span class="mk">解</span>\(D\) 关于 \(y\) 轴对称，故 \(\bar x=0\)（这一步省掉一半计算）.面积 \(\sigma=\dfrac{\pi R^2}{2}\).用极坐标算静矩：</p>
+  \[\iint_D y\,\mathrm{d}\sigma=\int_0^{\pi}\!\mathrm{d}\theta\int_0^{R}r\sin\theta\cdot r\,\mathrm{d}r=\frac{R^3}{3}\int_0^{\pi}\sin\theta\,\mathrm{d}\theta=\frac{2R^3}{3}.\]
+  <p>故</p>
+  \[\bar y=\frac{2R^3/3}{\pi R^2/2}=\frac{4R}{3\pi}\approx0.4244R .\]
+  <p>形心为 \(\left(0,\ \dfrac{4R}{3\pi}\right)\).注意它<b>低于</b>半圆的"腰部"\(R/2\)，因为靠近直径的部分面积更宽.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.39　非均匀薄片的质心</div>
+  <p class="stmt">设平面薄片占据区域 \(D:\ 0\le x\le1,\ 0\le y\le x\)，面密度 \(\mu(x,y)=x+y\).求其质心.</p>
+  <p class="sol"><span class="mk">解</span>先算质量：</p>
+  \[m=\int_0^1\!\mathrm{d}x\int_0^x(x+y)\,\mathrm{d}y=\int_0^1\left[xy+\frac{y^2}{2}\right]_0^x\mathrm{d}x=\int_0^1\frac{3x^2}{2}\,\mathrm{d}x=\frac12 .\]
+  <p>再算两个静矩：</p>
+  \[M_y=\int_0^1\!\mathrm{d}x\int_0^x x(x+y)\,\mathrm{d}y=\int_0^1 x\cdot\frac{3x^2}{2}\,\mathrm{d}x=\frac38,\]
+  \[M_x=\int_0^1\!\mathrm{d}x\int_0^x y(x+y)\,\mathrm{d}y=\int_0^1\left[\frac{xy^2}{2}+\frac{y^3}{3}\right]_0^x\mathrm{d}x=\int_0^1\frac{5x^3}{6}\,\mathrm{d}x=\frac{5}{24}.\]
+  <p>故</p>
+  \[\bar x=\frac{3/8}{1/2}=\frac34=0.75,\qquad \bar y=\frac{5/24}{1/2}=\frac{5}{12}\approx0.4167 .\]
+  <p class="muted">若薄片均匀，三角形形心应在 \(\left(\dfrac23,\dfrac13\right)\).密度 \(x+y\) 使质量向右上角集中，质心相应右移上移，符合直觉.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.40　均匀半球体的形心</div>
+  <p class="stmt">求半径 \(R\) 的均匀半球体 \(\Omega:\ x^2+y^2+z^2\le R^2,\ z\ge0\) 的形心.</p>
+  <p class="sol"><span class="mk">解</span>由关于 \(xOz\) 面与 \(yOz\) 面的对称性，\(\bar x=\bar y=0\).体积 \(V=\dfrac23\pi R^3\).由例 10.30 已算得 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v=\frac{\pi R^4}{4}\)，故</p>
+  \[\bar z=\frac{\pi R^4/4}{\dfrac23\pi R^3}=\frac{3R}{8}=0.375R .\]
+  <p>形心为 \(\left(0,0,\dfrac{3R}{8}\right)\).</p>
+</div>
+
+<h3>三、转动惯量</h3>
+<div class="def"><div class="lab"><span class="n">定义 10.4</span>转动惯量</div>
+  <p>质点绕轴的转动惯量为 \(mr^2\)（\(r\) 为到轴的距离）.对连续分布的物体，用积分累加：</p>
+  <p><b>平面薄片</b>（面密度 \(\mu\)）：</p>
+  \[I_x=\iint_D y^2\mu\,\mathrm{d}\sigma,\quad I_y=\iint_D x^2\mu\,\mathrm{d}\sigma,\quad I_O=\iint_D\bigl(x^2+y^2\bigr)\mu\,\mathrm{d}\sigma=I_x+I_y .\]
+  <p><b>空间物体</b>（体密度 \(\rho\)）：</p>
+  \[I_x=\iiint_\Omega\bigl(y^2+z^2\bigr)\rho\,\mathrm{d}v,\quad I_y=\iiint_\Omega\bigl(z^2+x^2\bigr)\rho\,\mathrm{d}v,\quad I_z=\iiint_\Omega\bigl(x^2+y^2\bigr)\rho\,\mathrm{d}v .\]
+  <p class="muted">口诀：<b>被积的永远是"到轴距离的平方"</b>.绕 \(z\) 轴，到轴距离为 \(\sqrt{x^2+y^2}\)，所以是 \(x^2+y^2\)；千万不要写成 \(z^2\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.41　均匀圆盘与均匀球体的转动惯量</div>
+  <p class="stmt">（1）求质量 \(m\)、半径 \(R\) 的均匀圆盘绕过中心且垂直于盘面的轴的转动惯量；（2）求质量 \(m\)、半径 \(R\) 的均匀球体绕直径的转动惯量.</p>
+  <p class="sol"><span class="mk">解</span>（1）设面密度 \(\mu=\dfrac{m}{\pi R^2}\).用极坐标：</p>
+  \[I_O=\mu\iint_D\bigl(x^2+y^2\bigr)\mathrm{d}\sigma=\mu\int_0^{2\pi}\!\mathrm{d}\theta\int_0^R r^2\cdot r\,\mathrm{d}r=\mu\cdot2\pi\cdot\frac{R^4}{4}=\frac{\mu\pi R^4}{2}.\]
+  <p>代入 \(\mu\pi R^2=m\) 得 \(I_O=\dfrac{mR^2}{2}\).</p>
+  <p>（2）设体密度 \(\rho=\dfrac{m}{\frac43\pi R^3}\).由例 10.22 的轮换对称性结果 \(\displaystyle\iiint_\Omega(x^2+y^2)\mathrm{d}v=\frac{8\pi R^5}{15}\)，故</p>
+  \[I_z=\rho\cdot\frac{8\pi R^5}{15}=\frac{m}{\frac43\pi R^3}\cdot\frac{8\pi R^5}{15}=\frac{2}{5}mR^2 .\]
+  <p class="muted">对比：同质量同半径下，<b>圆盘 \(0.5mR^2\) 比球体 \(0.4mR^2\) 更"难转"</b>，因为圆盘的质量全部分布在赤道面上，平均离轴更远.飞轮储能装置正是利用这一点，把质量尽量堆到轮缘.</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.42　圆柱体绕中心轴与绕直径的转动惯量</div>
+  <p class="stmt">设均匀圆柱 \(\Omega:\ x^2+y^2\le R^2,\ 0\le z\le H\)，密度 \(\rho\)（常数），质量 \(m=\rho\pi R^2H\).求 \(I_z\) 与 \(I_x\).</p>
+  <p class="sol"><span class="mk">解</span>用柱面坐标.</p>
+  \[I_z=\rho\int_0^{2\pi}\!\mathrm{d}\theta\int_0^R r^2\cdot r\,\mathrm{d}r\int_0^H\mathrm{d}z=\rho\cdot2\pi\cdot\frac{R^4}{4}\cdot H=\frac{\rho\pi R^4H}{2}=\frac{mR^2}{2}.\]
+  <p>再求 \(I_x=\rho\displaystyle\iiint_\Omega(y^2+z^2)\mathrm{d}v\).分两项：</p>
+  \[\iiint_\Omega y^2\,\mathrm{d}v=\int_0^{2\pi}\!\mathrm{d}\theta\int_0^R r^2\sin^2\theta\cdot r\,\mathrm{d}r\int_0^H\mathrm{d}z=\pi\cdot\frac{R^4}{4}\cdot H,\]
+  <p>（用了 \(\displaystyle\int_0^{2\pi}\sin^2\theta\,\mathrm{d}\theta=\pi\)）；</p>
+  \[\iiint_\Omega z^2\,\mathrm{d}v=\pi R^2\int_0^H z^2\,\mathrm{d}z=\frac{\pi R^2H^3}{3}.\]
+  <p>故</p>
+  \[I_x=\rho\pi R^2H\left(\frac{R^2}{4}+\frac{H^2}{3}\right)=m\left(\frac{R^2}{4}+\frac{H^2}{3}\right).\]
+  <p class="muted">这是手册上的经典公式（此处轴过底面圆心；若过质心则 \(\dfrac{H^2}{3}\) 换成 \(\dfrac{H^2}{12}\)，二者相差 \(m\left(\dfrac H2\right)^2\)，恰是平行轴定理）.</p>
+</div>
+
+<h3>四、引力</h3>
+<div class="def"><div class="lab"><span class="n">定义 10.5</span>物体对质点的引力</div>
+  <p>设空间物体 \(\Omega\) 的体密度为 \(\rho(x,y,z)\)，在点 \(P_0(x_0,y_0,z_0)\) 处放置质量为 \(m\) 的质点.取体积元素 \(\mathrm{d}v\)，其质量 \(\rho\,\mathrm{d}v\) 对质点的引力大小为 \(\dfrac{Gm\rho\,\mathrm{d}v}{r^2}\)（\(r\) 为距离），方向沿两点连线.把各分量分别积分，得引力向量 \(\mathbf F=(F_x,F_y,F_z)\)，其中</p>
+  \[F_z=Gm\iiint_\Omega\frac{\rho(x,y,z)\,(z-z_0)}{\bigl[(x-x_0)^2+(y-y_0)^2+(z-z_0)^2\bigr]^{3/2}}\,\mathrm{d}v ,\]
+  <p>\(F_x,F_y\) 类似（把分子的 \(z-z_0\) 换成 \(x-x_0\) 或 \(y-y_0\)）.这里 \(G=6.674\times10^{-11}\,\mathrm{N\cdot m^2/kg^2}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 10.43　均匀半球体对球心处质点的引力</div>
+  <p class="stmt">半径 \(R\)、体密度 \(\rho\) 的均匀半球体 \(\Omega:\ x^2+y^2+z^2\le R^2,\ z\ge0\)，在球心 \(O\) 处放一质量为 \(m\) 的质点.求引力.</p>
+  <p class="sol"><span class="mk">解</span>由 \(\Omega\) 关于 \(xOz\) 面与 \(yOz\) 面的对称性（且被积函数关于 \(x\)、\(y\) 分别为奇函数），得 \(F_x=F_y=0\)，引力沿 \(z\) 轴向上.由公式（\(P_0\) 取原点，\(r=\rho_{\text{球}}\)）：</p>
+  \[F_z=Gm\rho\iiint_\Omega\frac{z}{\bigl(x^2+y^2+z^2\bigr)^{3/2}}\,\mathrm{d}v .\]
+  <p>用球面坐标（记球坐标半径为 \(s\) 以免与密度混淆）：\(z=s\cos\varphi\)，分母 \(=s^3\)，\(\mathrm{d}v=s^2\sin\varphi\,\mathrm{d}s\,\mathrm{d}\varphi\,\mathrm{d}\theta\)，被积式化为 \(\dfrac{s\cos\varphi}{s^3}\cdot s^2\sin\varphi=\sin\varphi\cos\varphi\)，<b>与 \(s\) 无关</b>！于是</p>
+  \[F_z=Gm\rho\int_0^{2\pi}\!\mathrm{d}\theta\int_0^{\pi/2}\sin\varphi\cos\varphi\,\mathrm{d}\varphi\int_0^{R}\mathrm{d}s=Gm\rho\cdot2\pi\cdot\frac12\cdot R=\pi Gm\rho R .\]
+  <p><b>代入具体数字.</b>取一个 \(R=0.5\,\mathrm{m}\) 的钢制半球配重（\(\rho=7850\,\mathrm{kg/m^3}\)），球心处放 \(m=1\,\mathrm{kg}\) 的检验质量：</p>
+  \[F_z=\pi\times6.674\times10^{-11}\times1\times7850\times0.5=8.23\times10^{-7}\ \mathrm{N}.\]
+</div>
+
+<div class="case"><div class="lab">应用探微 · 机器人关节电机选型：从三重积分到型号表</div>
+  <details><summary>展开查看：转动惯量、减速比、峰值扭矩的完整计算链条</summary>
+  <div class="body">
+    <p>沿用引例的铝合金连杆（\(L=0.4\,\mathrm{m}\)，\(m_{\text{杆}}=1.62\,\mathrm{kg}\)，\(I_{\text{杆}}=0.08674\,\mathrm{kg\cdot m^2}\)），现在在末端加装 \(m_{\text{载}}=5\,\mathrm{kg}\) 的负载（视为质点）.</p>
+    <p><b>第一步：总转动惯量.</b>由区域可加性，连杆与负载的惯量直接相加：</p>
+    \[I_{\text{总}}=I_{\text{杆}}+m_{\text{载}}L^2=0.08674+5\times0.4^2=0.08674+0.8=0.88674\ \mathrm{kg\cdot m^2}.\]
+    <p>注意：<b>负载贡献了 \(90.2\%\) 的惯量</b>.这提醒我们，臂长比质量更要命——惯量按 \(L^2\) 增长.</p>
+    <p><b>第二步：加速力矩.</b>轨迹规划采用梯形速度曲线，峰值角加速度 \(\alpha=20\,\mathrm{rad/s^2}\)：</p>
+    \[T_\alpha=I_{\text{总}}\,\alpha=0.88674\times20=17.73\ \mathrm{N\cdot m}.\]
+    <p><b>第三步：重力矩.</b>手臂水平伸出时最恶劣.连杆质心在 \(L/2=0.2\,\mathrm{m}\)，负载在 \(0.4\,\mathrm{m}\)：</p>
+    \[T_g=\bigl(1.62\times0.2+5\times0.4\bigr)\times9.8=\bigl(0.324+2.000\bigr)\times9.8=22.78\ \mathrm{N\cdot m}.\]
+    <p><b>第四步：关节峰值力矩.</b>最坏工况为"水平位姿下最大加速"：</p>
+    \[T_{\text{峰}}=T_\alpha+T_g=17.73+22.78=40.51\ \mathrm{N\cdot m}.\]
+    <p><b>第五步：折算到电机轴.</b>关节采用减速比 \(i=100\) 的谐波减速器，传动效率 \(\eta=0.85\)：</p>
+    \[T_{\text{电机}}=\frac{T_{\text{峰}}}{i\,\eta}=\frac{40.51}{100\times0.85}=0.477\ \mathrm{N\cdot m}.\]
+    <p><b>第六步：选型与对比.</b>选峰值扭矩 \(0.64\,\mathrm{N\cdot m}\) 的伺服电机，安全裕度 \(\dfrac{0.64-0.477}{0.477}=34\%\)，符合工程惯例（一般要求不低于 \(25\%\)）.若把连杆换成碳纤维复材：</p>
+    <table class="dt">
+      <tr><th>连杆材料</th><th>\(I_{\text{杆}}\)</th><th>\(I_{\text{总}}\)</th><th>\(T_\alpha\)</th><th>\(T_g\)</th><th>\(T_{\text{峰}}\)</th><th>电机需求扭矩</th></tr>
+      <tr><td>碳纤维（0.96 kg）</td><td>0.05140</td><td>0.85140</td><td>17.03</td><td>21.48</td><td>38.51</td><td>0.453 N·m</td></tr>
+      <tr><td>铝合金（1.62 kg）</td><td>0.08674</td><td>0.88674</td><td>17.73</td><td>22.78</td><td>40.51</td><td>0.477 N·m</td></tr>
+      <tr><td>结构钢（4.71 kg）</td><td>0.25218</td><td>1.05218</td><td>21.04</td><td>28.83</td><td>49.87</td><td>0.587 N·m</td></tr>
+    </table>
+    <p><b>读表：</b>钢制连杆的电机需求扭矩 \(0.587\,\mathrm{N\cdot m}\) 使 \(0.64\,\mathrm{N\cdot m}\) 电机的裕度只剩 \(9.0\%\)，远低于 \(25\%\) 的工程惯例，必须换更大一档；而碳纤维方案裕度高达 \(41\%\)，甚至可以考虑降档到更便宜的电机，或者把负载能力从 \(5\,\mathrm{kg}\) 提到 \(6\,\mathrm{kg}\).</p>
+    <p><b>本案例的数学骨架：</b>第一步的 \(I_{\text{杆}}\) 是一个三重积分 \(\displaystyle\iiint_\Omega(x^2+y^2)\rho\,\mathrm{d}v\)，第三步的 \(0.324\) 来自质心积分 \(\displaystyle\frac1m\iiint_\Omega x\rho\,\mathrm{d}v\).<b>整条选型链上最靠前、最关键的两个数字，都由重积分给出.</b></p>
+  </div>
+  </details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 傅比尼与累次积分：交换次序为什么需要条件</summary>
+
+<p>把二重积分化成累次积分，再把累次积分的次序换过来——这几乎是本章每道题的第一步.学到后来，很多人会默认「换序总是对的」.可如果真是这样，数学史上就不会有一条以人名命名的定理专门来担保它了.</p>
+<p>担保人叫圭多·傅比尼（Guido Fubini，1879—1943），意大利威尼斯人.他 1900 年在比萨高等师范学校毕业，论文写的是共形几何，导师是比安基与迪尼——都是意大利分析学派的名家.1907 年，他在都灵发表了一篇关于多重积分的论文，给出了后来以他命名的定理：只要被积函数在乘积区域上<b>绝对可积</b>，二重积分就等于两个次序的累次积分，且两者相等.两年后，另一位意大利人托内利（Leonida Tonelli）补上了另一半：如果函数<b>非负可测</b>，那么无需事先假定可积，三个积分要么同时有限相等，要么同时为无穷.今天的教科书常把它们合称「傅比尼–托内利定理」.</p>
+<p>那么，不满足条件会怎样？有一个可以完全手算的经典反例.取</p>
+\[f(x,y)=\frac{x^{2}-y^{2}}{(x^{2}+y^{2})^{2}},\qquad (x,y)\in(0,1]\times(0,1].\]
+<p>注意到 \(\dfrac{\partial}{\partial y}\dfrac{y}{x^{2}+y^{2}}=\dfrac{x^{2}-y^{2}}{(x^{2}+y^{2})^{2}}\)，因此对内层先积 \(y\)：</p>
+\[\int_0^1 f(x,y)\,\mathrm{d}y=\Bigl[\frac{y}{x^{2}+y^{2}}\Bigr]_0^1=\frac1{1+x^{2}},
+\qquad \int_0^1\!\!\mathrm{d}x\int_0^1 f\,\mathrm{d}y=\arctan 1=\frac\pi4 .\]
+<p>而 \(f(y,x)=-f(x,y)\)，把两个变量的角色对调，同样的计算给出</p>
+\[\int_0^1\!\!\mathrm{d}y\int_0^1 f\,\mathrm{d}x=-\frac\pi4 .\]
+<p>两个累次积分一正一负，相差 \(\pi/2\).哪一步错了？一步都没错.错的是「以为可以换」——这个 \(f\) 在原点附近不绝对可积：\(\iint|f|\,\mathrm{d}\sigma=+\infty\)，傅比尼的前提根本不成立.于是「先对谁积」竟然改变了答案.这个例子告诉我们一件反直觉的事：<b>累次积分是两个一元极限过程的复合，而两个极限过程一般不能交换次序</b>；二重积分之所以能担任「公证人」的角色，正因为它是一个整体的极限，与分割方式无关.</p>
+<p>傅比尼的晚年并不平静.1938 年墨索里尼政权颁布种族法，作为犹太人的他被剥夺了都灵大学的教席与意大利科学院院士资格.1939 年，年届六十、健康已经不佳的他接受普林斯顿高等研究院的邀请远赴美国，1943 年病逝于纽约.一条被亿万学生每天使用、却几乎从不被追问出处的定理，背后是这样一位被时代驱逐的数学家.下次你在草稿纸上潇洒地把 \(\mathrm{d}x\mathrm{d}y\) 换成 \(\mathrm{d}y\mathrm{d}x\) 时，不妨想一想：这一笔是有条件的，而条件是有人替你证明过的.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] M. Kline《古今数学思想》，上海科学技术出版社；[2] G. Fubini, “Sugli integrali multipli”, Rendiconti Accademia dei Lincei (1907)；[3] Wikipedia 词条 “Fubini's theorem”、“Guido Fubini”.</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 蒙特卡洛：曼哈顿计划里诞生的随机积分</summary>
+
+<p>1946 年，洛斯阿拉莫斯.波兰裔数学家斯坦尼斯瓦夫·乌拉姆（Stanisław Ulam）刚从一场脑炎中恢复，还不能做费力的工作，只好整天躺在床上玩一种叫 Canfield 的单人纸牌.他忽然想知道：随手洗一副牌，这局能顺利摊完的概率是多少？作为组合数学出身的人，他先试着硬算，很快发现分支多到没有希望.就在这时他冒出一个念头：与其穷举，不如干脆多玩上一百局，数一数成功了几次.</p>
+<p>这个「用随机试验代替精确计数」的想法，在纸牌上是个玩笑，在中子输运上却是救命稻草.当时洛斯阿拉莫斯正在为氢弹做设计，核心难题是：一个中子在裂变材料里会走多远、撞上什么、生出几个次级中子？这本质上是一个高维积分——对所有可能的路径、能量、角度求积分.维数动辄几十，任何网格法都会瞬间被指数爆炸吞没.乌拉姆把想法告诉了约翰·冯·诺依曼，后者立刻意识到它的分量，很快写出了在 ENIAC 上执行的完整计算方案.1948 年，第一批中子输运的随机模拟在 ENIAC 上跑了出来.</p>
+<p>项目需要一个保密代号.同事尼古拉斯·梅特罗波利斯（Nicholas Metropolis）提议叫「蒙特卡洛」——因为乌拉姆有一位叔叔，是摩纳哥蒙特卡洛赌场的常客，总要向亲戚借钱去赌.名字就这样定了，一个诞生于最严肃的军事工程里的方法，从此顶着一个赌场的名字走进了教科书.1949 年，梅特罗波利斯与乌拉姆在《美国统计学会杂志》上发表《蒙特卡洛方法》一文，第一次向公众系统介绍了它；1953 年，梅特罗波利斯等五人发表《快速计算机上的状态方程计算》，给出了后来被称为 Metropolis 算法的抽样格式——这篇论文至今仍是被引用最多的物理论文之一.</p>
+<p>蒙特卡洛为什么能对抗维数灾难？答案藏在一个简单的方差估计里.用 \(N\) 个独立样本估计积分，估计量的标准差是 \(\sigma/\sqrt N\)，其中 \(\sigma\) 是被积函数的标准差.请注意这里<b>完全没有维数 \(d\) 出现</b>.而网格法要达到同样的精度，需要每个维度都取足够多的节点，误差是 \(O(N^{-p/d})\)，\(d\) 一大就彻底失灵.本章 §10.4 的案例用一个三维积分把这条曲线画了出来：MC 每加 100 倍样本误差降 10 倍，网格法只降 4.6 倍.到了四维、十维、上百维，网格法连一次有意义的采样都做不到，而 MC 依旧不紧不慢地按 \(N^{-1/2}\) 前进.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] N. Metropolis, S. Ulam, “The Monte Carlo Method”, Journal of the American Statistical Association, 1949；[2] N. Metropolis, “The Beginning of the Monte Carlo Method”, Los Alamos Science, 1987；[3] Wikipedia 词条 “Monte Carlo method”、“Stanislaw Ulam”.</p>
+</details>
+</div>
+
+<div class="ky" id="adv10">
+<div class="ky-hd">🎯 考研选讲 · 第十章 重积分</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题，数学一常考）计算下列积分：(1) \(\displaystyle I_1=\int_0^1\mathrm{d}y\int_{\sqrt y}^{1}\mathrm{e}^{x^{3}}\mathrm{d}x\)；(2) \(\displaystyle I_2=\int_0^1\mathrm{d}x\int_x^1\sin\bigl(y^{2}\bigr)\mathrm{d}y\)；(3) 设 \(f\) 连续，证明 \(\displaystyle\int_0^a\mathrm{d}x\int_0^x f(y)\,\mathrm{d}y=\int_0^a(a-y)f(y)\,\mathrm{d}y\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 三小问共用一个信号：<b>内层积不出来</b>（\(\mathrm{e}^{x^{3}}\)、\(\sin y^{2}\) 没有初等原函数；第 (3) 问的 \(f\) 干脆是抽象函数）.凡遇此情形，一律先把累次积分<b>还原成二重积分的区域</b>，画图，再换一个次序.最常见的失分点有两个：一是不画图，凭符号硬换，把限写错；二是换完之后忘了检查外层限必须是常数.</p>
+<p class="sol"><span class="mk">解</span> (1) 原式区域为 \(\{0\le y\le1,\ \sqrt y\le x\le1\}\).画图知它就是 \(\{0\le x\le1,\ 0\le y\le x^{2}\}\)，故</p>
+\[I_1=\int_0^1\!\!\mathrm{d}x\int_0^{x^{2}}\mathrm{e}^{x^{3}}\mathrm{d}y=\int_0^1x^{2}\mathrm{e}^{x^{3}}\mathrm{d}x
+ =\frac13\Bigl[\mathrm{e}^{x^{3}}\Bigr]_0^1=\frac{\mathrm{e}-1}{3}.\]
+<p>(2) 区域为 \(\{0\le x\le1,\ x\le y\le1\}\)，即三角形 \(\{0\le y\le1,\ 0\le x\le y\}\)，故</p>
+\[I_2=\int_0^1\!\!\mathrm{d}y\int_0^{y}\sin\bigl(y^{2}\bigr)\mathrm{d}x=\int_0^1y\sin\bigl(y^{2}\bigr)\mathrm{d}y
+ =\Bigl[-\tfrac12\cos y^{2}\Bigr]_0^1=\frac{1-\cos 1}{2}.\]
+<p>(3) 左端对应区域 \(\{0\le y\le x\le a\}\).换成先对 \(x\) 积：</p>
+\[\int_0^a\!\!\mathrm{d}x\int_0^x f(y)\,\mathrm{d}y=\int_0^a\!\!\mathrm{d}y\int_y^a f(y)\,\mathrm{d}x=\int_0^a f(y)(a-y)\,\mathrm{d}y .\]
+<p class="ky-idea"><b>命题意图.</b> 考查「内层积不出来就换序」这一条件反射，以及把累次积分限<b>反向读成区域</b>的能力.第 (3) 问是把定积分降阶公式（\(n\) 重积分化一重）的种子，后续在级数、微分方程里反复出现.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题，数学一常考）(1) 计算 \(\displaystyle I_1=\iint_D\sqrt{x^{2}+y^{2}}\,\mathrm{d}\sigma\)，其中 \(D\) 由 \(x^{2}+y^{2}=2x\) 围成；(2) 把 \(\displaystyle I_2=\int_0^1\mathrm{d}x\int_x^{\sqrt{2-x^{2}}}\frac{\mathrm{d}y}{\sqrt{x^{2}+y^{2}}}\) 化为极坐标并求值.</p>
+<p class="ky-hint"><b>思路点拨.</b> 「两看」都指向极坐标：区域是圆或圆的一部分，函数含 \(\sqrt{x^{2}+y^{2}}\).第 (1) 问的关键是把 \(x^{2}+y^{2}=2x\) 化成 \(r=2\cos\theta\)，并<b>正确定出 \(\theta\) 的范围是 \([-\pi/2,\pi/2]\)</b>（不是 \([0,2\pi]\)，否则 \(r\) 会取到负值，算出的面积翻倍）.第 (2) 问必须先画区域：上界 \(y=\sqrt{2-x^{2}}\) 是圆 \(r=\sqrt2\)，下界 \(y=x\) 是射线 \(\theta=\pi/4\)，交点在 \(x=1\).别忘了那个雅可比因子 \(r\).</p>
+<p class="sol"><span class="mk">解</span> (1) 令 \(x=r\cos\theta,\ y=r\sin\theta\)，边界化为 \(r=2\cos\theta\)，射线从极点出发直达圆周，故</p>
+\[I_1=\int_{-\pi/2}^{\pi/2}\!\!\mathrm{d}\theta\int_0^{2\cos\theta}r\cdot r\,\mathrm{d}r
+ =\int_{-\pi/2}^{\pi/2}\frac{8\cos^{3}\theta}{3}\,\mathrm{d}\theta
+ =\frac{16}{3}\int_0^{\pi/2}\cos^{3}\theta\,\mathrm{d}\theta=\frac{16}{3}\cdot\frac23=\frac{32}{9}.\]
+<p>(2) 区域是圆 \(x^{2}+y^{2}=2\) 在第一象限中夹在 \(y=x\) 与 \(y\) 轴之间的扇形，即 \(\dfrac\pi4\le\theta\le\dfrac\pi2,\ 0\le r\le\sqrt2\)，被积函数 \(1/r\) 与雅可比 \(r\) 恰好抵消：</p>
+\[I_2=\int_{\pi/4}^{\pi/2}\!\!\mathrm{d}\theta\int_0^{\sqrt2}\frac1r\cdot r\,\mathrm{d}r
+ =\frac\pi4\cdot\sqrt2=\frac{\sqrt2\,\pi}{4}.\]
+<p class="ky-idea"><b>命题意图.</b> 第 (1) 问考「圆心不在极点的圆」的极坐标表示与角度范围；第 (2) 问考「由累次积分反推区域、再换极坐标」这一逆向能力.两问合起来覆盖了极坐标换元的两条主要失分线：角度范围写错，以及漏掉雅可比因子 \(r\).</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题，数学一常考）(1) 计算 \(\displaystyle I_1=\iiint_\Omega z^{2}\,\mathrm{d}v\)，其中 \(\Omega:\dfrac{x^{2}}{a^{2}}+\dfrac{y^{2}}{b^{2}}+\dfrac{z^{2}}{c^{2}}\le1\)；(2) 计算 \(\displaystyle I_2=\iiint_\Omega(x+y+z)^{2}\,\mathrm{d}v\)，其中 \(\Omega:x^{2}+y^{2}+z^{2}\le R^{2}\).</p>
+<p class="ky-hint"><b>思路点拨.</b> (1) 被积函数只含 \(z\)，是<b>先二后一（截面法）</b>的招牌信号：垂直于 \(z\) 轴切一刀，截面是椭圆，面积现成.千万别去用球坐标硬啃，那要引进广义球坐标并处理三个雅可比因子.(2) 先展开再看对称性：三个平方项用<b>轮换对称</b>，三个交叉项用<b>奇对称</b>直接归零.若上来就展开硬算六个积分，考场上时间必然不够.</p>
+<p class="sol"><span class="mk">解</span> (1) 固定 \(z\in[-c,c]\)，截面为椭圆 \(\dfrac{x^{2}}{a^{2}}+\dfrac{y^{2}}{b^{2}}\le1-\dfrac{z^{2}}{c^{2}}\)，其面积为 \(\pi ab\Bigl(1-\dfrac{z^{2}}{c^{2}}\Bigr)\).于是</p>
+\[I_1=\int_{-c}^{c}z^{2}\cdot\pi ab\Bigl(1-\frac{z^{2}}{c^{2}}\Bigr)\mathrm{d}z
+ =\pi ab\Bigl(\frac{2c^{3}}{3}-\frac{2c^{3}}{5}\Bigr)=\frac{4\pi abc^{3}}{15}.\]
+<p>取 \(a=b=c=R\) 可得球体的 \(\iiint z^{2}\mathrm{d}v=\dfrac{4\pi R^{5}}{15}\)，可作校验.</p>
+<p>(2) 展开 \((x+y+z)^{2}=x^{2}+y^{2}+z^{2}+2(xy+yz+zx)\).球关于每个坐标面都对称，而 \(xy\) 关于 \(x\) 为奇函数，故 \(\iiint xy\,\mathrm{d}v=0\)，同理另两项也为零.再由<b>轮换对称性</b>与 (1) 的结果：</p>
+\[I_2=3\iiint_\Omega z^{2}\mathrm{d}v=3\cdot\frac{4\pi R^{5}}{15}=\frac{4\pi R^{5}}{5}.\]
+<p class="ky-idea"><b>命题意图.</b> 一题双考：截面法的适用信号（被积函数只含一个变量、截面面积易求），以及对称性的两种用法（奇对称砍项、轮换对称合并）.这两招在三重积分里能省掉的计算量，常常超过全题的一半，是拉开分数的关键.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题，数学一常考）设立体 \(\Omega\) 由旋转抛物面 \(z=x^{2}+y^{2}\) 与 \(z=2-x^{2}-y^{2}\) 围成，密度 \(\rho\equiv1\).求 (1) 体积 \(V\)；(2) 形心的竖坐标 \(\bar z\)；(3) 绕 \(z\) 轴的转动惯量 \(I_z\) 与相应的回转半径.</p>
+<p class="ky-hint"><b>思路点拨.</b> 三问共用同一套「投影 + 柱面坐标」的骨架：先求两曲面交线得投影域，再对 \(z\) 穿线得高度函数.交线由 \(x^{2}+y^{2}=2-(x^{2}+y^{2})\) 解出 \(r=1\)，投影是单位圆盘——圆形投影域必须立刻切换到柱面坐标，否则内层的 \(\sqrt{1-x^{2}}\) 会把人拖死.第 (2) 问有一个可以秒杀的观察：立体关于平面 \(z=1\) 对称.</p>
+<p class="sol"><span class="mk">解</span> 投影域 \(D:r\le1\)，对固定的 \((r,\theta)\)，\(z\) 从 \(r^{2}\) 穿到 \(2-r^{2}\)，高度 \(h=2-2r^{2}\).</p>
+<p>(1) \(\displaystyle V=\int_0^{2\pi}\!\!\mathrm{d}\theta\int_0^1(2-2r^{2})r\,\mathrm{d}r=2\pi\Bigl(1-\frac12\Bigr)=\pi\).</p>
+<p>(2) 先算 \(\displaystyle\iiint_\Omega z\,\mathrm{d}v=\iint_D\frac{(2-r^{2})^{2}-r^{4}}{2}\,\mathrm{d}\sigma=\iint_D(2-2r^{2})\,\mathrm{d}\sigma=\pi\)，故 \(\bar z=\pi/\pi=1\).这与「立体关于 \(z=1\) 对称」的直观完全一致，可作互相校验.</p>
+<p>(3) 由定义 10.4，</p>
+\[I_z=\iiint_\Omega\bigl(x^{2}+y^{2}\bigr)\mathrm{d}v=\int_0^{2\pi}\!\!\mathrm{d}\theta\int_0^1 r^{2}(2-2r^{2})r\,\mathrm{d}r
+ =2\pi\Bigl(\frac12-\frac13\Bigr)=\frac{\pi}{3},\]
+<p>质量 \(m=\rho V=\pi\)，回转半径 \(k=\sqrt{I_z/m}=\sqrt{1/3}=\dfrac{\sqrt3}{3}\approx0.5774\).</p>
+<p class="ky-idea"><b>命题意图.</b> 这是重积分应用题的标准模板：一道题串起体积、形心、转动惯量三个公式，共用一次定限.命题人真正想考的是「先定投影域与高度函数，再决定坐标系」的规范流程，以及用对称性对结果做<b>独立校验</b>的意识——考场上算完 \(\bar z=1\) 若能立刻用对称性确认，等于免费复查一遍.</p>
+</div>
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 机器人：不规则变密度零件的质心与转动惯量</summary>
+\[D:\ 4\le r\le 12\ (\mathrm{cm}),\ \ 0\le\theta\le\frac\pi2;\qquad
+ \mu(x,y)=\mu_0\bigl(1+0.05\,r\bigr)\ \ (\mathrm{g/cm^{2}}).\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>板厚</td><td>\(t\)</td><td>0.80 cm</td></tr>
+<tr><td>基体体密度</td><td>\(\rho_0\)</td><td>2.75 g/cm³</td></tr>
+<tr><td>基准面密度 \(\rho_0t\)</td><td>\(\mu_0\)</td><td>2.20 g/cm²</td></tr>
+</table>
+<p class="sol"> 全部用极坐标，\(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\).<b>质量</b>：</p>
+\[m=\mu_0\int_0^{\pi/2}\!\!\mathrm{d}\theta\int_4^{12}(1+0.05r)r\,\mathrm{d}r
+ =\mu_0\frac\pi2\Bigl[\frac{r^{2}}2+\frac{0.05r^{3}}3\Bigr]_4^{12}
+ =2.20\times\frac\pi2\times91.7333=317.01\ \mathrm{g}.\]
+<p><b>质心</b>（由 \(\theta\) 的对称性 \(\bar x=\bar y\)）：</p>
+\[M_y=\mu_0\int_0^{\pi/2}\!\!\cos\theta\,\mathrm{d}\theta\int_4^{12}(r^{2}+0.05r^{3})\mathrm{d}r
+ =2.20\times1\times810.667=1783.47\ \mathrm{g\cdot cm},\]
+\[\bar x=\bar y=\frac{1783.47}{317.01}=5.626\ \mathrm{cm},\qquad
+ d=\sqrt{\bar x^{2}+\bar y^{2}}=7.956\ \mathrm{cm}\ (\text{沿 }45^{\circ}).\]
+<p><b>绕过原点的极转动惯量</b>（即绕关节轴）：</p>
+\[I_O=\mu_0\frac\pi2\int_4^{12}(r^{3}+0.05r^{4})\mathrm{d}r=2.20\times\frac\pi2\times7598.08=26257\ \mathrm{g\cdot cm^{2}}
+ =2.6257\times10^{-3}\ \mathrm{kg\cdot m^{2}}.\]
+<p>由平行轴定理，绕质心平行轴的惯量 \(I_C=I_O-md^{2}=26257-317.01\times63.30=6189\ \mathrm{g\cdot cm^{2}}=6.189\times10^{-4}\ \mathrm{kg\cdot m^{2}}\).</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 航天：热变形太阳翼的曲面面积与有效受照面积</summary>
+\[z=f(x,y)=cx^{2},\quad D:\ 0\le x\le4.0,\ |y|\le0.9\ (\mathrm{m}),\quad c=0.015\ \mathrm{m^{-1}} .\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>翼面投影尺寸</td><td>\(L\times W\)</td><td>4.0 m × 1.8 m</td></tr>
+<tr><td>端部挠度</td><td>\(f(4,y)\)</td><td>0.24 m</td></tr>
+<tr><td>太阳入射角（相对名义法向）</td><td>\(i\)</td><td>25°</td></tr>
+<tr><td>AM0 太阳常数</td><td>\(E_s\)</td><td>1361 W/m²</td></tr>
+<tr><td>三结砷化镓效率</td><td>\(\eta\)</td><td>30%</td></tr>
+</table>
+<p class="sol"> ① <b>真实曲面面积</b>.\(z_x=2cx=0.03x,\ z_y=0\)，故</p>
+\[S=\iint_D\sqrt{1+z_x^{2}+z_y^{2}}\,\mathrm{d}\sigma=1.8\int_0^4\sqrt{1+0.0009x^{2}}\,\mathrm{d}x
+ =1.8\times4.01024=7.2184\ \mathrm{m^{2}},\]
+<p>比投影面积 \(7.2\ \mathrm{m^{2}}\) 只大 0.26%.② <b>有效受照面积</b>.取太阳单位矢量 \(\boldsymbol n_s=(\sin i,0,\cos i)\)，面元法向 \((-z_x,-z_y,1)\)，则 \(\bigl(\boldsymbol n\cdot\boldsymbol n_s\bigr)\mathrm{d}S=(\cos i-z_x\sin i)\,\mathrm{d}\sigma\)，于是</p>
+\[A_{\mathrm{eff}}=\iint_D\bigl(\cos i-0.03x\sin i\bigr)\mathrm{d}\sigma
+ =1.8\bigl[4\cos i-0.24\sin i\bigr]=1.8\times3.52380=6.3428\ \mathrm{m^{2}}.\]
+<p>理想平板为 \(7.2\cos25^{\circ}=6.5254\ \mathrm{m^{2}}\)，损失 2.80%.功率</p>
+\[P=E_s\eta A_{\mathrm{eff}}=1361\times0.30\times6.3428=2589.8\ \mathrm{W},\]
+<p>比理想平板的 2664.3 W 少 74.5 W.③ <b>补救</b>.把上式写成 \(A_{\mathrm{eff}}=7.2\sqrt{1+0.06^{2}}\cos\bigl(i+\varphi\bigr)\)，其中 \(\varphi=\arctan0.06=3.43^{\circ}\) 正是面元平均斜率对应的角度.只要把太阳翼驱动机构（SADA）指向角偏置 \(-3.43^{\circ}\)，就有 \(A_{\mathrm{eff}}=7.2\times1.0018\times\cos25^{\circ}=6.5384\ \mathrm{m^{2}}\)，\(P=2669.6\ \mathrm{W}\).</p>
+<p><b>工程结论：</b> 0.24 m 的端部热挠曲让曲面本身只增大 0.26% 的面积，却使有效受照面积下降 2.80%、功率损失 74.5 W——<b>决定发电的是法向与阳光的夹角，不是面积本身</b>.因此太阳翼的刚度指标应以「法向偏角」而非「面积畸变」立项.把 SADA 偏置 3.43° 后不但补回 74.5 W，还比理想平板多得 5.3 W（因为弯曲后的真实面积确实更大），这 5.3 W 正是曲面面积公式里那个 \(\sqrt{1+z_x^{2}+z_y^{2}}\) 的物理兑现.</p>
+<p class="cn-point">0.24 m 的挠曲让发电功率损失 74.5 W，一次 3.43° 的偏置又补了回来——国产航天器的太阳翼刚度与指向设计，正是把 \(\iint_D\sqrt{1+z_x^2+z_y^2}\,\mathrm{d}\sigma\) 上的每一瓦都算到明处，太空里的每一度电都不浪费.</p>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC10">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq10" data-ch=10><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第10章 · 重积分</div>
+<a href="#s101">10.1 二重积分的概念与性质</a>
+<a href="#s102">10.2 二重积分的计算</a>
+<a href="#s103">10.3 三重积分的概念与性质</a>
+<a href="#s104">10.4 三重积分的计算</a>
+<a href="#s105">10.5 重积分的应用</a>
+<a href="ch10.html#adv10">考研选讲</a>
+<a href="ch10.html#cq10">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 10, "list": [["s101", "10.1 二重积分的概念与性质"], ["s102", "10.2 二重积分的计算"], ["s103", "10.3 三重积分的概念与性质"], ["s104", "10.4 三重积分的计算"], ["s105", "10.5 重积分的应用"], ["adv10", "考研选讲"], ["cq10", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

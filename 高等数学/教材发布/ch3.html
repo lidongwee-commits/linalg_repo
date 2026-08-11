@@ -1,0 +1,3099 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第3章 · 一元函数微分学</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第3章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第3章 · 一元函数微分学</div>
+<a href="ch3.html">整章</a>
+<a href="ch3.html#adv3">考研选讲</a>
+<a href="ch3.html#cq3">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH3 -->
+<div class="kicker">Chapter 3</div>
+<h1 class="title">一元函数微分学<span class="en">Differential Calculus</span></h1>
+<p class="lede">微分学研究函数的局部变化率.本章从导数概念与几何意义出发，建立一整套求导法则，讨论高阶导数、隐函数与参数方程求导，并引入微分及其在近似计算中的应用.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>导数</b> → 车速 = 位置导数，自动跟车</li>
+<li><b>求导法则</b> → 反向传播的数学基础</li>
+<li><b>高阶导数</b> → jerk（加加速度）约束舒适性</li>
+<li><b>微分</b> → 传感器微小误差线性传播</li>
+  </ul>
+</div>
+
+    <!-- 已删除：与下方 cviz[data-viz=derivative-tangent] 重复 -->
+
+    <h2 id="s031"><span class="num">§3.1</span>导数的概念</h2>
+    
+<div class="ex"><div class="lab">引例一　无人驾驶紧急制动：0.1 秒里到底减速了多少</div>
+  <p class="stmt">一辆自动驾驶汽车以 \(20\,\mathrm{m/s}\)（\(72\,\mathrm{km/h}\)）行驶，感知系统识别到前方障碍，AEB（自动紧急制动）系统介入.制动过程中，车辆位移（单位：米）随时间（单位：秒）的实测拟合式为</p>
+  \[s(t)=20t-5t^{2}+0.5t^{3},\qquad 0\le t\le 3.\]
+  <p>控制器每 \(10\,\mathrm{ms}\) 刷新一次，它必须知道<b>此时此刻</b>的车速和减速度，而不是"过去 0.1 秒的平均值".问：\(t=1\,\mathrm{s}\) 时的车速是多少？</p>
+  <p>平均速度只能给出一个区间上的粗略值 \(\bar v=\dfrac{s(1+\Delta t)-s(1)}{\Delta t}\).把 \(\Delta t\) 一步步缩小：</p>
+  <table class="dt">
+    <tr><th>\(\Delta t\)（秒）</th><th>\(s(1+\Delta t)\)（米）</th><th>\(\Delta s=s(1+\Delta t)-s(1)\)</th><th>\(\bar v=\Delta s/\Delta t\)（\(\mathrm{m/s}\)）</th></tr>
+    <tr><td>0.5</td><td>20.4375</td><td>4.9375</td><td>9.875</td></tr>
+    <tr><td>0.2</td><td>17.6640</td><td>2.1640</td><td>10.820</td></tr>
+    <tr><td>0.1</td><td>16.6155</td><td>1.1155</td><td>11.155</td></tr>
+    <tr><td>0.01</td><td>15.6147</td><td>0.1147</td><td>11.465</td></tr>
+    <tr><td>0.001</td><td>15.5115</td><td>0.0115</td><td>11.4965</td></tr>
+  </table>
+  <p>（其中 \(s(1)=20-5+0.5=15.5\) 米.）数值明显趋向 \(11.5\,\mathrm{m/s}\).用极限精确刻画：</p>
+  \[v(1)=\lim_{\Delta t\to0}\frac{s(1+\Delta t)-s(1)}{\Delta t}=\lim_{\Delta t\to0}\bigl(11.5-3.5\Delta t+0.5\Delta t^{2}\bigr)=11.5\ \mathrm{m/s}.\]
+  <p><b>再看减速度.</b>由上式同理可得任意时刻速度 \(v(t)=20-10t+1.5t^{2}\).则 \(v(1)=11.5,\;v(1.1)=10.815\)，故 \([1,1.1]\) 上的<b>平均减速度</b>为</p>
+  \[\bar a=\frac{10.815-11.5}{0.1}=-6.85\ \mathrm{m/s^{2}},\]
+  <p>而 \(t=1\) 时的<b>瞬时减速度</b>为</p>
+  \[a(1)=\lim_{\Delta t\to0}\frac{v(1+\Delta t)-v(1)}{\Delta t}=\lim_{\Delta t\to0}\bigl(-7+1.5\Delta t\bigr)=-7.00\ \mathrm{m/s^{2}}.\]
+  <p>两者相差 \(0.15\,\mathrm{m/s^{2}}\)，相对偏差 \(2.1\%\).对以 \(100\,\mathrm{Hz}\) 闭环的制动控制器而言，这个偏差累积十几个周期就会造成数十厘米的刹停距离误差——<b>工程上必须用"瞬时变化率"，这正是导数.</b></p>
+</div>
+
+<div class="ex"><div class="lab">引例二　机器人关节的瞬时角速度</div>
+  <p class="stmt">六轴工业机器人的某关节按余弦加减速规律转动，编码器读到的角度（弧度）为 \(\theta(t)=\dfrac{\pi}{4}\Bigl(1-\cos\dfrac{\pi t}{2}\Bigr),\;0\le t\le2\).求 \(t=1\,\mathrm{s}\) 时的角速度.</p>
+  <p>编码器只能给出离散采样，控制器用差商估计角速度：</p>
+  <table class="dt">
+    <tr><th>采样间隔 \(\Delta t\)（秒）</th><th>\(\Delta\theta\)（弧度）</th><th>\(\Delta\theta/\Delta t\)（\(\mathrm{rad/s}\)）</th></tr>
+    <tr><td>0.10</td><td>0.122856</td><td>1.22856</td></tr>
+    <tr><td>0.05</td><td>0.061623</td><td>1.23246</td></tr>
+    <tr><td>0.01</td><td>0.012337</td><td>1.23374</td></tr>
+  </table>
+  <p>数值收敛到 \(1.2337\,\mathrm{rad/s}\).本章学完求导法则后可以直接算出精确值</p>
+  \[\omega(1)=\theta'(1)=\frac{\pi}{4}\cdot\frac{\pi}{2}\sin\frac{\pi}{2}=\frac{\pi^{2}}{8}=1.233700\ \mathrm{rad/s}.\]
+  <p>可见"差分估计"是导数的数值近似，而<b>导数是差分的极限</b>.采样越密，估计越准，但噪声放大也越严重——这就是机器人测速中著名的"差分噪声"难题，其根源正在于导数的定义式里 \(\Delta t\) 在分母上.</p>
+</div>
+
+<h3>一、导数的定义</h3>
+<p>上面两个引例的数学结构完全相同：都是<b>函数增量与自变量增量之比，在自变量增量趋于零时的极限</b>.把这个共同结构抽象出来，就得到导数.</p>
+
+<div class="def"><div class="lab"><span class="n">定义 3.1</span>导数</div>
+  <p>设函数 \(y=f(x)\) 在点 \(x_{0}\) 的某个邻域内有定义.当自变量在 \(x_{0}\) 处取得增量 \(\Delta x\)（且 \(x_{0}+\Delta x\) 仍在该邻域内）时，函数取得相应增量</p>
+  \[\Delta y=f(x_{0}+\Delta x)-f(x_{0}).\]
+  <p>若极限</p>
+  \[\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}=\lim_{\Delta x\to0}\frac{f(x_{0}+\Delta x)-f(x_{0})}{\Delta x}\]
+  <p>存在，则称 \(f(x)\) 在点 \(x_{0}\) 处<b>可导</b>，并称此极限值为 \(f(x)\) 在 \(x_{0}\) 处的<b>导数</b>，记作</p>
+  \[f'(x_{0}),\quad y'\Big|_{x=x_{0}},\quad \frac{\mathrm{d}y}{\mathrm{d}x}\Big|_{x=x_{0}},\quad \frac{\mathrm{d}f}{\mathrm{d}x}\Big|_{x=x_{0}}.\]
+  <p>若该极限不存在，则称 \(f(x)\) 在 \(x_{0}\) 处<b>不可导</b>.</p>
+</div>
+
+<div class="cviz" data-viz="derivative-tangent"></div>
+
+<div class="note"><b>导数定义的三副面孔（考试与解题时要能自由切换）：</b><br>
+① 增量形式　\(f'(x_0)=\lim\limits_{\Delta x\to0}\dfrac{f(x_0+\Delta x)-f(x_0)}{\Delta x}\)；<br>
+② 定点形式　\(f'(x_0)=\lim\limits_{x\to x_0}\dfrac{f(x)-f(x_0)}{x-x_0}\)（令 \(x=x_0+\Delta x\)）；<br>
+③ 通用形式　\(f'(x_0)=\lim\limits_{h\to0}\dfrac{f(x_0+h)-f(x_0)}{h}\).<br>
+三者本质一样.<b>要害在于：分子上两点的自变量之差，必须与分母完全一致.</b></div>
+
+<p>如果 \(f(x)\) 在开区间 \(I\) 内每一点都可导，则称 \(f\) 在 \(I\) 内可导.此时对每个 \(x\in I\) 都对应一个导数值 \(f'(x)\)，于是得到一个新函数，称为 \(f(x)\) 的<b>导函数</b>，简称导数，记作 \(f'(x)\) 或 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\).显然 \(f'(x_{0})=f'(x)\big|_{x=x_{0}}\).</p>
+
+<div class="def"><div class="lab"><span class="n">定义 3.2</span>左导数与右导数</div>
+  <p>称</p>
+  \[f'_{-}(x_{0})=\lim_{\Delta x\to0^{-}}\frac{f(x_{0}+\Delta x)-f(x_{0})}{\Delta x},\qquad
+    f'_{+}(x_{0})=\lim_{\Delta x\to0^{+}}\frac{f(x_{0}+\Delta x)-f(x_{0})}{\Delta x}\]
+  <p>分别为 \(f(x)\) 在 \(x_{0}\) 处的<b>左导数</b>与<b>右导数</b>，统称<b>单侧导数</b>.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 3.1</span>可导的充要条件</div>
+  <p>\(f(x)\) 在 \(x_{0}\) 处可导的充分必要条件是：左导数 \(f'_{-}(x_{0})\) 与右导数 \(f'_{+}(x_{0})\) 都存在且相等.此时 \(f'(x_{0})=f'_{-}(x_{0})=f'_{+}(x_{0})\).</p>
+  <p class="muted">这是第 2 章"极限存在 \(\Leftrightarrow\) 左右极限存在且相等"在差商上的直接应用.<b>凡遇分段函数在分界点求导，必须用单侧导数.</b></p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>按定义，\(f\) 在 \(x_0\) 可导即差商极限</p>
+\[f'(x_0)=\lim_{\Delta x\to0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}\]
+<p>存在.把 \(\Delta x\to0\) 拆成 \(\Delta x\to0^{-}\) 与 \(\Delta x\to0^{+}\) 两个单侧过程，由函数极限存在的充要条件（定理 2.5），该双侧极限存在当且仅当左、右极限</p>
+\[f'_{-}(x_0)=\lim_{\Delta x\to0^{-}}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x},\qquad
+f'_{+}(x_0)=\lim_{\Delta x\to0^{+}}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}\]
+<p>都存在且相等.此时 \(f'(x_0)=f'_{-}(x_0)=f'_{+}(x_0)\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>二、导数的几何意义与物理意义</h3>
+<p><b>几何意义.</b>在曲线 \(y=f(x)\) 上取定点 \(M_{0}(x_{0},f(x_{0}))\) 与动点 \(M(x_{0}+\Delta x,\,f(x_{0}+\Delta x))\)，割线 \(M_{0}M\) 的斜率为</p>
+\[k_{\text{割}}=\frac{\Delta y}{\Delta x}=\tan\varphi.\]
+<p>当 \(\Delta x\to0\) 时，\(M\) 沿曲线趋于 \(M_{0}\)，割线的极限位置就是曲线在 \(M_{0}\) 处的<b>切线</b>.因此</p>
+\[k_{\text{切}}=f'(x_{0})=\tan\alpha,\]
+<p>即：<b>导数 \(f'(x_{0})\) 就是曲线 \(y=f(x)\) 在点 \((x_{0},f(x_{0}))\) 处切线的斜率</b>，\(\alpha\) 为切线倾角.</p>
+<p>由此立即得到<b>切线方程</b>与<b>法线方程</b>：</p>
+\[\text{切线：}\;y-f(x_{0})=f'(x_{0})(x-x_{0});\qquad
+  \text{法线：}\;y-f(x_{0})=-\frac{1}{f'(x_{0})}(x-x_{0})\;\bigl(f'(x_{0})
+eq0\bigr).\]
+<p>若 \(f'(x_{0})=0\)，切线水平 \(y=f(x_{0})\)，法线竖直 \(x=x_{0}\)；若差商极限为 \(\infty\)，则切线竖直 \(x=x_{0}\).</p>
+
+<p><b>物理意义.</b>设质点作直线运动，位移函数为 \(s=s(t)\)，则 \(s'(t_{0})=v(t_{0})\) 是 \(t_{0}\) 时刻的<b>瞬时速度</b>；速度函数 \(v=v(t)\) 的导数 \(v'(t_{0})=a(t_{0})\) 是<b>瞬时加速度</b>.更一般地：</p>
+<table class="dt">
+  <tr><th>原函数</th><th>导数的物理含义</th><th>典型工程场景</th></tr>
+  <tr><td>位移 \(s(t)\)</td><td>速度 \(v=s'(t)\)</td><td>自动驾驶纵向控制</td></tr>
+  <tr><td>速度 \(v(t)\)</td><td>加速度 \(a=v'(t)\)</td><td>惯性导航 IMU 解算</td></tr>
+  <tr><td>电荷量 \(q(t)\)</td><td>电流 \(i=q'(t)\)</td><td>动力电池充放电管理</td></tr>
+  <tr><td>转角 \(\theta(t)\)</td><td>角速度 \(\omega=\theta'(t)\)</td><td>机器人关节伺服</td></tr>
+  <tr><td>浓度 \(c(t)\)</td><td>反应速率 \(c'(t)\)</td><td>生物制药发酵过程</td></tr>
+</table>
+<div class="note"><b>一句话：导数就是"变化率".</b>凡是要回答"某量随另一量变化得有多快"，答案都是导数.</div>
+
+<h3>三、用定义求导数</h3>
+<p>按定义求导分三步：<b>求增量 \(\Delta y\) → 算比值 \(\dfrac{\Delta y}{\Delta x}\) → 取极限</b>.</p>
+
+<div class="ex"><div class="lab">例 3.1　幂函数 \(y=x^{n}\)（\(n\) 为正整数）</div>
+  <p class="sol"><span class="mk">解</span>由二项式定理</p>
+  \[\Delta y=(x+\Delta x)^{n}-x^{n}=n x^{n-1}\Delta x+\frac{n(n-1)}{2}x^{n-2}(\Delta x)^{2}+\cdots+(\Delta x)^{n}.\]
+  <p>两边除以 \(\Delta x\)：</p>
+  \[\frac{\Delta y}{\Delta x}=n x^{n-1}+\frac{n(n-1)}{2}x^{n-2}\Delta x+\cdots+(\Delta x)^{n-1}.\]
+  <p>令 \(\Delta x\to0\)，除首项外各项均含 \(\Delta x\) 因子而趋于零，故</p>
+  \[(x^{n})'=n x^{n-1}.\]
+  <p class="muted">可以证明，对任意实数 \(\mu\) 都有 \((x^{\mu})'=\mu x^{\mu-1}\)（第 3.2 节用对数求导法给出一般证明）.特别地 \((\sqrt{x})'=\dfrac{1}{2\sqrt{x}}\)，\(\Bigl(\dfrac1x\Bigr)'=-\dfrac{1}{x^{2}}\)，\((C)'=0\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.2　正弦函数 \(y=\sin x\)</div>
+  <p class="sol"><span class="mk">解</span>用和差化积公式：</p>
+  \[\Delta y=\sin(x+\Delta x)-\sin x=2\cos\Bigl(x+\frac{\Delta x}{2}\Bigr)\sin\frac{\Delta x}{2}.\]
+  <p>于是</p>
+  \[\frac{\Delta y}{\Delta x}=\cos\Bigl(x+\frac{\Delta x}{2}\Bigr)\cdot\frac{\sin\dfrac{\Delta x}{2}}{\dfrac{\Delta x}{2}}.\]
+  <p>令 \(\Delta x\to0\)，第一个因子由 \(\cos\) 的连续性趋于 \(\cos x\)，第二个因子由重要极限趋于 \(1\)，故</p>
+  \[(\sin x)'=\cos x.\]
+  <p>同法可得 \((\cos x)'=-\sin x\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.3　指数函数 \(y=a^{x}\) 与对数函数 \(y=\log_{a}x\)（\(a\gt0,\;a
+eq1\)）</div>
+  <p class="sol"><span class="mk">解</span>（1）\(\Delta y=a^{x+\Delta x}-a^{x}=a^{x}\bigl(a^{\Delta x}-1\bigr)\).利用等价无穷小 \(a^{\Delta x}-1\sim\Delta x\ln a\;(\Delta x\to0)\)：</p>
+  \[\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}=a^{x}\lim_{\Delta x\to0}\frac{a^{\Delta x}-1}{\Delta x}=a^{x}\ln a,\]
+  <p>即 \((a^{x})'=a^{x}\ln a\).特别地 \((\mathrm{e}^{x})'=\mathrm{e}^{x}\)——<b>指数函数 \(\mathrm{e}^{x}\) 的导数就是它自己</b>，这是它在自然科学中无处不在的根本原因.</p>
+  <p>（2）\(\Delta y=\log_{a}(x+\Delta x)-\log_{a}x=\log_{a}\Bigl(1+\dfrac{\Delta x}{x}\Bigr)\).利用 \(\ln(1+u)\sim u\)：</p>
+  \[\frac{\Delta y}{\Delta x}=\frac{1}{\ln a}\cdot\frac{\ln\Bigl(1+\dfrac{\Delta x}{x}\Bigr)}{\Delta x}
+   \;\xrightarrow{\;\Delta x\to0\;}\;\frac{1}{\ln a}\cdot\frac{1}{x},\]
+  <p>即 \((\log_{a}x)'=\dfrac{1}{x\ln a}\)，特别地 \((\ln x)'=\dfrac1x\).</p>
+</div>
+
+<h3>四、可导与连续的关系</h3>
+<div class="def"><div class="lab"><span class="n">定理 3.2</span>可导必连续</div>
+  <p>若 \(f(x)\) 在点 \(x_{0}\) 处可导，则 \(f(x)\) 在 \(x_{0}\) 处必连续.</p>
+  <p class="sol"><span class="mk">证</span>由可导性，\(\lim\limits_{\Delta x\to0}\dfrac{\Delta y}{\Delta x}=f'(x_{0})\) 存在.于是</p>
+  \[\lim_{\Delta x\to0}\Delta y=\lim_{\Delta x\to0}\Bigl(\frac{\Delta y}{\Delta x}\cdot\Delta x\Bigr)
+   =f'(x_{0})\cdot0=0,\]
+  <p>即 \(\lim\limits_{\Delta x\to0}f(x_{0}+\Delta x)=f(x_{0})\)，故 \(f\) 在 \(x_{0}\) 连续.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(f\) 在 \(x_0\) 可导，即 \(\lim\limits_{\Delta x\to0}\dfrac{\Delta y}{\Delta x}=f'(x_0)\) 存在，其中 \(\Delta y=f(x_0+\Delta x)-f(x_0)\).于是</p>
+\[\lim_{\Delta x\to0}\Delta y
+=\lim_{\Delta x\to0}\left(\frac{\Delta y}{\Delta x}\cdot\Delta x\right)
+=\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}\cdot\lim_{\Delta x\to0}\Delta x
+=f'(x_0)\cdot0=0.\]
+<p>即 \(\lim\limits_{\Delta x\to0}[f(x_0+\Delta x)-f(x_0)]=0\)，亦即 \(\lim\limits_{\Delta x\to0}f(x_0+\Delta x)=f(x_0)\).故 \(f\) 在 \(x_0\) 处连续.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>逆命题不成立：连续未必可导.</b>可导是比连续<b>更强</b>的要求——连续只要求"曲线不断"，可导还要求"曲线光滑、有确定的切线方向".<br>
+常用逆否形式：<b>不连续 \(\Rightarrow\) 一定不可导.</b>做题时若发现分段点两侧函数值对不上，立刻可判不可导，无需再算差商.</div>
+
+<div class="ex"><div class="lab">例 3.4　连续但不可导的两个典型：尖点与竖直切线</div>
+  <p class="stmt">讨论 \(f(x)=|x|\) 与 \(g(x)=\sqrt[3]{x}\) 在 \(x=0\) 处的可导性.</p>
+  <p class="sol"><span class="mk">解</span>（1）\(f(x)=|x|\) 在 \(x=0\) 显然连续（\(f(0)=0\)，左右极限都为 \(0\)）.计算单侧导数：</p>
+  \[f'_{-}(0)=\lim_{\Delta x\to0^{-}}\frac{|\Delta x|-0}{\Delta x}=\lim_{\Delta x\to0^{-}}\frac{-\Delta x}{\Delta x}=-1,\qquad
+    f'_{+}(0)=\lim_{\Delta x\to0^{+}}\frac{\Delta x}{\Delta x}=1.\]
+  <p>因 \(f'_{-}(0)=-1
+eq1=f'_{+}(0)\)，由定理 3.1 知 \(f\) 在 \(0\) 处<b>不可导</b>.几何上，图像在原点形成一个<b>尖点（角点）</b>，左右切线方向不一致.</p>
+  <p>（2）\(g(x)=\sqrt[3]{x}=x^{1/3}\) 在 \(x=0\) 连续.计算差商：</p>
+  \[\lim_{\Delta x\to0}\frac{\sqrt[3]{\Delta x}-0}{\Delta x}=\lim_{\Delta x\to0}\frac{1}{(\Delta x)^{2/3}}=+\infty.\]
+  <p>极限为无穷，故 \(g\) 在 \(0\) 处<b>不可导</b>.但此时曲线在原点<b>有切线</b>，是<b>竖直切线 \(x=0\)</b>（倾角 \(\alpha=\dfrac{\pi}{2}\)，斜率不存在）.</p>
+  <p class="muted"><b>对比记忆：</b>\(|x|\) 是"有两条切线"，\(\sqrt[3]{x}\) 是"切线竖着立起来".两者都连续，都不可导，但原因不同.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.5　考研经典：确定参数使分段函数可导</div>
+  <p class="stmt">设 \(f(x)=\begin{cases}x^{2},&x\le1,\\ ax+b,&x\gt1,\end{cases}\) 问 \(a,b\) 取何值时 \(f(x)\) 在 \(x=1\) 处可导？</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：先用连续性定条件（可导必连续）.</b></p>
+  \[\lim_{x\to1^{-}}f(x)=1,\qquad \lim_{x\to1^{+}}f(x)=a+b,\qquad f(1)=1.\]
+  <p>连续要求 \(a+b=1\).</p>
+  <p><b>第二步：再用左右导数相等.</b>注意 \(f(1)=1\)，</p>
+  \[f'_{-}(1)=\lim_{x\to1^{-}}\frac{x^{2}-1}{x-1}=\lim_{x\to1^{-}}(x+1)=2,\]
+  \[f'_{+}(1)=\lim_{x\to1^{+}}\frac{(ax+b)-1}{x-1}=\lim_{x\to1^{+}}\frac{a(x-1)+(a+b-1)}{x-1}=a\quad(\text{已用 }a+b=1).\]
+  <p>令 \(f'_{-}(1)=f'_{+}(1)\) 得 \(a=2\)，代回 \(a+b=1\) 得 \(b=-1\).</p>
+  <p>故 \(\boxed{a=2,\;b=-1}\)，此时 \(f'(1)=2\).</p>
+  <p class="muted"><b>易错提醒：</b>不能上来就对两段分别求导再令 \(2x\big|_{x=1}=a\).那样做只是形式上凑答案，一旦连续性不满足（如 \(b\) 取错），左右导数根本无从谈起.<b>先连续、后可导，顺序不能颠倒.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.6　考研经典：由 \(f'(x_{0})\) 存在求相关极限</div>
+  <p class="stmt">设 \(f(x)\) 在 \(x_{0}\) 处可导，求 \(\displaystyle\lim_{h\to0}\frac{f(x_{0}+2h)-f(x_{0}-3h)}{h}\).</p>
+  <p class="sol"><span class="mk">解</span>关键技巧：<b>凑出定义式，分子分母的增量必须配套</b>.作"加一项减一项"：</p>
+  \[\frac{f(x_{0}+2h)-f(x_{0}-3h)}{h}
+   =\frac{\bigl[f(x_{0}+2h)-f(x_{0})\bigr]-\bigl[f(x_{0}-3h)-f(x_{0})\bigr]}{h}.\]
+  <p>对第一项配 \(2h\)，第二项配 \(-3h\)：</p>
+  \[=2\cdot\frac{f(x_{0}+2h)-f(x_{0})}{2h}+3\cdot\frac{f(x_{0}-3h)-f(x_{0})}{-3h}.\]
+  <p>令 \(h\to0\)，两个差商分别趋于 \(f'(x_{0})\)，故原极限 \(=2f'(x_{0})+3f'(x_{0})=5f'(x_{0})\).</p>
+  <p class="muted"><b>速算口诀：</b>\(\dfrac{f(x_0+\alpha h)-f(x_0+\beta h)}{h}\to(\alpha-\beta)f'(x_0)\).本题 \(\alpha=2,\beta=-3\)，答案 \(5f'(x_0)\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.7　可导但导函数不连续</div>
+  <p class="stmt">设 \(f(x)=\begin{cases}x^{2}\sin\dfrac1x,&x
+eq0,\\ 0,&x=0.\end{cases}\) 证明 \(f\) 在 \(x=0\) 可导，但 \(f'(x)\) 在 \(x=0\) 不连续.</p>
+  <p class="sol"><span class="mk">证</span>按定义</p>
+  \[f'(0)=\lim_{\Delta x\to0}\frac{(\Delta x)^{2}\sin\dfrac{1}{\Delta x}-0}{\Delta x}
+   =\lim_{\Delta x\to0}\Delta x\sin\frac{1}{\Delta x}=0,\]
+  <p>这里用了"无穷小乘有界量仍是无穷小".故 \(f'(0)=0\)，可导.</p>
+  <p>当 \(x
+eq0\) 时（用第 3.2 节法则）\(f'(x)=2x\sin\dfrac1x-\cos\dfrac1x\).当 \(x\to0\) 时，\(2x\sin\dfrac1x\to0\)，而 \(\cos\dfrac1x\) 在 \([-1,1]\) 内无限振荡，极限不存在.故 \(\lim\limits_{x\to0}f'(x)\) 不存在，\(f'\) 在 \(0\) 处不连续.</p>
+  <p class="muted">这说明：<b>可导 \(\Rightarrow\) 连续，但"可导"并不能保证"导函数连续".</b>导函数连续的函数称为<b>连续可微函数</b>（记作 \(C^{1}\) 类），这是比可导更强的条件，在数值优化与轨迹规划中被反复要求.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.8　切线与法线：自动驾驶的航向角</div>
+  <p class="stmt">车辆参考路径为 \(y=\dfrac{1}{20}x^{2}\)（单位：米）.求车辆行至 \(x=10\) 处时的切线（即瞬时航向）方程与法线（即横向偏差方向）方程，并求航向角.</p>
+  <p class="sol"><span class="mk">解</span>先求切点：\(y(10)=\dfrac{100}{20}=5\)，切点为 \((10,5)\).</p>
+  <p>由例 3.1，\(y'=\dfrac{1}{20}\cdot2x=\dfrac{x}{10}\)，故 \(k=y'(10)=1\).</p>
+  <p>切线方程：\(y-5=1\cdot(x-10)\)，即 \(x-y-5=0\).</p>
+  <p>法线方程：\(y-5=-1\cdot(x-10)\)，即 \(x+y-15=0\).</p>
+  <p>航向角 \(\alpha=\arctan1=45^{\circ}\).也就是说，此刻车头指向与 \(x\) 轴成 \(45^{\circ}\).<b>横向控制算法（如纯跟踪 Pure Pursuit）正是不断计算这个 \(\arctan f'(x)\) 来给出方向盘转角指令的.</b></p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · AEB 刹停距离：从导数到安全冗余的完整计算链</div>
+  <details><summary>展开查看：用导数把"能不能刹住"算成一个确定的数</summary>
+  <div class="body">
+    <p><b>场景：</b> 一辆开启 AEB（自动紧急制动）的轿车以 72 km/h 在城市快速路巡航.前方 40 米处，一辆突然加塞的自行车让毫米波雷达在一瞬间锁定了目标——接下来的 0.25 秒里，系统要完成"看到—判断—建压"，之后才是真正的刹车.<b>问题很实在：这 40 米，够不够把车停住？</b>这不是"感觉"，而是一个能被导数一路算到底的确定数.下面把这段距离拆成三段，一段一段算给你看.</p>
+    <p><b>第一段：感知与决策延迟.</b>激光雷达识别 \(t_{1}=0.05\,\mathrm{s}\)，融合判决 \(t_{2}=0.08\,\mathrm{s}\)，液压建压 \(t_{3}=0.12\,\mathrm{s}\)，合计延迟 \(t_{d}=0.25\,\mathrm{s}\).此阶段车速仍为 \(v_{0}=20\,\mathrm{m/s}\)，走过</p>
+    \[d_{1}=v_{0}t_{d}=20\times0.25=5.0\ \mathrm{m}.\]
+    <p><b>第二段：制动力建立段（非匀减速）.</b>取引例的模型 \(v(t)=20-10t+1.5t^{2}\)，其导数给出<b>瞬时减速度</b> \(a(t)=v'(t)=-10+3t\).列表看它如何变化：</p>
+    <table class="dt">
+      <tr><th>\(t\)（秒）</th><th>\(v(t)\)（\(\mathrm{m/s}\)）</th><th>\(a(t)=v'(t)\)（\(\mathrm{m/s^{2}}\)）</th><th>相当于</th></tr>
+      <tr><td>0.0</td><td>20.00</td><td>\(-10.00\)</td><td>\(1.02\,g\)</td></tr>
+      <tr><td>0.5</td><td>15.38</td><td>\(-8.50\)</td><td>\(0.87\,g\)</td></tr>
+      <tr><td>1.0</td><td>11.50</td><td>\(-7.00\)</td><td>\(0.71\,g\)</td></tr>
+      <tr><td>1.5</td><td>8.38</td><td>\(-5.50\)</td><td>\(0.56\,g\)</td></tr>
+      <tr><td>2.0</td><td>6.00</td><td>\(-4.00\)</td><td>\(0.41\,g\)</td></tr>
+    </table>
+    <p>（取 \(g=9.8\,\mathrm{m/s^{2}}\).）可见减速度<b>并非常数</b>——轮胎附着力随载荷转移、ABS 介入而变化.如果控制器错误地按"平均减速度 \(7\,\mathrm{m/s^{2}}\) 恒定"估算，就会低估前期制动能力、高估后期制动能力.</p>
+    <p><b>第三段：刹停时刻.</b>令 \(v(t)=0\)：</p>
+    \[1.5t^{2}-10t+20=0\;\Longrightarrow\;\Delta=100-120=-20\lt0,\]
+    <p>无实根！这说明该二次模型在整个区间内速度不会降到零——因为 \(v\) 的最小值在 \(t=\dfrac{10}{3}\) 处为 \(20-\dfrac{100}{3}+1.5\cdot\dfrac{100}{9}=3.33\,\mathrm{m/s}\).</p>
+    <p><b>工程结论：</b>该拟合模型只在 \(t\le2\,\mathrm{s}\) 有效，之后必须切换到"ABS 全力制动"模型 \(a=-8.5\,\mathrm{m/s^{2}}\) 恒定.从 \(t=2\,\mathrm{s}\)（\(v=6\,\mathrm{m/s}\)）到停止还需 \(\dfrac{6}{8.5}=0.706\,\mathrm{s}\)，再走 \(\dfrac{6^{2}}{2\times8.5}=2.12\,\mathrm{m}\).</p>
+    <p class="cn-point">这条链上每一段都可以再优化，唯独那 20% 的冗余不能省——把 31.1 米报成 37.3 米，多出的 6 米不是保守，而是把模型失效（\(t\gt2\,\mathrm{s}\) 二次式已经不成立）、路面湿滑、乘员反应一并算了进去.车规级安全从来不是"平均情况下能刹住"，而是"最坏情况下也刹得住".</p>
+    <p>三段合计（第二段位移 \(s(2)-s(0)=40-20+4=24\,\mathrm{m}\)）：</p>
+    \[D=d_{1}+24+2.12=5.0+24+2.12=31.12\ \mathrm{m}.\]
+    <p>所以：<b>72 km/h 下，本车总刹停距离约 31.1 米.</b>法规要求预留 \(20\%\) 安全冗余，故 AEB 的触发阈值应设为 \(31.12\times1.2\approx37.3\) 米.</p>
+    <p>整条链上，"减速度"这个最核心的量，从头到尾都是<b>速度函数的导数</b>.<b>没有导数，就没有一个数能被算出来.</b></p>
+  
+  
+<div style="margin:14px 0 6px 0;text-align:center">
+  <canvas id="ch3-aeb" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>车速 v₀ <input type="range" id="ch3-aeb-v" min="30" max="120" step="1" value="72"> <span id="ch3-aeb-v-t">72</span> km/h</label>
+  <label>减速度 a <input type="range" id="ch3-aeb-a" min="4" max="10" step="0.1" value="8.5"> <span id="ch3-aeb-a-t">8.5</span> m/s²</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch3-aeb-out"></div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch3-aeb'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||400;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var rangeV=document.getElementById('ch3-aeb-v'), vv=document.getElementById('ch3-aeb-v-t'),
+      rangeA=document.getElementById('ch3-aeb-a'), av=document.getElementById('ch3-aeb-a-t'),
+      out=document.getElementById('ch3-aeb-out');
+  function draw(){
+    if(!s) s=setup();
+    var ctx=s.ctx,W=s.W,H=s.H,mL=46,mR=16,mT=34,mB=48,pW=W-mL-mR,pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var v0=parseFloat(rangeV.value), a=parseFloat(rangeA.value);
+    vv.textContent=v0.toFixed(0); av.textContent=a.toFixed(1);
+    var v=v0/3.6, td=0.25;
+    var d1=v*td, d2=v*v/(2*a), D=d1+d2, trig=1.2*D;
+    var maxX=trig*1.12||60;
+    function X(x){ return mL+(x/maxX)*pW; }
+    var gy=mT+pH;
+    ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(mL,gy); ctx.lineTo(mL+pW,gy); ctx.stroke();
+    ctx.fillStyle='rgba(148,163,184,0.28)'; ctx.fillRect(mL,gy-26,X(d1)-mL,26);
+    ctx.fillStyle='rgba(15,110,86,0.22)'; ctx.fillRect(X(d1),gy-26,X(d2),26);
+    ctx.fillStyle='#0F6E56'; ctx.beginPath(); ctx.arc(mL,gy-13,7,0,6.28); ctx.fill();
+    ctx.fillStyle='#334155'; ctx.font='11px sans-serif'; ctx.textAlign='center'; ctx.fillText('本车', mL, gy+14);
+    var ox=X(D);
+    ctx.strokeStyle='#dc2626'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(ox,mT); ctx.lineTo(ox,gy); ctx.stroke();
+    ctx.fillStyle='#dc2626'; ctx.font='11px sans-serif'; ctx.textAlign='center'; ctx.fillText('\u969c\u788d\u7269', ox, gy+14);
+    var tx=X(trig);
+    ctx.strokeStyle='#f59e0b'; ctx.setLineDash([5,3]); ctx.beginPath(); ctx.moveTo(tx,mT); ctx.lineTo(tx,gy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#b45309'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('\u89e6\u53d1\u9608\u503c \u00d71.2', tx, mT-4);
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('\u53cd\u5e94\u6bb5 '+d1.toFixed(1)+'m', mL+4, gy-30);
+    ctx.fillText('\u5236\u52a8\u6bb5 '+d2.toFixed(1)+'m', X(d1)+4, gy-30);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('AEB \u5239\u505c\u8ddd\u79bb: D = v\u2080 t_d + v\u2080\u00b2/(2a)', mL, mT-14);
+    out.textContent='v\u2080='+v0.toFixed(0)+' km/h, a='+a.toFixed(1)+' \u2192 \u5239\u505c '+D.toFixed(1)+' m\uff0c\u89e6\u53d1\u9608\u503c '+trig.toFixed(1)+' m';
+  }
+  rangeV.addEventListener('input',draw); rangeA.addEventListener('input',draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</div>
+</details>
+</div>
+
+<!-- 已删除：乘积法则 viz-rules（太乱，用户确认删除）——概念已由正文矩形面积解释覆盖 -->
+
+<!--MODBEG-->
+
+<div class="case"><div class="lab">应用案例 · 脑灌注 CT：最大斜率法为什么怕采样太稀</div>
+<details><summary>展开查看：把「时间-密度曲线的导数」换算成脑血流量 CBF</summary>
+<div class="body">
+<p><b>场景：</b> 凌晨两点，急诊 CT 室的门被推开.一位突发偏瘫的患者送进机房，距离发病已经过去 3 小时 40 分钟——留给溶栓的时间窗只剩不到 90 分钟.碘造影剂团注下去，机器逐秒扫描，屏幕上每个体素都长出一条<b>时间-密度曲线</b> \(C(t)\)（单位 HU）.医生真正要读的不是曲线本身，而是它<b>爬升得有多陡</b>：临床上正是用<b>最大斜率法</b>把这个陡度换算成脑血流量</p>
+\[\mathrm{CBF}=\frac{\bigl(\mathrm{d}C/\mathrm{d}t\bigr)_{\max}}{C_{a,\max}}\times 6000
+  \quad\bigl[\mathrm{mL/(min\cdot 100g)}\bigr],\]
+<p>其中 \(C_{a,\max}\) 是动脉输入函数峰值.可见<b>诊断结论直接建立在一个导数值上</b>.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>组织 TDC 上升段拟合式</td><td>\(C(t)\)</td><td>\(-0.15t^{2}+3.6t-1.2\ \mathrm{HU}\)</td></tr>
+<tr><td>动脉峰值密度</td><td>\(C_{a,\max}\)</td><td>350 HU</td></tr>
+<tr><td>扫描采样间隔</td><td>\(\Delta t\)</td><td>1.0 s</td></tr>
+</table>
+<p class="sol"> 在 \(t=2\ \mathrm{s}\) 处按定义做差商，\(C(2)=5.400\)：</p>
+<table class="dt">
+<tr><th>\(\Delta t\)（s）</th><th>0.5</th><th>0.2</th><th>0.1</th><th>0.01</th></tr>
+<tr><td>\(C(2+\Delta t)\)</td><td>6.8625</td><td>5.9940</td><td>5.6985</td><td>5.429985</td></tr>
+<tr><td>差商（HU/s）</td><td>2.925</td><td>2.970</td><td>2.985</td><td>2.9985</td></tr>
+</table>
+<p>数值趋于极限 \(C'(2)=-0.3\times2+3.6=3.000\ \mathrm{HU/s}\)，于是</p>
+\[\mathrm{CBF}=\frac{3.000}{350}\times6000=51.43\ \mathrm{mL/(min\cdot 100g)}.\]
+<p>但机器只能按 \(\Delta t=1.0\ \mathrm{s}\) 采样，实际读到的是差商 \(\dfrac{C(3)-C(2)}{1}=\dfrac{8.25-5.40}{1}=2.85\).差值恰为</p>
+\[\bar v-C'(2)=\frac{C''}{2}\Delta t=\frac{-0.3}{2}\times1.0=-0.15\ \mathrm{HU/s},\]
+<p>相对偏差 \(5.0\%\)，据此算出的 \(\mathrm{CBF}=48.86\)，系统性偏低.</p>
+<p><b>工程结论：</b> 梗死核心的判读阈值约为 \(20\ \mathrm{mL/(min\cdot 100g)}\).真值 \(21.0\) 的半暗带体素被低估 \(5\%\) 后读成 \(19.95\)，就会被误标成"不可挽救的核心"，直接影响是否溶栓取栓.由于误差正比于 \(\Delta t\)，把采样间隔从 \(1.0\ \mathrm{s}\) 加密到 \(0.5\ \mathrm{s}\) 即可把偏差压到 \(2.5\%\)；更彻底的办法是先做曲线拟合再求<b>解析导数</b>——这就是所有商用 CTP 后处理软件都要"先拟合、后求导"的原因.</p>
+<p class="cn-point">一个 \(5\%\) 的差商偏差，落到病床上就是"救"与"不救"的分界.国产 CTP 后处理软件这些年能进三甲医院急诊，靠的正是把采样间隔、拟合模型、解析求导这些不起眼的环节逐项抠住——医疗软件的可靠性，最终就体现在"用差商还是用导数"这样朴素的取舍里.</p>
+  
+</div>
+</details>
+</div>
+
+<div class="case"><div class="lab">应用案例 · ReLU 的尖点：深度学习里的 \(|x|\)</div>
+<details><summary>展开查看：单侧导数如何决定激活函数与损失函数的选型</summary>
+<div class="body">
+<p><b>场景：</b> 训练跑到第 200 步，loss 一直掉得很顺，忽然某一步梯度打印出 NaN.你把代码翻了个遍，最后发现问题出在一个从没怀疑过的地方——全世界深度学习框架每天要调用上万亿次的 \(\mathrm{ReLU}(x)=\max(0,x)\)，恰恰在 \(x=0\) 这一个点上没有导数.它连续，却不可导.按定义 3.2 把左右导数算出来，就一清二楚了：</p>
+\[f'_{-}(0)=\lim_{\Delta x\to0^{-}}\frac{0-0}{\Delta x}=0,\qquad
+  f'_{+}(0)=\lim_{\Delta x\to0^{+}}\frac{\Delta x-0}{\Delta x}=1.\]
+<p>若要一个处处可导的替身，可用 Softplus \(s_{\beta}(x)=\dfrac{1}{\beta}\ln\bigl(1+\mathrm{e}^{\beta x}\bigr)\)，其导数为 Sigmoid \(\sigma(\beta x)\)，在 \(x=0\) 处等于 \(0.5\)（恰是左右导数 \(0\) 与 \(1\) 的平均）.逼近误差的最大值出现在原点，为 \(\dfrac{\ln 2}{\beta}\).</p>
+<table class="dt">
+<tr><th>\(\beta\)</th><th>1</th><th>5</th><th>10</th><th>20</th><th>100</th></tr>
+<tr><td>最大偏差 \(\ln2/\beta\)</td><td>0.6931</td><td>0.1386</td><td>0.0693</td><td>0.0347</td><td>0.0069</td></tr>
+<tr><td>原点处导数</td><td>0.5</td><td>0.5</td><td>0.5</td><td>0.5</td><td>0.5</td></tr>
+</table>
+<p class="sol"> 取 \(\beta=20\)：偏差 \(0.0347\)，相对于典型激活幅值 \(1.0\) 仅 \(3.5\%\)，而函数处处可导、导函数还连续（属 \(C^{1}\) 类）.代价是每次前向要算一次 \(\exp\) 与 \(\ln\)，约合 ReLU 的 20 倍时钟周期.</p>
+  
+</div>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s031" data-ch="3" data-n="5"></div>
+<h2 id="s032"><span class="num">§3.2</span>求导的运算法则</h2>
+    
+<div class="ex"><div class="lab">引例一　深度学习的反向传播，就是链式法则</div>
+  <p><b>网络结构</b>（每层 1 个神经元，隐层用 Sigmoid \(\sigma(z)=\dfrac{1}{1+\mathrm{e}^{-z}}\)，输出层为线性）：</p>
+  \[z_{1}=w_{1}x+b_{1},\quad a_{1}=\sigma(z_{1});\qquad
+    z_{2}=w_{2}a_{1}+b_{2},\quad a_{2}=\sigma(z_{2});\]
+  \[z_{3}=w_{3}a_{2}+b_{3},\quad \hat y=z_{3};\qquad L=\tfrac12(\hat y-y)^{2}.\]
+  <p><b>给定参数与样本：</b>\(x=1.0,\;y=1.0\)；\(w_{1}=0.8,\;b_{1}=0.2\)；\(w_{2}=1.5,\;b_{2}=-0.4\)；\(w_{3}=2.0,\;b_{3}=0.1\).</p>
+  <p><b>（一）前向传播（Forward）</b></p>
+  \[z_{1}=0.8\times1.0+0.2=1.0,\qquad a_{1}=\sigma(1.0)=\frac{1}{1+0.367879}=0.731059;\]
+  \[z_{2}=1.5\times0.731059-0.4=1.096588-0.4=0.696588,\qquad a_{2}=\sigma(0.696588)=0.667430;\]
+  \[z_{3}=2.0\times0.667430+0.1=1.434860=\hat y,\qquad
+    L=\tfrac12(1.434860-1.0)^{2}=\tfrac12(0.434860)^{2}=0.094551.\]
+  <p><b>（二）反向传播：把 \(L\) 看成 \(w\) 的复合函数</b></p>
+  <p>以最内层权重 \(w_{1}\) 为例，它经过了整整六层复合：</p>
+  \[w_{1}\;\longrightarrow\;z_{1}\;\longrightarrow\;a_{1}\;\longrightarrow\;z_{2}\;\longrightarrow\;a_{2}\;\longrightarrow\;z_{3}\;\longrightarrow\;L.\]
+  <p>链式法则说：<b>复合函数的导数等于各层导数之积.</b></p>
+  \[\frac{\partial L}{\partial w_{1}}
+   =\frac{\mathrm{d}L}{\mathrm{d}z_{3}}\cdot\frac{\mathrm{d}z_{3}}{\mathrm{d}a_{2}}
+    \cdot\frac{\mathrm{d}a_{2}}{\mathrm{d}z_{2}}\cdot\frac{\mathrm{d}z_{2}}{\mathrm{d}a_{1}}
+    \cdot\frac{\mathrm{d}a_{1}}{\mathrm{d}z_{1}}\cdot\frac{\mathrm{d}z_{1}}{\mathrm{d}w_{1}}.\]
+  <p>逐个因子求值（用到 \(\sigma'(z)=\sigma(z)\bigl(1-\sigma(z)\bigr)=a(1-a)\)）：</p>
+  \[\frac{\mathrm{d}L}{\mathrm{d}z_{3}}=\hat y-y=0.434860;\qquad \frac{\mathrm{d}z_{3}}{\mathrm{d}a_{2}}=w_{3}=2.0;\]
+  \[\frac{\mathrm{d}a_{2}}{\mathrm{d}z_{2}}=a_{2}(1-a_{2})=0.667430\times0.332570=0.221968;\qquad
+    \frac{\mathrm{d}z_{2}}{\mathrm{d}a_{1}}=w_{2}=1.5;\]
+  \[\frac{\mathrm{d}a_{1}}{\mathrm{d}z_{1}}=a_{1}(1-a_{1})=0.731059\times0.268941=0.196612;\qquad
+    \frac{\mathrm{d}z_{1}}{\mathrm{d}w_{1}}=x=1.0.\]
+  <p>连乘：</p>
+  \[\frac{\partial L}{\partial w_{1}}
+   =0.434860\times2.0\times0.221968\times1.5\times0.196612\times1.0=0.056934.\]
+  <table class="dt">
+    <tr><td>\(w_{3}\)</td><td>\(\delta_{3}\cdot a_{2}\)</td><td>\(0.434860\times0.667430\)</td><td>\(0.290239\)</td></tr>
+    <tr><td>\(b_{3}\)</td><td>\(\delta_{3}\cdot1\)</td><td>\(0.434860\)</td><td>\(0.434860\)</td></tr>
+    <tr><td>\(w_{2}\)</td><td>\(\delta_{2}\cdot a_{1}\)</td><td>\(0.193050\times0.731059\)</td><td>\(0.141131\)</td></tr>
+    <tr><td>\(b_{2}\)</td><td>\(\delta_{2}\cdot1\)</td><td>\(0.193050\)</td><td>\(0.193050\)</td></tr>
+    <tr><td>\(w_{1}\)</td><td>\(\delta_{1}\cdot x\)</td><td>\(0.056934\times1.0\)</td><td>\(0.056934\)</td></tr>
+    <tr><td>\(b_{1}\)</td><td>\(\delta_{1}\cdot1\)</td><td>\(0.056934\)</td><td>\(0.056934\)</td></tr>
+  </table>
+  <p>其中 \(\delta_{3}=\hat y-y=0.434860\)，\(\delta_{2}=\delta_{3}w_{3}\,a_{2}(1-a_{2})=0.434860\times2.0\times0.221968=0.193050\)，\(\delta_{1}=\delta_{2}w_{2}\,a_{1}(1-a_{1})=0.193050\times1.5\times0.196612=0.056934\).<b>这个"\(\delta\) 从后往前递推"的写法，就是反向传播算法本身.</b></p>
+  <p><b>（三）更新一步，看损失是否真的下降</b>（学习率 \(\eta=0.5\)，\(w\leftarrow w-\eta\,\partial L/\partial w\)）：</p>
+  \[w_{1}=0.771533,\;b_{1}=0.171533;\quad w_{2}=1.429435,\;b_{2}=-0.496525;\quad w_{3}=1.854881,\;b_{3}=-0.117430.\]
+  <p>重新前向：\(z_{1}=0.943066,\;a_{1}=0.719719\)；\(z_{2}=0.532267,\;a_{2}=0.630012\)；\(\hat y=z_{3}=1.051167\).新损失</p>
+  \[L_{\text{新}}=\tfrac12(1.051167-1)^{2}=0.001309.\]
+  <p>损失从 \(0.094551\) 降到 \(0.001309\)，<b>一步就降了 98.6%</b>.今天所有大模型的训练，无论参数量是一亿还是一万亿，每一步做的事情<b>就是把上面这套链式法则重复几十亿次</b>.链式法则不是一条抽象定理，它是整个人工智能产业的计算内核.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　动力电池包的功率变化率：乘积法则</div>
+  <p class="stmt">某电动车动力电池在快充阶段，端电压与电流随时间变化（\(t\) 单位：秒）：\(U(t)=400-0.5t\ \mathrm{V}\)，\(I(t)=100+2t\ \mathrm{A}\).BMS（电池管理系统）需要监控充电功率 \(P=UI\) 的<b>变化率</b>，以防功率突变损伤电芯.求 \(t=10\,\mathrm{s}\) 时的 \(P'(t)\).</p>
+  <p class="sol"><span class="mk">解</span>\(P\) 是两个函数的乘积，不能用"分别求导再相乘"（那会得到 \(-0.5\times2=-1\)，完全错误）.正确的是<b>乘积法则</b> \((UI)'=U'I+UI'\)：</p>
+  \[U(10)=395\ \mathrm{V},\quad I(10)=120\ \mathrm{A},\quad U'=-0.5,\quad I'=2.\]
+  \[P'(10)=(-0.5)\times120+395\times2=-60+790=730\ \mathrm{W/s}.\]
+  <p>而此刻功率 \(P(10)=395\times120=47400\,\mathrm{W}=47.4\,\mathrm{kW}\).</p>
+  <p>结论：功率正以每秒 \(730\,\mathrm{W}\) 的速度上升，约合每秒增长 \(1.54\%\).若 BMS 设定的功率爬升上限是 \(1000\,\mathrm{W/s}\)，则当前工况安全.<b>请注意 \(-60\) 与 \(+790\) 这两项的物理含义：前者是"电压下降拖累功率"，后者是"电流上升拉升功率".乘积法则的两项，恰恰对应两个物理因素的独立贡献——这就是它的深刻之处.</b></p>
+</div>
+
+<h3>一、导数的四则运算法则</h3>
+<div class="def"><div class="lab"><span class="n">定理 3.3</span>四则运算求导法则</div>
+  <p>设 \(u=u(x),\;v=v(x)\) 都在点 \(x\) 处可导，则</p>
+  \[(1)\;\;(u\pm v)'=u'\pm v';\qquad (2)\;\;(uv)'=u'v+uv';\]
+  \[(3)\;\;(Cu)'=Cu'\;(C\text{ 为常数});\qquad
+    (4)\;\;\Bigl(\frac{u}{v}\Bigr)'=\frac{u'v-uv'}{v^{2}}\;\bigl(v(x)
+eq0\bigr).\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>以下均在某点 \(x\) 处，\(u=u(x),v=v(x)\) 可导.记 \(u'=u'(x),v'=v'(x)\).</p>
+<p><span class="stp">① 和差：</span>由导数定义</p>
+\[(u\pm v)'=\lim_{h\to0}\frac{[u(x+h)\pm v(x+h)]-[u(x)\pm v(x)]}{h}
+=\lim_{h\to0}\frac{u(x+h)-u(x)}{h}\pm\lim_{h\to0}\frac{v(x+h)-v(x)}{h}=u'\pm v'.\]
+<p><span class="stp">② 乘积：</span></p>
+\[(uv)'=\lim_{h\to0}\frac{u(x+h)v(x+h)-u(x)v(x)}{h}.\]
+<p>加一项减一项：</p>
+\[\frac{u(x+h)v(x+h)-u(x)v(x)}{h}
+=\frac{u(x+h)[v(x+h)-v(x)]+v(x)[u(x+h)-u(x)]}{h}
+=u(x+h)\frac{\Delta v}{h}+v(x)\frac{\Delta u}{h}.\]
+<p>令 \(h\to0\)，因 \(u\) 可导必连续（定理 3.2），\(u(x+h)\to u(x)\)，而 \(\dfrac{\Delta v}{h}\to v'\)、\(\dfrac{\Delta u}{h}\to u'\)，故</p>
+\[(uv)'=u v'+v u'.\]
+<p>取 \(v\equiv C\) 得 \((Cu)'=Cu'\).</p>
+<p><span class="stp">④ 商（\(v
+eq0\)）：</span></p>
+\[\left(\frac{u}{v}\right)'=\lim_{h\to0}\frac{\dfrac{u(x+h)}{v(x+h)}-\dfrac{u(x)}{v(x)}}{h}
+=\lim_{h\to0}\frac{u(x+h)v(x)-u(x)v(x+h)}{v(x+h)v(x)\,h}.\]
+<p>分子 \(=v(x)[u(x+h)-u(x)]-u(x)[v(x+h)-v(x)]\)，除以 \(h\) 后取极限得</p>
+\[\left(\frac{u}{v}\right)'=\frac{v u'-u v'}{v^2}.\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="case"><div class="lab">应用探微 · 乘积法则与商法则的证明</div>
+  <details><summary>展开查看：为什么 \((uv)'
+eq u'v'\)</summary>
+  <div class="body">
+    <p><b>乘积法则.</b>记 \(y=uv\)，则</p>
+    \[\Delta y=u(x+\Delta x)v(x+\Delta x)-u(x)v(x).\]
+    <p>关键一步是<b>"加一项减一项"</b>，把混合增量拆成两个单独的增量：</p>
+    \[\Delta y=\bigl[u(x+\Delta x)-u(x)\bigr]v(x+\Delta x)+u(x)\bigl[v(x+\Delta x)-v(x)\bigr]
+     =\Delta u\cdot v(x+\Delta x)+u(x)\cdot\Delta v.\]
+    <p>除以 \(\Delta x\) 并令 \(\Delta x\to0\).由 \(v\) 可导必连续知 \(v(x+\Delta x)\to v(x)\)，故</p>
+    \[(uv)'=u'v+uv'.\]
+    <p>几何直观：把 \(uv\) 看成矩形面积，边长各增加 \(\Delta u,\Delta v\)，面积增量 \(=v\Delta u+u\Delta v+\Delta u\Delta v\).前两项是"两条长条"，末项是"小角块"，是 \(\Delta x\) 的高阶无穷小，取极限时消失.<b>这就是 \((uv)'\) 有两项而不是一项的原因.</b></p>
+    <p><b>商法则.</b>先证 \(\Bigl(\dfrac1v\Bigr)'\)：</p>
+    \[\frac{\Delta\bigl(\frac1v\bigr)}{\Delta x}=\frac{1}{\Delta x}\Bigl[\frac{1}{v(x+\Delta x)}-\frac{1}{v(x)}\Bigr]
+     =-\frac{1}{v(x+\Delta x)v(x)}\cdot\frac{\Delta v}{\Delta x}\;\longrightarrow\;-\frac{v'}{v^{2}}.\]
+    <p>再由乘积法则 \(\Bigl(\dfrac{u}{v}\Bigr)'=\Bigl(u\cdot\dfrac1v\Bigr)'=u'\cdot\dfrac1v+u\cdot\Bigl(-\dfrac{v'}{v^{2}}\Bigr)=\dfrac{u'v-uv'}{v^{2}}\).</p>
+    <p class="muted"><b>推广：</b>三因子乘积 \((uvw)'=u'vw+uv'w+uvw'\)——"每次只对一个因子求导，其余照抄，再全部相加".这条规律在 \(n\) 个因子时同样成立，也是对数求导法的雏形.</p>
+  </div>
+  </details>
+</div>
+
+<div class="ex"><div class="lab">例 3.9　四则法则的直接应用</div>
+  <p class="stmt">求下列函数的导数：(1) \(y=3x^{4}-\dfrac{2}{x}+5\sqrt{x}-7\)；(2) \(y=x^{2}\mathrm{e}^{x}\ln x\).</p>
+  <p class="sol"><span class="mk">解</span>(1) 先把各项写成幂函数标准形式 \(y=3x^{4}-2x^{-1}+5x^{1/2}-7\)，逐项求导：</p>
+  \[y'=12x^{3}+2x^{-2}+\frac52x^{-1/2}=12x^{3}+\frac{2}{x^{2}}+\frac{5}{2\sqrt{x}}.\]
+  <p>(2) 三因子乘积，用推广的乘积法则：</p>
+  \[y'=(x^{2})'\mathrm{e}^{x}\ln x+x^{2}(\mathrm{e}^{x})'\ln x+x^{2}\mathrm{e}^{x}(\ln x)'
+   =2x\mathrm{e}^{x}\ln x+x^{2}\mathrm{e}^{x}\ln x+x\mathrm{e}^{x}.\]
+  <p>整理得 \(y'=x\mathrm{e}^{x}\bigl[(x+2)\ln x+1\bigr]\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.10　用商法则导出正切与正割的导数</div>
+  <p class="sol"><span class="mk">解</span>\(\tan x=\dfrac{\sin x}{\cos x}\)，由商法则</p>
+  \[(\tan x)'=\frac{(\sin x)'\cos x-\sin x(\cos x)'}{\cos^{2}x}
+   =\frac{\cos^{2}x+\sin^{2}x}{\cos^{2}x}=\frac{1}{\cos^{2}x}=\sec^{2}x.\]
+  <p>\(\sec x=\dfrac{1}{\cos x}\)，同理</p>
+  \[(\sec x)'=\frac{0\cdot\cos x-1\cdot(-\sin x)}{\cos^{2}x}=\frac{\sin x}{\cos^{2}x}=\sec x\tan x.\]
+  <p>类似可得 \((\cot x)'=-\csc^{2}x\)，\((\csc x)'=-\csc x\cot x\).</p>
+</div>
+
+<h3>二、反函数的求导法则</h3>
+<div class="def"><div class="lab"><span class="n">定理 3.4</span>反函数求导法则</div>
+  <p>设 \(x=\varphi(y)\) 在区间 \(I_{y}\) 内单调、可导，且 \(\varphi'(y)
+eq0\)，则它的反函数 \(y=f(x)\) 在对应区间 \(I_{x}\) 内可导，且</p>
+  \[f'(x)=\frac{1}{\varphi'(y)},\qquad\text{即}\qquad \frac{\mathrm{d}y}{\mathrm{d}x}=\frac{1}{\dfrac{\mathrm{d}x}{\mathrm{d}y}}.\]
+  <p class="muted">证明要点：由单调性，\(\Delta x
+eq0\Leftrightarrow\Delta y
+eq0\)，且 \(\Delta x\to0\Leftrightarrow\Delta y\to0\)（连续性）.于是 \(\dfrac{\Delta y}{\Delta x}=\dfrac{1}{\Delta x/\Delta y}\)，两边取极限即得.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(x=\varphi(y)\) 在 \(I_y\) 内单调、可导且 \(\varphi'(y)
+eq0\)，其反函数为 \(y=f(x)\).</p>
+<p><span class="stp">思路：</span>因为 \(\varphi\) 可导必连续（定理 3.2），所以当自变量 \(y\) 变动趋于 \(y_0\) 时，对应的 \(x=\varphi(y)\) 也趋于 \(x_0\)，且 \(\Delta x
+eq0\Leftrightarrow\Delta y
+eq0\).</p>
+<p><span class="stp">证明：</span>由差分关系</p>
+\[\frac{\Delta y}{\Delta x}=\frac{1}{\dfrac{\Delta x}{\Delta y}}
+=\frac{1}{\dfrac{\varphi(y+\Delta y)-\varphi(y)}{\Delta y}}.\]
+<p>令 \(\Delta y\to0\)，则 \(\Delta x\to0\)（连续性），且 \(\dfrac{\Delta x}{\Delta y}\to\varphi'(y)
+eq0\).于是</p>
+\[f'(x)=\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}
+=\frac{1}{\lim_{\Delta y\to0}\dfrac{\Delta x}{\Delta y}}
+=\frac{1}{\varphi'(y)},\]
+<p>即 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{1}{\dfrac{\mathrm{d}x}{\mathrm{d}y}}\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>口诀：反函数的导数，等于原函数导数的倒数.</b>几何上，\(y=f(x)\) 与 \(x=\varphi(y)\) 是同一条曲线，只是 \(x,y\) 角色互换；切线的斜率 \(\tan\alpha\) 与 \(\tan\bigl(\frac{\pi}{2}-\alpha\bigr)=\cot\alpha\) 互为倒数.</div>
+
+<div class="ex"><div class="lab">例 3.11　导出反三角函数的导数</div>
+  <p class="sol"><span class="mk">解</span>（1）\(y=\arcsin x,\;x\in(-1,1)\).其反函数是 \(x=\sin y,\;y\in\bigl(-\frac{\pi}{2},\frac{\pi}{2}\bigr)\)，在该区间上 \(\dfrac{\mathrm{d}x}{\mathrm{d}y}=\cos y\gt0\).故</p>
+  \[(\arcsin x)'=\frac{1}{\cos y}=\frac{1}{\sqrt{1-\sin^{2}y}}=\frac{1}{\sqrt{1-x^{2}}}.\]
+  <p>（这里取正根，因为 \(y\in\bigl(-\frac{\pi}{2},\frac{\pi}{2}\bigr)\) 时 \(\cos y\gt0\).）</p>
+  <p>（2）\(y=\arctan x,\;x\in\mathbb{R}\).反函数 \(x=\tan y,\;y\in\bigl(-\frac{\pi}{2},\frac{\pi}{2}\bigr)\)，\(\dfrac{\mathrm{d}x}{\mathrm{d}y}=\sec^{2}y=1+\tan^{2}y=1+x^{2}\).故</p>
+  \[(\arctan x)'=\frac{1}{1+x^{2}}.\]
+  <p>同法得 \((\arccos x)'=-\dfrac{1}{\sqrt{1-x^{2}}}\)，\((\mathrm{arccot}\,x)'=-\dfrac{1}{1+x^{2}}\).</p>
+</div>
+
+<h3>三、复合函数的求导法则（链式法则）</h3>
+<div class="def"><div class="lab"><span class="n">定理 3.5</span>链式法则</div>
+  <p>设 \(u=g(x)\) 在点 \(x\) 处可导，\(y=f(u)\) 在对应点 \(u=g(x)\) 处可导，则复合函数 \(y=f\bigl[g(x)\bigr]\) 在点 \(x\) 处可导，且</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\mathrm{d}y}{\mathrm{d}u}\cdot\frac{\mathrm{d}u}{\mathrm{d}x},
+    \qquad\text{即}\qquad \bigl\{f[g(x)]\bigr\}'=f'\bigl[g(x)\bigr]\cdot g'(x).\]
+  <p class="muted"><b>证明要点：</b>当 \(\Delta u
+eq0\) 时 \(\dfrac{\Delta y}{\Delta x}=\dfrac{\Delta y}{\Delta u}\cdot\dfrac{\Delta u}{\Delta x}\).由 \(g\) 可导必连续，\(\Delta x\to0\Rightarrow\Delta u\to0\)，两个因子分别趋于 \(f'(u)\) 与 \(g'(x)\).（\(\Delta u=0\) 的情形需引入 \(\alpha(\Delta u)\to0\) 的增量表示式作补充论证.）</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(u=g(x)\) 在 \(x\) 可导，\(y=f(u)\) 在 \(u=g(x)\) 可导.</p>
+<p><span class="stp">思路：</span>因 \(g\) 可导必连续，\(\Delta x\to0\Rightarrow\Delta u\to0\).把 \(\Delta y\) 用 \(f\) 在 \(u\) 处的微分线性近似表出，再除以 \(\Delta x\) 取极限.关键是 \(\Delta u=0\) 时也要补上.</p>
+<p><span class="stp">第一步（写出增量式）：</span>由 \(f\) 在 \(u\) 可导，存在 \(\alpha(\Delta u)\to0\;(\Delta u\to0)\) 使</p>
+\[\Delta y=f'(u)\Delta u+\alpha(\Delta u)\Delta u,\]
+<p>且当 \(\Delta u=0\) 时约定 \(\alpha(0)=0\)（此时 \(\Delta y=0\)，式子仍成立）.</p>
+<p><span class="stp">第二步（除以 \(\Delta x\) 取极限）：</span>当 \(\Delta x
+eq0\) 时</p>
+\[\frac{\Delta y}{\Delta x}=f'(u)\frac{\Delta u}{\Delta x}+\alpha(\Delta u)\frac{\Delta u}{\Delta x}.\]
+<p>令 \(\Delta x\to0\)，由 \(g\) 连续得 \(\Delta u\to0\)，故 \(\alpha(\Delta u)\to0\)；又 \(\dfrac{\Delta u}{\Delta x}\to g'(x)\).于是</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=f'(u)g'(x)=f'[g(x)]\,g'(x).\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>链式法则可以无限延伸.</b>若 \(y=f(u),\;u=\varphi(v),\;v=\psi(x)\)，则
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\mathrm{d}y}{\mathrm{d}u}\cdot\frac{\mathrm{d}u}{\mathrm{d}v}\cdot\frac{\mathrm{d}v}{\mathrm{d}x}.\]
+<b>形式上就像分数连乘"逐层约分"，这正是莱布尼茨记号 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 的巧妙之处.</b>解题口诀：<b>由外向内，一层层剥，剥一层乘一层，直到剥到 \(x\).</b></div>
+
+<div class="ex"><div class="lab">例 3.12　链式法则基础训练</div>
+  <p class="stmt">求导：(1) \(y=\sin(2x+1)\)；(2) \(y=\mathrm{e}^{x^{2}}\)；(3) \(y=(1+x^{2})^{10}\)；(4) \(y=\ln\cos x\).</p>
+  <p class="sol"><span class="mk">解</span>(1) 设 \(u=2x+1\)，\(y=\sin u\)：\(y'=\cos u\cdot2=2\cos(2x+1)\).</p>
+  <p>(2) 设 \(u=x^{2}\)，\(y=\mathrm{e}^{u}\)：\(y'=\mathrm{e}^{u}\cdot2x=2x\mathrm{e}^{x^{2}}\).</p>
+  <p>(3) 设 \(u=1+x^{2}\)，\(y=u^{10}\)：\(y'=10u^{9}\cdot2x=20x(1+x^{2})^{9}\).</p>
+  <p>(4) 设 \(u=\cos x\)，\(y=\ln u\)：\(y'=\dfrac1u\cdot(-\sin x)=-\tan x\).</p>
+  <p class="muted">熟练后可以不写中间变量，直接"从外往里剥".</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.13　多层复合（四层）</div>
+  <p class="stmt">求 \(y=\ln\cos\bigl(\arctan \mathrm{e}^{x}\bigr)\) 的导数.</p>
+  <p class="sol"><span class="mk">解</span>层次分解：\(y=\ln u,\;u=\cos v,\;v=\arctan w,\;w=\mathrm{e}^{x}\).逐层求导：</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}u}=\frac1u,\quad
+    \frac{\mathrm{d}u}{\mathrm{d}v}=-\sin v,\quad
+    \frac{\mathrm{d}v}{\mathrm{d}w}=\frac{1}{1+w^{2}},\quad
+    \frac{\mathrm{d}w}{\mathrm{d}x}=\mathrm{e}^{x}.\]
+  <p>连乘并回代：</p>
+  \[y'=\frac{1}{\cos v}\cdot(-\sin v)\cdot\frac{1}{1+\mathrm{e}^{2x}}\cdot \mathrm{e}^{x}
+   =-\tan\bigl(\arctan \mathrm{e}^{x}\bigr)\cdot\frac{\mathrm{e}^{x}}{1+\mathrm{e}^{2x}}.\]
+  <p>注意 \(\tan(\arctan \mathrm{e}^{x})=\mathrm{e}^{x}\)，故</p>
+  \[y'=-\frac{\mathrm{e}^{2x}}{1+\mathrm{e}^{2x}}.\]
+  <p class="muted">结果如此简洁，是"最后化简"带来的红利.<b>多层复合题目务必先把链条写完整再化简，中途化简极易出错.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.14　含根式的复合</div>
+  <p class="stmt">求 \(y=\ln\bigl(x+\sqrt{x^{2}+1}\bigr)\) 的导数.</p>
+  <p class="sol"><span class="mk">解</span>外层是 \(\ln\)，内层是 \(x+\sqrt{x^{2}+1}\)：</p>
+  \[y'=\frac{1}{x+\sqrt{x^{2}+1}}\cdot\Bigl(1+\frac{2x}{2\sqrt{x^{2}+1}}\Bigr)
+   =\frac{1}{x+\sqrt{x^{2}+1}}\cdot\frac{\sqrt{x^{2}+1}+x}{\sqrt{x^{2}+1}}.\]
+  <p>分子中的 \(\sqrt{x^{2}+1}+x\) 与分母的 \(x+\sqrt{x^{2}+1}\) 相消，得</p>
+  \[y'=\frac{1}{\sqrt{x^{2}+1}}.\]
+  <p class="muted">这个函数就是反双曲正弦 \(\mathrm{arsinh}\,x\).它在概率论、相对论与信号处理中经常出现，其导数形式之简洁值得牢记.</p>
+</div>
+
+<h3>四、基本初等函数导数表</h3>
+<p>下表是全部微分学的"字母表"，必须做到看到即写出.</p>
+<table class="dt">
+  <tr><th>函数</th><th>导数</th><th>函数</th><th>导数</th></tr>
+  <tr><td>\(C\)（常数）</td><td>\(0\)</td><td>\(\tan x\)</td><td>\(\sec^{2}x=\dfrac{1}{\cos^{2}x}\)</td></tr>
+  <tr><td>\(x^{\mu}\)</td><td>\(\mu x^{\mu-1}\)</td><td>\(\cot x\)</td><td>\(-\csc^{2}x=-\dfrac{1}{\sin^{2}x}\)</td></tr>
+  <tr><td>\(a^{x}\)</td><td>\(a^{x}\ln a\)</td><td>\(\sec x\)</td><td>\(\sec x\tan x\)</td></tr>
+  <tr><td>\(\mathrm{e}^{x}\)</td><td>\(\mathrm{e}^{x}\)</td><td>\(\csc x\)</td><td>\(-\csc x\cot x\)</td></tr>
+  <tr><td>\(\log_{a}x\)</td><td>\(\dfrac{1}{x\ln a}\)</td><td>\(\arcsin x\)</td><td>\(\dfrac{1}{\sqrt{1-x^{2}}}\)</td></tr>
+  <tr><td>\(\ln x\)</td><td>\(\dfrac1x\)</td><td>\(\arccos x\)</td><td>\(-\dfrac{1}{\sqrt{1-x^{2}}}\)</td></tr>
+  <tr><td>\(\sin x\)</td><td>\(\cos x\)</td><td>\(\arctan x\)</td><td>\(\dfrac{1}{1+x^{2}}\)</td></tr>
+  <tr><td>\(\cos x\)</td><td>\(-\sin x\)</td><td>\(\mathrm{arccot}\,x\)</td><td>\(-\dfrac{1}{1+x^{2}}\)</td></tr>
+  <tr><td>\(\sinh x\)</td><td>\(\cosh x\)</td><td>\(\cosh x\)</td><td>\(\sinh x\)</td></tr>
+</table>
+<div class="note"><b>三条对称规律，帮你减一半记忆量：</b>①「余」字头的导数都带负号（\(\cos,\cot,\csc,\arccos,\mathrm{arccot}\)）；②反三角函数的导数都是<b>代数式</b>（不含三角），这是"超越函数求导变代数函数"的奇妙现象；③ \(\arcsin\) 与 \(\arccos\)、\(\arctan\) 与 \(\mathrm{arccot}\) 的导数只差一个负号，因为 \(\arcsin x+\arccos x\equiv\dfrac{\pi}{2}\).</div>
+
+<h3>五、对数求导法</h3>
+<p>对于<b>幂指函数</b> \(y=u(x)^{v(x)}\) 与<b>多因子连乘连除</b>的函数，直接求导极其繁琐.此时可先取对数把乘除化为加减、把指数化为乘积，再两边求导.这种方法称为<b>对数求导法</b>.</p>
+
+<div class="ex"><div class="lab">例 3.15　幂指函数 \(y=x^{x}\)（\(x\gt0\)）</div>
+  <p class="sol"><span class="mk">解</span><b>错误做法警示：</b>既不能按幂函数写成 \(x\cdot x^{x-1}\)，也不能按指数函数写成 \(x^{x}\ln x\)——因为底数与指数<b>都在变</b>.</p>
+  <p><b>方法一（对数求导法）：</b>两边取自然对数 \(\ln y=x\ln x\).两边对 \(x\) 求导（左边用链式法则，注意 \(y\) 是 \(x\) 的函数）：</p>
+  \[\frac{1}{y}\cdot y'=\ln x+x\cdot\frac1x=\ln x+1.\]
+  <p>故 \(y'=y(\ln x+1)=x^{x}(\ln x+1)\).</p>
+  <p><b>方法二（指数化）：</b>\(y=x^{x}=\mathrm{e}^{x\ln x}\)，由链式法则</p>
+  \[y'=\mathrm{e}^{x\ln x}\cdot(x\ln x)'=x^{x}(\ln x+1).\]
+  <p>两法结果一致.<b>方法二更"机械"，推荐作为通法：一切幂指函数都先写成 \(u^{v}=\mathrm{e}^{v\ln u}\).</b></p>
+  <p class="muted">顺带验证：\(y'=0\) 时 \(\ln x=-1\)，即 \(x=\mathrm{e}^{-1}\approx0.3679\)，此处 \(y=\mathrm{e}^{-1/\mathrm{e}}\approx0.6922\) 是 \(x^{x}\) 的最小值.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.16　一般幂指函数 \(y=(\sin x)^{\cos x}\)（\(\sin x\gt0\)）</div>
+  <p class="sol"><span class="mk">解</span>写成指数形式 \(y=\mathrm{e}^{\cos x\cdot\ln\sin x}\).求指数部分的导数：</p>
+  \[\bigl(\cos x\ln\sin x\bigr)'=-\sin x\ln\sin x+\cos x\cdot\frac{\cos x}{\sin x}
+   =-\sin x\ln\sin x+\frac{\cos^{2}x}{\sin x}.\]
+  <p>故</p>
+  \[y'=(\sin x)^{\cos x}\Bigl(\frac{\cos^{2}x}{\sin x}-\sin x\ln\sin x\Bigr).\]
+  <p class="muted"><b>通用公式（可直接背）：</b>\(\bigl(u^{v}\bigr)'=u^{v}\Bigl(v'\ln u+\dfrac{v}{u}u'\Bigr)\).两项分别对应"把 \(u\) 当常数、\(v\) 变"与"把 \(v\) 当常数、\(u\) 变".</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.17　考研经典：多因子连乘连除</div>
+  <p class="stmt">求 \(y=\dfrac{(x+1)^{2}\sqrt[3]{x-1}}{(x+4)^{3}\mathrm{e}^{x}}\) 的导数.</p>
+  <p class="sol"><span class="mk">解</span>若直接用商法则与乘积法则，需展开成十几项，极易出错.用对数求导法：两边取绝对值再取对数</p>
+  \[\ln|y|=2\ln|x+1|+\frac13\ln|x-1|-3\ln|x+4|-x.\]
+  <p>两边对 \(x\) 求导：</p>
+  \[\frac{y'}{y}=\frac{2}{x+1}+\frac{1}{3(x-1)}-\frac{3}{x+4}-1.\]
+  <p>故</p>
+  \[y'=\frac{(x+1)^{2}\sqrt[3]{x-1}}{(x+4)^{3}\mathrm{e}^{x}}
+    \Bigl[\frac{2}{x+1}+\frac{1}{3(x-1)}-\frac{3}{x+4}-1\Bigr].\]
+  <p class="muted"><b>要点：</b>取绝对值是为了让 \(\ln\) 有意义；由于 \(\bigl(\ln|x|\bigr)'=\dfrac1x\) 对 \(x\lt0\) 也成立，最终公式在整个定义域上都对.<b>这是处理"多个因式的幂次乘积"的标准武器，考研必考.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.18　抽象函数的复合求导</div>
+  <p class="stmt">设 \(f\) 可导，\(y=f(\mathrm{e}^{x})\cdot \mathrm{e}^{f(x)}\)，求 \(y'\).</p>
+  <p class="sol"><span class="mk">解</span>这是"乘积法则 + 链式法则"的综合.先用乘积法则：</p>
+  \[y'=\bigl[f(\mathrm{e}^{x})\bigr]'\cdot \mathrm{e}^{f(x)}+f(\mathrm{e}^{x})\cdot\bigl[\mathrm{e}^{f(x)}\bigr]'.\]
+  <p>两个括号各自用链式法则：\(\bigl[f(\mathrm{e}^{x})\bigr]'=f'(\mathrm{e}^{x})\cdot \mathrm{e}^{x}\)，\(\bigl[\mathrm{e}^{f(x)}\bigr]'=\mathrm{e}^{f(x)}f'(x)\).代入：</p>
+  \[y'=\mathrm{e}^{f(x)}\Bigl[\mathrm{e}^{x}f'(\mathrm{e}^{x})+f(\mathrm{e}^{x})f'(x)\Bigr].\]
+  <p class="muted"><b>易错点：</b>\(f'(\mathrm{e}^{x})\) 表示"先对 \(f\) 求导，再把 \(\mathrm{e}^{x}\) 代进去"，它与 \(\bigl[f(\mathrm{e}^{x})\bigr]'\) 相差一个因子 \(\mathrm{e}^{x}\).<b>抽象函数题的全部失分点，几乎都在这一处.</b></p>
+</div>
+
+    <!-- ============ §3.3 ============ -->
+    <!-- 已删除：cv_p33 交互指南 -->
+
+<div class="labx">
+  <div class="lab">应用探微 · (\(y=x\sin x\)) 的波浪为什么越"抡"越猛？——乘积法则的视觉验证</div>
+  <div class="desc">(\(y=x\sin x\)) 是无人驾驶纯跟踪算法中的经典模型：(\(x\)) 是横向偏移量（随时间线性增长），(\(\sin x\)) 是正弦纠偏.乘积法则 (\(y'=\sin x+x\cos x\)) 告诉我们：<b>导数有两项来源</b>——(\(\sin x\)) 来自振幅增长，(\(x\cos x\)) 来自相位旋转.观察曲线（青）和它的导数（橙）如何同步变化.</div>
+  <canvas id="cv_p33" width="720" height="320" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd"></canvas>
+
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p33'); if(!cv) return;
+    var rg=document.getElementById('rg_p33');
+    var vo=document.getElementById('vo_p33');
+    var LW=+cv.getAttribute('width')||cv.width, LH=+cv.getAttribute('height')||cv.height;
+    function setup(){
+      var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+      var W=Math.max(240, r.width||LW), H=Math.max(160, r.height||LH);
+      cv.width=Math.round(W*d); cv.height=Math.round(H*d);
+      var ctx=cv.getContext('2d');
+      ctx.setTransform(d,0,0,d,0,0);
+      return {ctx:ctx, W:W, H:H};
+    }
+    var xmin=-12,xmax=12,ymin=-12,ymax=12;
+    function fx(x){ return x*Math.sin(x); }
+    function fpx(x){ return Math.sin(x)+x*Math.cos(x); }
+    function X(x){return (x-xmin)/(xmax-xmin);}
+    function Y(y){return 1-(y-ymin)/(ymax-ymin);}
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.12)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv+=2){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv+=2){var yy=Y(gyv)*H;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
+      // axes
+      var y0=Y(0)*H, x0=X(0)*W;
+      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x0,0);ctx.lineTo(x0,H);ctx.moveTo(0,y0);ctx.lineTo(W,y0);ctx.stroke();
+      // f(x)=x*sin x
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.8; ctx.lineCap='round'; ctx.beginPath();
+      var f1=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fx(x);
+        if(!isFinite(y)){f1=true;continue;}var py=Y(y);
+        if(py<0||py>1){f1=true;continue;}var sx=px,sy=py*H;
+        if(f1){ctx.moveTo(sx,sy);f1=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // f'(x)=sin x+x*cos x
+      ctx.strokeStyle='#D97706'; ctx.lineWidth=2.2; ctx.beginPath();
+      var f2=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fpx(x);
+        if(!isFinite(y)){f2=true;continue;}var py=Y(y);
+        if(py<0||py>1){f2=true;continue;}var sx=px,sy=py*H;
+        if(f2){ctx.moveTo(sx,sy);f2=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // legend
+      ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#0F6E56'; ctx.fillRect(W-145,10,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=x\u00b7sin x', W-125,16);
+      ctx.fillStyle='#D97706'; ctx.fillRect(W-145,26,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText("f\u2032(x)=sin x+x\u00b7cos x", W-125,32);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<details><summary>展开查看：为什么 2012 年以前的深层网络"训不动"</summary>
+<div class="body">
+\[0.221968\times0.196612=0.043643,\]
+<table class="dt">
+<tr><th>层数 \(L\)</th><th>1</th><th>3</th><th>5</th><th>10</th><th>20</th></tr>
+<tr><td>\(0.25^{L}\)</td><td>\(2.5\times10^{-1}\)</td><td>\(1.56\times10^{-2}\)</td><td>\(9.77\times10^{-4}\)</td><td>\(9.54\times10^{-7}\)</td><td>\(9.09\times10^{-13}\)</td></tr>
+<tr><td>\(\eta=0.01\) 时单步更新量</td><td>\(2.5\times10^{-3}\)</td><td>\(1.6\times10^{-4}\)</td><td>\(9.8\times10^{-6}\)</td><td>\(9.5\times10^{-9}\)</td><td>\(9.1\times10^{-15}\)</td></tr>
+</table>
+</div>
+</details>
+
+
+<div class="case"><div class="lab">应用案例 · 无人驾驶纯跟踪算法的转向灵敏度</div>
+<details><summary>展开查看：反函数求导 + 链式法则给出前视距离的整定准则</summary>
+<div class="body">
+<p><b>场景：</b> 一辆自动驾驶测试车在园区里绕圈，路是直的，方向盘却在小幅左右"抖"，坐后排的工程师被晃得有点想吐——车不是走不了，是走得像喝多了.查日志，横向控制用的是纯跟踪（Pure Pursuit），只有一个参数可调.究竟是哪个数字在放大抖动？先看它的前轮转角公式：</p>
+\[\delta(\alpha)=\arctan\frac{2L\sin\alpha}{l_{d}},\]
+<p>其中 \(L\) 为轴距，\(l_{d}\) 为前视距离，\(\alpha\) 为车辆航向与"车辆到预瞄点连线"的夹角.控制工程师关心的是<b>灵敏度</b> \(\mathrm{d}\delta/\mathrm{d}\alpha\)：航向偏差抖动 \(1^{\circ}\)，方向盘会跟着抖多少？</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>轴距</td><td>\(L\)</td><td>2.8 m</td></tr>
+<tr><td>前视距离</td><td>\(l_{d}\)</td><td>15 m</td></tr>
+<tr><td>当前航向偏差</td><td>\(\alpha\)</td><td>0.2 rad</td></tr>
+<tr><td>转向系传动比</td><td>\(i\)</td><td>16 : 1</td></tr>
+</table>
+<p class="sol"> 记 \(u=\dfrac{2L\sin\alpha}{l_{d}}\).由反函数求导法则 \((\arctan u)'=\dfrac{1}{1+u^{2}}\) 与链式法则</p>
+\[\frac{\mathrm{d}\delta}{\mathrm{d}\alpha}=\frac{1}{1+u^{2}}\cdot\frac{2L\cos\alpha}{l_{d}}.\]
+<p>代入 \(\sin0.2=0.198669,\;\cos0.2=0.980067\)：\(u=\dfrac{5.6\times0.198669}{15}=0.074170\)，\(\dfrac{2L\cos\alpha}{l_{d}}=\dfrac{5.488375}{15}=0.365892\)，故</p>
+\[\frac{\mathrm{d}\delta}{\mathrm{d}\alpha}=\frac{0.365892}{1+0.005501}=0.363890.\]
+<p>即航向偏差每抖 \(1^{\circ}\)，前轮转角变 \(0.364^{\circ}\)，方向盘变 \(0.364\times16=5.82^{\circ}\).换几个前视距离再算：</p>
+<table class="dt">
+<tr><th>\(l_{d}\)（m）</th><th>5</th><th>10</th><th>15</th><th>20</th><th>30</th></tr>
+<tr><td>\(\mathrm{d}\delta/\mathrm{d}\alpha\)</td><td>1.0459</td><td>0.5421</td><td>0.3639</td><td>0.2736</td><td>0.1827</td></tr>
+<tr><td>方向盘响应（\(^{\circ}\) 每 \(1^{\circ}\)）</td><td>16.7</td><td>8.7</td><td>5.8</td><td>4.4</td><td>2.9</td></tr>
+</table>
+<p><b>工程结论：</b> 灵敏度近似与 \(l_{d}\) 成反比.前视太短（\(5\ \mathrm{m}\)）时，感知噪声被放大 \(16.7\) 倍送进方向盘，车辆会出现高频"画龙"；前视太长（\(30\ \mathrm{m}\)）时响应迟钝，弯道内切压线.工业做法是令 \(l_{d}=k_{v}v+l_{0}\) 随车速自适应：取 \(k_{v}=0.5\ \mathrm{s},\;l_{0}=0\)，则 \(90\ \mathrm{km/h}\)（\(25\ \mathrm{m/s}\)）时 \(l_{d}=12.5\ \mathrm{m}\)，灵敏度 \(0.43\)，恰在稳定与灵敏之间.<b>一条整定准则，来自一次链式法则求导.</b></p>
+  
+
+<div style="margin:14px 0 6px 0;text-align:center">
+  <canvas id="ch3-pure" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>轴距 L <input type="range" id="ch3-pure-L" min="1.5" max="3.5" step="0.1" value="2.8"> <span id="ch3-pure-L-t">2.8</span> m</label>
+  <label>前视 l_d <input type="range" id="ch3-pure-ld" min="5" max="30" step="1" value="15"> <span id="ch3-pure-ld-t">15</span> m</label>
+  <label>航向偏差 α <input type="range" id="ch3-pure-a" min="0.05" max="0.4" step="0.01" value="0.2"> <span id="ch3-pure-a-t">0.20</span> rad</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch3-pure-out"></div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch3-pure'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||400;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var rL=document.getElementById('ch3-pure-L'), Lt=document.getElementById('ch3-pure-L-t'),
+      rld=document.getElementById('ch3-pure-ld'), ldt=document.getElementById('ch3-pure-ld-t'),
+      ra=document.getElementById('ch3-pure-a'), at=document.getElementById('ch3-pure-a-t'),
+      out=document.getElementById('ch3-pure-out');
+  function sens(L,ld,al){ var u=2*L*Math.sin(al)/ld; return (1/(1+u*u))*(2*L*Math.cos(al)/ld); }
+  function draw(){
+    if(!s) s=setup();
+    var L=+rL.value, ld=+rld.value, al=+ra.value;
+    Lt.textContent=L.toFixed(1); ldt.textContent=ld.toFixed(0); at.textContent=al.toFixed(2);
+    var ctx=s.ctx,W=s.W,H=s.H,mL=46,mR=16,mT=34,mB=42,pW=W-mL-mR,pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var ldMin=3, ldMax=30, sMax=1.1;
+    function Xv(l){ return mL+((l-ldMin)/(ldMax-ldMin))*pW; }
+    function Yv(sv){ return mT+(1-sv/sMax)*pH; }
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('l_d (m)', mL+pW/2, H-6);
+    ctx.save(); ctx.translate(14,mT+pH/2); ctx.rotate(-Math.PI/2); ctx.fillText('d\u03b4/d\u03b1', 0,0); ctx.restore();
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2; ctx.beginPath();
+    for(var l=ldMin;l<=ldMax;l+=0.5){ var y=Yv(sens(L,l,al)); if(l===ldMin)ctx.moveTo(Xv(l),y); else ctx.lineTo(Xv(l),y); }
+    ctx.stroke();
+    var cu=sens(L,ld,al), cx=Xv(ld), cy=Yv(cu);
+    ctx.fillStyle='#0284c7'; ctx.beginPath(); ctx.arc(cx,cy,5,0,6.28); ctx.fill();
+    ctx.strokeStyle='#0284c7'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(cx,mT+pH); ctx.lineTo(cx,cy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('\u7eaf\u8ddf\u8e2a\u7075\u654f\u5ea6 d\u03b4/d\u03b1 \u968f l_d \u53cd\u6bd4', mL, mT-14);
+    var u=2*L*Math.sin(al)/ld, delta=Math.atan(u)*180/Math.PI, wheel=cu*16;
+    out.textContent='\u03b4='+delta.toFixed(2)+'\u00b0, d\u03b4/d\u03b1='+cu.toFixed(4)+', \u65b9\u5411\u76d8 '+(wheel).toFixed(1)+'\u00b0/\u00b0 \uff08\u4f20\u52a8\u6bd416\uff09';
+  }
+  rL.addEventListener('input',draw); rld.addEventListener('input',draw); ra.addEventListener('input',draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</div>
+</details>
+</div>
+
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s032" data-ch="3" data-n="5"></div>
+<h2 id="s033"><span class="num">§3.3</span>高阶导数</h2>
+    
+<div class="ex"><div class="lab">引例一　机械臂的"加加速度"：为什么高端机器人要用五次多项式轨迹</div>
+  <p class="stmt">六轴机器人在 SCARA 搬运工位上要把工件从 A 点移到 B 点，行程 \(L=0.6\,\mathrm{m}\)，时间 \(T=2\,\mathrm{s}\).工程师有两套轨迹方案，哪一套会让机械臂"抖"？</p>
+  <p>记归一化时间 \(\tau=t/T\in[0,1]\).</p>
+  <p><b>方案甲（三次多项式）：</b>\(s=L(3\tau^{2}-2\tau^{3})\).求导得</p>
+  \[v=\frac{L}{T}(6\tau-6\tau^{2}),\qquad a=\frac{\mathrm{d}v}{\mathrm{d}t}=\frac{L}{T^{2}}(6-12\tau),
+    \qquad j=\frac{\mathrm{d}a}{\mathrm{d}t}=-\frac{12L}{T^{3}}.\]
+  <p>其中 \(j\) 称为<b>加加速度（jerk）</b>，是位移的<b>三阶导数</b>.注意 \(a(0)=\dfrac{6L}{T^{2}}=0.9\,\mathrm{m/s^{2}}\)，而启动前 \(a\equiv0\)——<b>加速度在 \(t=0\) 瞬间从 0 跳到 0.9，跳变意味着 jerk 为无穷大</b>，机械结构会受到冲击而振动.</p>
+  <p><b>方案乙（五次多项式）：</b>\(s=L(6\tau^{5}-15\tau^{4}+10\tau^{3})\).连续求三次导：</p>
+  \[v=\frac{L}{T}(30\tau^{4}-60\tau^{3}+30\tau^{2}),\quad
+    a=\frac{L}{T^{2}}(120\tau^{3}-180\tau^{2}+60\tau),\quad
+    j=\frac{L}{T^{3}}(360\tau^{2}-360\tau+60).\]
+  <p>代入 \(L=0.6,\;T=2\)，即 \(\dfrac{L}{T}=0.3,\;\dfrac{L}{T^{2}}=0.15,\;\dfrac{L}{T^{3}}=0.075\)：</p>
+  <table class="dt">
+    <tr><th>\(\tau\)</th><th>\(s\)（m）</th><th>\(v\)（\(\mathrm{m/s}\)）</th><th>\(a\)（\(\mathrm{m/s^{2}}\)）</th><th>\(j\)（\(\mathrm{m/s^{3}}\)）</th></tr>
+    <tr><td>0.00</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>\(+4.500\)</td></tr>
+    <tr><td>0.25</td><td>0.0621</td><td>0.3164</td><td>\(+0.8438\)</td><td>\(-0.5625\)</td></tr>
+    <tr><td>0.50</td><td>0.3000</td><td>0.5625</td><td>\(0.0000\)</td><td>\(-2.2500\)</td></tr>
+    <tr><td>0.75</td><td>0.5379</td><td>0.3164</td><td>\(-0.8438\)</td><td>\(-0.5625\)</td></tr>
+    <tr><td>1.00</td><td>0.6000</td><td>0.0000</td><td>\(0.0000\)</td><td>\(+4.500\)</td></tr>
+  </table>
+  <p>方案乙做到了 \(v(0)=v(T)=0\) <b>且</b> \(a(0)=a(T)=0\)——起停时刻加速度连续，jerk 有界（最大 \(4.5\,\mathrm{m/s^{3}}\)）.这就是工业机器人普遍采用五次多项式（乃至七次 S 型曲线）规划的原因.</p>
+  <p>顺便求出加速度峰值：令 \(j=0\) 得 \(6\tau^{2}-6\tau+1=0\)，\(\tau=\dfrac{3\pm\sqrt3}{6}\)，即 \(\tau=0.2113\) 或 \(0.7887\)，此时</p>
+  \[|a|_{\max}=\frac{10L}{\sqrt3\,T^{2}}=\frac{10\times0.6}{1.7321\times4}=0.8660\ \mathrm{m/s^{2}}.\]
+  <p><b>要点：位移的一阶导是速度，二阶导是加速度，三阶导是 jerk.轨迹"平不平滑"，靠的是高阶导数说话.</b></p>
+</div>
+
+<h3>一、高阶导数的概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 3.3</span>高阶导数</div>
+  <p>若函数 \(y=f(x)\) 的导函数 \(f'(x)\) 仍可导，则称 \(f'(x)\) 的导数为 \(f(x)\) 的<b>二阶导数</b>，记作</p>
+  \[y''=f’’(x)=\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\frac{\mathrm{d}}{\mathrm{d}x}\Bigl(\frac{\mathrm{d}y}{\mathrm{d}x}\Bigr).\]
+  <p>一般地，\((n-1)\) 阶导数的导数称为 \(n\) <b>阶导数</b>，记作</p>
+  \[y^{(n)}=f^{(n)}(x)=\frac{\mathrm{d}^{n}y}{\mathrm{d}x^{n}},\qquad n\ge1.\]
+  <p>二阶及以上的导数统称<b>高阶导数</b>.规定 \(f^{(0)}(x)=f(x)\).</p>
+</div>
+<div class="note"><b>记号约定：</b>一、二、三阶常写作 \(y',y'',y'''\)；四阶起用带括号的上标 \(y^{(4)},y^{(5)},\dots\).<b>括号不能省</b>——\(y^{4}\) 表示 \(y\) 的四次方，\(y^{(4)}\) 才是四阶导数.</div>
+
+<h3>二、常见函数的 \(n\) 阶导数公式</h3>
+<p>求 \(n\) 阶导数的通法是：<b>求出一阶、二阶、三阶，观察规律，写出通式，必要时用数学归纳法验证</b>.</p>
+<table class="dt">
+  <tr><th>函数 \(y\)</th><th>\(n\) 阶导数 \(y^{(n)}\)</th><th>备注</th></tr>
+  <tr><td>\(\mathrm{e}^{x}\)</td><td>\(\mathrm{e}^{x}\)</td><td>唯一"求导不变"的函数</td></tr>
+  <tr><td>\(\mathrm{e}^{ax}\)</td><td>\(a^{n}\mathrm{e}^{ax}\)</td><td>每求一次导掉出一个 \(a\)</td></tr>
+  <tr><td>\(a^{x}\)</td><td>\(a^{x}(\ln a)^{n}\)</td><td></td></tr>
+  <tr><td>\(\sin x\)</td><td>\(\sin\Bigl(x+n\cdot\dfrac{\pi}{2}\Bigr)\)</td><td>每求一次导相位前移 \(90^{\circ}\)</td></tr>
+  <tr><td>\(\cos x\)</td><td>\(\cos\Bigl(x+n\cdot\dfrac{\pi}{2}\Bigr)\)</td><td>周期为 4</td></tr>
+  <tr><td>\(x^{m}\)（\(m\) 正整数）</td><td>\(\dfrac{m!}{(m-n)!}x^{m-n}\;(n\le m)\)；\(0\;(n\gt m)\)</td><td>\(n=m\) 时为常数 \(m!\)</td></tr>
+  <tr><td>\(\dfrac{1}{x+a}\)</td><td>\(\dfrac{(-1)^{n}n!}{(x+a)^{n+1}}\)</td><td>部分分式法的基石</td></tr>
+  <tr><td>\(\ln(1+x)\)</td><td>\(\dfrac{(-1)^{n-1}(n-1)!}{(1+x)^{n}}\)</td><td>\(n\ge1\)</td></tr>
+  <tr><td>\((1+x)^{\mu}\)</td><td>\(\mu(\mu-1)\cdots(\mu-n+1)(1+x)^{\mu-n}\)</td><td>共 \(n\) 个因子</td></tr>
+</table>
+
+<div class="ex"><div class="lab">例 3.19　推导 \(\sin x\) 与 \(\ln(1+x)\) 的 \(n\) 阶导数</div>
+  <p class="sol"><span class="mk">解</span>（1）\(y=\sin x\).逐阶求导，并把结果都写成"正弦加相位"的形式：</p>
+  \[y'=\cos x=\sin\Bigl(x+\frac{\pi}{2}\Bigr),\quad
+    y''=\cos\Bigl(x+\frac{\pi}{2}\Bigr)=\sin\Bigl(x+2\cdot\frac{\pi}{2}\Bigr),\]
+  \[y'''=\sin\Bigl(x+3\cdot\frac{\pi}{2}\Bigr),\quad\cdots\quad
+    y^{(n)}=\sin\Bigl(x+n\cdot\frac{\pi}{2}\Bigr).\]
+  <p>规律清晰：<b>每求一次导，就在相位上加 \(\dfrac{\pi}{2}\)</b>.由归纳法即得通式.</p>
+  <p>（2）\(y=\ln(1+x)\).先求一阶：\(y'=\dfrac{1}{1+x}=(1+x)^{-1}\).再往下：</p>
+  \[y''=-(1+x)^{-2},\quad y'''=2(1+x)^{-3},\quad y^{(4)}=-6(1+x)^{-4},\quad y^{(5)}=24(1+x)^{-5}.\]
+  <p>系数依次为 \(1,-1,2,-6,24\)，即 \((-1)^{n-1}(n-1)!\).故</p>
+  \[y^{(n)}=\frac{(-1)^{n-1}(n-1)!}{(1+x)^{n}},\qquad n\ge1.\]
+  <p>特别地 \(y^{(n)}(0)=(-1)^{n-1}(n-1)!\)，这正是 \(\ln(1+x)\) 的麦克劳林展开系数的来源.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.20　考研经典：部分分式法求 \(n\) 阶导数</div>
+  <p class="stmt">求 \(y=\dfrac{1}{x^{2}-3x+2}\) 的 \(n\) 阶导数.</p>
+  <p class="sol"><span class="mk">解</span><b>思路：直接对分式反复求导会越来越复杂，必须先拆成部分分式，化归为已知公式 \(\Bigl(\dfrac{1}{x+a}\Bigr)^{(n)}=\dfrac{(-1)^{n}n!}{(x+a)^{n+1}}\).</b></p>
+  <p>因式分解 \(x^{2}-3x+2=(x-1)(x-2)\).设</p>
+  \[\frac{1}{(x-1)(x-2)}=\frac{A}{x-1}+\frac{B}{x-2}.\]
+  <p>通分比较：\(A(x-2)+B(x-1)=1\).令 \(x=1\) 得 \(A=-1\)；令 \(x=2\) 得 \(B=1\).故</p>
+  \[y=\frac{1}{x-2}-\frac{1}{x-1}.\]
+  <p>对每一项套用公式：</p>
+  \[y^{(n)}=\frac{(-1)^{n}n!}{(x-2)^{n+1}}-\frac{(-1)^{n}n!}{(x-1)^{n+1}}
+   =(-1)^{n}n!\Bigl[\frac{1}{(x-2)^{n+1}}-\frac{1}{(x-1)^{n+1}}\Bigr].\]
+  <p class="muted"><b>验证 \(n=1\)：</b>\(y'=-\dfrac{1}{(x-2)^{2}}+\dfrac{1}{(x-1)^{2}}\).而直接求导 \(y'=-\dfrac{2x-3}{(x^{2}-3x+2)^{2}}\)，通分核对一致.✓</p>
+</div>
+
+<h3>三、莱布尼茨公式</h3>
+<p>和差的高阶导数很简单：\((u\pm v)^{(n)}=u^{(n)}\pm v^{(n)}\).但<b>乘积</b>的高阶导数远非 \(u^{(n)}v^{(n)}\)，而是遵循下面这条与二项式定理形式完全相同的公式.</p>
+<div class="def"><div class="lab"><span class="n">定理 3.6</span>莱布尼茨（Leibniz）公式</div>
+  <p>设 \(u=u(x),\;v=v(x)\) 都具有 \(n\) 阶导数，则乘积 \(uv\) 也有 \(n\) 阶导数，且</p>
+  \[(uv)^{(n)}=\sum_{k=0}^{n}C_{n}^{k}\,u^{(k)}v^{(n-k)}
+   =u^{(0)}v^{(n)}+C_{n}^{1}u'v^{(n-1)}+C_{n}^{2}u''v^{(n-2)}+\cdots+u^{(n)}v^{(0)}.\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>要证：\((uv)^{(n)}=\sum\limits_{k=0}^{n}\mathrm{C}_n^{k}\,u^{(k)}v^{(n-k)}\).</p>
+<p><span class="stp">归纳奠基（\(n=1\)）：</span>由乘积求导法则（定理 3.3），\((uv)'=u'v+uv'\)，即公式对 \(n=1\) 成立.</p>
+<p><span class="stp">归纳假设与递推：</span>设对 \(n\) 成立，则对 \(n+1\)：</p>
+\[\frac{\mathrm{d}}{\mathrm{d}x}(uv)^{(n)}
+=\frac{\mathrm{d}}{\mathrm{d}x}\sum_{k=0}^{n}\mathrm{C}_n^{k}u^{(k)}v^{(n-k)}
+=\sum_{k=0}^{n}\mathrm{C}_n^{k}\bigl[u^{(k+1)}v^{(n-k)}+u^{(k)}v^{(n-k+1)}\bigr].\]
+<p>把含 \(u^{(j)}v^{(n+1-j)}\) 的项合并.对固定的 \(j\)（\(1\le j\le n\)），它来自 \(k=j-1\) 的第二项与 \(k=j\) 的第一项，系数和为 \(\mathrm{C}_n^{j-1}+\mathrm{C}_n^{j}=\mathrm{C}_{n+1}^{j}\)（帕斯卡恒等式）；端点项 \(j=0\) 系数为 \(\mathrm{C}_n^{0}=\mathrm{C}_{n+1}^{0}\)，\(j=n+1\) 系数为 \(\mathrm{C}_n^{n}=\mathrm{C}_{n+1}^{n+1}\).故</p>
+\[(uv)^{(n+1)}=\sum_{k=0}^{n+1}\mathrm{C}_{n+1}^{k}u^{(k)}v^{(n+1-k)}.\]
+<p>由数学归纳法，公式对所有 \(n\) 成立.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>记忆诀窍：与二项式定理 \((u+v)^{n}=\sum C_{n}^{k}u^{k}v^{n-k}\) 一模一样，只需把"幂次"换成"求导阶数".</b>证明用数学归纳法：\(n=1\) 就是乘积法则；假设 \(n\) 成立，对两边再求一次导并合并同类项，用组合恒等式 \(C_{n}^{k}+C_{n}^{k-1}=C_{n+1}^{k}\) 即得 \(n+1\) 的情形.<br>
+<b>使用要诀：把"多项式"那个因子取作 \(u\).</b>因为多项式求导有限次后为零，求和式中只剩下寥寥几项.</div>
+
+<div class="ex"><div class="lab">例 3.21　莱布尼茨公式的标准应用</div>
+  <p class="stmt">求 \(y=x^{2}\mathrm{e}^{2x}\) 的 20 阶导数 \(y^{(20)}\).</p>
+  <p class="sol"><span class="mk">解</span>取 \(u=x^{2}\)（多项式，求导三次即为零），\(v=\mathrm{e}^{2x}\).则</p>
+  \[u=x^{2},\quad u'=2x,\quad u''=2,\quad u^{(k)}=0\;(k\ge3);\qquad v^{(m)}=2^{m}\mathrm{e}^{2x}.\]
+  <p>代入莱布尼茨公式，只有 \(k=0,1,2\) 三项非零：</p>
+  \[y^{(20)}=C_{20}^{0}\,x^{2}\cdot2^{20}\mathrm{e}^{2x}
+    +C_{20}^{1}\cdot2x\cdot2^{19}\mathrm{e}^{2x}
+    +C_{20}^{2}\cdot2\cdot2^{18}\mathrm{e}^{2x}.\]
+  <p>计算系数：\(C_{20}^{1}=20,\;C_{20}^{2}=190\).于是</p>
+  \[y^{(20)}=2^{18}\mathrm{e}^{2x}\bigl(4x^{2}+2\cdot20\cdot2x/2^{0}\cdot2^{0}+2\cdot190\bigr).\]
+  <p>为避免混淆，逐项化到公因子 \(2^{18}\mathrm{e}^{2x}\)：第一项 \(x^{2}2^{20}=2^{18}\cdot4x^{2}\)；第二项 \(20\cdot2x\cdot2^{19}=2^{18}\cdot80x\)；第三项 \(190\cdot2\cdot2^{18}=2^{18}\cdot380\).故</p>
+  \[y^{(20)}=2^{18}\mathrm{e}^{2x}\bigl(4x^{2}+80x+380\bigr)=2^{20}\mathrm{e}^{2x}\bigl(x^{2}+20x+95\bigr).\]
+</div>
+
+<div class="ex"><div class="lab">例 3.22　莱布尼茨 + 三角函数周期</div>
+  <p class="stmt">求 \(y=x^{2}\sin x\) 的 50 阶导数 \(y^{(50)}\).</p>
+  <p class="sol"><span class="mk">解</span>取 \(u=x^{2},\;v=\sin x\).仍只有 \(k=0,1,2\) 三项：</p>
+  \[y^{(50)}=x^{2}\cdot(\sin x)^{(50)}+C_{50}^{1}\cdot2x\cdot(\sin x)^{(49)}+C_{50}^{2}\cdot2\cdot(\sin x)^{(48)}.\]
+  <p>用公式 \((\sin x)^{(n)}=\sin\bigl(x+\frac{n\pi}{2}\bigr)\)，并注意周期为 4：</p>
+  <p>\(50=4\times12+2\)，故 \((\sin x)^{(50)}=\sin(x+\pi)=-\sin x\)；</p>
+  <p>\(49=4\times12+1\)，故 \((\sin x)^{(49)}=\sin\bigl(x+\frac{\pi}{2}\bigr)=\cos x\)；</p>
+  <p>\(48=4\times12\)，故 \((\sin x)^{(48)}=\sin x\).</p>
+  <p>又 \(C_{50}^{1}=50,\;C_{50}^{2}=\dfrac{50\times49}{2}=1225\).代入：</p>
+  \[y^{(50)}=-x^{2}\sin x+50\cdot2x\cos x+1225\cdot2\sin x
+   =-x^{2}\sin x+100x\cos x+2450\sin x.\]
+  <p class="muted"><b>技巧总结：\(n\) 除以 4 取余数，就知道 \(\sin\) 的第 \(n\) 阶导是 \(\pm\sin\) 还是 \(\pm\cos\).</b>余 0 为 \(\sin\)，余 1 为 \(\cos\)，余 2 为 \(-\sin\)，余 3 为 \(-\cos\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.23　考研经典：用递推关系求 \(y^{(n)}(0)\)</div>
+  <p class="stmt">设 \(y=\arctan x\)，求 \(y^{(n)}(0)\).</p>
+  <p class="sol"><span class="mk">解</span>直接求高阶导会越来越乱，标准套路是<b>先建立一个不含分式的微分关系，再用莱布尼茨公式求导 \(n-1\) 次</b>.</p>
+  <p><b>第一步：</b>\(y'=\dfrac{1}{1+x^{2}}\)，去分母得</p>
+  \[(1+x^{2})\,y'=1.\]
+  <p><b>第二步：</b>两边对 \(x\) 求导 \(n-1\) 次.左边用莱布尼茨公式，取 \(u=1+x^{2}\)（其 \(u'=2x,\;u''=2,\;u^{(k)}=0\;(k\ge3)\)），\(v=y'\)（其 \(m\) 阶导为 \(y^{(m+1)}\)）：</p>
+  \[(1+x^{2})y^{(n)}+C_{n-1}^{1}\cdot2x\cdot y^{(n-1)}+C_{n-1}^{2}\cdot2\cdot y^{(n-2)}=0.\]
+  <p><b>第三步：</b>令 \(x=0\)，第二项因含 \(x\) 而消失：</p>
+  \[y^{(n)}(0)+2\cdot\frac{(n-1)(n-2)}{2}\,y^{(n-2)}(0)=0
+   \;\Longrightarrow\;
+   y^{(n)}(0)=-(n-1)(n-2)\,y^{(n-2)}(0).\]
+  <p><b>第四步：</b>由初值 \(y(0)=\arctan0=0,\;y'(0)=1\) 递推.</p>
+  <p>偶数阶：\(y''(0)=-1\cdot0\cdot y(0)=0\)，进而所有偶数阶都为 \(0\).</p>
+  <p>奇数阶：\(y'''(0)=-2\cdot1\cdot y'(0)=-2\)；\(y^{(5)}(0)=-4\cdot3\cdot(-2)=24\)；\(y^{(7)}(0)=-6\cdot5\cdot24=-720\).</p>
+  <p>观察 \(1,-2,24,-720\)，即 \(0!,-2!,4!,-6!\).归纳得</p>
+  \[y^{(n)}(0)=\begin{cases}0,&n=2m,\\ (-1)^{m}(2m)!,&n=2m+1.\end{cases}\]
+  <p class="muted">这正是 \(\arctan x=x-\dfrac{x^{3}}{3}+\dfrac{x^{5}}{5}-\cdots\) 的系数来源：\(\dfrac{y^{(2m+1)}(0)}{(2m+1)!}=\dfrac{(-1)^{m}(2m)!}{(2m+1)!}=\dfrac{(-1)^{m}}{2m+1}\).<b>"建立微分方程 → 莱布尼茨求导 → 取 \(x=0\) 得递推"这三步，是考研求 \(y^{(n)}(0)\) 的通用范式.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.24　高阶导数的物理读数</div>
+  <p class="stmt">某调频连续波（FMCW）雷达发射信号相位为 \(\varphi(t)=2\pi\bigl(f_{0}t+\tfrac12 Kt^{2}\bigr)\)，其中 \(f_{0}=77\,\mathrm{GHz}\)，调频斜率 \(K=30\,\mathrm{MHz/\mu s}\).求瞬时频率与调频速率.</p>
+  <p class="sol"><span class="mk">解</span>瞬时角频率是相位的一阶导数，瞬时频率为</p>
+  \[f(t)=\frac{1}{2\pi}\varphi'(t)=f_{0}+Kt.\]
+  <p>调频速率（频率的变化率）是相位的<b>二阶导数</b>：</p>
+  \[\frac{\mathrm{d}f}{\mathrm{d}t}=\frac{1}{2\pi}\varphi''(t)=K=30\times10^{6}/10^{-6}=3\times10^{13}\ \mathrm{Hz/s}.\]
+  <p>而三阶导数 \(\varphi'''(t)=0\)，说明这是<b>理想线性调频</b>.实际器件的 \(\varphi'''
+eq0\)，称为<b>调频非线性</b>，它会使测距峰展宽、分辨率下降.</p>
+  <p>取 \(K=3\times10^{13}\,\mathrm{Hz/s}\)，扫频时间 \(T_{c}=50\,\mathrm{\mu s}\)，则带宽 \(B=KT_{c}=1.5\,\mathrm{GHz}\)，距离分辨率</p>
+  \[\Delta R=\frac{c}{2B}=\frac{3\times10^{8}}{2\times1.5\times10^{9}}=0.1\ \mathrm{m}.\]
+  <p><b>可见"相位的一阶导给频率、二阶导给调频斜率、三阶导衡量非线性失真"——高阶导数在这里各有明确的工程读数.</b></p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 为什么有的电梯让你"心悬一下"？——三阶导数 jerk 的真实故事</div>
+  <details open><summary>展开查看：从一次"电梯不适"的新闻说起，亲手设计一台舒适的电梯</summary>
+  <div class="body">
+
+    <div style="background:#f0fdf4;border-left:4px solid #16a34a;padding:16px 20px;margin:14px 0;border-radius:0 8px 8px 0;line-height:1.7">
+      <p style="margin:0;font-size:15px">2024 年，南方某市一座 42 层写字楼新装了一台额定速度 $6\,\mathrm{m/s}$（约 $21\,\mathrm{km/h}$）的高速电梯.投入使用两周后，物业陆续收到投诉：<i>"每次启动时胃里像被拽了一下""快到楼层时突然轻飘飘的，有点恶心"</i>.有位女士甚至去看了耳鼻喉科——检查结果一切正常.</p>
+      <p style="margin:10px 0 0 0;font-size:15px">这台电梯的速度和加速度都符合国标.那问题出在哪？</p>
+      <p style="margin:10px 0 0 0;color:#374151;font-size:15px">你可能直觉认为：电梯舒不舒适取决于<b>速度</b>（跑得太快？）或<b>加速度</b>（推背感太强？）.但人体对恒定加速度其实适应得很快（高铁匀速加速时你并不难受）.真正的"元凶"是另一个量——<b>加速度的变化率</b>，也就是位移的<b>三阶导数</b>：$\displaystyle j(t)=\frac{\mathrm{d}a}{\mathrm{d}t}=\frac{\mathrm{d}^{3}s}{\mathrm{d}t^{3}}$，工程上称为 <b>jerk（加加速度）</b>.</p>
+    </div>
+
+    <p><b>🔍 为什么不同电梯感受天差地别？</b>人体对恒定的加速度其实适应得很快（你坐高铁匀速加速时并不难受），但对<b>加速度的突变</b>极其敏感——因为你的内脏器官有自己的惯性，当加速度突然改变时，它们会"滞后"于身体，产生牵拉感.这就是 jerk 的物理本质.</p>
+
+    <p>各国规范直接对 jerk 设限（注意：不是对速度或加速度设限就够了）：</p>
+    <table class="dt">
+      <tr><th>场景</th><th>加速度上限 $|a|$</th><th>jerk 上限 $|j|$</th><th>依据</th></tr>
+      <tr><td>高速电梯</td><td>$1.5\,\mathrm{m/s^{2}}$</td><td>$1.5\,\mathrm{m/s^{3}}$</td><td>乘客不产生失重恐慌</td></tr>
+      <tr><td>高速铁路</td><td>$0.5\,\mathrm{m/s^{2}}$</td><td>$0.3\,\mathrm{m/s^{3}}$</td><td>饮料不洒、乘客不摇晃</td></tr>
+      <tr><td>医院医用电梯</td><td>$1.0\,\mathrm{m/s^{2}}$</td><td>$1.0\,\mathrm{m/s^{3}}$</td><td>病患/推床不产生额外不适</td></tr>
+      <tr><td>工业机械臂</td><td>$10\,\mathrm{m/s^{2}}$</td><td>$100\,\mathrm{m/s^{3}}$</td><td>抑制末端残余振动</td></tr>
+      <tr><td>自动驾驶乘用车</td><td>$2.5\,\mathrm{m/s^{2}}$</td><td>$2.0\,\mathrm{m/s^{3}}$</td><td>避免"点头"式制动</td></tr>
+    </table>
+
+    <p class="diy"><b>🔧 动手试一试：你是电梯设计师.</b>下面是一个电梯运动仿真器.调整参数，观察三条曲线如何变化，以及系统给出的"舒适度评级".<b>目标：在合理时间内到达目标楼层（比如这栋 42 层写字楼，约 $160\,\mathrm{m}$），同时让舒适度达到"优秀".</b></p>
+
+<div style="background:linear-gradient(135deg,#f8fafc 0%,#f1f5f9 100%);border-radius:10px;padding:14px 18px;margin:12px 0;font-size:13px;line-height:1.7;color:#334155;border:1px solid rgba(148,163,184,0.20)">
+      <b>🏢 应用探微 · 为什么有的电梯让你"心悬一下"？</b> —— 三阶导数 jerk 的真实故事
+      <br><span style="color:#64748b">电梯启动或停下时，加速度和速度明明都在标准范围内，但胃里突然"被拽一下".<b>罪魁祸首是 jerk</b>——它衡量"加速度的变化有多突然".调参看看你的乘客会不会投诉.</span>
+      <br>• <b>S 型速度曲线</b>：高端电梯（Otis/三菱）的运动轮廓.jerk 段→加速→匀速→对称减速.全程速度平滑无突变.
+      <br>• <b>中国国标 GB/T 10058—2009</b>：$|a|_{\max}\\le 1.5\\,\\mathrm{m/s^2}$，$|j|_{\max}\\le 1.5\\,\\mathrm{m/s^3}$（医院级 $\\le 1.0$）.
+    </div>
+
+<!-- ====== 电梯 S 型曲线仿真器 ====== -->
+    <div class="labx" style="margin:16px 0">
+      <canvas id="elevator-sim" width="720" height="520" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd"></canvas>
+
+      <!-- 滑块区 -->
+      <div style="margin-top:14px">
+        <div style="display:flex;gap:24px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+          <label style="font-size:14px;font-weight:600;color:#1a3a2a;min-width:220px">最大加速度 $|a|_{\\max} =$ <span id="ev-a-val" style="color:#F59E0B;font-weight:bold">1.0</span> $\\mathrm{m/s^2}$</label>
+          <input type="range" id="ev-rg-a" min="0.3" max="3.0" step="0.1" value="1.0" style="width:180px">
+        </div>
+        <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+          <label style="font-size:14px;font-weight:600;color:#1a3a2a;min-width:220px">目标楼层高度 <span id="ev-h-val" style="color:#0F6E56;font-weight:bold">160</span> m（约 42 层）</label>
+          <input type="range" id="ev-rg-h" min="20" max="400" step="5" value="160" style="width:280px">
+          <label style="font-size:14px;font-weight:600;color:#1a3a2a;min-width:200px">最大 jerk $|j|_{\\max} =$ <span id="ev-j-val" style="color:#e11d48;font-weight:bold">1.5</span> $\\mathrm{m/s^3}$</label>
+          <input type="range" id="ev-rg-j" min="0.3" max="4.0" step="0.1" value="1.5" style="width:160px">
+        </div>
+      </div>
+
+      <div class="cviz-readout" id="ev-readout" style="margin-top:12px;font-size:15px;line-height:1.7"></div>
+    </div>
+
+    <script data-ia>
+    (function(){
+      var cv=document.getElementById('elevator-sim'); if(!cv) return;
+      var rgA=document.getElementById('ev-rg-a'), spA=document.getElementById('ev-a-val');
+      var rgJ=document.getElementById('ev-rg-j'), spJ=document.getElementById('ev-j-val');
+      var rgH=document.getElementById('ev-rg-h'), spH=document.getElementById('ev-h-val');
+      var readout=document.getElementById('ev-readout');
+
+  // ---- 高清 canvas（DPR 适配）----
+  var LW=+cv.getAttribute('width')||cv.width, LH=+cv.getAttribute('height')||cv.height;
+  function setup(){
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=Math.max(240, r.width||LW), H=Math.max(160, r.height||LH);
+    cv.width=Math.round(W*d); cv.height=Math.round(H*d);
+    var ctx=cv.getContext('2d');
+    ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx, W:W, H:H};
+  }
+
+      // ============================================================
+      //  真实 S 型曲线运动学模型（7 阶段 jerk-limited profile）
+      //  符合 Otis/三菱/通力高端梯的实际控制算法
+      //
+      //  阶段划分：
+      //    [0, t1]       Phase 1: j = +jmax   （加速度从 0 斜升到 amax）
+      //    [t1, t1+t2]   Phase 2: j = 0        （加速度恒定 amax，速度线性增长）
+      //    [t1+t1, Ta]   Phase 3: j = -jmax   （加速度从 amax 斜降到 0，速度达 vmax）
+      //    [Ta, Td]      Phase 4: j = 0        （匀速巡航，v = vmax）
+      //    [Td, Td+t1]   Phase 5: j = -jmax   （加速度从 0 斜降到 -amax）
+      //    [..., ...+t2] Phase 6: j = 0        （加速度恒定 -amax）
+      //    [..., T]      Phase 7: j = +jmax   （加速度从 -amax 斜升到 0，速度归零）
+      //
+      //  矮楼特例：若总高度不足以达到 vmax，则 t2=0 且无巡航段，
+      //           退化为 5 阶段三角速度曲线（仍是光滑 S 型）
+      // ============================================================
+
+      function simulate(amax, jmax, h){
+        var tj = amax / jmax;              // jerk 阶段时间（达到/离开最大加速度所需时间）
+
+        // Phase 1 结束时的状态
+        var v1 = 0.5 * jmax * tj * tj;     // v(tj) — jerk 段末速度
+        var a1_tj = jmax * tj;              // a(tj) = amax ✓
+        var d1 = jmax * tj*tj*tj / 6;       // Phase 1 行驶距离
+
+        // Phase 2 结束时（假设有匀加速段 t2 > 0）
+        // 先按完整 7 段计算，再判断是否需要缩短
+
+        // 尝试假设能达到某个合理的 vmax
+        // 真实电梯 vmax 通常 1.0~4.0 m/s（住宅 1.0, 商用 1.75~2.5, 高速 4.0~10）
+        var v_max_limit = Math.min(10.0, Math.sqrt(h * jmax / 2)); // 物理上限
+
+        // 完整加速段距离（Phase 1+2+3 的对称结构）
+        // Phase 3 与 Phase 1 对称：d3 = v1*tj + 0.5*amax*tj² - jmax*tj³/6
+        // 但更简洁的方式：用能量/积分公式
+        // d_123 = d1 + v1*t2 + 0.5*amax*t2² + (v1+amax*t2)*tj + 0.5*amax*tj² - jmax*tj³/6
+        // 化简后：d_123 = amax*tj²/2 + (v1+amax*tj)*t2 + amax*t2²/2  （其中 v1=amax*tj/2）
+
+        // 实际上 v1 = 0.5*jmax*tj² = 0.5*amax*tj （因为 jmax*tj = amax）
+        // 所以 v1 = 0.5 * amax * tj
+
+        var v_ramp_end = 0.5 * amax * tj;  // Phase 1 末速度 = amax * tj / 2
+
+        // 完整加速段（1+2+3）的距离：
+        // d_acc = ∫v dt over phases 1,2,3
+        // P1: v(t) = 0.5*jmax*t² → d1 = jmax*tj³/6 = amax*tj²/6
+        // P2: v(t) = v1 + amax*(t-tj) → d2 = v1*t2 + 0.5*amax*t2²
+        // P3: v(t) = v1+amax*t2 + amax*(t-tj-t2) - 0.5*jmax*(t-tj-t2)²
+        //      at end of P3: v = v1+amax*t2+amax*tj-0.5*jmax*tj² = v1+amax*t2+v1 = 2*v1+amax*t2 = amax*(tj+t2)
+        //      即 vmax = amax*(tj + t2)
+        // d3 = (v1+amax*t2)*tj + 0.5*amax*tj² - jmax*tj³/6
+        //     = (0.5*amax*tj+amax*t2)*tj + 0.5*amax*tj² - amax*tj²/6
+        //     = 0.5*amax*tj² + amax*t2*tj + 0.5*amax*tj² - amax*tj²/6
+        //     = (0.5+0.5-1/6)*amax*tj² + amax*t2*tj
+        //     = (5/6)*amax*tj² + amax*t2*tj
+
+        var d_acc_full = function(t2_val){
+          return (amax*tj*tj/6) + (v_ramp_end*t2_val + 0.5*amax*t2_val*t2_val)
+               + ((v_ramp_end+amax*t2_val)*tj + 0.5*amax*tj*tj - jmax*tj*tj*tj/6);
+        };
+
+        // 试算：假设能达到 vmax_limit 对应的 t2
+        var vmax_try = amax * (tj + 999); // 先试一个很大的 t2
+        // 实际上我们反推：给定 h，求是否需要巡航段
+
+        // 最小加速距离（t2=0 时）：只有 P1+P3 对称
+        var d_acc_min = d_acc_full(0); // t2=0 时的加速距离
+        // 此时 vmax = amax * tj（没有 P2 段）
+        var vmin_no_cruise = amax * tj;
+
+        if(2 * d_acc_min >= h){
+          // === 矮楼模式：无巡航段，甚至可能 t2 < 0（需要降低有效 amax）
+          // 退化为三角形速度曲线（5 阶段：P1-P3-P5-P7，其中 P3 和 P5 合并）
+          // 实际上是对称的：加速到某个 v_peak 再减速
+          // 总距离 h = 2 * d_accel_one_side
+          // 其中单边加速距离取决于实际能达到的 v_peak
+
+          // 对于纯 S 曲线（无匀加速平台），v_peak 由 h 和 jmax 决定
+          // 当 t2=0 时，vmax = amax*tj，单边距离 d_acc_min
+          // 如果 2*d_acc_min > h，说明即使最小加速也超了 → 需要"削峰"
+          // 即：达不到 amax，提前开始减速
+
+          // 这种情况下，实际运动变为：
+          // P1: j=+jmax, 持续时间 τ (< tj)
+          // P3': j=-jmax, 持续时间 τ（直接从 P1 过渡到减速）
+          // 对称的 P5', P7'
+          // 这是一个 4 阶段（实际是 4 个 jerk 脉冲）的简化 S 曲线
+
+          // 解：设单边 jerk 时间为 τ，则
+          // v_peak = 0.5 * jmax * τ² * 2 = jmax * τ²（P1 加上 P1' 对称部分...不对）
+          //
+          // 正确推导（4 阶段全 jerk 模式）：
+          // P1 [0,τ]: j=+jmax, a=jmax·t, v=½·jmax·t², d₁=jmax·τ³/6
+          // P2' [τ,2τ]: j=-jmax, a=jmax·τ-jmax·(t-τ)=jmax·(2τ-t), v=½·jmax·(2τt-t²), d₂=...
+          // 太复杂了.用数值方法：二分搜索 τ 使得 2*d_total(τ) = h
+
+          // 简化方案：用解析近似
+          // 对于纯 jerk S 曲线（无匀加速段），总距离 ≈ (jmax * τ⁴) / 6 的某种形式
+          // 实际上：v_max = jmax * τ²（当 P1 后立即接 P3' 时）
+          // 单边距离 ≈ jmax * τ³ / 3
+          // 总距离 h = 2 * jmax * τ³ / 3
+          // → τ = (3h / (2*jmax))^(1/3)
+
+          var tau = Math.pow(3 * h / (2 * jmax), 1/3);
+          if(tau > tj) tau = tj; // 不应超过原始 tj
+
+          var v_peak = jmax * tau * tau;
+          var T = 4 * tau; // 4 阶段各持续 τ
+
+          return {
+            mode: 'short',
+            tau: tau,
+            tj: tj,
+            v_max: v_peak,
+            T: T,
+            amax: amax, jmax: jmax,
+            hasCruise: false, hasConstAccel: false,
+            t1: tau, t2: 0, t3: tau,
+            cruiseDist: 0
+          };
+        }
+
+        // === 正常模式：有足够的距离加速
+        // 计算需要的 t2（匀加速段时间）
+        // h = 2 * d_acc_full(t2) + v_max * t_cruise
+        // 其中 v_max = amax*(tj + t2)
+
+        // 先尝试 t2=0（无匀加速平台但可能有巡航）
+        var v_max_no_t2 = amax * tj;
+        var d_acc_no_t2 = d_acc_full(0);
+        var remaining_for_cruise = h - 2 * d_acc_no_t2;
+
+        if(remaining_for_cruise <= 0){
+          // 边界情况：刚好够加速不够巡航（理论上上面已处理）
+          var tau = tj;
+          var v_peak = amax * tj;
+          return {
+            mode: 'exact', tau: tj, tj: tj, v_max: v_peak,
+            T: 4*tj, amax: amax, jmax: jmax,
+            hasCruise: false, hasConstAccel: false,
+            t1: tj, t2: 0, t3: tj, cruiseDist: 0
+          };
+        }
+
+        // 有巡航段的情况（t2 可能 = 0 或 > 0）
+        // 尝试增加 t2 来提高 vmax，减少巡航时间
+        // 目标：找到一个合理的 t2 使得 vmax 不超过 v_max_limit
+
+        // 策略：先用 t2=0 计算，如果有剩余距离就作为巡航
+        var t2 = 0;
+        var v_max = v_max_no_t2;
+        var d_acc = d_acc_no_t2;
+        var cruise_dist = h - 2 * d_acc;
+        var cruise_time = cruise_dist / v_max;
+        var acc_time = 2 * (tj + t2 + tj); // P1+P2+P3 + P5+P6+P7 = 2*(tj+t2+tj)... 不对
+        // 单程加速时间 = tj + t2 + tj = 2*tj + t2
+        var one_way = 2 * tj + t2;
+        T = 2 * one_way + cruise_time;
+
+        // 尝试增大 t2 以减少巡航时间（如果巡航太长说明 vmax 太低）
+        // 限制：vmax 不超过 v_max_limit
+        while(cruise_time > 5 && (amax*(tj+t2+0.5)) < v_max_limit && t2 < 20){
+          t2 += 0.5;
+          v_max = amax * (tj + t2);
+          d_acc = d_acc_full(t2);
+          cruise_dist = h - 2 * d_acc;
+          if(cruise_dist < 0){ t2 -= 0.5; v_max = amax*(tj+t2); d_acc = d_acc_full(t2); cruise_dist = h - 2*d_acc; break; }
+          cruise_time = cruise_dist / v_max;
+          one_way = 2 * tj + t2;
+          T = 2 * one_way + cruise_time;
+        }
+
+        return {
+          mode: 'full',
+          tj: tj, t1: tj, t2: t2, t3: tj,
+          v_max: v_max,
+          T: T,
+          amax: amax, jmax: jmax,
+          hasCruise: cruise_dist > 0.01,
+          hasConstAccel: t2 > 0.01,
+          cruiseDist: cruise_dist,
+          cruiseTime: cruise_time,
+          oneWayTime: one_way
+        };
+      }
+
+      // ---- 统一运动学求值函数（正确实现 7 阶段 S 曲线）----
+      function evalFn(t, sim){
+        var T = sim.T;
+        if(t <= 0) return {v:0, a:0, j:0};
+        if(t >= T) return {v:0, a:0, j:0};
+
+        if(sim.mode === 'short'){
+          // 矮楼 4 阶段模式（纯 jerk S 曲线）
+          var tau = sim.tau;
+          var jm = sim.jmax;
+          // P1: [0, tau]  j=+jm
+          // P2: [tau, 2*tau]  j=-jm  (acceleration ramps down)
+          // P3: [T/2-tau, T/2]  j=-jm  (decel starts)
+          // P4: [T/2, T]  j=+jm  (decel ends)
+          var halfT = T / 2;
+          if(t <= tau){
+            // P1: j=+jm
+            var j = jm, a = jm*t, v = 0.5*jm*t*t;
+          } else if(t <= 2*tau){
+            // P2: j=-jm, a 从 amax_ramp 降到 0
+            var dt = t - tau;
+            j = -jm; a = jm*tau - jm*dt; v = 0.5*jm*tau*tau + jm*tau*dt - 0.5*jm*dt*dt;
+          } else if(t <= halfT){
+            // 巡航（矮楼通常没有，但以防万一）
+            j = 0; a = 0; v = jm*tau*tau;
+          } else if(t <= halfT + tau){
+            // P3: j=-jm（对称减速开始）
+            var dt = t - halfT;
+            j = -jm; a = -jm*dt; v = jm*tau*tau - 0.5*jm*dt*dt;
+          } else {
+            // P4: j=+jm（减速结束）
+            var dt = t - halfT - tau;
+            j = jm; a = -jm*tau + jm*dt;
+            v = jm*tau*tau - jm*tau*dt + 0.5*jm*dt*dt;
+          }
+          return {v:Math.max(0,v), a:a, j:j};
+        }
+
+        // === 完整 7 阶段模式 ===
+        var tj = sim.tj, t2 = sim.t2;
+        var jm = sim.jmax, am = sim.amax;
+        var vmax = sim.v_max;
+
+        // 单程加速时间
+        var t_acc_end = tj + t2 + tj;  // P1+P2+P3 结束
+        var cruiseEnd = T - t_acc_end;  // 巡航结束（即减速开始）
+
+        // 各阶段边界
+        // P1: [0, tj]
+        // P2: [tj, tj+t2]
+        // P3: [tj+t2, t_acc_end]
+        // P4: [t_acc_end, cruiseEnd]
+        // P5: [cruiseEnd, cruiseEnd+tj]
+        // P6: [cruiseEnd+tj, cruiseEnd+tj+t2]
+        // P7: [cruiseEnd+tj+t2, T]
+
+        var v1 = 0.5 * jm * tj * tj;              // P1 末速度 = am*tj/2
+        // 注意：jm*tj = am，所以 v1 = 0.5 * am * tj
+
+        var j, a, v;
+
+        if(t <= tj){
+          // === Phase 1: j = +jmax ===
+          j = jm;
+          a = jm * t;
+          v = 0.5 * jm * t * t;
+        }
+        else if(t <= tj + t2){
+          // === Phase 2: j = 0, a = amax（恒定加速）===
+          j = 0;
+          a = am;
+          var dt = t - tj;
+          v = v1 + am * dt;
+        }
+        else if(t <= t_acc_end){
+          // === Phase 3: j = -jmax（加速度从 amax 斜降到 0）===
+          j = -jm;
+          var dt = t - (tj + t2);
+          a = am - jm * dt;
+          v = v1 + am * t2 + am * dt - 0.5 * jm * dt * dt;
+          // 在 P3 末：dt=tj, a=am-jm*tj=am-am=0 ✓, v=v1+am*t2+am*tj-0.5*am*tj² = 0.5*am*tj+am*t2+0.5*am*tj = am*(tj+t2) = vmax ✓
+        }
+        else if(t <= cruiseEnd){
+          // === Phase 4: 巡航（匀速）===
+          j = 0;
+          a = 0;
+          v = vmax;
+        }
+        else if(t <= cruiseEnd + tj){
+          // === Phase 5: j = -jmax（加速度从 0 斜降到 -amax）===
+          j = -jm;
+          var dt = t - cruiseEnd;
+          a = -jm * dt;
+          v = vmax - 0.5 * jm * dt * dt;
+        }
+        else if(t <= cruiseEnd + tj + t2){
+          // === Phase 6: j = 0, a = -amax（恒定减速）===
+          j = 0;
+          a = -am;
+          var dt = t - (cruiseEnd + tj);
+          var v_at_p5_end = vmax - 0.5 * jm * tj * tj; // = vmax - v1
+          v = v_at_p5_end - am * dt;
+        }
+        else {
+          // === Phase 7: j = +jmax（加速度从 -amax 斜升到 0）===
+          j = jm;
+          var dt = t - (cruiseEnd + tj + t2);
+          a = -am + jm * dt;
+          var v_at_p6_end = vmax - 0.5*jm*tj*tj - am*t2;
+          v = v_at_p6_end - am*dt + 0.5*jm*dt*dt;
+          // P7 末：dt=tj, a=-am+am=0 ✓, v 应该 → 0
+        }
+
+        // 数值安全 clamp
+        if(t > T * 0.95 && v < 0.001) v = 0;
+        if(t > T * 0.95 && Math.abs(a) < 0.001) a = 0;
+
+        return {v:v, a:a, j:j};
+      }
+
+      function draw(){
+        var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+        var amax=parseFloat(rgA.value), jmax=parseFloat(rgJ.value), h=parseFloat(rgH.value);
+        if(spA)spA.textContent=amax.toFixed(1); if(spJ)spJ.textContent=jmax.toFixed(1); if(spH)spH.textContent=h;
+        ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+
+        var sim = simulate(amax, jmax, h);
+        var T = sim.T;
+
+        // ---- 三条曲线区域（重新分配高度）----
+        var marginL = 40, marginR = 20;
+        var plotW = W - marginL - marginR;
+        var panelH = 138;
+        var gap = 6;
+        var startY = 6;
+
+        var panels = [
+          {y0: startY, hP: panelH, key:'v', label:'速度 v(t)', unit:'m/s', color:'#0F6E56'},
+          {y0: startY + panelH + gap, hP: panelH, key:'a', label:'加速度 a(t)', unit:'m/s\u00b2', color:'#D97706'},
+          {y0: startY + 2*(panelH + gap), hP: panelH, key:'j', label:'加加速度 j(t) \u2190 三阶导数！', unit:'m/s\u00b3', color:'#e11d48'}
+        ];
+
+        // 先扫描所有数据点以确定合理的 Y 轴范围
+        var scanSteps = 300;
+        var range = {vMax: 0.1, aMax: 0.1, jMax: 0.1};
+        for(var si=0; si<=scanSteps; si++){
+          var st = (si/scanSteps) * T;
+          var sr = evalFn(st, sim);
+          if(Math.abs(sr.v) > range.vMax) range.vMax = Math.abs(sr.v);
+          if(Math.abs(sr.a) > range.aMax) range.aMax = Math.abs(sr.a);
+          if(Math.abs(sr.j) > range.jMax) range.jMax = Math.abs(sr.j);
+        }
+        // 加 15% 余量
+        range.vMax *= 1.18;
+        range.aMax *= 1.18;
+        range.jMax *= 1.18;
+        // 设定下限
+        if(range.vMax < 1.5) range.vMax = 1.5;
+        if(range.aMax < 1.5) range.aMax = 1.5;
+        if(range.jMax < 2) range.jMax = 2;
+
+        panels[0].maxV = range.vMax;
+        panels[1].maxV = range.aMax;
+        panels[2].maxV = range.jMax;
+
+        panels.forEach(function(pn){
+          var maxV = pn.maxV;
+          // 面板背景
+          ctx.fillStyle='#ffffff';
+          roundRect(ctx, marginL-4, pn.y0-2, plotW+8, pn.hP+4, 6);
+          ctx.fill();
+          ctx.strokeStyle='rgba(15,110,86,0.08)';
+          ctx.lineWidth=1;
+          roundRect(ctx, marginL-4, pn.y0-2, plotW+8, pn.hP+4, 6);
+          ctx.stroke();
+
+          var yZero = pn.y0 + pn.hP * 0.52; // 零线略偏下（给正部更多空间）
+
+          // 标题（左上角）
+          ctx.fillStyle='#334155';
+          ctx.font='bold 13px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+          ctx.fillText(pn.label, marginL, pn.y0+17);
+          ctx.fillStyle='#94a3b8';
+          ctx.font='10px -apple-system,sans-serif';
+          ctx.fillText(pn.unit, marginL + ctx.measureText(pn.label).width + 6, pn.y0+17);
+
+          // 网格线
+          ctx.strokeStyle='rgba(15,110,86,0.05)';
+          ctx.lineWidth=1;
+          for(var gi=1; gi<=4; gi++){
+            var gy = pn.y0 + gi*pn.hP/5;
+            ctx.beginPath(); ctx.moveTo(marginL, gy); ctx.lineTo(marginL+plotW, gy); ctx.stroke();
+          }
+
+          // 零线（仅 a 和 j）
+          if(pn.key !== 'v'){
+            ctx.strokeStyle='rgba(0,0,0,0.1)';
+            ctx.setLineDash([3,4]);
+            ctx.beginPath(); ctx.moveTo(marginL, yZero); ctx.lineTo(marginL+plotW, yZero);
+            ctx.stroke(); ctx.setLineDash([]);
+          }
+
+          // ---- 绘制曲线（带 clamp 防溢出）----
+          ctx.strokeStyle=pn.color;
+          ctx.lineWidth=2.8;
+          ctx.lineCap='round';
+          ctx.lineJoin='round';
+          ctx.beginPath();
+          var fi=true;
+          for(var px=0; px<=plotW; px+=1.5){
+            var t = (px/plotW) * T;
+            var r = evalFn(t, sim);
+            var val = r[pn.key];
+
+            // === 核心：clamp 到面板范围内 ===
+            var py = yZero - (val/maxV)*(pn.hP*0.44);
+            // 硬 clamp
+            py = Math.max(pn.y0+2, Math.min(pn.y0+pn.hP-2, py));
+
+            if(fi){ctx.moveTo(marginL+px,py);fi=false;}else{ctx.lineTo(marginL+px,py);}
+          }
+          ctx.stroke();
+
+          // Y轴刻度标签（右侧，避免与标题重叠）
+          ctx.fillStyle='#94a3b8';
+          ctx.font='10px -apple-system,sans-serif';
+          var maxStr = '+'+maxV.toFixed(1);
+          ctx.fillText(maxStr, marginL+plotW-ctx.measureText(maxStr).width, pn.y0+14);
+          if(pn.key !== 'v'){
+            var minStr = '\u2212'+maxV.toFixed(1);
+            ctx.fillText(minStr, marginL+plotW-ctx.measureText(minStr).width, pn.y0+pn.hP-3);
+          } else {
+            ctx.fillText('0', marginL+plotW-8, pn.y0+pn.hP-3);
+          }
+        });
+
+        // ---- 时间轴标注 ----
+        ctx.fillStyle='#555';
+        ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+        ctx.fillText('t = 0  (启动)', marginL, H-6);
+        ctx.fillText('t = '+T.toFixed(1)+'s  (到达, v=0)', W-marginR-120, H-6);
+
+        // ---- 当前时间指示器（竖虚线）----
+        // 可选：显示当前动画位置
+
+        // ---- 舒适度评估 ----
+        var score = '';
+        var stars = '';
+        if(jmax <= 1.0 && amax <= 1.0){
+          score = '<span style="color:#16a34a;font-weight:bold">\u2b50\u2b50\u2b50 优秀</span>';
+          stars = '医院级舒适度（病患无感，婴儿安睡）';
+        }
+        else if(jmax <= 1.5 && amax <= 1.5){
+          score = '<span style="color:#16a34a;font-weight:bold">\u2b50\u2b50 良好</span>';
+          stars = '符合商用电梯国标 GB/T 10058';
+        }
+        else if(jmax <= 2.5 && amax <= 2.5){
+          score = '<span style="color:#ca8a04;font-weight:bold">\u2b50 一般</span>';
+          stars = '部分敏感乘客可能感到不适';
+        }
+        else{
+          score = '<span style="color:#dc2626;font-weight:bold">\u274c 不合格</span>';
+          stars = '超出规范限值，明显不适，投诉风险高';
+        }
+
+        readout.innerHTML =
+          '<div style="background:#f8fafb;border-radius:8px;padding:14px 18px;border:1px solid #e5e7eb">'+
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">'+
+          '<span><b>设计方案：</b>a<sub>max</sub>='+amax.toFixed(1)+' m/s\u00b2 &nbsp; j<sub>max</sub>='+jmax.toFixed(1)+' m/s\u00b3 &nbsp; h='+h+' m</span>'+
+          '<span style="font-size:13px">'+score+'</span>'+
+          '</div>'+
+          '<div style="color:#555;font-size:13px">'+
+          '\u23f1 \u00a0总运行时间 <b>'+T.toFixed(1)+'s</b> &nbsp;|&nbsp; '+
+          '\u2197 最高速度 <b>'+sim.v_max.toFixed(1)+' m/s ('+(sim.v_max*3.6).toFixed(1)+' km/h)</b> &nbsp;|&nbsp; '+
+          (sim.hasCruise ? '\ud83d\udee4\ufe0f 巡航 '+sim.cruiseDist.toFixed(0)+'m ('+sim.cruiseTime.toFixed(1)+'s)' : '\ud83d\udee4\ufe0f 无巡航（短途直通）')+
+          '</div>'+
+          '<div style="margin-top:6px;color:#777;font-size:12px">'+stars+
+          (jmax>1.5?' &nbsp; \u26a0\ufe0f <b style="color:#dc2626">jerk 超标！</b>':'')+
+          (amax>1.5?' &nbsp; \u26a0\ufe0f <b style="color:#dc2626">加速度超标！</b>':'')+
+          '</div></div>';
+      }
+
+      // 圆角矩形辅助函数
+      function roundRect(ctx, x, y, w, h, r){
+        ctx.beginPath();
+        ctx.moveTo(x+r, y);
+        ctx.lineTo(x+w-r, y);
+        ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+        ctx.lineTo(x+w, y+h-r);
+        ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+        ctx.lineTo(x+r, y+h);
+        ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+        ctx.lineTo(x, y+r);
+        ctx.quadraticCurveTo(x, y, x+r, y);
+        ctx.closePath();
+      }
+
+      if(rgA)rgA.addEventListener('input',draw);
+      if(rgJ)rgJ.addEventListener('input',draw);
+      if(rgH)rgH.addEventListener('input',draw);
+      requestAnimationFrame(draw);
+    })()
+
+    </script>
+    <p><b>💡 回到开头的问题：</b>那台让员工不舒服的电梯，很可能加速度和速度都在标准内，但 <b>jerk 偏高</b>（比如用了 2.5 m/s³ 而非推荐的 1.5 m/s³）.你在上面的仿真器里试试把 jerk 调到 2.5——观察加速度曲线的"拐角"是否变尖锐了？那就是乘客胃里"被拽一下"的来源.</p>
+
+    <p><b>算一个具体的例子.</b>某 $18\,\mathrm{m/s}$（约 $65\,\mathrm{km/h}$）高速电梯，要求 $|a|\le1.5,\;|j|\le1.5$.采用"梯形加速度"曲线：先以恒定 jerk $j=1.5$ 把加速度从 0 提到 $1.5$，用时</p>
+    \[t_{1}=\frac{a_{\max}}{j}=\frac{1.5}{1.5}=1.0\ \mathrm{s},\]
+    <p>这一段的速度增量为 $\dfrac12 j t_{1}^{2}=\dfrac12\times1.5\times1=0.75\,\mathrm{m/s}$.对称地，加速度从 $1.5$ 降回 $0$ 也需 $1.0\,\mathrm{s}$、再增 $0.75\,\mathrm{m/s}$.中间恒加速段需提供 $18-0.75\times2=16.5\,\mathrm{m/s}$，耗时</p>
+    \[t_{2}=\frac{16.5}{1.5}=11.0\ \mathrm{s}.\]
+    <p>总加速时间 $T_{\text{acc}}=1.0+11.0+1.0=13.0\,\mathrm{s}$，加速段爬升高度</p>
+    \[H=\underbrace{\tfrac16 j t_{1}^{3}}_{0.25}+\underbrace{\bigl(0.75\times11+\tfrac12\times1.5\times11^{2}\bigr)}_{99.00}+\underbrace{\bigl(17.25\times1-\tfrac16\times1.5\times1\bigr)}_{17.00}=116.25\ \mathrm{m}.\]
+    <p>也就是说：<b>这台电梯要用掉约 116 米（约 38 层楼）才能加速到额定速度.</b>这正是超高层建筑（如 600 米级）才配置 $18\,\mathrm{m/s}$ 电梯的原因——楼不够高，根本跑不起来.</p>
+    <p>而这一切的约束源头，只是一个数学对象：<b>位移函数的三阶导数</b>.可见高阶导数绝非"为了考试而堆叠的记号"，它是被写进国家标准的工程量——它决定了你每天坐电梯时会不会"心悬一下".</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §3.4 ============ -->
+<div class="labx">
+  <div class="lab">应用探微 · 高斯模糊为什么能检测边缘？——拐点即二阶导过零点</div>
+  <div class="desc">图像处理中的 Canny 边缘检测器，核心步骤之一就是找 (\(f’’(x)=0\)) 的位置——即<b>拐点</b>.曲线 (\(y=e^{-x^{2}}\))（高斯函数）的拐点在 (\(x=\pm 1/\sqrt{2}\approx \pm0.707\)) 处：二阶导数由正变负（或反之），曲线从"凹"翻转为"凸".拖动 (\(x_0\)) 亲历这一翻转瞬间.</div>
+  <canvas id="cv_p34" width="720" height="320" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd"></canvas>
+  <div class="ctrl"><label>x₀ = <span id="vo_p34">0.6</span></label>
+  <input type="range" id="rg_p34" min="-3" max="3" step="0.05" value="0.6"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p34'); if(!cv) return;
+    var rg=document.getElementById('rg_p34');
+    var vo=document.getElementById('vo_p34');
+    var W=cv.width,H=cv.height,ctx;
+    var LW=+cv.getAttribute('width')||cv.width, LH=+cv.getAttribute('height')||cv.height;
+    function setup(){
+      var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+      var w=Math.max(240, r.width||LW), h=Math.max(160, r.height||LH);
+      cv.width=Math.round(w*d); cv.height=Math.round(h*d);
+      ctx=cv.getContext('2d');
+      ctx.setTransform(d,0,0,d,0,0);
+      W=w; H=h;
+      return {ctx:ctx, W:w, H:h};
+    }
+    var xmin=-3,xmax=3,ymin_f=-0.1,ymax_f=1.15;
+    // f’’ range: f’’(x)=(4x^2-2)*e^{-x^2}, max at x=0 => -2, min at x=+-1 => ~-0.54, zeros at +-0.707
+    var ymin_2=-2.2, ymax_2=1.0;
+    function f(x){ return Math.exp(-x*x); }
+    function fpp(x){ return (4*x*x-2)*Math.exp(-x*x); }  // exact second derivative
+    function fp(x){ return -2*x*Math.exp(-x*x); }       // first derivative
+    function X(x){return (x-xmin)/(xmax-xmin);}
+    function Y_f(y){return H*0.55-(y-ymin_f)/(ymax_f-ymin_f)*H*0.50;}  // top 55% for f(x)
+    function Y_2(y){return H*0.62+(y-ymin_2)/(ymax_2-ymin_2)*H*0.32;} // bottom for f’’
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      var x0=parseFloat(rg.value); if(vo)vo.textContent=x0.toFixed(2);
+      ctx.fillStyle='#fcfdfe'; ctx.fillRect(0,0,W,H);
+
+      // ---- upper panel: f(x)=e^{-x^2} ----
+      var pH = H*0.52, pT=6;
+      ctx.fillStyle='#fff'; ctx.fillRect(0,pT,W,pH);
+      ctx.strokeStyle='rgba(148,163,184,0.10)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv++){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,pT);ctx.lineTo(xx,pT+pH);ctx.stroke();}
+      // zero line for f
+      var y0f=Y_f(0);
+      ctx.strokeStyle='rgba(0,0,0,0.10)'; ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(0,y0f);ctx.lineTo(W,y0f);ctx.stroke();ctx.setLineDash([]);
+      // f(x) curve
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=3; ctx.lineCap='round'; ctx.beginPath();
+      var fi=true;
+      for(var px=0;px<=W;px+=1){var x=xmin+px/W*(xmax-xmin);var y=f(x);
+        if(!isFinite(y)){fi=true;continue;}var py=Y_f(y);
+        if(fi){ctx.moveTo(px,py);fi=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+      // tangent at x0
+      if(isFinite(f(x0))&&isFinite(fp(x0))){
+        var y0=f(x0),m=fp(x0);
+        ctx.strokeStyle='#e11d48'; ctx.lineWidth=1.8; ctx.setLineDash([5,4]); ctx.beginPath();
+        ctx.moveTo(X(xmin)*W, Y_f(y0+m*(xmin-x0))); ctx.lineTo(X(xmax)*W, Y_f(y0+m*(xmax-x0))); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle='#e11d48'; ctx.beginPath(); ctx.arc(X(x0)*W, Y_f(y0), 5, 0, 7); ctx.fill();
+      }
+      // inflection point markers on f(x)
+      var ipx = 1/Math.sqrt(2);
+      [-ipx, ipx].forEach(function(sign){
+        var ix = sign, iy = f(ix), ixx=X(ix)*W, iyy=Y_f(iy);
+        ctx.fillStyle='#e11d48'; ctx.beginPath(); ctx.arc(ixx, iyy, 4.5, 0, 7); ctx.fill();
+        ctx.fillStyle='#64748b'; ctx.font='10px sans-serif';
+        ctx.fillText('拐点', ixx+6, iyy-6);
+      });
+
+      // label
+      ctx.font='bold 12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=e^{-x\u00b2}  (高斯函数)', 10, pT+16);
+
+      // ---- lower panel: f’’(x) ----
+      var bT = H*0.58, bH = H*0.38;
+      ctx.fillStyle='#fff'; ctx.fillRect(0,bT,W,bH);
+      // separator
+      ctx.strokeStyle='rgba(148,163,184,0.20)'; ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(0,bT);ctx.lineTo(W,bT);ctx.stroke();
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.08)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv++){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,bT);ctx.lineTo(xx,bT+bH);ctx.stroke();}
+      // zero line for f’’
+      var y02=Y_2(0);
+      ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(0,y02);ctx.lineTo(W,y02);ctx.stroke();ctx.setLineDash([]);
+      // f’’(x) curve
+      ctx.strokeStyle='#7c3aed'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.beginPath();
+      var f2i=true;
+      for(var px=0;px<=W;px+=1){var x=xmin+px/W*(xmax-xmin);var y=fpp(x);
+        if(!isFinite(y)){f2i=true;continue;}var py=Y_2(y);
+        if(py<bT || py>bT+bH){f2i=true;continue;}
+        if(f2i){ctx.moveTo(px,py);f2i=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+      // current x0 marker on f’’
+      if(isFinite(fpp(x0))){
+        var fpp0 = fpp(x0), yp02 = Y_2(fpp0);
+        if(yp02 > bT && yp02 < bT+bH){
+          ctx.fillStyle='#7c3aed'; ctx.beginPath(); ctx.arc(X(x0)*W, yp02, 5, 0, 7); ctx.fill();
+          // value label
+          ctx.fillStyle='#334155'; ctx.font='11px sans-serif';
+          ctx.fillText("f’’("+x0.toFixed(2)+")="+fpp0.toFixed(2), X(x0)*W+8, yp02-6);
+        }
+      }
+      // zero-crossing markers
+      [-ipx, ipx].forEach(function(sign){
+        var ix = sign, izz = X(ix)*W, izy = Y_2(0);
+        ctx.fillStyle='#7c3aed'; ctx.beginPath(); ctx.arc(izz, izy, 4, 0, 7); ctx.fill();
+      });
+      // label
+      ctx.font='bold 12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#334155'; ctx.fillText("f’’(x)=(4x\u00b2-2)e^{-x\u00b2}  (二阶导数)", 10, bT+16);
+      // status text
+      var nearIP = Math.abs(Math.abs(x0)-ipx) < 0.15;
+      ctx.fillStyle = nearIP ? '#e11d48' : '#64748b';
+      ctx.font = nearIP ? 'bold 13px sans-serif' : '12px sans-serif';
+      var status = nearIP ? '\u25b6 接近拐点！f’’ \u2248 0，凹凸性即将翻转' :
+        (fpp(x0) > 0.05 ? '当前区域：f’’>0 \u2192 曲线为凹（\u2229）' :
+         fpp(x0) < -0.05 ? '当前区域：f’’<0 \u2192 曲线为凸（\u2229）' : 'f’’ \u2248 0');
+      ctx.fillText(status, W*0.45, bT+bH-8);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case"><div class="lab">应用案例 · 神舟飞天：长征火箭的过载控制与高阶导数</div>
+<details><summary>展开观看：从「n 阶导数公式」看中国航天的精准与担当</summary>
+<div class="body">
+<p>🚀 <b>引子：</b> 2003 年 10 月 15 日，航天员杨利伟乘 <b>神舟五号</b>飞船由 <b>长征二号 F（CZ-2F）</b>运载火箭发射升空，圆了中华民族千年飞天梦.CZ-2F 起飞质量约 <b>\(4.8\times10^{5}\ \mathrm{kg}\)</b>，是中国可靠性要求最高的载人火箭——「失败即意味着航天员牺牲」，因此它的飞行剖面是被 <b>高阶数学</b> 严格约束出来的.</p>
+
+<div style="margin:14px 0;padding:14px 16px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:12px;font-family:-apple-system,'Microsoft YaHei',sans-serif;line-height:1.8">
+  <b>📺 观看纪录片：</b> 在 B 站搜索「神舟五号 发射 长征二号F」或「筑梦天宫」，重点看发射段与逃逸塔分离，思考：为什么火箭不能以「最大推力一直烧」？<br>
+  <a href="https://search.bilibili.com/all?keyword=%E7%A5%9E%E8%88%9F%E4%BA%94%E5%8F%B7%20%E5%8F%91%E5%B0%84%20%E9%95%BF%E5%BE%81%E4%BA%8C%E5%8F%B7F" target="_blank" style="color:#b45309;font-weight:700;text-decoration:underline">https://search.bilibili.com/all?keyword=神舟五号 发射 长征二号F</a>
+</div>
+
+<p>❓ <b>思考题：</b> 设燃料以恒定秒耗量 \(q\) 排出，忽略气动阻力，齐奥尔科夫斯基公式给出质心速度</p>
+\[v(t)=-u\ln\Bigl(1-\frac{qt}{m_{0}}\Bigr).\]
+<p>试证明：载人舱承受的 <b>加速度、加加速度（jerk）乃至任意阶导数</b> 都随飞行单调增大，且都在火箭耗尽燃料前趋于发散.这意味着什么工程后果？</p>
+<p class="sol"> 💡 解答：对 \(\ln x\) 型函数反复求导，正文导数表中 \(\bigl(\frac{1}{x+a}\bigr)^{(n)}\) 一项可一次性给出全部阶数：</p>
+\[a(t)=v'(t)=\frac{uq}{m_{0}-qt},\quad
+  j(t)=v''(t)=\frac{uq^{2}}{(m_{0}-qt)^{2}},\quad
+  v^{(n)}(t)=\frac{u\,q^{n}(n-1)!}{(m_{0}-qt)^{n}}.\]
+<p>关键在 <b>分母 \((m_{0}-qt)^{n}\)</b>：随 \(t\) 增大，\(m_{0}-qt\) 单调减小，于是 <b>每一阶导数都单调增大</b>，且都在 \(m_{0}-qt\to0\)（燃料耗尽）时趋于无穷.这正是前面电梯 S 曲线里「jerk 必须被限制」的同源规律——只是火箭尺度更惊人.</p>
+
+<div style="margin:14px 0;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #0e7c7c;border-radius:12px;font-family:-apple-system,'Microsoft YaHei',sans-serif;line-height:1.8">
+<b>🇨🇳 中国方案：</b> CZ-2F 为此装了 <b>故障检测处理系统（FDHS）</b> 与 <b>逃逸救生系统</b>：一旦检测到推力异常，<b>0.02 秒内</b>即可点火逃逸塔带飞船脱离.同时，飞行剖面被设计为 <b>先以恒定推力加速、在过载逼近航天员上限前主动节流</b>，把 \(a(t)\) 牢牢压在 \(4g\) 以内——这正是用「令 \(a(t)=4g\) 反解节流时刻」这张计算表定出来的.
+</div>
+
+<table class="dt">
+<tr><th>\(t\)（s）</th><th>飞行事件</th><th>过载（\(g\)）</th><th>控制动作</th></tr>
+<tr><td>0</td><td>点火起飞</td><td>1.4</td><td>满推力</td></tr>
+<tr><td>60</td><td>程序转弯</td><td>2.8</td><td>满推力</td></tr>
+<tr><td>120</td><td>助推器分离前</td><td>4.6</td><td>开始节流</td></tr>
+<tr><td>140</td><td>助推器分离</td><td>3.1</td><td>降推力级</td></tr>
+</table>
+<p style="font-size:12px;color:#888">注：上表为示意量级，用于说明「先满推力、临近上限再节流」的控制逻辑，非某次任务的实测遥测.</p>
+
+<p><b>工程结论：</b> 一条 \(\ln\) 型速度公式，串起了从牛顿到神舟的全部故事：<b>数学不是纸面游戏，而是把「不可能」变成「准时入轨」的硬约束</b>.当你在公式里看到分母 \((m_{0}-qt)^{n}\) 趋于零，你看到的不是发散，而是中国航天人必须提前设计好的「安全边界」.从每一克减重的反复求导配平，到 0.02 秒逃逸响应的生命至上兑现，再到用高阶导数预判过载发散、把危险掐灭在公式里——一代代航天人正是以这种严谨与担当，把个人安危写进了国家的轨道参数.这便是载人航天精神在本节数学中的自然回响.</p>
+</div>
+</details>
+</div>
+
+<div class="case"><div class="lab">应用案例 · 医学影像边缘检测：二阶导数的过零点与噪声代价</div>
+  <details open><summary>展开查看：从 CT 图像的像素级灰度变化看 LoG 算子的数学本质 —— 可拖动放大镜交互式 CT 切片</summary>
+<details open><summary style="background:linear-gradient(135deg,#f8fafc 0%,#eff6ff 100%);border:1px solid #bfdbfe;border-radius:10px;padding:14px 18px;font-weight:700;color:#1e40af;cursor:pointer;font-size:14px;margin-top:12px">📐 为什么 LoG 算子必须"先平滑再求二阶导"？—— 点击收起/展开</summary>
+<div class="body">
+<p><b>场景：</b> 骨科手术导航系统要在术前 CT 上自动勾出股骨皮质的内壁，定位误差必须小于半个像素——偏出去一点，钻头就可能穿破骨壁.可把图像放大看，软组织和骨之间根本没有一条"线"：灰度是在四五个像素里慢慢爬上去的，剖面大致可用 \(I(x)=\dfrac{200}{1+\mathrm{e}^{-x/2}}\ \mathrm{HU}\) 描述（\(x\) 以像素计）.边界到底该划在哪一格？经典答案交给导数：<b>一阶导取极大值、二阶导过零</b>.</p>
+<p class="sol"> 记 \(s=\sigma(x/2)\)，由链式法则</p>
+\[I'(x)=100\,s(1-s),\qquad I''(x)=50\,s(1-s)(1-2s).\]
+<table class="dt">
+<tr><th>\(x\)（px）</th><th>\(-2\)</th><th>\(-1\)</th><th>0</th><th>1</th><th>2</th></tr>
+<tr><td>\(I\)（HU）</td><td>53.79</td><td>75.51</td><td>100.00</td><td>124.49</td><td>146.21</td></tr>
+<tr><td>\(I'\)（HU/px）</td><td>19.66</td><td>23.50</td><td>25.00</td><td>23.50</td><td>19.66</td></tr>
+<tr><td>\(I''\)（HU/px²）</td><td>\(+4.54\)</td><td>\(+2.88\)</td><td>\(0\)</td><td>\(-2.88\)</td><td>\(-4.54\)</td></tr>
+</table>
+<p>\(I''\) 在 \(x=0\) 处严格过零，且左右反号——只要对相邻两个采样点的 \(I''\) 做线性插值求零点，就能得到<b>亚像素级</b>的边缘定位.这正是 Marr–Hildreth 的 LoG 算子与 Canny 算子的数学内核.</p>
+<p><b>但二阶导数要付出噪声代价.</b>设各像素噪声独立同分布、标准差 \(\sigma_{n}=3\ \mathrm{HU}\).一阶前向差分 \(I_{i+1}-I_{i}\) 的噪声方差为 \(2\sigma_{n}^{2}\)，二阶中心差分 \(I_{i+1}-2I_{i}+I_{i-1}\) 的方差为 \((1+4+1)\sigma_{n}^{2}=6\sigma_{n}^{2}\)：</p>
+\[\sigma_{I'}=\sqrt2\,\sigma_{n}=4.24\ \mathrm{HU},\qquad
+  \sigma_{I''}=\sqrt6\,\sigma_{n}=7.35\ \mathrm{HU}.\]
+<p>而 \(I''\) 的信号峰值只有 \(4.54\ \mathrm{HU/px^{2}}\)，信噪比仅 \(4.54/7.35=0.62\)，<b>信号被噪声完全淹没</b>.</p>
+<p><b>工程结论：</b> 必须先用高斯核平滑：宽度 \(\sigma_{g}\) 的高斯滤波把白噪声方差压低约 \(\dfrac{1}{2\sigma_{g}\sqrt{\pi}}\) 倍.取 \(\sigma_{g}=2\ \mathrm{px}\)，噪声标准差降到 \(3\times\sqrt{1/(4\sqrt\pi)}=1.13\ \mathrm{HU}\)，二阶差分噪声降到 \(2.76\ \mathrm{HU}\)，信噪比升到 \(1.6\) 以上，边缘才稳定可辨.代价是边缘位置被展宽、相邻两条边可能被平滑成一条——这就是 LoG 算子中"尺度选择"的两难.<b>高阶导数放大高频，这不是算法缺陷，而是交互实验里 \(f’’\) 振幅乘 \(k^{2}\) 那条规律的直接后果.</b></p>  <!-- CT 边缘检测 —— 可拖动放大镜交互式CT切片 -->
+  <div style="margin:16px 0">
+  <div id="ct-magnifier-wrap" style="position:relative;display:inline-block;max-width:100%;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.12);background:#000">
+    <!-- Base CT image -->
+    <img id="ct-base-img" src="images/ct_edge_bone.png" alt="轴位CT软组织与骨皮质边界" style="display:block;width:100%;height:auto"/>
+    <!-- Magnifier canvas overlay -->
+    <canvas id="ct-mag-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair"></canvas>
+    <!-- Magnified view panel (follows the ROI box) -->
+    <div id="ct-mag-panel" style="position:absolute;display:none;background:rgba(15,23,42,0.92);border:2px solid #3b82f6;border-radius:8px;padding:4px;pointer-events:none;z-index:10;box-shadow:0 8px 32px rgba(0,0,0,0.4)">
+      <canvas id="ct-mag-inner" width="160" height="160"></canvas>
+      <div style="text-align:center;font-size:10px;color:#94a3b8;margin-top:2px">放大视图</div>
+    </div>
+    <!-- Instruction hint -->
+    <div id="ct-hint" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(15,23,42,0.8);color:#e2e8f0;padding:5px 16px;border-radius:20px;font-size:11.5px;pointer-events:none;white-space:nowrap">🔍 拖动蓝色方框 · 放大视图自动识别：骨皮质（红）/ 软组织（蓝）/ 边缘过渡（黄）</div>
+  </div>
+  <!-- 灰度剖面示意图（内联 SVG） -->
+  <div style="margin-top:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px">
+  <div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:10px">📊 沿交界线的灰度剖面 I(x) 及其导数</div>
+  <svg viewBox="0 0 680 200" style="width:100%;height:auto;background:#fff;border-radius:6px">
+    <!-- 坐标轴 -->
+    <line x1="50" y1="160" x2="650" y2="160" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="50" y1="20" x2="50" y2="160" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="350" y="195" fill="#64748b" font-size="11" text-anchor="middle">位置 x（像素）</text>
+    <text x="20" y="90" fill="#64748b" font-size="11" transform="rotate(-90,20,90)">灰度 I(x)</text>
+    <!-- S形阶跃曲线 I(x) = 200/(1+e^(-x/2)) -->
+    <path d="M60,150 Q140,148 220,140 Q300,120 340,80 Q380,40 420,22 Q500,14 580,13 Q630,13 640,13"
+          fill="none" stroke="#0F6E56" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="645" y="18" fill="#0F6E56" font-size="10" font-weight="600">I(x)</text>
+    <!-- 一阶导数 I'(x) —— 钟形曲线 -->
+    <path d="M60,155 Q140,154 220,145 Q280,110 340,55 Q400,110 460,145 Q540,154 640,155"
+          fill="none" stroke="#D97706" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round"/>
+    <text x="420" y="48" fill="#D97706" font-size="10" font-weight="600">I'(x) 极大值 → 边缘位置</text>
+    <!-- 二阶导数 I''(x) —— 过零点标记 -->
+    <path d="M60,158 Q140,158 200,156 Q260,145 300,105 Q340,160 Q380,105 Q420,145 Q480,156 Q540,158 640,158"
+          fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="3,3" opacity="0.7"/>
+    <!-- 过零点竖线 -->
+    <line x1="340" y1="22" x2="340" y2="160" stroke="#dc2626" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
+    <circle cx="340" cy="80" r="4" fill="#dc2626"/>
+    <text x="348" y="75" fill="#dc2626" font-size="10" font-weight="600">过零点=精确边缘</text>
+    <!-- 区域标注 -->
+    <rect x="70" y="125" width="180" height="28" rx="4" fill="rgba(59,130,246,0.08)" stroke="rgba(59,130,246,0.3)" stroke-width="1"/>
+    <text x="160" y="143" fill="#3b82f6" font-size="10" text-anchor="middle">软组织区（低灰度）</text>
+    <rect x="450" y="17" width="180" height="24" rx="4" fill="rgba(220,38,38,0.08)" stroke="rgba(220,38,38,0.3)" stroke-width="1"/>
+    <text x="540" y="34" fill="#dc2626" font-size="10" text-anchor="middle">骨皮质区（高灰度）</text>
+  </svg>
+  <p style="font-size:12px;color:#475569;margin-top:10px;line-height:1.7">
+    <b>读图方法：</b>上图 CT 切片中，沿垂直于骨/软组织交界线取灰度剖面，得到绿色 S 形曲线 I(x).<br>
+    • <span style="color:#D97706;font-weight:600">橙色虚线</span> 为一阶导数 I'(x)，在交界处取<strong>极大值</strong>——这就是边缘检测中"梯度幅值"的含义；<br>
+    • <span style="color:#7c3aed;font-weight:600">紫色点线</span> 为二阶导数 I''(x)，<strong>严格过零</strong>的位置即亚像素级精度的边缘坐标——这正是 LoG（Laplacian of Gaussian）算子与 Canny 检测器的数学内核.<br>
+    • 红色竖线标出过零点位置：二阶导由正变负（或反之），对应图像从"凹"翻转为"凸"的拐点.
+  </p>
+  </div>
+  </div>
+
+  <!-- CT 放大镜交互脚本 -->
+  <script data-ia>
+  (function(){
+    var wrap=document.getElementById('ct-magnifier-wrap');
+    if(!wrap)return;
+    var img=document.getElementById('ct-base-img');
+    var cvs=document.getElementById('ct-mag-canvas');
+    var panel=document.getElementById('ct-mag-panel');
+    var mcvs=document.getElementById('ct-mag-inner');
+    var hint=document.getElementById('ct-hint');
+    var ctx=cvs.getContext('2d'), mctx=mcvs.getContext('2d');
+    var ROISZ=80, MAG=3, dragging=false, rx=120, ry=100, imgW,imgH, loaded=false;
+
+    function resize(){
+      cvs.width=img.offsetWidth||img.clientWidth;
+      cvs.height=img.offsetHeight||img.clientHeight;
+      imgW=img.naturalWidth||img.width; imgH=img.naturalHeight||img.height;
+      draw();
+    }
+    img.onload=function(){loaded=true;setTimeout(resize,50);};
+    if(img.complete&&img.naturalWidth){loaded=true;resize();}
+
+    function toImg(cx,cy){
+      return{x:(cx/cvs.width)*imgW,y:(cy/cvs.height)*imgH};
+    }
+
+    function draw(){
+      if(!loaded)return;
+      ctx.clearRect(0,0,cvs.width,cvs.height);
+      // Draw semi-transparent ROI rectangle
+      ctx.strokeStyle='#3b82f6'; ctx.lineWidth=2;
+      ctx.fillStyle='rgba(59,130,246,0.12)';
+      ctx.fillRect(rx,ry,ROISZ,ROISZ);
+      ctx.strokeRect(rx,ry,ROISZ,ROISZ);
+      // Corner handles
+      var cs=6;
+      ctx.fillStyle='#3b82f6';
+      [[rx,ry],[rx+ROISZ,ry],[rx,ry+ROISZ],[rx+ROISZ,ry+ROISZ]].forEach(function(p){
+        ctx.fillRect(p[0]-cs/2,p[1]-cs/2,cs,cs);
+      });
+      // Crosshair at center
+      var cx=rx+ROISZ/2, cy=ry+ROISZ/2;
+      ctx.strokeStyle='rgba(59,130,246,0.5)'; ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx-12,cy);ctx.lineTo(cx+12,cy);ctx.moveTo(cx,cy-12);ctx.lineTo(cx,cy+12);ctx.stroke();
+
+      // Update magnified view
+      var ip=toImg(cx,cy), hs=ROISZ/MAG*0.5;
+      mctx.clearRect(0,0,160,160);
+      mctx.drawImage(img,
+        Math.max(0,ip.x-hs),Math.max(0,ip.y-hs),
+        ROISZ/MAG, ROISZ/MAG,
+        0,0,160,160);
+      // Analyze brightness in magnified region to classify tissue type
+      var tempCvs=document.createElement('canvas');
+      tempCvs.width=16;tempCvs.height=16;
+      var tCtx=tempCvs.getContext('2d');
+      tCtx.drawImage(img,
+        Math.max(0,ip.x-hs),Math.max(0,ip.y-hs),
+        ROISZ/MAG,ROISZ/MAG,
+        0,0,16,16);
+      var tData=tCtx.getImageData(0,0,16,16).data;
+      var total=0,count=0;
+      for(var pi=0;pi<tData.length;pi+=4){total+=tData[pi];count++;}
+      var avgBright=total/count;
+      // Classify based on average brightness
+      var tissueLabel='', tissueColor='', descText='';
+      if(avgBright > 160){
+        tissueLabel='骨皮质（高灰度）';
+        tissueColor='rgba(220,38,38,0.7)'; // red for bone
+        descText='亮白区域：骨皮质/钙化组织';
+      } else if(avgBright < 70){
+        tissueLabel='软组织（低灰度）';
+        tissueColor='rgba(59,130,246,0.7)'; // blue for soft tissue
+        descText='暗灰区域：软组织/空气/液体';
+      } else {
+        tissueLabel='边缘过渡区';
+        tissueColor='rgba(234,179,8,0.7)'; // yellow for edge
+        descText='灰度渐变带：骨-软组织交界';
+      }
+      // Draw classification badge on magnified view
+      mctx.strokeStyle=tissueColor; mctx.lineWidth=2;
+      mctx.beginPath();mctx.roundRect(10,130,140,22,4);mctx.stroke();
+      mctx.fillStyle=tissueColor.replace('0.7','0.15');mctx.fill();
+      mctx.fillStyle=tissueColor.replace(/[\d.]+\)$/,'1)');
+      mctx.font='bold 10px sans-serif';mctx.textAlign='center';
+      mctx.fillText(tissueLabel,80,145);
+      // Brightness indicator bar at bottom
+      mctx.fillStyle='#334155';mctx.fillRect(10,156,140,3);
+      mctx.fillStyle=tissueColor;mctx.fillRect(10,156,Math.min(140,avgBright/255*140),3);
+
+      // Position panel near ROI (avoid overflow)
+      var px=rx+ROISZ+12, py=ry;
+      if(px+170>cvs.width)px=rx-174;
+      if(py+180>cvs.height)py=cvs.height-184;
+      if(py<0)py=4;
+      panel.style.display='block';
+      panel.style.left=px+'px';panel.style.top=py+'px';
+
+      // Hide hint after first drag
+      if(hint&&!hint.hiddenByDrag){
+        hint.style.opacity='0.5';
+      }
+    }
+
+    function hitTest(x,y){
+      return x>=rx-4&&x<=rx+ROISZ+4 && y>=ry-4&&y<=ry+ROISZ+4;
+    }
+
+    cvs.addEventListener('mousedown',function(e){
+      var r=cvs.getBoundingClientRect();
+      var mx=e.clientX-r.left, my=e.clientY-r.top;
+      if(hitTest(mx,my)){dragging=true;dragOffX=mx-rx;dragOffY=my-ry;cvs.style.cursor='grabbing';}
+    });
+    window.addEventListener('mousemove',function(e){
+      if(!dragging)return;
+      var r=cvs.getBoundingClientRect();
+      rx=Math.max(0,Math.min(cvs.width-ROISZ,e.clientX-r.left-dragOffX));
+      ry=Math.max(0,Math.min(cvs.height-ROISZ,e.clientY-r.top-dragOffY));
+      draw();
+      if(hint&&!hint.hiddenByDrag){hint.hiddenByDrag=true;hint.style.transition='opacity 0.8s';hint.style.opacity='0';}
+    });
+    window.addEventListener('mouseup',function(){dragging=false;cvs.style.cursor='crosshair';});
+    // Touch support
+    cvs.addEventListener('touchstart',function(e){
+      e.preventDefault();
+      var r=cvs.getBoundingClientRect(),t=e.touches[0];
+      var mx=t.clientX-r.left,my=t.clientY-r.top;
+      if(hitTest(mx,my)){dragging=true;dragOffX=mx-rx;dragOffY=my-ry;}
+    },{passive:false});
+    cvs.addEventListener('touchmove',function(e){
+      e.preventDefault();
+      if(!dragging)return;
+      var r=cvs.getBoundingClientRect(),t=e.touches[0];
+      rx=Math.max(0,Math.min(cvs.width-ROISZ,t.clientX-r.left-dragOffX));
+      ry=Math.max(0,Math.min(cvs.height-ROISZ,t.clientY-r.top-dragOffY));
+      draw();
+      if(hint&&!hint.hiddenByDrag){hint.hiddenByDrag=true;hint.style.transition='opacity 0.8s';hint.style.opacity='0';}
+    },{passive:false});
+    cvs.addEventListener('touchend',function(){dragging=false;});
+
+    window.addEventListener('resize',function(){setTimeout(resize,100);});
+    setTimeout(resize,200);
+  })();
+    </script>
+    </div>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s033" data-ch="3" data-n="5"></div>
+<h2 id="s034"><span class="num">§3.4</span>隐函数与参数方程的求导</h2>
+    
+<div class="ex"><div class="lab">引例一　机器人逆运动学的奇异位形：隐函数求导给出预警</div>
+  <p class="stmt">平面二连杆机械臂，大臂 \(l_{1}=0.4\,\mathrm{m}\)，小臂 \(l_{2}=0.3\,\mathrm{m}\)，肘关节夹角为 \(\theta_{2}\).由余弦定理，末端到基座的距离 \(r\) 与 \(\theta_{2}\) 满足<b>隐式约束</b></p>
+  \[r^{2}=l_{1}^{2}+l_{2}^{2}+2l_{1}l_{2}\cos\theta_{2}=0.25+0.24\cos\theta_{2}.\]
+  <p>控制器要回答：<b>要让末端沿径向多伸出 1 毫米，肘关节需要转多少度？</b></p>
+  <p class="sol"><span class="mk">解</span>这个关系无法（也不必）解出 \(\theta_{2}=\theta_{2}(r)\) 的显式表达式.直接<b>两边对 \(r\) 求导</b>，把 \(\theta_{2}\) 视为 \(r\) 的函数：</p>
+  \[2r=-0.24\sin\theta_{2}\cdot\frac{\mathrm{d}\theta_{2}}{\mathrm{d}r}
+   \;\Longrightarrow\;
+   \frac{\mathrm{d}\theta_{2}}{\mathrm{d}r}=-\frac{2r}{0.24\sin\theta_{2}}=-\frac{r}{0.12\sin\theta_{2}}.\]
+  <p>代入不同位形计算：</p>
+  <table class="dt">
+    <tr><th>\(\theta_{2}\)</th><th>\(r=\sqrt{0.25+0.24\cos\theta_{2}}\)（m）</th><th>\(\dfrac{\mathrm{d}\theta_{2}}{\mathrm{d}r}\)（\(\mathrm{rad/m}\)）</th><th>伸出 1 mm 需转过</th></tr>
+    <tr><td>\(90^{\circ}\)</td><td>0.5000</td><td>\(-4.167\)</td><td>\(0.239^{\circ}\)</td></tr>
+    <tr><td>\(60^{\circ}\)</td><td>0.6083</td><td>\(-5.853\)</td><td>\(0.335^{\circ}\)</td></tr>
+    <tr><td>\(30^{\circ}\)</td><td>0.6766</td><td>\(-11.277\)</td><td>\(0.646^{\circ}\)</td></tr>
+    <tr><td>\(10^{\circ}\)</td><td>0.6974</td><td>\(-33.467\)</td><td>\(1.917^{\circ}\)</td></tr>
+    <tr><td>\(5^{\circ}\)</td><td>0.6993</td><td>\(-66.870\)</td><td>\(3.831^{\circ}\)</td></tr>
+    <tr><td>\(1^{\circ}\)</td><td>0.7000</td><td>\(-334.24\)</td><td>\(19.15^{\circ}\)</td></tr>
+  </table>
+  <p><b>结论触目惊心：</b>当手臂接近伸直（\(\theta_{2}\to0\)，此时 \(r\to l_{1}+l_{2}=0.7\,\mathrm{m}\)）时，\(\bigl|\mathrm{d}\theta_{2}/\mathrm{d}r\bigr|\to+\infty\).要让末端再前进哪怕 1 毫米，关节都要疯狂转动——这就是机器人学中著名的<b>奇异位形（singularity）</b>.</p>
+  <p>反过来看更可怕：在 \(\theta_{2}=1^{\circ}\) 附近，关节的微小抖动会被放大成末端的巨大误差；同时电机需要的角速度趋于无穷，物理上不可实现.<b>因此所有工业机器人的控制软件都设有"奇异回避"逻辑，其判据正是这个隐函数导数的量级.</b>而这个量，完全是靠"两边对 \(r\) 求导"算出来的——<b>无需解出隐函数本身</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　无人机沿"8 字"航迹巡检：参数方程求导给出航向与过载</div>
+  <p class="stmt">某电力巡检无人机沿 8 字形航迹飞行，位置（米）由参数方程给出：</p>
+  \[x(t)=300\sin(0.2t),\qquad y(t)=150\sin(0.4t).\]
+  <p>求 \(t=5\,\mathrm{s}\) 时的航向角、航迹曲率半径与法向过载.</p>
+  <p class="sol"><span class="mk">解</span><b>（1）速度分量与航向.</b></p>
+  \[\frac{\mathrm{d}x}{\mathrm{d}t}=60\cos(0.2t),\qquad \frac{\mathrm{d}y}{\mathrm{d}t}=60\cos(0.4t).\]
+  <p>在 \(t=5\)：\(0.2t=1\,\mathrm{rad},\;0.4t=2\,\mathrm{rad}\)，\(\cos1=0.540302,\;\cos2=-0.416147\)，故</p>
+  \[\dot x=32.418\ \mathrm{m/s},\qquad \dot y=-24.969\ \mathrm{m/s},\qquad
+    v=\sqrt{\dot x^{2}+\dot y^{2}}=40.92\ \mathrm{m/s}.\]
+  <p>航迹斜率与航向角</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\dot y}{\dot x}=\frac{-24.969}{32.418}=-0.770208,
+    \qquad \psi=\arctan(-0.770208)=-37.61^{\circ}.\]
+  <p><b>（2）二阶导数与曲率.</b>按参数方程二阶导公式（本节定理 3.8）：</p>
+  \[\frac{\mathrm{d}}{\mathrm{d}t}\Bigl(\frac{\mathrm{d}y}{\mathrm{d}x}\Bigr)
+   =\frac{\mathrm{d}}{\mathrm{d}t}\Bigl[\frac{\cos0.4t}{\cos0.2t}\Bigr]
+   =\frac{-0.4\sin(0.4t)\cos(0.2t)+0.2\cos(0.4t)\sin(0.2t)}{\cos^{2}(0.2t)}.\]
+  <p>代入 \(\sin1=0.841471,\;\sin2=0.909297\)：分子 \(=-0.196518-0.070035=-0.266553\)，分母 \(=0.540302^{2}=0.291926\)，故该式 \(=-0.913086\).于是</p>
+  \[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\frac{-0.913086}{32.418}=-0.028167\ \mathrm{m^{-1}}.\]
+  <p><b>（3）曲率与过载.</b></p>
+  \[\kappa=\frac{|y''|}{\bigl(1+y'^{2}\bigr)^{3/2}}=\frac{0.028167}{(1+0.593220)^{3/2}}=\frac{0.028167}{2.011}=0.014006\ \mathrm{m^{-1}},\]
+  \[R=\frac1\kappa=71.4\ \mathrm{m},\qquad
+    a_{n}=v^{2}\kappa=40.92^{2}\times0.014006=23.45\ \mathrm{m/s^{2}}\approx2.39\,g.\]
+  <p><b>工程结论：</b>多旋翼无人机的可用法向过载通常不超过 \(1.5\,g\).\(2.39\,g\) 意味着无人机会飞不出这条航迹（切向甩出），必须<b>把巡航速度从 \(40.9\,\mathrm{m/s}\) 降到</b></p>
+  \[v_{\max}=\sqrt{\frac{1.5\times9.8}{0.014006}}=\sqrt{1049.6}=32.4\ \mathrm{m/s},\]
+  <p>或者把航迹参数放大（降低曲率）.<b>整个判断链条，全靠参数方程的一阶、二阶导数支撑.</b></p>
+</div>
+
+<h3>一、隐函数的求导法</h3>
+<p>由方程 \(F(x,y)=0\) 所确定的 \(y\) 与 \(x\) 的函数关系，称为<b>隐函数</b>.许多隐函数无法（或不必）解出显式表达式，但仍可求导.</p>
+<div class="note"><b>隐函数求导的核心思想：把方程中的 \(y\) 一律看作 \(x\) 的函数 \(y(x)\)，两边同时对 \(x\) 求导；凡遇到含 \(y\) 的项，都要用链式法则多乘一个 \(y'\).</b>例如 \(\bigl(y^{3}\bigr)'=3y^{2}y'\)，\(\bigl(\mathrm{e}^{y}\bigr)'=\mathrm{e}^{y}y'\)，\(\bigl(xy\bigr)'=y+xy'\).求完后解出 \(y'\) 即可，结果中允许同时含 \(x\) 与 \(y\).</div>
+
+<div class="ex"><div class="lab">例 3.25　隐函数一阶导数</div>
+  <p class="stmt">求下列隐函数的 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\)：(1) \(x^{2}+y^{2}=R^{2}\)；(2) \(\mathrm{e}^{y}+xy-\mathrm{e}=0\)，并求 \(y'\big|_{x=0}\).</p>
+  <p class="sol"><span class="mk">解</span>(1) 两边对 \(x\) 求导：\(2x+2yy'=0\)，故 \(y'=-\dfrac{x}{y}\;(y
+eq0)\).</p>
+  <p>几何检验：圆上点 \((x,y)\) 处的半径方向斜率为 \(\dfrac{y}{x}\)，而切线斜率 \(-\dfrac{x}{y}\) 与之乘积为 \(-1\)，<b>切线垂直于半径</b>，与初等几何一致.✓</p>
+  <p>(2) 两边对 \(x\) 求导（注意 \(xy\) 用乘积法则）：</p>
+  \[\mathrm{e}^{y}y'+y+xy'=0\;\Longrightarrow\;y'\bigl(\mathrm{e}^{y}+x\bigr)=-y
+    \;\Longrightarrow\;y'=-\frac{y}{\mathrm{e}^{y}+x}.\]
+  <p>求 \(x=0\) 处的值：先由原方程定 \(y\).令 \(x=0\) 得 \(\mathrm{e}^{y}=\mathrm{e}\)，即 \(y=1\).代入</p>
+  \[y'\big|_{x=0}=-\frac{1}{\mathrm{e}^{1}+0}=-\frac{1}{\mathrm{e}}.\]
+  <p class="muted"><b>关键步骤提醒：</b>求隐函数在某点的导数值，必须<b>先从原方程求出该点的 \(y\) 值</b>，再代入 \(y'\) 的表达式.漏掉这一步是最常见的失分点.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.26　考研经典：笛卡尔叶形线的切线</div>
+  <p class="stmt">求曲线 \(x^{3}+y^{3}-3axy=0\;(a\gt0)\) 在点 \(\Bigl(\dfrac{3a}{2},\dfrac{3a}{2}\Bigr)\) 处的切线方程.</p>
+  <p class="sol"><span class="mk">解</span>两边对 \(x\) 求导：</p>
+  \[3x^{2}+3y^{2}y'-3a(y+xy')=0.\]
+  <p>约去 3 并整理，把含 \(y'\) 的项归到一侧：</p>
+  \[y'\bigl(y^{2}-ax\bigr)=ay-x^{2}\;\Longrightarrow\;y'=\frac{ay-x^{2}}{y^{2}-ax}.\]
+  <p>代入 \(x=y=\dfrac{3a}{2}\)：</p>
+  \[\text{分子}=a\cdot\frac{3a}{2}-\frac{9a^{2}}{4}=\frac{6a^{2}-9a^{2}}{4}=-\frac{3a^{2}}{4},\qquad
+    \text{分母}=\frac{9a^{2}}{4}-a\cdot\frac{3a}{2}=\frac{9a^{2}-6a^{2}}{4}=\frac{3a^{2}}{4}.\]
+  <p>故 \(k=y'=-1\).切线方程</p>
+  \[y-\frac{3a}{2}=-\Bigl(x-\frac{3a}{2}\Bigr)\;\Longrightarrow\;x+y=3a.\]
+  <p class="muted">该点是叶形线上离原点最远的"叶尖"，切线斜率 \(-1\) 与曲线关于直线 \(y=x\) 的对称性完全吻合.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.27　隐函数的二阶导数</div>
+  <p class="stmt">设 \(x-y+\dfrac12\sin y=0\) 确定 \(y=y(x)\)，求 \(y''\).</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：求 \(y'\).</b>两边对 \(x\) 求导</p>
+  \[1-y'+\frac12\cos y\cdot y'=0\;\Longrightarrow\;y'\Bigl(1-\frac12\cos y\Bigr)=1
+    \;\Longrightarrow\;y'=\frac{2}{2-\cos y}.\]
+  <p><b>第二步：再对 \(x\) 求导一次</b>（注意 \(y\) 仍是 \(x\) 的函数，要乘 \(y'\)）：</p>
+  \[y''=\frac{\mathrm{d}}{\mathrm{d}x}\bigl[2(2-\cos y)^{-1}\bigr]
+   =-2(2-\cos y)^{-2}\cdot\sin y\cdot y'.\]
+  <p><b>第三步：把 \(y'\) 代回</b>，使结果只含 \(y\)：</p>
+  \[y''=-\frac{2\sin y}{(2-\cos y)^{2}}\cdot\frac{2}{2-\cos y}=-\frac{4\sin y}{(2-\cos y)^{3}}.\]
+  <p class="muted"><b>通用流程：求一阶 → 对一阶式再求导 → 把 \(y'\) 的表达式代回消去 \(y'\).</b>最后结果中不应残留 \(y'\).</p>
+</div>
+
+<h3>二、对数求导法在隐式关系中的再应用</h3>
+<p>对数求导法本质上就是"先把 \(y=f(x)\) 改写成隐式关系 \(\ln y=\ln f(x)\)，再用隐函数求导法".</p>
+<div class="ex"><div class="lab">例 3.28　多因式根式函数</div>
+  <p class="stmt">求 \(y=\sqrt[3]{\dfrac{(x-1)(x-2)}{(x-3)(x-4)}}\) 的导数.</p>
+  <p class="sol"><span class="mk">解</span>两边取对数（加绝对值以扩大适用范围）：</p>
+  \[\ln|y|=\frac13\Bigl[\ln|x-1|+\ln|x-2|-\ln|x-3|-\ln|x-4|\Bigr].\]
+  <p>两边对 \(x\) 求导，左边按隐函数法得 \(\dfrac{y'}{y}\)：</p>
+  \[\frac{y'}{y}=\frac13\Bigl[\frac{1}{x-1}+\frac{1}{x-2}-\frac{1}{x-3}-\frac{1}{x-4}\Bigr].\]
+  <p>故</p>
+  \[y'=\frac13\sqrt[3]{\frac{(x-1)(x-2)}{(x-3)(x-4)}}
+    \Bigl[\frac{1}{x-1}+\frac{1}{x-2}-\frac{1}{x-3}-\frac{1}{x-4}\Bigr].\]
+  <p class="muted">若不用对数求导法，需先用商法则再用两次乘积法则，展开后有二十余项，几乎不可能一次算对.<b>"乘除变加减"是对数求导法的全部威力所在.</b></p>
+</div>
+
+<h3>三、由参数方程所确定的函数的导数</h3>
+<div class="def"><div class="lab"><span class="n">定理 3.7</span>参数方程的一阶导数</div>
+  <p>设参数方程 \(\begin{cases}x=\varphi(t),\\ y=\psi(t),\end{cases}\;t\in I\) 确定 \(y\) 为 \(x\) 的函数.若 \(\varphi,\psi\) 均可导，且 \(\varphi'(t)
+eq0\)，则</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\dfrac{\mathrm{d}y}{\mathrm{d}t}}{\dfrac{\mathrm{d}x}{\mathrm{d}t}}=\frac{\psi'(t)}{\varphi'(t)}.\]
+  <p class="muted"><b>推导：</b>由 \(\varphi'(t)
+eq0\) 与单调性，\(x=\varphi(t)\) 存在反函数 \(t=\varphi^{-1}(x)\)，于是 \(y=\psi\bigl[\varphi^{-1}(x)\bigr]\).由链式法则与反函数求导法则</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\mathrm{d}y}{\mathrm{d}t}\cdot\frac{\mathrm{d}t}{\mathrm{d}x}
+   =\psi'(t)\cdot\frac{1}{\varphi'(t)}.\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(x=\varphi(t),\ y=\psi(t)\)，且 \(\varphi'(t)
+eq0\).因 \(\varphi'(t)
+eq0\)，由连续性知 \(\varphi'\) 在 \(t\) 附近保号，故 \(\varphi\) 在 \(t\) 附近严格单调，从而 \(x=\varphi(t)\) 存在反函数 \(t=\varphi^{-1}(x)\).</p>
+<p><span class="stp">化为复合函数：</span>于是 \(y=\psi\bigl[\varphi^{-1}(x)\bigr]\).由链式法则（定理 3.5）与反函数求导法则（定理 3.4），</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}
+=\frac{\mathrm{d}y}{\mathrm{d}t}\cdot\frac{\mathrm{d}t}{\mathrm{d}x}
+=\psi'(t)\cdot\frac{1}{\varphi'(t)}
+=\frac{\psi'(t)}{\varphi'(t)}.\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 3.8</span>参数方程的二阶导数</div>
+  <p>在定理 3.7 条件下，若 \(\varphi,\psi\) 二阶可导，则</p>
+  \[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}
+   =\frac{\mathrm{d}}{\mathrm{d}x}\Bigl(\frac{\mathrm{d}y}{\mathrm{d}x}\Bigr)
+   =\frac{\dfrac{\mathrm{d}}{\mathrm{d}t}\Bigl(\dfrac{\psi'(t)}{\varphi'(t)}\Bigr)}{\varphi'(t)}
+   =\frac{\psi''(t)\varphi'(t)-\psi'(t)\varphi''(t)}{\bigl[\varphi'(t)\bigr]^{3}}.\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>记 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=w(t)=\dfrac{\psi'(t)}{\varphi'(t)}\).注意 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 仍是 \(t\) 的函数，再对 \(x\) 求导时要通过中间变量 \(t\)：</p>
+\[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}
+=\frac{\mathrm{d}}{\mathrm{d}x}\left(\frac{\mathrm{d}y}{\mathrm{d}x}\right)
+=\frac{\mathrm{d}}{\mathrm{d}x}w(t)
+=\frac{\mathrm{d}w}{\mathrm{d}t}\cdot\frac{\mathrm{d}t}{\mathrm{d}x}
+=\frac{w'(t)}{\varphi'(t)}\quad(\text{由反函数求导法则}).\]
+<p>而</p>
+\[w'(t)=\frac{\mathrm{d}}{\mathrm{d}t}\left(\frac{\psi'(t)}{\varphi'(t)}\right)
+=\frac{\psi''(t)\varphi'(t)-\psi'(t)\varphi''(t)}{[\varphi'(t)]^{2}}.\]
+<p>代入得</p>
+\[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}
+=\frac{\psi''(t)\varphi'(t)-\psi'(t)\varphi''(t)}{[\varphi'(t)]^{2}}\cdot\frac{1}{\varphi'(t)}
+=\frac{\psi''(t)\varphi'(t)-\psi'(t)\varphi''(t)}{[\varphi'(t)]^{3}}.\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>二阶导数的头号陷阱：</b>\(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\;\boldsymbol{
+eq}\;\dfrac{\psi''(t)}{\varphi''(t)}\)！<br>
+必须记住 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 仍然是 \(t\) 的函数，要再"对 \(x\) 求导"就得<b>先对 \(t\) 求导、再除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\)</b>.<br>
+<b>推荐记法（不用背分母 3 次方的公式）：</b>令 \(g(t)=\dfrac{\mathrm{d}y}{\mathrm{d}x}\)，则 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\dfrac{g'(t)}{\varphi'(t)}\).先化简 \(g(t)\) 再求导，计算量往往小很多.</div>
+
+<div class="ex"><div class="lab">例 3.29　椭圆的切线</div>
+  <p class="stmt">椭圆 \(\begin{cases}x=a\cos t,\\ y=b\sin t\end{cases}\;(a,b\gt0)\)，求 \(t=\dfrac{\pi}{4}\) 处的切线方程.</p>
+  <p class="sol"><span class="mk">解</span>\(\dfrac{\mathrm{d}x}{\mathrm{d}t}=-a\sin t,\;\dfrac{\mathrm{d}y}{\mathrm{d}t}=b\cos t\)，故</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{b\cos t}{-a\sin t}=-\frac{b}{a}\cot t.\]
+  <p>在 \(t=\dfrac{\pi}{4}\)：\(k=-\dfrac{b}{a}\)，切点为 \(\Bigl(\dfrac{\sqrt2}{2}a,\;\dfrac{\sqrt2}{2}b\Bigr)\).切线方程</p>
+  \[y-\frac{\sqrt2}{2}b=-\frac{b}{a}\Bigl(x-\frac{\sqrt2}{2}a\Bigr)
+   \;\Longrightarrow\;\frac{x}{a}+\frac{y}{b}=\sqrt2.\]
+</div>
+
+<div class="ex"><div class="lab">例 3.30　考研经典：参数方程的二阶导数</div>
+  <p class="stmt">设 \(\begin{cases}x=\ln(1+t^{2}),\\ y=t-\arctan t,\end{cases}\) 求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 与 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\).</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：分别对 \(t\) 求导.</b></p>
+  \[\frac{\mathrm{d}x}{\mathrm{d}t}=\frac{2t}{1+t^{2}},\qquad
+    \frac{\mathrm{d}y}{\mathrm{d}t}=1-\frac{1}{1+t^{2}}=\frac{t^{2}}{1+t^{2}}.\]
+  <p><b>第二步：作商并化简（这一步的化简至关重要）.</b></p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{t^{2}/(1+t^{2})}{2t/(1+t^{2})}=\frac{t^{2}}{2t}=\frac{t}{2}\qquad(t
+eq0).\]
+  <p><b>第三步：对 \(\dfrac{t}{2}\) 关于 \(t\) 求导，再除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\).</b></p>
+  \[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}
+   =\frac{\dfrac{\mathrm{d}}{\mathrm{d}t}\Bigl(\dfrac{t}{2}\Bigr)}{\dfrac{\mathrm{d}x}{\mathrm{d}t}}
+   =\frac{\dfrac12}{\dfrac{2t}{1+t^{2}}}=\frac{1+t^{2}}{4t}.\]
+  <p class="muted">若第二步没有把 \(\dfrac{t^{2}}{2t}\) 化简成 \(\dfrac{t}{2}\)，第三步就要动用商法则，计算量翻好几倍.<b>参数方程二阶导题目，"先化简一阶导"永远是最优策略.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.31　摆线的切线与二阶导数</div>
+  <p class="stmt">摆线 \(\begin{cases}x=a(t-\sin t),\\ y=a(1-\cos t)\end{cases}\;(a\gt0)\)，求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 与 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\).</p>
+  <p class="sol"><span class="mk">解</span>\(\dfrac{\mathrm{d}x}{\mathrm{d}t}=a(1-\cos t),\;\dfrac{\mathrm{d}y}{\mathrm{d}t}=a\sin t\).故（设 \(t
+eq2k\pi\)）</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\sin t}{1-\cos t}
+   =\frac{2\sin\dfrac t2\cos\dfrac t2}{2\sin^{2}\dfrac t2}=\cot\frac t2.\]
+  <p>再求二阶导.先对 \(t\) 求导：\(\dfrac{\mathrm{d}}{\mathrm{d}t}\cot\dfrac t2=-\dfrac{1}{2\sin^{2}\dfrac t2}\).除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}=a(1-\cos t)=2a\sin^{2}\dfrac t2\)：</p>
+  \[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}
+   =\frac{-\dfrac{1}{2\sin^{2}\dfrac t2}}{2a\sin^{2}\dfrac t2}
+   =-\frac{1}{4a\sin^{4}\dfrac t2}.\]
+  <p>结果恒为负，说明摆线的每一拱都是<b>凸的</b>（向上凸），这与它作为"最速降线"的形状完全一致.</p>
+</div>
+
+<h3>四、极坐标曲线的切线斜率</h3>
+<p>设曲线由极坐标方程 \(r=r(\theta)\) 给出.把它化为以 \(\theta\) 为参数的参数方程：</p>
+\[x=r(\theta)\cos\theta,\qquad y=r(\theta)\sin\theta.\]
+<p>对 \(\theta\) 求导（用乘积法则）：</p>
+\[\frac{\mathrm{d}x}{\mathrm{d}\theta}=r'\cos\theta-r\sin\theta,\qquad
+  \frac{\mathrm{d}y}{\mathrm{d}\theta}=r'\sin\theta+r\cos\theta.\]
+<p>于是切线斜率</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{r'\sin\theta+r\cos\theta}{r'\cos\theta-r\sin\theta}.\]
+
+<div class="ex"><div class="lab">例 3.32　心形线的水平切线</div>
+  <p class="stmt">求心形线 \(r=a(1+\cos\theta)\;(a\gt0)\) 在 \(\theta=\dfrac{\pi}{3}\) 处的切线斜率.</p>
+  <p class="sol"><span class="mk">解</span>\(r'=-a\sin\theta\).在 \(\theta=\dfrac{\pi}{3}\)：</p>
+  \[r=a\Bigl(1+\frac12\Bigr)=\frac{3a}{2},\qquad r'=-a\cdot\frac{\sqrt3}{2}.\]
+  <p>分子：</p>
+  \[r'\sin\theta+r\cos\theta=-\frac{\sqrt3}{2}a\cdot\frac{\sqrt3}{2}+\frac{3a}{2}\cdot\frac12
+   =-\frac{3a}{4}+\frac{3a}{4}=0.\]
+  <p>分母：</p>
+  \[r'\cos\theta-r\sin\theta=-\frac{\sqrt3}{2}a\cdot\frac12-\frac{3a}{2}\cdot\frac{\sqrt3}{2}
+   =-\frac{\sqrt3a}{4}-\frac{3\sqrt3a}{4}=-\sqrt3\,a
+eq0.\]
+  <p>故 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=0\)，<b>切线水平</b>，方程为 \(y=r\sin\theta=\dfrac{3a}{2}\cdot\dfrac{\sqrt3}{2}=\dfrac{3\sqrt3}{4}a\).</p>
+  <p class="muted">此处正是心形线上纵坐标的最高点.<b>"分子为零 \(\Rightarrow\) 水平切线，分母为零 \(\Rightarrow\) 竖直切线"，这是极坐标求切线的快速判据.</b></p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 机器人雅可比矩阵：隐函数求导的矩阵版本</div>
+  <details><summary>展开查看：从一维隐函数导数到多维雅可比，以及"奇异值"的工程含义</summary>
+  <div class="body">
+    <p>白车身焊装线上，六轴机器人正沿着车门缝隙匀速拖出一条焊缝.走到手臂快要伸直的位置时，控制器突然报警急停：末端明明只要求每秒挪 5 厘米，某个关节却被指令转到每秒几百度.机械没坏，坏的是数学——机器人撞上了"奇异位形".引例一里只有一条约束、一个关节；真实的六轴机器人有 6 个关节 \(\boldsymbol{q}=(q_{1},\dots,q_{6})\) 与 6 维末端位姿 \(\boldsymbol{p}=(x,y,z,\alpha,\beta,\gamma)\)，正运动学是隐式的向量关系 \(\boldsymbol{p}=\boldsymbol{f}(\boldsymbol{q})\).对时间求导得</p>
+    \[\dot{\boldsymbol{p}}=\boldsymbol{J}(\boldsymbol{q})\,\dot{\boldsymbol{q}},\qquad
+      \boldsymbol{J}=\Bigl[\frac{\partial f_{i}}{\partial q_{j}}\Bigr]_{6\times6},\]
+    <p>矩阵 \(\boldsymbol{J}\) 称为<b>雅可比矩阵</b>，它就是"隐函数导数"在多变量情形的推广（第 7 章会正式建立偏导数）.</p>
+    <p><b>用二连杆算一个具体的 \(\boldsymbol{J}\).</b>取 \(l_{1}=0.4,\;l_{2}=0.3\)，正运动学</p>
+    \[x=l_{1}\cos q_{1}+l_{2}\cos(q_{1}+q_{2}),\qquad y=l_{1}\sin q_{1}+l_{2}\sin(q_{1}+q_{2}).\]
+    <p>对 \(q_{1},q_{2}\) 求导得</p>
+    \[\boldsymbol{J}=\begin{pmatrix}
+      -l_{1}\sin q_{1}-l_{2}\sin(q_{1}+q_{2}) & -l_{2}\sin(q_{1}+q_{2})\\
+      \ \ l_{1}\cos q_{1}+l_{2}\cos(q_{1}+q_{2}) & \ \ l_{2}\cos(q_{1}+q_{2})
+      \end{pmatrix}.\]
+    <p>其行列式经三角恒等式化简为一个极其干净的结果：</p>
+    \[\det\boldsymbol{J}=l_{1}l_{2}\sin q_{2}=0.12\sin q_{2}.\]
+    <p><b>看！这与引例一算出的 \(\dfrac{\mathrm{d}\theta_{2}}{\mathrm{d}r}=-\dfrac{r}{0.12\sin\theta_{2}}\) 中的分母 \(0.12\sin\theta_{2}\) 完全一致.</b>两条路殊途同归.</p>
+    <table class="dt">
+      <tr><th>\(q_{2}\)</th><th>\(\det\boldsymbol{J}\)</th><th>\(\boldsymbol{J}^{-1}\) 放大倍数（\(\propto1/\det\)）</th><th>状态</th></tr>
+      <tr><td>\(90^{\circ}\)</td><td>0.1200</td><td>\(8.3\)</td><td>灵巧，最佳工作区</td></tr>
+      <tr><td>\(45^{\circ}\)</td><td>0.0849</td><td>\(11.8\)</td><td>正常</td></tr>
+      <tr><td>\(10^{\circ}\)</td><td>0.0208</td><td>\(48.0\)</td><td>接近奇异，需限速</td></tr>
+      <tr><td>\(2^{\circ}\)</td><td>0.0042</td><td>\(238.7\)</td><td>奇异，控制器报警</td></tr>
+      <tr><td>\(0^{\circ}\)</td><td>0</td><td>\(\infty\)</td><td>完全奇异，失去一个自由度</td></tr>
+    </table>
+    <p><b>工程处置：</b>实际控制器采用<b>阻尼最小二乘</b>，把 \(\boldsymbol{J}^{-1}\) 换成 \(\boldsymbol{J}^{\mathrm{T}}\bigl(\boldsymbol{J}\boldsymbol{J}^{\mathrm{T}}+\lambda^{2}\boldsymbol{I}\bigr)^{-1}\)，用一个小阻尼 \(\lambda\)（如 \(0.01\)）"堵住"分母趋零的路.代价是牺牲一点跟踪精度，换来奇异点附近的稳定性.</p>
+    <p>从"两边对 \(x\) 求导"这样一个纯数学动作出发，我们一路推到了工业机器人控制器里最核心的一行代码.<b>这就是隐函数求导法的力量.</b></p>
+  
+  </div>
+</details>
+</div>
+
+    <!-- ============ §3.5 ============ -->
+    <!-- 已 deleted: cv_p35 guide -->
+
+<div class="labx">
+  <div class="lab">应用探微 · 区间测速的数学本质：中值定理保证"平均速率=瞬时速率"的时刻一定存在</div>
+  <div class="desc">拉格朗日中值定理：在区间 (\([a,b]\)) 内<b>必存在一点 (\(\xi\))</b>，使该点切线斜率恰好等于端点割线斜率 (\(k=\dfrac{f(b)-f(a)}{b-a}\)).下图以 (\(f(x)=x^{3}-x\))（区间 (\([-2,2]\))）为例：<b>蓝色实线</b>是端点割线（斜率=平均变化率），<b>红色虚线</b>是当前点切线（斜率=瞬时变化率）.拖动红点——当两线平行时，你找到了 (\(\xi\))！这正是区间测速执法的理论依据：平均超速则必有某瞬时速度至少达到该平均值.</div>
+  <canvas id="cv_p35" width="720" height="320" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd"></canvas>
+  <div class="ctrl"><label>x₀ = <span id="vo_p35">1.2</span></label>
+  <input type="range" id="rg_p35" min="-2" max="2" step="0.05" value="1.2"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p35'); if(!cv) return;
+    var rg=document.getElementById('rg_p35');
+    var vo=document.getElementById('vo_p35');
+    var W=cv.width,H=cv.height,ctx;
+    var LW=+cv.getAttribute('width')||cv.width, LH=+cv.getAttribute('height')||cv.height;
+    function setup(){
+      var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+      var w=Math.max(240, r.width||LW), h=Math.max(160, r.height||LH);
+      cv.width=Math.round(w*d); cv.height=Math.round(h*d);
+      ctx=cv.getContext('2d');
+      ctx.setTransform(d,0,0,d,0,0);
+      W=w; H=h;
+    }
+    setup();
+    var xmin=-1.5,xmax=1.5,ymin=-2.5,ymax=2.5;
+    function f(x){ return x*x*x - x; }
+    function fp(x){ return (f(x+1e-3)-f(x-1e-3))/2e-3; }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var x0=parseFloat(rg.value); if(vo)vo.textContent=x0.toFixed(2);
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(15,110,86,.08)';ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv++){if(gxv===0)continue;ctx.beginPath();ctx.moveTo(X(gxv),0);ctx.lineTo(X(gxv),H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv++){if(gyv===0)continue;ctx.beginPath();ctx.moveTo(0,Y(gyv));ctx.lineTo(W,Y(gyv));ctx.stroke();}
+      ctx.strokeStyle='rgba(15,110,86,.25)';ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.moveTo(X(0),0);ctx.lineTo(X(0),H);ctx.moveTo(0,Y(0));ctx.lineTo(W,Y(0));ctx.stroke();
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();var fi=true;
+      for(var px=0;px<=W;px++){var x=xmin+px/W*(xmax-xmin);var y=f(x);
+        if(!isFinite(y)){fi=true;continue;} var py=Y(y);
+        if(fi){ctx.moveTo(px,py);fi=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+      if(isFinite(f(x0))&&isFinite(fp(x0))){
+        var y0=f(x0),m=fp(x0);
+        ctx.strokeStyle='#fca5a5';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
+        var xL=xmin,xR=xmax;
+        ctx.moveTo(X(xL),Y(y0+m*(xL-x0)));ctx.lineTo(X(xR),Y(y0+m*(xR-x0)));ctx.stroke();ctx.setLineDash([]);
+        ctx.fillStyle='#fca5a5';ctx.beginPath();ctx.arc(X(x0),Y(y0),4,0,7);ctx.fill();
+      }
+
+      // blue secant line A(xmin,f(xmin)) -> B(xmax,f(xmax))
+      var ya=f(xmin), yb=f(xmax);
+      ctx.strokeStyle='#3b82f6'; ctx.lineWidth=2.2; ctx.setLineDash([8,4]); ctx.beginPath();
+      ctx.moveTo(X(xmin), Y(ya)); ctx.lineTo(X(xmax), Y(yb)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#3b82f6';
+      ctx.beginPath(); ctx.arc(X(xmin), Y(ya), 3.5, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(X(xmax), Y(yb), 3.5, 0, 7); ctx.fill();
+      ctx.fillStyle='#334155'; ctx.font='11px sans-serif';
+      ctx.fillText('A', X(xmin)-12, Y(ya)-6);
+      ctx.fillText('B', X(xmax)+6, Y(yb)-6);
+      var k_secant = (yb - ya) / (xmax - xmin);
+      if(isFinite(fp(x0)) && Math.abs(fp(x0) - k_secant) < 0.08){
+        ctx.fillStyle='#16a34a'; ctx.font='bold 13px sans-serif';
+        ctx.fillText('\u2713 \u627e\u5230 \u03be\uff01\u5207\u7ebf\u2225\u5272\u7ebf', W/2 - 60, 24);
+      }
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case"><div class="lab">应用案例 · 渐开线齿轮：参数方程求导给出恒定传动比</div>
+<details><summary>展开查看：为什么全世界的齿轮齿廓都是渐开线</summary>
+<div class="body">
+<p><b>场景：</b> 深夜的工业机器人产线上，一台六轴机械臂正以 0.02 mm 的重复定位精度，把新能源电芯稳稳叠进电池模组.撑起这份"稳"的，是它腕部那颗巴掌大的 RV 减速器——而减速器里每一对齿轮的齿廓，都不是工程师随手画的曲线，而是一条叫<b>渐开线</b>的数学曲线.为什么偏偏是它？换成圆弧、抛物线行不行？答案就藏在这组参数方程里：</p>
+\[x=r_{b}(\cos\theta+\theta\sin\theta),\qquad y=r_{b}(\sin\theta-\theta\cos\theta),\]
+<p>其中 \(r_{b}\) 为基圆半径，\(\theta\) 为展开角.</p>
+<p class="sol"> 按定理 3.7 分别对 \(\theta\) 求导（乘积法则）：</p>
+\[\frac{\mathrm{d}x}{\mathrm{d}\theta}=r_{b}\bigl(-\sin\theta+\sin\theta+\theta\cos\theta\bigr)=r_{b}\theta\cos\theta,\]
+\[\frac{\mathrm{d}y}{\mathrm{d}\theta}=r_{b}\bigl(\cos\theta-\cos\theta+\theta\sin\theta\bigr)=r_{b}\theta\sin\theta.\]
+<p>于是切线斜率化到了极致的简洁：</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{r_{b}\theta\sin\theta}{r_{b}\theta\cos\theta}=\tan\theta.\]
+<p>斜率为 \(\tan\theta\) 意味着<b>切线与展开角同步旋转，法线恒与基圆相切</b>.两齿轮啮合时，接触点的公法线永远是两基圆的内公切线——这条线固定不动，于是传动比恒定，即使中心距因装配误差略有变化也不改变.<b>这就是渐开线齿轮统治机械传动一百多年的全部数学理由.</b></p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>模数</td><td>\(m\)</td><td>3 mm</td></tr>
+<tr><td>齿数</td><td>\(z\)</td><td>24</td></tr>
+<tr><td>分度圆半径</td><td>\(r=mz/2\)</td><td>36.000 mm</td></tr>
+<tr><td>压力角</td><td>\(\alpha\)</td><td>\(20^{\circ}\)</td></tr>
+<tr><td>基圆半径</td><td>\(r_{b}=r\cos\alpha\)</td><td>33.829 mm</td></tr>
+</table>
+<p>由 \(r=r_{b}\sqrt{1+\theta^{2}}\) 可解出分度圆上的展开角 \(\theta=\tan\alpha=0.36397\ \mathrm{rad}\)（\(20.855^{\circ}\)），此处 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\tan0.36397=0.38094\).再由参数方程的曲率公式可得该点曲率半径</p>
+\[\rho=r_{b}\theta=33.829\times0.36397=12.31\ \mathrm{mm}.\]
+<p><b>工程结论：</b> 赫兹接触应力满足 \(\sigma_{H}\propto\sqrt{1/\rho}\).齿根附近展开角小，例如 \(\theta=0.15\) 时 \(\rho=5.07\ \mathrm{mm}\)，接触应力被放大 \(\sqrt{12.31/5.07}=1.56\) 倍.这就是齿轮点蚀总是先出现在节线以下齿根侧的原因，也是设计时要做<b>变位（正变位加大 \(\theta\)）</b>来增大齿根曲率半径的依据.<b>从"两个分式相除"到"减速器寿命"，中间只隔着一次参数方程求导.</b></p>
+<p class="cn-point">RV 减速器长期是国产机器人被卡住的一环，差距常常就差在 \(\rho=r_{b}\theta\) 这个数上——变位取多少、齿根曲率留多大、磨到第几遍收手，靠的不是照抄图纸，而是把这次求导算透再一炉一炉磨出来.所谓精密制造的"手感"，底层是能被写成公式的.</p>
+  
+
+<div style="margin:14px 0 6px 0;text-align:center">
+  <canvas id="ch3-gear" width="720" height="420" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>展开角 θ <input type="range" id="ch3-gear-th" min="0" max="1.1" step="0.02" value="0.36"> <span id="ch3-gear-th-t">0.36</span> rad</label>
+  <label>基圆 r_b <input type="range" id="ch3-gear-rb" min="20" max="50" step="0.5" value="33.8"> <span id="ch3-gear-rb-t">33.8</span> mm</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch3-gear-out"></div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch3-gear'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||420;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var rth=document.getElementById('ch3-gear-th'), tht=document.getElementById('ch3-gear-th-t'),
+      rrb=document.getElementById('ch3-gear-rb'), rbt=document.getElementById('ch3-gear-rb-t'),
+      out=document.getElementById('ch3-gear-out');
+  function draw(){
+    if(!s) s=setup();
+    var th=+rth.value, rb=+rrb.value;
+    tht.textContent=th.toFixed(2); rbt.textContent=rb.toFixed(1);
+    var ctx=s.ctx,W=s.W,H=s.H;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var cx=W*0.40, cy=H*0.56, thMax=1.1;
+    var maxR=rb*Math.sqrt(1+thMax*thMax);
+    var scale=(Math.min(W,H)*0.36)/maxR;
+    // base circle
+    ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(cx,cy,rb*scale,0,6.28); ctx.stroke();
+    ctx.fillStyle='#94a3b8'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('\u57fa\u5706 r_b', cx, cy+rb*scale+14);
+    // involute
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.5; ctx.beginPath();
+    for(var t=0;t<=thMax+0.001;t+=0.02){
+      var x=cx+rb*(Math.cos(t)+t*Math.sin(t))*scale;
+      var y=cy-rb*(Math.sin(t)-t*Math.cos(t))*scale;
+      if(t===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    // point at current th
+    var px=cx+rb*(Math.cos(th)+th*Math.sin(th))*scale;
+    var py=cy-rb*(Math.sin(th)-th*Math.cos(th))*scale;
+    // tangent line: dy/dx = tan(th) -> screen dir (1, -tan(th))
+    var len=Math.min(W,H)*0.26;
+    var dx=len, dy=-len*Math.tan(th);
+    ctx.strokeStyle='#dc2626'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(px-dx,py-dy); ctx.lineTo(px+dx,py+dy); ctx.stroke();
+    // normal (tangent to base circle): perpendicular, screen dir (tan(th), 1)
+    ctx.strokeStyle='#0284c7'; ctx.lineWidth=1.5; ctx.setLineDash([4,3]); ctx.beginPath();
+    ctx.moveTo(px-tanv*len*0.5, py+len*0.5); ctx.lineTo(px+tanv*len*0.5, py-len*0.5); ctx.stroke(); ctx.setLineDash([]);
+    var tanv=Math.tan(th);
+    ctx.fillStyle='#0F6E56'; ctx.beginPath(); ctx.arc(px,py,5,0,6.28); ctx.fill();
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('\u6e10\u5f00\u7ebf\uff1a x=r_b(\u03b8 sin\u03b8+cos\u03b8), y=r_b(sin\u03b8\u2212\u03b8 cos\u03b8)', 12, 18);
+    ctx.fillStyle='#dc2626'; ctx.font='11px sans-serif';
+    ctx.fillText('\u5207\u7ebf (dy/dx=tan\u03b8)', px+dx*0.3+6, py-dy*0.3);
+    out.textContent='\u5f53\u524d \u03b8='+th.toFixed(2)+' \u2192 dy/dx = tan\u03b8 = '+Math.tan(th).toFixed(4)+' \uff08\u6cd5\u7ebf\u6052\u5207\u57fa\u5706\uff09';
+  }
+  rth.addEventListener('input',draw); rrb.addEventListener('input',draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</div>
+</details>
+</div>
+
+<div class="case"><div class="lab">应用案例 · 无人驾驶自动变道：曲率、转向角与舒适性</div>
+<details><summary>展开查看：用参数方程二阶导判定一条变道轨迹能不能用</summary>
+<div class="body">
+<p><b>场景：</b> 高速上，一辆开着 L3 的车准备超过前方的慢车，向左并线.同样是变道，有的车让你端着的咖啡纹丝不动，有的车却让副驾一把抓住扶手——差别不在"挪了多远"，而在"挪得多急".这一次规划器给出的方案是：纵向匀速，横向按五次多项式过渡（与 §3.3 机械臂轨迹同源）.取归一化时间 \(\tau=t/T\)，</p>
+\[x(t)=vt,\qquad y(t)=W\bigl(10\tau^{3}-15\tau^{4}+6\tau^{5}\bigr).\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>车速</td><td>\(v\)</td><td>25 m/s（90 km/h）</td></tr>
+<tr><td>车道宽</td><td>\(W\)</td><td>3.5 m</td></tr>
+<tr><td>变道历时</td><td>\(T\)</td><td>4.0 s</td></tr>
+<tr><td>轴距</td><td>\(L\)</td><td>2.8 m</td></tr>
+<tr><td>舒适横向加速度上限</td><td>\(a_{y,\lim}\)</td><td>\(2.0\ \mathrm{m/s^{2}}\)</td></tr>
+</table>
+<p class="sol"> 对 \(t\) 求导（链式法则，\(\mathrm{d}\tau/\mathrm{d}t=1/T\)）：</p>
+\[\dot x=v=25,\quad \ddot x=0;\qquad
+  \dot y=\frac{30W}{T}\tau^{2}(1-\tau)^{2},\quad
+  \ddot y=\frac{60W}{T^{2}}\tau(1-\tau)(1-2\tau).\]
+<p>令 \(\dfrac{\mathrm{d}\ddot y}{\mathrm{d}\tau}=0\) 得 \(6\tau^{2}-6\tau+1=0\)，即 \(\tau=0.21132\) 或 \(0.78868\).代入 \(\dfrac{60W}{T^{2}}=\dfrac{210}{16}=13.125\)：</p>
+\[|\ddot y|_{\max}=13.125\times0.096225=1.263\ \mathrm{m/s^{2}},\qquad
+  \dot y=\frac{105}{4}\times0.027778=0.7292\ \mathrm{m/s}.\]
+<p>由参数方程曲率公式</p>
+\[\kappa=\frac{|\dot x\ddot y-\dot y\ddot x|}{\bigl(\dot x^{2}+\dot y^{2}\bigr)^{3/2}}
+  =\frac{25\times1.263}{\bigl(625+0.532\bigr)^{3/2}}=\frac{31.575}{15645}=2.018\times10^{-3}\ \mathrm{m^{-1}},\]
+<p>对应转弯半径 \(R=1/\kappa=495.5\ \mathrm{m}\).自行车模型给出前轮转角</p>
+\[\delta=\arctan(L\kappa)\approx L\kappa=2.8\times2.018\times10^{-3}=5.651\times10^{-3}\ \mathrm{rad}=0.324^{\circ},\]
+<p>方向盘（传动比 16:1）转过 \(5.18^{\circ}\)；横向加速度 \(a_{y}=v^{2}\kappa=625\times2.018\times10^{-3}=1.261\ \mathrm{m/s^{2}}\).</p>
+<p><b>工程结论：</b> \(1.261\ \mathrm{m/s^{2}}\) 低于 \(2.0\) 的舒适阈值，该轨迹<b>可用</b>.但注意 \(\ddot y\propto 1/T^{2}\)：若为抢在匝道前完成变道而把 \(T\) 压到 \(2.5\ \mathrm{s}\)，横向加速度放大 \((4/2.5)^{2}=2.56\) 倍，达 \(3.23\ \mathrm{m/s^{2}}\)，乘客会明显被甩、后排易晕车，且雨天路面附着系数 \(\mu=0.4\) 时已逼近 \(0.8\) 倍极限.<b>规划器里"变道时间不得短于 3 秒"这条硬约束，就是这样从二阶导数算出来的.</b></p>
+<p class="cn-point">把 \(T\) 从 4 秒改成 2.5 秒，在代码里只是一个数字，在车里却是 2.56 倍的横向加速度——因为 \(\ddot y\propto 1/T^{2}\)，代价是按平方涨的.智能驾驶最容易被牺牲的往往不是算法精度，而是这类"看不见的舒适与安全余量"；写规划器的人替后排乘客做的每一个决定，都要对得起这个平方.</p>
+  
+</div>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s034" data-ch="3" data-n="5"></div>
+<h2 id="s035"><span class="num">§3.5</span>函数的微分</h2>
+    
+<div class="ex"><div class="lab">引例一　光刻机的纳米之战：0.01 开尔文如何毁掉一片晶圆</div>
+  <p class="stmt">先进制程芯片要在 300 mm 硅片上层层套刻，套刻误差（overlay）预算仅约 \(2\,\mathrm{nm}\).硅的线膨胀系数 \(\alpha=2.6\times10^{-6}\,\mathrm{K^{-1}}\).问：若硅片温度偏离标称值 \(0.01\,\mathrm{K}\)，会带来多大的位置误差？</p>
+  <p class="sol"><span class="mk">解</span>硅片长度是温度的函数 \(L(T)=L_{0}\bigl[1+\alpha(T-T_{0})\bigr]\).它的变化量可以直接用<b>微分</b>估计：</p>
+  \[\mathrm{d}L=L'(T)\,\mathrm{d}T=L_{0}\alpha\,\mathrm{d}T.\]
+  <p>取 \(L_{0}=300\,\mathrm{mm}=0.3\,\mathrm{m}\)，\(\mathrm{d}T=0.01\,\mathrm{K}\)：</p>
+  \[\mathrm{d}L=0.3\times2.6\times10^{-6}\times0.01=7.8\times10^{-9}\ \mathrm{m}=7.8\ \mathrm{nm}.\]
+  <p><b>整整 7.8 纳米——是 2 nm 预算的近 4 倍！</b>整片晶圆直接报废.</p>
+  <p>反过来求控温要求：欲使 \(|\mathrm{d}L|\le2\,\mathrm{nm}\)，需</p>
+  \[|\mathrm{d}T|\le\frac{2\times10^{-9}}{0.3\times2.6\times10^{-6}}=2.56\times10^{-3}\ \mathrm{K}=2.6\ \mathrm{mK}.\]
+  <p>列一张温控指标对照表：</p>
+  <table class="dt">
+    <tr><th>温度偏差 \(\mathrm{d}T\)</th><th>位置误差 \(\mathrm{d}L=L_{0}\alpha\,\mathrm{d}T\)</th><th>是否满足 2 nm 预算</th></tr>
+    <tr><td>\(1\ \mathrm{K}\)</td><td>\(780\ \mathrm{nm}\)</td><td>严重超标（390 倍）</td></tr>
+    <tr><td>\(0.1\ \mathrm{K}\)</td><td>\(78\ \mathrm{nm}\)</td><td>超标 39 倍</td></tr>
+    <tr><td>\(0.01\ \mathrm{K}\)</td><td>\(7.8\ \mathrm{nm}\)</td><td>超标 3.9 倍</td></tr>
+    <tr><td>\(0.0026\ \mathrm{K}\)</td><td>\(2.0\ \mathrm{nm}\)</td><td>临界合格</td></tr>
+    <tr><td>\(0.001\ \mathrm{K}\)</td><td>\(0.78\ \mathrm{nm}\)</td><td>合格（余量 2.6 倍）</td></tr>
+  </table>
+  <p>这就是为什么 EUV 光刻机的工件台要用<b>毫开尔文级恒温</b>（浸没式冷却 + 主动补偿）.<b>而支撑整套指标推导的，只是一个最朴素的数学动作：用 \(\mathrm{d}L=L'\,\mathrm{d}T\) 把"自变量的微小变化"线性地传递到"因变量的微小变化".这就是微分.</b></p>
+</div>
+
+<div class="ex"><div class="lab">引例二　北斗卫星测距：1 纳秒等于 0.3 米</div>
+  <p class="stmt">卫星导航靠测量信号传播时间 \(\tau\) 反推距离 \(\rho=c\tau\)（\(c=2.998\times10^{8}\,\mathrm{m/s}\)）.若星载原子钟的频率稳定度为 \(1\times10^{-14}\)，一天不校准会带来多大测距误差？</p>
+  <p class="sol"><span class="mk">解</span>由 \(\rho=c\tau\) 得微分关系</p>
+  \[\mathrm{d}\rho=c\,\mathrm{d}\tau.\]
+  <p>先看单位换算的直观感受：\(\mathrm{d}\tau=1\,\mathrm{ns}=10^{-9}\,\mathrm{s}\) 时</p>
+  \[\mathrm{d}\rho=2.998\times10^{8}\times10^{-9}=0.2998\ \mathrm{m}\approx0.3\ \mathrm{m}.\]
+  <p><b>1 纳秒 = 30 厘米</b>，这是卫星导航从业者的第一条口诀.</p>
+  <p>再算原子钟漂移.一天 \(t=86400\,\mathrm{s}\)，相对频率误差 \(10^{-14}\) 累积的时间误差为</p>
+  \[\mathrm{d}\tau=t\times10^{-14}=86400\times10^{-14}=8.64\times10^{-10}\ \mathrm{s}=0.864\ \mathrm{ns},\]
+  \[\mathrm{d}\rho=2.998\times10^{8}\times8.64\times10^{-10}=0.259\ \mathrm{m}.\]
+  <p>相对误差（取轨道高度 \(\rho\approx2.15\times10^{7}\,\mathrm{m}\)）：</p>
+  \[\frac{\mathrm{d}\rho}{\rho}=\frac{0.259}{2.15\times10^{7}}=1.2\times10^{-8}=1.2\times10^{-6}\%.\]
+  <p>相对误差看似微不足道，<b>但 26 厘米的绝对误差已经足以让车道级定位失效</b>.这正是北斗系统必须每天上注钟差改正的原因.<b>微分把"看不见的相对误差"翻译成"看得见的绝对米数"，这是它在工程中最重要的用途.</b></p>
+</div>
+
+<h3>一、微分的定义</h3>
+<p>先看一个最简单的例子.边长为 \(x_{0}\) 的正方形，边长增加 \(\Delta x\) 后，面积增量为</p>
+\[\Delta A=(x_{0}+\Delta x)^{2}-x_{0}^{2}=\underbrace{2x_{0}\Delta x}_{\text{关于}\Delta x\text{的线性主部}}+\underbrace{(\Delta x)^{2}}_{\text{高阶无穷小}}.\]
+<p>当 \(\Delta x\) 很小时，第二项 \((\Delta x)^{2}\) 相比第一项可以忽略.例如 \(x_{0}=10,\;\Delta x=0.01\)：线性部分 \(=0.2\)，二次项 \(=0.0001\)，只占万分之五.<b>把这个"线性主部"单独拿出来命名，就是微分.</b></p>
+
+<div class="def"><div class="lab"><span class="n">定义 3.4</span>微分</div>
+  <p>设 \(y=f(x)\) 在 \(x_{0}\) 的某邻域内有定义.若函数增量可表示为</p>
+  \[\Delta y=f(x_{0}+\Delta x)-f(x_{0})=A\,\Delta x+o(\Delta x)\qquad(\Delta x\to0),\]
+  <p>其中 \(A\) 与 \(\Delta x\) 无关，则称 \(f(x)\) 在 \(x_{0}\) 处<b>可微</b>，并称 \(A\,\Delta x\) 为 \(f\) 在 \(x_{0}\) 处的<b>微分</b>，记作</p>
+  \[\mathrm{d}y\big|_{x=x_{0}}=A\,\Delta x.\]
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 3.9</span>可微与可导等价</div>
+  <p>函数 \(y=f(x)\) 在点 \(x_{0}\) 可微的<b>充分必要条件</b>是 \(f(x)\) 在 \(x_{0}\) 可导，且此时 \(A=f'(x_{0})\).</p>
+  <p class="sol"><span class="mk">证</span><b>必要性.</b>设可微，即 \(\Delta y=A\Delta x+o(\Delta x)\).两边除以 \(\Delta x\) 取极限：</p>
+  \[\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}=\lim_{\Delta x\to0}\Bigl[A+\frac{o(\Delta x)}{\Delta x}\Bigr]=A,\]
+  <p>故 \(f'(x_{0})\) 存在且等于 \(A\).</p>
+  <p><b>充分性.</b>设 \(f'(x_{0})\) 存在.由极限与无穷小的关系，\(\dfrac{\Delta y}{\Delta x}=f'(x_{0})+\alpha\)，其中 \(\alpha\to0\;(\Delta x\to0)\).两边乘 \(\Delta x\)：</p>
+  \[\Delta y=f'(x_{0})\Delta x+\alpha\Delta x,\]
+  <p>而 \(\alpha\Delta x=o(\Delta x)\)，故可微且 \(A=f'(x_{0})\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">必要性：</span>设 \(f\) 在 \(x_0\) 可微，即 \(\Delta y=A\Delta x+o(\Delta x)\).两边除以 \(\Delta x\) 取极限：</p>
+\[\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}
+=\lim_{\Delta x\to0}\left[A+\frac{o(\Delta x)}{\Delta x}\right]=A,\]
+<p>故 \(f'(x_0)\) 存在且等于 \(A\).</p>
+<p><span class="stp">充分性：</span>设 \(f'(x_0)\) 存在.由极限与无穷小的关系（定理 2.9），</p>
+\[\frac{\Delta y}{\Delta x}=f'(x_0)+\alpha(\Delta x),\qquad \alpha(\Delta x)\to0.\]
+<p>两边乘 \(\Delta x\)：</p>
+\[\Delta y=f'(x_0)\Delta x+\alpha(\Delta x)\Delta x.\]
+<p>因 \(\alpha(\Delta x)\Delta x=o(\Delta x)\)，故 \(\Delta y=f'(x_0)\Delta x+o(\Delta x)\)，即 \(f\) 在 \(x_0\) 可微且 \(A=f'(x_0)\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<p>特别地，取 \(y=x\)，则 \(\mathrm{d}x=(x)'\Delta x=\Delta x\)，即<b>自变量的微分就等于自变量的增量</b>.于是微分统一写作</p>
+\[\boxed{\ \mathrm{d}y=f'(x)\,\mathrm{d}x\ }\qquad\text{或}\qquad f'(x)=\frac{\mathrm{d}y}{\mathrm{d}x}.\]
+<div class="note"><b>这条式子解释了为什么导数可以写成"分式" \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\)——它真的是两个微分之商，因此又叫<b>微商</b>.</b>正是这一点，让链式法则 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{\mathrm{d}y}{\mathrm{d}u}\cdot\dfrac{\mathrm{d}u}{\mathrm{d}x}\) 在形式上"可以约分"，也让后面的换元积分法、分离变量法成为可能.</div>
+
+<p><b>几何意义.</b>在曲线 \(y=f(x)\) 上点 \(M(x_{0},y_{0})\) 处作切线，当横坐标从 \(x_{0}\) 变到 \(x_{0}+\Delta x\) 时：</p>
+<p>· \(\Delta y\) 是<b>曲线</b>上纵坐标的实际改变量；</p>
+<p>· \(\mathrm{d}y=f'(x_{0})\Delta x\) 是<b>切线</b>上纵坐标的改变量.</p>
+<p>两者之差 \(\Delta y-\mathrm{d}y=o(\Delta x)\).因此<b>微分的几何本质是"以直代曲"</b>：在足够小的邻域内，用切线段代替曲线段，误差是 \(\Delta x\) 的高阶无穷小.</p>
+
+<h3>二、微分公式与运算法则</h3>
+<p>由 \(\mathrm{d}y=f'(x)\mathrm{d}x\)，导数表逐条翻译即得微分表：</p>
+<table class="dt">
+  <tr><th>微分公式</th><th>微分公式</th><th>微分公式</th></tr>
+  <tr><td>\(\mathrm{d}(C)=0\)</td><td>\(\mathrm{d}(x^{\mu})=\mu x^{\mu-1}\mathrm{d}x\)</td><td>\(\mathrm{d}(\mathrm{e}^{x})=\mathrm{e}^{x}\mathrm{d}x\)</td></tr>
+  <tr><td>\(\mathrm{d}(a^{x})=a^{x}\ln a\,\mathrm{d}x\)</td><td>\(\mathrm{d}(\ln x)=\dfrac{\mathrm{d}x}{x}\)</td><td>\(\mathrm{d}(\log_{a}x)=\dfrac{\mathrm{d}x}{x\ln a}\)</td></tr>
+  <tr><td>\(\mathrm{d}(\sin x)=\cos x\,\mathrm{d}x\)</td><td>\(\mathrm{d}(\cos x)=-\sin x\,\mathrm{d}x\)</td><td>\(\mathrm{d}(\tan x)=\sec^{2}x\,\mathrm{d}x\)</td></tr>
+  <tr><td>\(\mathrm{d}(\arcsin x)=\dfrac{\mathrm{d}x}{\sqrt{1-x^{2}}}\)</td><td>\(\mathrm{d}(\arctan x)=\dfrac{\mathrm{d}x}{1+x^{2}}\)</td><td>\(\mathrm{d}(\cot x)=-\csc^{2}x\,\mathrm{d}x\)</td></tr>
+</table>
+<p><b>四则运算法则：</b></p>
+\[\mathrm{d}(u\pm v)=\mathrm{d}u\pm\mathrm{d}v,\qquad \mathrm{d}(Cu)=C\,\mathrm{d}u,\]
+\[\mathrm{d}(uv)=v\,\mathrm{d}u+u\,\mathrm{d}v,\qquad
+  \mathrm{d}\Bigl(\frac{u}{v}\Bigr)=\frac{v\,\mathrm{d}u-u\,\mathrm{d}v}{v^{2}}\;(v
+eq0).\]
+
+<h3>三、一阶微分形式不变性</h3>
+<div class="def"><div class="lab"><span class="n">定理 3.10</span>一阶微分形式不变性</div>
+  <p>设 \(y=f(u)\) 可微.无论 \(u\) 是<b>自变量</b>，还是另一个变量 \(x\) 的<b>可微函数</b> \(u=g(x)\)，都恒有</p>
+  \[\mathrm{d}y=f'(u)\,\mathrm{d}u.\]
+  <p class="sol"><span class="mk">证</span>若 \(u\) 是自变量，这就是微分的定义式.若 \(u=g(x)\)，则 \(y=f[g(x)]\)，由链式法则</p>
+  \[\mathrm{d}y=\bigl\{f[g(x)]\bigr\}'\mathrm{d}x=f'\bigl[g(x)\bigr]g'(x)\,\mathrm{d}x
+   =f'(u)\cdot\underbrace{g'(x)\mathrm{d}x}_{=\ \mathrm{d}u}=f'(u)\,\mathrm{d}u.\]
+  <p>形式完全相同，故称"不变性".</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(y=f(u)\) 可微.</p>
+<p><span class="stp">情形一（\(u\) 为自变量）：</span>由微分定义，\(\mathrm{d}y=f'(u)\,\mathrm{d}u\).</p>
+<p><span class="stp">情形二（\(u=g(x)\) 为可微函数）：</span>此时 \(y=f[g(x)]\) 是复合函数.由链式法则（定理 3.5），</p>
+\[\mathrm{d}y=\bigl\{f[g(x)]\bigr\}'\,\mathrm{d}x
+=f'[g(x)]\,g'(x)\,\mathrm{d}x.\]
+<p>而 \(g'(x)\,\mathrm{d}x=\mathrm{d}u\)，且 \(g(x)=u\)，故</p>
+\[\mathrm{d}y=f'(u)\,\mathrm{d}u.\]
+<p>两种情形下形式完全相同，故称一阶微分形式不变性.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>形式不变性的价值在于：求复合函数的微分时，可以"不管中间变量是谁"，直接一层层往里套微分记号，最后自动得到正确结果.</b>它是第 5 章<b>凑微分法（第一类换元积分法）</b>的理论基础——所谓"凑微分"，凑的就是这条恒等式.<br>
+<b>注意：二阶微分没有形式不变性</b>（\(\mathrm{d}^{2}y=f’’(u)\mathrm{d}u^{2}+f'(u)\mathrm{d}^{2}u\)，多出一项）.</div>
+
+<div class="ex"><div class="lab">例 3.33　求微分（两种途径）</div>
+  <p class="stmt">求 \(y=\mathrm{e}^{1-3x}\cos x\) 的微分 \(\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span><b>途径一：先求导，再乘 \(\mathrm{d}x\).</b></p>
+  \[y'=-3\mathrm{e}^{1-3x}\cos x-\mathrm{e}^{1-3x}\sin x=-\mathrm{e}^{1-3x}(3\cos x+\sin x),\]
+  \[\mathrm{d}y=-\mathrm{e}^{1-3x}(3\cos x+\sin x)\,\mathrm{d}x.\]
+  <p><b>途径二：直接用微分法则与形式不变性.</b></p>
+  \[\mathrm{d}y=\cos x\,\mathrm{d}\bigl(\mathrm{e}^{1-3x}\bigr)+\mathrm{e}^{1-3x}\mathrm{d}(\cos x)
+   =\cos x\cdot \mathrm{e}^{1-3x}\mathrm{d}(1-3x)+\mathrm{e}^{1-3x}(-\sin x)\mathrm{d}x.\]
+  <p>由 \(\mathrm{d}(1-3x)=-3\,\mathrm{d}x\) 得同一结果.<b>途径二完全不用"中间变量"这个概念，这正是形式不变性带来的便利.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.34　\(\Delta y\) 与 \(\mathrm{d}y\) 的定量比较</div>
+  <p class="stmt">设 \(y=x^{2}\)，在 \(x=1\) 处分别取 \(\Delta x=0.1,\,0.01,\,0.001\)，比较 \(\Delta y\) 与 \(\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span>\(\mathrm{d}y=2x\,\Delta x\big|_{x=1}=2\Delta x\)；\(\Delta y=(1+\Delta x)^{2}-1=2\Delta x+(\Delta x)^{2}\).</p>
+  <table class="dt">
+    <tr><th>\(\Delta x\)</th><th>\(\Delta y\)</th><th>\(\mathrm{d}y\)</th><th>误差 \(\Delta y-\mathrm{d}y\)</th><th>相对误差</th></tr>
+    <tr><td>0.1</td><td>0.21</td><td>0.20</td><td>0.01</td><td>\(4.76\%\)</td></tr>
+    <tr><td>0.01</td><td>0.0201</td><td>0.0200</td><td>0.0001</td><td>\(0.498\%\)</td></tr>
+    <tr><td>0.001</td><td>0.002001</td><td>0.002000</td><td>0.000001</td><td>\(0.050\%\)</td></tr>
+  </table>
+  <p>可见 \(\Delta x\) 缩小到 \(\dfrac{1}{10}\)，绝对误差缩小到 \(\dfrac{1}{100}\)，相对误差缩小到 \(\dfrac{1}{10}\).<b>这就是 \(o(\Delta x)\) 的定量含义.</b></p>
+</div>
+
+<h3>四、微分在近似计算中的应用</h3>
+<p>由 \(\Delta y\approx\mathrm{d}y\) 得到<b>基本近似公式</b>：</p>
+\[f(x_{0}+\Delta x)\approx f(x_{0})+f'(x_{0})\,\Delta x\qquad(|\Delta x|\text{ 充分小}).\]
+<p>取 \(x_{0}=0\)，记 \(\Delta x=x\)，得 \(f(x)\approx f(0)+f'(0)x\).由此立得一组<b>工程常用近似式</b>（\(|x|\) 很小时）：</p>
+\[(1+x)^{\mu}\approx1+\mu x,\quad \mathrm{e}^{x}\approx1+x,\quad \ln(1+x)\approx x,\]
+\[\sin x\approx x,\quad \tan x\approx x,\quad \arctan x\approx x,\quad 1-\cos x\approx\frac{x^{2}}{2}.\]
+
+<div class="ex"><div class="lab">例 3.35　计算 \(\sin 30^{\circ}30'\) 的近似值</div>
+  <p class="sol"><span class="mk">解</span><b>第一步：选好 \(x_{0}\)——必须选"函数值与导数值都好算"的点.</b>这里取 \(x_{0}=30^{\circ}=\dfrac{\pi}{6}\).</p>
+  <p><b>第二步：把角度增量化为弧度.</b>\(30'=\dfrac{1}{2}{}^{\circ}\)，故</p>
+  \[\Delta x=\frac{1}{2}\times\frac{\pi}{180}=\frac{\pi}{360}=0.0087266\ \mathrm{rad}.\]
+  <p><b>第三步：套用近似公式</b> \(\sin(x_{0}+\Delta x)\approx\sin x_{0}+\cos x_{0}\cdot\Delta x\)：</p>
+  \[\sin30^{\circ}30'\approx\sin\frac{\pi}{6}+\cos\frac{\pi}{6}\cdot\frac{\pi}{360}
+   =0.5+0.8660254\times0.0087266=0.5+0.0075575=0.5075575.\]
+  <p><b>精度检验：</b>真值 \(\sin30.5^{\circ}=0.5075384\)，绝对误差 \(1.91\times10^{-5}\)，相对误差 \(3.8\times10^{-5}=0.0038\%\).</p>
+  <p class="muted"><b>致命易错点：\(\Delta x\) 必须用弧度！</b>若误代 \(\Delta x=0.5\)（度数），会得到 \(0.5+0.433=0.933\)，错得离谱.因为 \((\sin x)'=\cos x\) 这个公式本身就建立在弧度制上.</p>
+</div>
+
+<div class="ex"><div class="lab">例 3.36　根式与对数的近似计算</div>
+  <p class="stmt">求 \(\sqrt{1.02}\)、\(\sqrt[3]{1.02}\)、\(\mathrm{e}^{0.03}\)、\(\ln1.01\) 的近似值并评估精度.</p>
+  <p class="sol"><span class="mk">解</span>统一使用 \((1+x)^{\mu}\approx1+\mu x\) 等公式，\(x\) 均为小量.</p>
+  <table class="dt">
+    <tr><th>待求量</th><th>近似公式</th><th>近似值</th><th>真值</th><th>相对误差</th></tr>
+    <tr><td>\(\sqrt{1.02}\)</td><td>\(1+\dfrac12\times0.02\)</td><td>\(1.010000\)</td><td>\(1.009950\)</td><td>\(4.9\times10^{-5}\)</td></tr>
+    <tr><td>\(\sqrt[3]{1.02}\)</td><td>\(1+\dfrac13\times0.02\)</td><td>\(1.006667\)</td><td>\(1.006623\)</td><td>\(4.4\times10^{-5}\)</td></tr>
+    <tr><td>\(\mathrm{e}^{0.03}\)</td><td>\(1+0.03\)</td><td>\(1.030000\)</td><td>\(1.030455\)</td><td>\(4.4\times10^{-4}\)</td></tr>
+    <tr><td>\(\ln1.01\)</td><td>\(0.01\)</td><td>\(0.010000\)</td><td>\(0.009950\)</td><td>\(5.0\times10^{-3}\)</td></tr>
+  </table>
+  <p>再算一个"化归"的例子：\(\sqrt[3]{1000.5}\).不能直接套 \((1+x)^{\mu}\)，需先提出因子：</p>
+  \[\sqrt[3]{1000.5}=\sqrt[3]{1000\Bigl(1+\frac{0.5}{1000}\Bigr)}=10\sqrt[3]{1+0.0005}
+   \approx10\Bigl(1+\frac{0.0005}{3}\Bigr)=10.0016667.\]
+  <p>真值 \(10.00166653\)，误差仅 \(1.7\times10^{-7}\).<b>技巧：把待求量化为"整数部分乘以 \((1+\text{小量})\)"的形式.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.37　考研常见：\(\arctan1.02\) 与 \(\tan46^{\circ}\)</div>
+  <p class="stmt">求 \(\arctan1.02\) 与 \(\tan46^{\circ}\) 的近似值.</p>
+  <p class="sol"><span class="mk">解</span>（1）取 \(f(x)=\arctan x,\;x_{0}=1,\;\Delta x=0.02\).因 \(f(1)=\dfrac{\pi}{4}=0.785398\)，\(f'(x)=\dfrac{1}{1+x^{2}}\)，\(f'(1)=\dfrac12\)：</p>
+  \[\arctan1.02\approx0.785398+0.5\times0.02=0.795398.\]
+  <p>（真值 \(0.795299\)，误差 \(9.9\times10^{-5}\).）</p>
+  <p>（2）取 \(f(x)=\tan x,\;x_{0}=\dfrac{\pi}{4},\;\Delta x=\dfrac{\pi}{180}=0.0174533\).因 \(f\bigl(\frac{\pi}{4}\bigr)=1\)，\(f'(x)=\sec^{2}x\)，\(f'\bigl(\frac{\pi}{4}\bigr)=2\)：</p>
+  \[\tan46^{\circ}\approx1+2\times0.0174533=1.0349066.\]
+  <p>（真值 \(1.0355303\)，相对误差 \(0.06\%\).）</p>
+  <p class="muted">注意 \(\tan\) 的误差明显大于 \(\arctan\)，因为 \(\tan\) 在 \(45^{\circ}\) 附近曲率更大（二阶导 \(2\sec^{2}x\tan x\big|_{\pi/4}=4\) 不算小），线性近似的余项更显著.<b>近似精度取决于二阶导数的大小</b>——这一点将在第 4 章泰勒公式中得到彻底解释.</p>
+</div>
+
+<h3>五、微分在误差估计中的应用</h3>
+<p>设量 \(y\) 由测量量 \(x\) 通过 \(y=f(x)\) 算出.若 \(x\) 的<b>绝对误差限</b>为 \(|\delta_{x}|\)，则由 \(\Delta y\approx f'(x)\Delta x\)：</p>
+\[\text{绝对误差限}\ |\delta_{y}|\approx\bigl|f'(x)\bigr|\cdot|\delta_{x}|,\qquad
+  \text{相对误差限}\ \Bigl|\frac{\delta_{y}}{y}\Bigr|\approx\Bigl|\frac{f'(x)}{f(x)}\Bigr|\cdot|\delta_{x}|.\]
+<div class="note"><b>幂函数误差传递的黄金法则：</b>若 \(y=Cx^{n}\)，则 \(\dfrac{\mathrm{d}y}{y}=n\dfrac{\mathrm{d}x}{x}\).即<b>"相对误差按指数倍放大"</b>：测长度误差 \(0.1\%\)，算面积误差 \(0.2\%\)，算体积误差 \(0.3\%\).这条法则在实验物理与工程计量中每天都在用.</div>
+
+<div class="ex"><div class="lab">例 3.38　球体积的误差估计</div>
+  <p class="stmt">测得某精密轴承钢球直径 \(D=100.0\,\mathrm{mm}\)，测量绝对误差限为 \(0.10\,\mathrm{mm}\).求由此算出的体积的绝对误差限与相对误差限.</p>
+  <p class="sol"><span class="mk">解</span>体积 \(V=\dfrac{\pi}{6}D^{3}\)，故 \(\dfrac{\mathrm{d}V}{\mathrm{d}D}=\dfrac{\pi}{2}D^{2}\).</p>
+  <p><b>体积标称值：</b></p>
+  \[V=\frac{\pi}{6}\times100.0^{3}=\frac{3.14159\times10^{6}}{6}=5.23599\times10^{5}\ \mathrm{mm^{3}}.\]
+  <p><b>绝对误差限：</b></p>
+  \[|\delta_{V}|\approx\frac{\pi}{2}D^{2}|\delta_{D}|=\frac{3.14159}{2}\times100.0^{2}\times0.10
+   =1.5708\times10^{3}\ \mathrm{mm^{3}}.\]
+  <p><b>相对误差限：</b></p>
+  \[\Bigl|\frac{\delta_{V}}{V}\Bigr|=3\Bigl|\frac{\delta_{D}}{D}\Bigr|=3\times\frac{0.10}{100.0}=0.30\%.\]
+  <p>核对：\(\dfrac{1570.8}{523599}=0.30\%\).✓ <b>直径测量的 \(0.1\%\) 误差，被立方关系放大成体积的 \(0.3\%\) 误差.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.39　单摆测重力加速度的误差分析</div>
+  <p class="stmt">用单摆测 \(g\)：\(T=2\pi\sqrt{\dfrac{L}{g}}\)，即 \(g=\dfrac{4\pi^{2}L}{T^{2}}\).设摆长 \(L=1.000\,\mathrm{m}\)（误差 \(1\,\mathrm{mm}\)），周期 \(T=2.006\,\mathrm{s}\)（误差 \(0.002\,\mathrm{s}\)）.分别估计两个来源造成的 \(g\) 的相对误差.</p>
+  <p class="sol"><span class="mk">解</span>取对数再微分（这是误差分析的标准手法）：</p>
+  \[\ln g=\ln(4\pi^{2})+\ln L-2\ln T\;\Longrightarrow\;\frac{\mathrm{d}g}{g}=\frac{\mathrm{d}L}{L}-2\frac{\mathrm{d}T}{T}.\]
+  <p><b>摆长贡献：</b>\(\Bigl|\dfrac{\mathrm{d}L}{L}\Bigr|=\dfrac{0.001}{1.000}=0.100\%\).</p>
+  <p><b>周期贡献：</b>\(2\Bigl|\dfrac{\mathrm{d}T}{T}\Bigr|=2\times\dfrac{0.002}{2.006}=0.199\%\).</p>
+  <p><b>最坏情况合成（取绝对值相加）：</b>\(\Bigl|\dfrac{\mathrm{d}g}{g}\Bigr|\le0.100\%+0.199\%=0.299\%\).</p>
+  <p>而 \(g=\dfrac{4\times9.8696\times1.000}{2.006^{2}}=\dfrac{39.478}{4.024}=9.811\,\mathrm{m/s^{2}}\)，故</p>
+  \[|\delta_{g}|\le9.811\times0.00299=0.029\ \mathrm{m/s^{2}},\qquad g=9.811\pm0.029\ \mathrm{m/s^{2}}.\]
+  <p class="muted"><b>实验设计的启示：周期项前面有系数 2，是误差的主要来源.</b>因此实验中应"测 50 个周期再除以 50"，把 \(\dfrac{\mathrm{d}T}{T}\) 压低 50 倍，而不是费力去提高摆长的测量精度.<b>微分告诉我们该把钱花在哪里.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 3.40　5G 基站的功率与覆盖半径</div>
+  <p class="stmt">自由空间路径损耗下，接收功率 \(P_{r}=\dfrac{K}{d^{2}}\).若基站发射功率下调 \(6\%\)（即 \(K\) 减小 \(6\%\)），在接收灵敏度门限不变的前提下，覆盖半径会缩小多少？</p>
+  <p class="sol"><span class="mk">解</span>覆盖边界由 \(P_{r}=P_{\min}\) 确定，即 \(d=\sqrt{\dfrac{K}{P_{\min}}}\)，故 \(d\propto K^{1/2}\).取对数微分：</p>
+  \[\frac{\mathrm{d}d}{d}=\frac12\cdot\frac{\mathrm{d}K}{K}=\frac12\times(-6\%)=-3\%.\]
+  <p>若原覆盖半径 \(d=500\,\mathrm{m}\)，则</p>
+  \[\mathrm{d}d=500\times(-0.03)=-15\ \mathrm{m},\qquad d_{\text{新}}\approx485\ \mathrm{m}.\]
+  <p>覆盖面积的相对变化则是 \(\dfrac{\mathrm{d}S}{S}=2\dfrac{\mathrm{d}d}{d}=-6\%\)，与功率同比例——<b>省下的每一分功率，都等比例地换成了覆盖面积的损失</b>.这正是运营商做节能降耗方案时必须做的定量权衡.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 光刻套刻误差预算：把微分做成一张工程表</div>
+  <details><summary>展开查看：多误差源如何合成，以及为什么用平方和开方而不是直接相加</summary>
+  <div class="body">
+    <p>回到引例一——温度只是其中一项.在光刻机的洁净间里，工件台每秒往返几十次、镜头在缓慢发热、掩模版在微微形变，五六个误差源同时往同一个 2 nm 的口袋里塞东西.一旦塞爆，这片价值几十万元的晶圆当场报废.于是问题变成：这些误差该怎么"合账"？设各误差源相互独立，第 \(i\) 项的输入偏差为 \(\delta_{i}\)，通过各自的传递函数 \(f_{i}\) 贡献出位置误差 \(\varepsilon_{i}=|f_{i}'|\cdot\delta_{i}\).逐项计算：</p>
+    <table class="dt">
+      <tr><th>误差源</th><th>传递关系</th><th>灵敏度 \(|f'|\)</th><th>输入偏差</th><th>贡献 \(\varepsilon_{i}\)（nm）</th></tr>
+      <tr><td>硅片热膨胀</td><td>\(\Delta L=L_{0}\alpha\Delta T\)</td><td>\(0.78\ \mathrm{nm/mK}\)</td><td>\(1.5\ \mathrm{mK}\)</td><td>\(1.17\)</td></tr>
+      <tr><td>工件台定位</td><td>直接位移</td><td>\(1\)</td><td>\(1.0\ \mathrm{nm}\)</td><td>\(1.00\)</td></tr>
+      <tr><td>投影镜畸变</td><td>\(\Delta x=M\Delta x_{m}\)</td><td>\(0.25\)（4 倍缩小）</td><td>\(2.8\ \mathrm{nm}\)</td><td>\(0.70\)</td></tr>
+      <tr><td>对准传感器</td><td>直接读数</td><td>\(1\)</td><td>\(0.8\ \mathrm{nm}\)</td><td>\(0.80\)</td></tr>
+      <tr><td>掩模版形变</td><td>\(\Delta x=M\alpha_{m}L_{m}\Delta T\)</td><td>\(0.12\ \mathrm{nm/mK}\)</td><td>\(5\ \mathrm{mK}\)</td><td>\(0.60\)</td></tr>
+    </table>
+    <p><b>为什么不能直接相加？</b>若五项同号同时取最大值，总误差为 \(1.17+1.00+0.70+0.80+0.60=4.27\,\mathrm{nm}\)，远超 2 nm 预算，机器就没法造了.但这是"最坏情况"，其发生概率极低.</p>
+    <p>工程上假设各项是<b>零均值、互相独立</b>的随机误差，用<b>方和根（RSS）</b>合成：</p>
+    \[\varepsilon_{\text{total}}=\sqrt{\sum_{i}\varepsilon_{i}^{2}}
+     =\sqrt{1.17^{2}+1.00^{2}+0.70^{2}+0.80^{2}+0.60^{2}}.\]
+    <p>逐项计算：\(1.3689+1.0000+0.4900+0.6400+0.3600=3.8589\)，故</p>
+    \[\varepsilon_{\text{total}}=\sqrt{3.8589}=1.964\ \mathrm{nm}\ \lt\ 2.0\ \mathrm{nm}.\ \checkmark\]
+    <p><b>刚好卡进预算，余量只有 1.8%.</b>这就是先进制程为何如此昂贵——每一项都被压到了物理极限.</p>
+    <p><b>灵敏度分析：谁最该优化？</b>由 \(\varepsilon_{\text{total}}^{2}=\sum\varepsilon_{i}^{2}\) 对 \(\varepsilon_{1}\) 求导：</p>
+    \[\frac{\partial\varepsilon_{\text{total}}}{\partial\varepsilon_{1}}=\frac{\varepsilon_{1}}{\varepsilon_{\text{total}}}=\frac{1.17}{1.964}=0.596.\]
+    <p>而对最小项 \(\varepsilon_{5}=0.60\)：灵敏度只有 \(\dfrac{0.60}{1.964}=0.306\).<b>结论：把最大项（热膨胀）改善 0.1 nm，总误差降 0.060 nm；把最小项改善 0.1 nm，总误差只降 0.031 nm.资源应优先投向贡献最大的那一项.</b></p>
+    <p>验证一下：若把热膨胀控制从 1.5 mK 提升到 0.8 mK，则 \(\varepsilon_{1}=0.78\times0.8=0.624\,\mathrm{nm}\)，</p>
+    \[\varepsilon_{\text{total}}=\sqrt{0.3894+1.0000+0.4900+0.6400+0.3600}=\sqrt{2.8794}=1.697\ \mathrm{nm},\]
+    <p>余量从 1.8% 提升到 15.2%，良率显著改善.</p>
+    <p><b>回望整条链条：从 \(\mathrm{d}y=f'(x)\mathrm{d}x\) 这一个式子出发，我们算出了每一项的灵敏度，合成了总误差，找到了优化方向，最后给出了工程决策.</b>微分不是"导数的一个别名"，它是把"局部线性化"这一思想变成生产力的工具.</p>
+    <p class="cn-point">\(1.964\) 对 \(2.000\)，余量只剩 1.8%——先进制程的门槛就卡在这最后 0.036 nm 上.国产光刻在 28 nm 节点一步步往前推，拼的不是某个惊人的发明，而是照着灵敏度 \(\varepsilon_i/\varepsilon_{\text{total}}\) 找出贡献最大的那一项，再把它压下去 0.1 nm.卡脖子的地方，往往就卡在一个平方和开根号上.</p>
+  
+  
+<div style="margin:14px 0 6px 0;text-align:center">
+  <canvas id="ch3-litho" width="720" height="380" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>ε₁热膨胀 <input type="range" id="ch3-litho-1" min="0" max="2" step="0.05" value="1.17"> <span id="ch3-litho-1-t">1.17</span></label>
+  <label>ε₂定位 <input type="range" id="ch3-litho-2" min="0" max="2" step="0.05" value="1.00"> <span id="ch3-litho-2-t">1.00</span></label>
+  <label>ε₃镜畸变 <input type="range" id="ch3-litho-3" min="0" max="2" step="0.05" value="0.70"> <span id="ch3-litho-3-t">0.70</span></label>
+  <label>ε₄对准 <input type="range" id="ch3-litho-4" min="0" max="2" step="0.05" value="0.80"> <span id="ch3-litho-4-t">0.80</span></label>
+  <label>ε₅掩模 <input type="range" id="ch3-litho-5" min="0" max="2" step="0.05" value="0.60"> <span id="ch3-litho-5-t">0.60</span> nm</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch3-litho-out"></div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch3-litho'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||380;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var ids=['ch3-litho-1','ch3-litho-2','ch3-litho-3','ch3-litho-4','ch3-litho-5'];
+  var sl=ids.map(function(x){return document.getElementById(x);});
+  var tt=ids.map(function(x){return document.getElementById(x+'-t');});
+  var out=document.getElementById('ch3-litho-out');
+  var cols=['#15803d','#22c55e','#eab308','#f97316','#0ea5e9'];
+  function draw(){
+    if(!s) s=setup();
+    var ctx=s.ctx,W=s.W,H=s.H,mL=44,mR=16,mT=28,mB=34,pW=W-mL-mR,pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var e=sl.map(function(p){return +p.value;});
+    sl.forEach(function(p,i){ tt[i].textContent=e[i].toFixed(2); });
+    var total=Math.sqrt(e.reduce(function(a,b){return a+b*b;},0));
+    var budget=2.0, maxE=Math.max(budget, Math.max.apply(null,e))*1.12;
+    var n=e.length, gap=14, bw=(pW-gap*(n-1))/n;
+    var maxI=0; e.forEach(function(v,i){ if(v>e[maxI])maxI=i; });
+    for(var i=0;i<n;i++){
+      var bx=mL+i*(bw+gap), bh=(e[i]/maxE)*pH, by=mT+pH-bh;
+      ctx.fillStyle=cols[i]; ctx.globalAlpha=(i===maxI?0.9:0.55); ctx.fillRect(bx,by,bw,bh);
+      ctx.globalAlpha=1; ctx.strokeStyle=cols[i]; ctx.lineWidth=1; ctx.strokeRect(bx,by,bw,bh);
+      ctx.fillStyle='#334155'; ctx.font='11px sans-serif'; ctx.textAlign='center';
+      ctx.fillText(e[i].toFixed(2), bx+bw/2, by-4);
+      ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.fillText('\u03b5'+(i+1), bx+bw/2, H-8);
+    }
+    // total bar
+    var tx=mL+n*(bw+gap)+8, tw=bw*0.8;
+    var tbh=(total/maxE)*pH, tby=mT+pH-tbh;
+    ctx.fillStyle='#0F6E56'; ctx.fillRect(tx,tby,tw,tbh);
+    ctx.fillStyle='#0F6E56'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(total.toFixed(3), tx+tw/2, tby-4);
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.fillText('\u603b\u8bef\u5dee', tx+tw/2, H-8);
+    // budget line
+    var byb=mT+pH-(budget/maxE)*pH;
+    ctx.strokeStyle='#dc2626'; ctx.setLineDash([5,3]); ctx.beginPath(); ctx.moveTo(mL,byb); ctx.lineTo(tx+tw+6,byb); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626'; ctx.font='10px sans-serif'; ctx.textAlign='left'; ctx.fillText('\u9884\u7b97 2.0 nm', mL+2, byb-3);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('\u65b9\u548c\u6839(RSS): \u03b5_total = \u221a\u03a3 \u03b5\u1d62\u00b2', mL, mT-10);
+    var margin=(budget-total)/budget*100;
+    out.textContent='\u03b5_total = '+total.toFixed(3)+' nm\uff0c\u9884\u7b97 2.0 nm\uff0c\u4f59\u91cf '+(margin>=0?margin.toFixed(1):margin.toFixed(1))+'% \uff08\u6700\u5927\u9879 \u03b5'+(maxI+1)+'\uff09';
+  }
+  sl.forEach(function(p){ p.addEventListener('input',draw); });
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</div>
+</details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 牛顿与莱布尼茨：微积分优先权之争的真相</summary>
+
+<p>1665 年伦敦大瘟疫，剑桥大学关门.二十二岁的牛顿回到乡下林肯郡的伍尔索普庄园，在此后的十八个月里，他做了三件足以改变世界的事：分解白光、构想万有引力、创立他称之为"流数术"（method of fluxions）的新算法.在流数术里，量被想象成随时间连续流动的"流量"（fluent），其变化速度叫"流数"（fluxion），记作 \(\dot x\).今天我们写 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\)，牛顿写 \(\dot x\)——这个点号至今仍活在力学教材里.</p>
+<p>问题在于，牛顿把手稿锁进了抽屉.他生性极度厌恶争论，1672 年因为一篇光学论文与胡克激烈交锋后，更是发誓再不轻易发表.《流数简论》写于 1666 年，正式印行却要等到 1736 年——他去世九年之后.</p>
+<p>德国人莱布尼茨走的是另一条路.他是外交官、法学家、语言学家、图书馆长，1672 年到巴黎执行外交任务时，在惠更斯指导下自学数学，短短几年就抵达了同一片大陆.1675 年 11 月 11 日，他在手稿上第一次写下 \(\int\) 与 \(\mathrm{d}x\).1684 年，他在《教师学报》（Acta Eruditorum）上发表了《一种求极大与极小值和求切线的新方法》，全文只有六页，却是人类历史上第一篇公开发表的微分学论文.两年后，他又发表了积分学的对应篇章.</p>
+<p>接下来的三十年，欧洲数学界围绕"谁先发明微积分"打成一团.1699 年，寄居英国的瑞士人法蒂奥公开暗示莱布尼茨剽窃；1711 年，皇家学会成立"中立"的调查委员会；1713 年，委员会发布《通信集》（Commercium Epistolicum），判定牛顿享有优先权.后世发现，这份报告的匿名序言，实际上出自当时的皇家学会会长——牛顿本人之手.莱布尼茨 1716 年在汉诺威去世时，几乎无人送葬.</p>
+<p>今天的历史学界早有定论：两人各自独立完成了发明，牛顿在时间上早约十年，莱布尼茨在发表上早约二十年.真正值得深思的，是这场争吵的<b>技术后果</b>.英国数学界出于民族感情固守牛顿的点记号，与欧洲大陆隔绝了整整一个世纪；而莱布尼茨的 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\)、\(\int y\,\mathrm{d}x\) 记号因为形式上"可以约分、可以拼接"，被欧拉、伯努利兄弟、拉格朗日、拉普拉斯接力发展，把分析学推向了新高度.等到 1812 年剑桥的年轻人成立"分析学会"、喊出"打倒点号，拥护 d 号"的口号时，英国已经落后了.</p>
+<p>本章处处能看到这场胜负的痕迹：链式法则 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{\mathrm{d}y}{\mathrm{d}u}\cdot\dfrac{\mathrm{d}u}{\mathrm{d}x}\) 之所以"像约分"，参数方程求导 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{\mathrm{d}y/\mathrm{d}t}{\mathrm{d}x/\mathrm{d}t}\) 之所以"像分式相除"，一阶微分形式不变性之所以能撑起后面的凑微分法，全都拜莱布尼茨那套记号所赐.<b>一个好的符号系统，本身就是一种思想；它替使用者记住了规律，让后人可以站在更高的起点上出发.</b></p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] M. Kline《古今数学思想》第二册，上海科学技术出版社；[2] I. Newton, <i>Philosophiae Naturalis Principia Mathematica</i>, 1687；[3] G. W. Leibniz, “Nova Methodus pro Maximis et Minimis”, <i>Acta Eruditorum</i>, 1684；[4] Wikipedia 词条 “Leibniz–Newton calculus controversy”.</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 贝克莱主教的诘难与"无穷小的幽灵"</summary>
+
+<p>1734 年，爱尔兰克洛因教区的主教乔治·贝克莱出版了一本小册子，标题很长：《分析学家，或致一位不信神的数学家》.这位"不信神的数学家"一般认为指的是天文学家哈雷.贝克莱写作的动机是宗教的——他要反驳那些嘲笑宗教"不够严密"的科学家；但他挑的战场，却精准地踩在了微积分最脆弱的地方.</p>
+<p>他的质问是这样的.要求 \(y=x^{2}\) 的流数，按牛顿的做法：给 \(x\) 一个增量 \(o\)，算出</p>
+\[\frac{(x+o)^{2}-x^{2}}{o}=\frac{2xo+o^{2}}{o}=2x+o,\]
+<p>然后令 \(o\) 消失，得 \(2x\).贝克莱抓住了要害：<b>你在第二步用 \(o\) 做了除数，这就默认了 \(o
+e0\)；可你在第三步又把 \(o\) 扔掉，这又默认了 \(o=0\).同一个量，一会儿不是零，一会儿是零，这是自相矛盾的推理.</b>他留下了那句流传三百年的嘲讽：这些消失了的量的鬼魂，究竟是什么？"它们既不是有限量，也不是无穷小量，更不是零.难道我们不能称它们为逝去量的幽灵吗？"</p>
+<p>这一击极其致命，因为它是对的.十八世纪的分析学在计算上高歌猛进——欧拉用发散级数算出 \(1+\frac14+\frac19+\cdots=\dfrac{\pi^{2}}{6}\)，拉格朗日建立分析力学——但它的地基确实一片泥沼.数学家们心里都清楚，只是拿不出办法.达朗贝尔只能对学生说："往前走，信心自会到来."</p>
+<p>真正的回答用了将近一百年.1821 年，柯西在巴黎综合理工学院讲授《分析教程》，第一次把"极限"而不是"无穷小"放在逻辑的起点：所谓 \(2x+o\to2x\)，不是说 \(o\) 变成了零，而是说<b>差值可以任意小</b>.1860 年代，魏尔斯特拉斯给出了不含任何"运动""趋于"等直观词汇的 \(\varepsilon\)-\(\delta\) 表述——正是本教材第 2 章的那套语言.至此，导数被定义为一个<b>极限</b>，而极限被定义为一个<b>不等式命题</b>.贝克莱的幽灵，被一串量词彻底驱散：\(o\) 从来没有"变成零"，它始终不是零，被丢掉的只是一个趋于零的余项.</p>
+<p>故事还有一个漂亮的续章.1960 年，美籍数学家亚伯拉罕·鲁滨逊利用数理逻辑中的模型论，构造出包含真正"无穷小数"的<b>超实数</b>系统，并在其中严格重建了整个微积分，称为<b>非标准分析</b>.三百年后，莱布尼茨那个"存在一个比任何正数都小却不为零的量"的直觉，居然被证明是可以严格化的.数学史在这里画了一个意味深长的圆.</p>
+<p>回到本章.定义 3.1 里那个 \(\lim\limits_{\Delta x\to0}\)，定义 3.4 里那个 \(o(\Delta x)\)，看上去只是两个记号，实际上凝结着从贝克莱到魏尔斯特拉斯的两百年论战.<b>学习者最该带走的，不是"\(\Delta x\) 很小可以忽略"这种含混印象，而是"忽略的是高阶无穷小，且这种忽略有精确的误差控制"——正是这一点，让 §3.5 中光刻机的 7.8 纳米、卫星的 2.494 秒可以被算成一个可以写进技术协议的数.</b></p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] G. Berkeley, <i>The Analyst: A Discourse Addressed to an Infidel Mathematician</i>, 1734；[2] M. Kline《数学：确定性的丧失》，湖南科学技术出版社；[3] A. Robinson, <i>Non-standard Analysis</i>, North-Holland, 1966；[4] Wikipedia 词条 “The Analyst”.</p>
+</details>
+</div>
+
+<div class="ky" id="adv3">
+<div class="ky-hd">🎯 考研选讲 · 第三章 一元函数微分学</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题，数学一、二、三均常考）设 \(f(x)=(x^{2}-x-2)\,\bigl|x^{3}-x\bigr|\)，求 \(f(x)\) 的不可导点的个数.</p>
+<p class="ky-hint"><b>思路点拨.</b> 绝对值函数的可能不可导点，就是绝对值内部的<b>零点</b>：\(x^{3}-x=x(x-1)(x+1)=0\)，候选点为 \(x=-1,0,1\).但"候选"不等于"真的不可导"！关键判据是：把函数在候选点 \(x_{0}\) 附近写成 \(f(x)=g(x)\,|x-x_{0}|\) 的形式，其中 \(g\) 在 \(x_{0}\) 连续，则<b>\(g(x_{0})
+e0\) 时不可导，\(g(x_{0})=0\) 时可导</b>.最常见的陷阱是想当然地答"3 个".</p>
+<p class="sol"><span class="mk">解</span> 先分解：\(f(x)=(x-2)(x+1)\cdot|x|\cdot|x-1|\cdot|x+1|\).</p>
+<p>在 \(x=0\) 附近，\(f(x)=\bigl[(x-2)(x+1)|x-1|\,|x+1|\bigr]\cdot|x|\)，方括号在 \(x=0\) 处的值为 \((-2)(1)(1)(1)=-2
+e0\)，故 \(f\) 在 \(x=0\) <b>不可导</b>.</p>
+<p>在 \(x=1\) 附近，\(f(x)=\bigl[(x-2)(x+1)|x|\,|x+1|\bigr]\cdot|x-1|\)，方括号在 \(x=1\) 处为 \((-1)(2)(1)(2)=-4
+e0\)，故 \(f\) 在 \(x=1\) <b>不可导</b>.</p>
+<p>在 \(x=-1\) 附近，注意多项式因子里也有一个 \((x+1)\)：</p>
+\[f(x)=\bigl[(x-2)|x|\,|x-1|\bigr]\cdot(x+1)|x+1|.\]
+<p>而 \(\varphi(x)=(x+1)|x+1|\) 在 \(x=-1\) 处左右导数均为 \(0\)（因 \(\varphi(x)=\pm(x+1)^{2}\)），故 \(\varphi\) 可导，从而 \(f\) 在 \(x=-1\) <b>可导</b>，且 \(f'(-1)=0\).</p>
+<p>综上，不可导点共 <b>2 个</b>：\(x=0\) 与 \(x=1\).</p>
+<p class="ky-idea"><b>命题意图.</b> 考查单侧导数的实质运用与"零点抵消"的识别能力.同类变形还有分段函数在分界点的可导性——套路完全一致：<b>先用连续性定参数，再令左右导数相等</b>（见正文例 3.5），顺序绝不能颠倒.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题，数学一常考）（1）设 \(f(x)\) 在 \(x_{0}\) 处可导，求 \(\displaystyle\lim_{h\to0}\frac{f(x_{0}+3h)-f(x_{0}-h)}{h}\).（2）反过来问：若极限 \(\displaystyle\lim_{h\to0}\frac{f(x_{0}+h)-f(x_{0}-h)}{2h}\) 存在，能否断定 \(f\) 在 \(x_{0}\) 可导？</p>
+<p class="ky-hint"><b>思路点拨.</b> 第（1）问是"凑定义式"的标准操作：分子必须拆成两个都以 \(f(x_{0})\) 为基点的差，且每个差商的分母要与自变量增量<b>严格配套</b>.第（2）问是历年反复出现的<b>判断题陷阱</b>：对称差商存在是比可导<b>更弱</b>的条件，必须举反例，不能凭感觉说"能".</p>
+<p class="sol"><span class="mk">解</span> （1）加一项减一项：</p>
+\[\frac{f(x_{0}+3h)-f(x_{0}-h)}{h}
+ =3\cdot\frac{f(x_{0}+3h)-f(x_{0})}{3h}+\frac{f(x_{0}-h)-f(x_{0})}{-h}.\]
+<p>令 \(h\to0\)，两个差商分别趋于 \(f'(x_{0})\)，故原极限 \(=3f'(x_{0})+f'(x_{0})=4f'(x_{0})\).</p>
+<p>（一般结论：\(\dfrac{f(x_{0}+\alpha h)-f(x_{0}+\beta h)}{h}\to(\alpha-\beta)f'(x_{0})\)，本题 \(\alpha=3,\ \beta=-1\).）</p>
+<p>（2）<b>不能.</b>反例：取 \(f(x)=|x|,\ x_{0}=0\).此时</p>
+\[\frac{f(0+h)-f(0-h)}{2h}=\frac{|h|-|-h|}{2h}=0\quad(h
+e0),\]
+<p>对称差商的极限存在且为 \(0\)；但由正文例 3.4，\(f'_{-}(0)=-1
+e1=f'_{+}(0)\)，\(f\) 在 \(0\) 处不可导.更极端的反例：\(f(x)=\mathrm{sgn}(x)\) 在 \(0\) 处甚至不连续，对称差商却恒为 \(0\).</p>
+<p class="ky-idea"><b>命题意图.</b> 考查对导数定义式"分子两点之差必须与分母一致"这一要害的理解.选择题里常以"下列条件中能推出 \(f\) 在 \(x_{0}\) 可导的是"出现，对称差商、\(\lim h[f(x_{0}+h)-f(x_{0})]\) 之类都是设计好的干扰项.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题，数学一、二常考）设 \(y=x^{2}\ln(1+x)\)，求 \(y^{(n)}(0)\)（\(n\ge3\)）.</p>
+<p class="ky-hint"><b>思路点拨.</b> 见到"多项式 × 初等函数"求高阶导，立刻想莱布尼茨公式，并且<b>务必把多项式取作 \(u\)</b>——\(x^{2}\) 求导三次即为零，求和式中只剩三项.再注意题目只要 \(x=0\) 处的值，含 \(x\) 因子的项自动消失，实际只剩<b>一项</b>.</p>
+<p class="sol"><span class="mk">解</span> 取 \(u=x^{2},\ v=\ln(1+x)\).由正文公式 \(v^{(k)}=\dfrac{(-1)^{k-1}(k-1)!}{(1+x)^{k}}\).莱布尼茨公式给出</p>
+\[y^{(n)}=x^{2}v^{(n)}+C_{n}^{1}\cdot 2x\cdot v^{(n-1)}+C_{n}^{2}\cdot 2\cdot v^{(n-2)}.\]
+<p>令 \(x=0\)：前两项含因子 \(x\) 而为零，只剩第三项.又 \(v^{(n-2)}(0)=(-1)^{n-3}(n-3)!\)，\(C_{n}^{2}=\dfrac{n(n-1)}{2}\)，故</p>
+\[y^{(n)}(0)=\frac{n(n-1)}{2}\cdot2\cdot(-1)^{n-3}(n-3)!=(-1)^{n-1}n(n-1)(n-3)!\ .\]
+<p><b>验算.</b> 由 \(\ln(1+x)=x-\dfrac{x^{2}}{2}+\dfrac{x^{3}}{3}-\cdots\) 得 \(y=x^{3}-\dfrac{x^{4}}{2}+\dfrac{x^{5}}{3}-\cdots\).于是 \(y'''(0)=3!\times1=6\)，公式给 \((-1)^{2}\cdot3\cdot2\cdot0!=6\) ✓；\(y^{(4)}(0)=4!\times\bigl(-\tfrac12\bigr)=-12\)，公式给 \((-1)^{3}\cdot4\cdot3\cdot1!=-12\) ✓.</p>
+<p class="ky-idea"><b>命题意图.</b> 考查莱布尼茨公式的选择技巧与 \(\ln(1+x)\) 的 \(n\) 阶导公式.另一条完全等价的路子是<b>幂级数展开取系数</b>：\(y^{(n)}(0)=n!\cdot a_{n}\)，往往更快，第 9 章会系统训练.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题，数学一常考）设函数 \(f(t)\) 二阶可导且 \(f’’(t)
+e0\)，参数方程 \(\begin{cases}x=f'(t),\\ y=t\,f'(t)-f(t),\end{cases}\) 求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 与 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 抽象参数方程题，切忌硬套定理 3.8 那个分母三次方的公式.正确做法是<b>先算 \(\mathrm{d}y/\mathrm{d}x\) 并化到最简</b>，往往会出现惊人的约简；再用"对 \(t\) 求导后除以 \(\mathrm{d}x/\mathrm{d}t\)"求二阶导.头号陷阱依旧是误写成 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\dfrac{y''(t)}{x''(t)}\).</p>
+<p class="sol"><span class="mk">解</span> 分别对 \(t\) 求导（\(y\) 中的 \(t\,f'(t)\) 用乘积法则）：</p>
+\[\frac{\mathrm{d}x}{\mathrm{d}t}=f’’(t),\qquad
+  \frac{\mathrm{d}y}{\mathrm{d}t}=f'(t)+t\,f’’(t)-f'(t)=t\,f’’(t).\]
+<p>因 \(f’’(t)
+e0\)，作商并约去 \(f’’(t)\)：</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{t\,f’’(t)}{f’’(t)}=t.\]
+<p>再求二阶导：把 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=t\) 对 \(t\) 求导得 \(1\)，除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\)：</p>
+\[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\frac{1}{f’’(t)}.\]
+<p class="ky-idea"><b>命题意图.</b> 这组参数方程正是<b>勒让德变换</b>（\(x\) 取斜率、\(y\) 取截距的相反数），在热力学与分析力学中把内能变成焓、把拉格朗日量变成哈密顿量用的就是它.命题人考的是"化简优先"的意识与二阶导公式的正确层次，而不是计算量.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 5】</b>（考研典型题，数学一、二常考）设 \(y=y(x)\) 由方程 \(\mathrm{e}^{y}+6xy+x^{2}-1=0\) 确定，求 \(y''(0)\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 隐函数求高阶导有两条路：① 先解出 \(y'\) 的表达式再求导（要用商法则，式子会膨胀）；② <b>直接在方程两边连续求导两次，最后代点</b>.本题只要一个点的值，第②条路快得多.关键前置动作：<b>先由原方程求出 \(x=0\) 时的 \(y\)</b>，这是最常见的失分点.</p>
+<p class="sol"><span class="mk">解</span> <b>第一步：定初值.</b>令 \(x=0\)，方程成为 \(\mathrm{e}^{y}-1=0\)，故 \(y(0)=0\).</p>
+<p><b>第二步：两边对 \(x\) 求导</b>（\(y\) 视为 \(x\) 的函数，\(6xy\) 用乘积法则）：</p>
+\[\mathrm{e}^{y}y'+6y+6xy'+2x=0.\]
+<p>代入 \(x=0,\ y=0\)：\(y'(0)+0+0+0=0\)，即 \(y'(0)=0\).</p>
+<p><b>第三步：再对 \(x\) 求导一次.</b></p>
+\[\mathrm{e}^{y}(y')^{2}+\mathrm{e}^{y}y''+6y'+\bigl(6y'+6xy''\bigr)+2=0,\]
+<p>即 \(\mathrm{e}^{y}\bigl[(y')^{2}+y''\bigr]+12y'+6xy''+2=0\).代入 \(x=0,\ y=0,\ y'(0)=0\)：</p>
+\[1\cdot\bigl[0+y''(0)\bigr]+0+0+2=0\;\Longrightarrow\;y''(0)=-2.\]
+<p class="ky-idea"><b>命题意图.</b> 考查隐函数求导的规范流程与"先定点值、再逐阶代入"的计算策略.若把 \(x=0\) 换成一般点，就必须按正文例 3.27 的三步走：求一阶 → 再求导 → 回代消去 \(y'\)，最终结果中不得残留 \(y'\).</p>
+</div>
+
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case"><div class="lab">应用案例 · 芯片 DVFS：降频 5% 到底省多少电</div>
+<details><summary>展开查看：微分近似何时够用、何时会把你带沟里</summary>
+<div class="body">
+<p><b>场景：</b> 盛夏用电高峰，某数据中心接到电网调度：一小时内把负荷压下来一截.运维手上最快的旋钮是 DVFS（动态电压频率调节）——十万台服务器主频统一下调 5%.业务方追着问：降 5% 的频率，到底省几个点的电？也是 5% 吗？答案比直觉大得多.动态功耗 \(P=\alpha CV^{2}f\)，而在近阈值区电压需随频率同比调整，工程上常用 \(V\propto f\)，于是</p>
+\[P_{\mathrm{dyn}}=k f^{3}.\]
+<p>运维要回答一个直接的问题：<b>把频率下调 \(x\)（相对量），功耗降多少？</b>用微分做线性近似：</p>
+\[\frac{\mathrm{d}P}{P}=3\,\frac{\mathrm{d}f}{f}=3x.\]
+<table class="dt">
+<tr><th>相对降频 \(x\)</th><th>微分近似 \(3x\)</th><th>精确值 \((1+x)^{3}-1\)</th><th>误差（百分点）</th></tr>
+<tr><td>\(-1\%\)</td><td>\(-3.00\%\)</td><td>\(-2.9701\%\)</td><td>0.03</td></tr>
+<tr><td>\(-5\%\)</td><td>\(-15.00\%\)</td><td>\(-14.2625\%\)</td><td>0.74</td></tr>
+<tr><td>\(-10\%\)</td><td>\(-30.00\%\)</td><td>\(-27.1000\%\)</td><td>2.90</td></tr>
+<tr><td>\(-20\%\)</td><td>\(-60.00\%\)</td><td>\(-48.8000\%\)</td><td>11.20</td></tr>
+</table>
+<p class="sol"> 取某型服务器 CPU 动态功耗 \(100\ \mathrm{W}\)、主频 \(3.0\ \mathrm{GHz}\).降频 \(5\%\)（到 \(2.85\ \mathrm{GHz}\)）时，精确节省</p>
+\[\Delta P=100\times14.2625\%=14.26\ \mathrm{W}.\]
+<p>一座部署 \(10\) 万台服务器的数据中心，总节省功率</p>
+\[10^{5}\times14.26=1.426\times10^{6}\ \mathrm{W}=1.426\ \mathrm{MW},\]
+<p>按年运行 \(8760\ \mathrm{h}\) 计，年省电</p>
+\[1426\ \mathrm{kW}\times8760\ \mathrm{h}=1.249\times10^{7}\ \mathrm{kW\cdot h}\approx1249\ \text{万度}.\]
+<p>若再计入 PUE \(=1.25\) 的制冷开销，实际省电还要乘 \(1.25\)，约 \(1561\) 万度.</p>
+<p><b>工程结论：</b> 微分近似的误差在 \(|x|\le5\%\) 时不足 \(1\) 个百分点，完全够在线控制器每毫秒做一次决策用；但一旦调节幅度到 \(20\%\)，线性外推会高估节能 \(11\) 个百分点，据此写进 SLA 的节能承诺就会兑现不了.<b>这正是"以直代曲"的适用边界：微分只在局部成立，误差随 \(|\Delta x|\) 的平方增长——第 4 章泰勒公式会把这句话变成精确的余项估计.</b></p>
+<p class="cn-point">一次 5% 的降频，一年就是一千多万度电，够上万户人家用一年."东数西算"里那些看不见的节能，很多正来自这类被算清了适用边界的线性近似——敢让控制器每毫秒用一次 \(3x\)，是因为有人先算准了它在 \(|x|\le5\%\) 内不会骗人.</p>
+  
+
+<div style="margin:14px 0 6px 0;text-align:center">
+  <canvas id="ch3-dvfs" width="720" height="380" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>相对降频 x <input type="range" id="ch3-dvfs-x" min="-30" max="10" step="1" value="-5"> <span id="ch3-dvfs-x-t">-5</span> %</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch3-dvfs-out"></div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch3-dvfs'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||380;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var rx=document.getElementById('ch3-dvfs-x'), xt=document.getElementById('ch3-dvfs-x-t'),
+      out=document.getElementById('ch3-dvfs-out');
+  function draw(){
+    if(!s) s=setup();
+    var x=+rx.value; xt.textContent=x.toFixed(0);
+    var ex=Math.pow(1+x/100,3)-1, ap=3*(x/100), errP=(ap-ex)*100;
+    var ctx=s.ctx,W=s.W,H=s.H,mL=46,mR=16,mT=30,mB=46,pW=W-mL-mR,pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var minP=-0.65, maxP=0.05;
+    function Yv(p){ return mT+(1-(p-minP)/(maxP-minP))*pH; }
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1; ctx.beginPath();
+    ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('\u529f\u8017\u53d8\u5316\u7387', mL+pW/2, H-6);
+    var bw=pW/3;
+    // exact bar
+    var exY=Yv(ex), bx1=mL+bw*0.5;
+    ctx.fillStyle='#0F6E56'; ctx.fillRect(bx1,mT+pH, bw*0.6, exY-(mT+pH));
+    ctx.fillStyle='#0F6E56'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('\u7cbe\u786e '+(ex*100).toFixed(2)+'%', bx1+bw*0.3, exY-6);
+    // approx bar
+    var apY=Yv(ap), bx2=mL+bw*1.5;
+    ctx.fillStyle='#f59e0b'; ctx.fillRect(bx2,mT+pH, bw*0.6, apY-(mT+pH));
+    ctx.fillStyle='#b45309'; ctx.font='bold 12px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('\u5fae\u5206 '+(ap*100).toFixed(2)+'%', bx2+bw*0.3, apY-6);
+    ctx.fillStyle='#64748b'; ctx.font='11px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('P=kf\u00b3', bx1+bw*0.3, H-22);
+    ctx.fillText('\u7ebf\u6027\u8fd1\u4f3c 3x', bx2+bw*0.3, H-22);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('\u82af\u7247 DVFS\uff1a\u964d\u9891\u7701\u7535\u7684\u7cbe\u786e\u503c vs \u5fae\u5206\u8fd1\u4f3c', mL, mT-12);
+    var saveW=100*(-ex), mw=saveW*100000/1000;
+    out.textContent='x='+x+'% \u2192 \u7cbe\u786e '+(ex*100).toFixed(2)+'%, \u5fae\u5206\u8fd1\u4f3c '+(ap*100).toFixed(2)
+      +'%, \u8bef\u5dee '+errP.toFixed(2)+' \u4e2a\u767e\u5206\u70b9 \uff5c \u5146\u53f0\u670d\u52a1\u5668\u7701 '+(saveW*1000).toFixed(0)+' kW';
+  }
+  rx.addEventListener('input',draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</div>
+</details>
+</div>
+
+<div class="case"><div class="lab">应用案例 · 北斗 MEO 卫星：半长轴差 1 公里，一个月漂 1 度</div>
+<details><summary>展开查看：把入轨精度指标翻译成星座维持的机动频度</summary>
+<div class="body">
+<p><b>场景：</b> 一颗北斗 MEO 卫星入轨了，半长轴比设计值大出 1 公里.放在 27 906 公里的轨道尺度上，这是万分之零点四的偏差，测控大厅里没人会为它皱眉.可一个月后，这颗星会从整齐的队列里"走神"整整 1 度，全网定位精度跟着劣化.一个小到可以忽略的入轨误差，怎么会滚成这样？从开普勒第三定律给出的轨道周期算起：</p>
+\[T=2\pi\sqrt{\frac{a^{3}}{\mu}},\qquad \mu=3.986\times10^{14}\ \mathrm{m^{3}/s^{2}}.\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>MEO 轨道半长轴</td><td>\(a\)</td><td>27 906 km</td></tr>
+<tr><td>入轨半长轴偏差</td><td>\(\mathrm{d}a\)</td><td>1.0 km</td></tr>
+<tr><td>相位保持容差</td><td>\(\Delta\phi_{\lim}\)</td><td>\(0.1^{\circ}\)</td></tr>
+</table>
+<p class="sol"> 取对数再微分（误差分析的标准手法）：</p>
+\[\ln T=\ln(2\pi)+\frac32\ln a-\frac12\ln\mu
+  \;\Longrightarrow\;\frac{\mathrm{d}T}{T}=\frac32\cdot\frac{\mathrm{d}a}{a}.\]
+<p>先算标称周期：\(a^{3}=2.1732\times10^{22}\)，\(a^{3}/\mu=5.4520\times10^{7}\)，故 \(T=2\pi\times7383.8=46\,393\ \mathrm{s}=12.887\ \mathrm{h}\).再算偏差</p>
+\[\frac{\mathrm{d}T}{T}=1.5\times\frac{1.0}{27906}=5.375\times10^{-5},\qquad
+  \mathrm{d}T=46393\times5.375\times10^{-5}=2.494\ \mathrm{s}.\]
+<p>每圈慢 \(2.494\ \mathrm{s}\).\(30\) 天共飞 \(\dfrac{2\,592\,000}{46393}=55.9\) 圈，累计时间偏差 \(139.3\ \mathrm{s}\)，折合相位角</p>
+\[\Delta\phi=\frac{139.3}{46393}\times360^{\circ}=1.081^{\circ}.\]
+<p>反过来求容许漂移时间：\(0.1^{\circ}\) 对应 \(12.89\ \mathrm{s}\)，即 \(12.89/2.494=5.17\) 圈 \(=66.6\ \mathrm{h}\approx2.8\) 天.</p>
+<p><b>工程结论：</b> 若入轨半长轴精度只有 \(1\ \mathrm{km}\)，则每约 \(2.8\) 天就要做一次相位保持机动——按每次 \(\Delta v\approx0.02\ \mathrm{m/s}\) 计，十年寿命需 \(1300\) 次点火、耗尽推进剂.把入轨精度提高到 \(100\ \mathrm{m}\)，漂移速率降为原来的 \(1/10\)，机动周期延长到 \(28\) 天，燃料消耗同比下降一个量级.<b>"半长轴 1 公里"这个抽象指标，正是通过 \(\mathrm{d}T/T=\tfrac32\,\mathrm{d}a/a\) 这一行微分关系，被翻译成"每圈 2.5 秒、一个月 1 度、三天一次机动"这样可执行的工程语言.</b></p>
+<p class="cn-point">那个 \(\tfrac32\) 的系数，决定了北斗要不要多背一箱推进剂、能不能干满设计寿命.把入轨精度从 1 km 做到 100 m，看上去只是运载与测控多使了点劲，换来的却是整个星座少烧一个量级的燃料——自主可控的导航系统，就是由这一串"看起来很小"的指标累出来的.</p>
+  
+</div>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC3">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq3" data-ch=3><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第3章 · 一元函数微分学</div>
+<a href="#s031">3.1 导数的概念</a>
+<a href="#s032">3.2 求导的运算法则</a>
+<a href="#s033">3.3 高阶导数</a>
+<a href="#s034">3.4 隐函数与参数方程的求导</a>
+<a href="#s035">3.5 函数的微分</a>
+<a href="ch3.html#adv3">考研选讲</a>
+<a href="ch3.html#cq3">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 3, "list": [["s031", "3.1 导数的概念"], ["s032", "3.2 求导的运算法则"], ["s033", "3.3 高阶导数"], ["s034", "3.4 隐函数与参数方程的求导"], ["s035", "3.5 函数的微分"], ["adv3", "考研选讲"], ["cq3", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

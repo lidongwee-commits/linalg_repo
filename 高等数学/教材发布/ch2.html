@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第2章 · 极限与连续</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第2章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第2章 · 极限与连续</div>
+<a href="ch2.html">整章</a>
+<a href="ch2.html#adv2">考研选讲</a>
+<a href="ch2.html#cq2">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH2 -->
+<div class="kicker">Chapter 2</div>
+<h1 class="title">极限与连续<span class="en">Limits and Continuity</span></h1>
+<p class="lede">极限是微积分的基石.本章依次建立数列极限、函数极限的严格定义，讨论极限的性质、无穷小与无穷大、极限存在准则与两个重要极限，最后落脚于函数的连续性与间断点.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>数列极限</b> → 梯度下降迭代序列收敛到最优解</li>
+<li><b>函数极限</b> → 传感器稳态读数逼近</li>
+<li><b>无穷小/无穷大</b> → 浮点下溢、正则化项趋零</li>
+<li><b>重要极限</b> → 蒙特卡洛估积分、折扣因子</li>
+<li><b>连续性</b> → 控制连续 ⇒ 指令不突变，安全</li>
+  </ul>
+</div>
+
+    <!-- ============ §2.1 ============ -->
+
+    <h2 id="s021"><span class="num">§2.1</span>数列的极限</h2>
+    
+<div class="ex"><div class="lab">引例一　AI 模型训练时，"损失下降到多少才算收敛"</div>
+  <p class="stmt">训练一个神经网络时，屏幕上不断刷出每一轮（epoch）的损失值.工程师说"再跑几轮就收敛了"——这个"收敛"到底是什么意思？多小才叫"趋于零"？</p>
+  <p>某次训练的损失序列近似满足 \(L_n=0.5+\dfrac{2}{n}\)（\(n\) 为轮次）.把前若干轮列出来：</p>
+  <table class="dt">
+    <tr><th>轮次 \(n\)</th><th>10</th><th>50</th><th>200</th><th>1000</th><th>10000</th></tr>
+    <tr><td>损失 \(L_n\)</td><td>0.7000</td><td>0.5400</td><td>0.5100</td><td>0.5020</td><td>0.5002</td></tr>
+    <tr><td>\(|L_n-0.5|\)</td><td>0.2000</td><td>0.0400</td><td>0.0100</td><td>0.0020</td><td>0.0002</td></tr>
+  </table>
+  <p>损失并不趋于 \(0\)，而是趋于 \(0.5\)——这是数据本身噪声决定的<b>不可约误差</b>.工程师说的"收敛"，严格讲就是：<b>无论你要求多小的精度，只要训练轮次足够多，损失与 \(0.5\) 的差距就能一直保持在这个精度之内</b>.</p>
+  <p>比如要求误差不超过 \(0.001\)，需要 \(\dfrac{2}{n}\lt0.001\)，即 \(n\gt2000\)：从第 2001 轮起，往后<b>所有</b>轮次都满足.这句"从某一项之后所有项都满足"，正是数列极限定义的核心.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　割圆术：两千年前的极限思想</div>
+  <p class="stmt">魏晋时期，刘徽用圆内接正多边形逼近圆面积，提出"割之弥细，所失弥少，割之又割，以至于不可割，则与圆合体而无所失矣".这是中国数学史上最早的极限思想.</p>
+  <p>设单位圆内接正 \(n\) 边形的面积为 \(A_n=\dfrac{n}{2}\sin\dfrac{2\pi}{n}\)，计算得：</p>
+  <table class="dt">
+    <tr><th>边数 \(n\)</th><th>6</th><th>12</th><th>96</th><th>3072</th><th>\(\to\infty\)</th></tr>
+    <tr><td>\(A_n\)</td><td>2.598076</td><td>3.000000</td><td>3.139350</td><td>3.141592</td><td>\(\pi=3.141593\)</td></tr>
+  </table>
+  <p>刘徽算到 96 边形得 \(\pi\approx3.14\)，祖冲之更进一步逼到 \(3.1415926\lt\pi\lt3.1415927\).多边形<b>永远不等于</b>圆，但差距可以任意小——<b>"能任意接近"而非"最终相等"，这就是极限.</b></p>
+</div>
+
+<h3>一、数列的概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.1</span>数列</div>
+  <p>按一定次序排列的无穷多个数</p>
+  \[x_1,\;x_2,\;x_3,\;\dots,\;x_n,\;\dots\]
+  <p>称为<b>无穷数列</b>，简称<b>数列</b>，记作 \(\{x_n\}\).其中 \(x_n\) 称为数列的<b>通项</b>（一般项）.</p>
+  <p class="muted">从映射的角度看，数列就是定义在正整数集 \(\mathbb{N}^{+}\) 上的函数 \(x_n=f(n)\)，其函数值按自变量 \(n\) 从小到大排成一列.</p>
+</div>
+<div class="note">几个典型数列：<br>
+· \(\left\{\dfrac{1}{n}\right\}:1,\tfrac12,\tfrac13,\dots\) —— 无限接近 \(0\)；<br>
+· \(\{(-1)^{n}\}:-1,1,-1,1,\dots\) —— 在两个数之间跳动，不接近任何数；<br>
+· \(\{2^{n}\}:2,4,8,16,\dots\) —— 无限增大；<br>
+· \(\left\{\dfrac{n+1}{n}\right\}:2,\tfrac32,\tfrac43,\dots\) —— 无限接近 \(1\).<br>
+数列的"变化趋势"千差万别，我们需要一个<b>精确的、可验证的</b>标准来刻画"无限接近某个数".</div>
+
+<h3>二、数列极限的 \(\varepsilon\text{-}N\) 定义</h3>
+<p>观察 \(x_n=\dfrac{n+1}{n}=1+\dfrac{1}{n}\).说它"趋于 1"，是因为 \(|x_n-1|=\dfrac{1}{n}\) 可以任意小.怎样把"任意小"写成数学语言？</p>
+<p>用<b>挑战—应答</b>的方式理解：对方（挑战者）任意提出一个小的正数 \(\varepsilon\)，我们（应答者）必须找出一个界限 \(N\)，保证<b>第 \(N\) 项以后的所有项</b>都落在 \(a\) 的 \(\varepsilon\) 邻域内.挑战者可以把 \(\varepsilon\) 提得要多小有多小，只要我们每次都能应答成功，就说数列以 \(a\) 为极限.</p>
+
+<div class="def"><div class="lab"><span class="n">定义 2.2</span>数列的极限（\(\varepsilon\text{-}N\) 定义）</div>
+  <p>设 \(\{x_n\}\) 为一数列，\(a\) 为常数.若对于<b>任意给定</b>的正数 \(\varepsilon\)（无论它多么小），<b>总存在</b>正整数 \(N\)，使得当 \(n\gt N\) 时，不等式</p>
+  \[|x_n-a|\lt\varepsilon\]
+  <p>恒成立，则称常数 \(a\) 是数列 \(\{x_n\}\) 的<b>极限</b>，或称数列 \(\{x_n\}\) <b>收敛于</b> \(a\)，记作</p>
+  \[\lim_{n\to\infty}x_n=a\qquad\text{或}\qquad x_n\to a\;(n\to\infty).\]
+  <p>如果这样的常数 \(a\) 不存在，就说数列 \(\{x_n\}\) <b>发散</b>（没有极限）.</p>
+  <p class="muted">逻辑符号写法：\(\lim\limits_{n\to\infty}x_n=a\iff\forall\varepsilon\gt0,\;\exists N\in\mathbb{N}^{+},\;\forall n\gt N:\;|x_n-a|\lt\varepsilon\).</p>
+</div>
+
+<div class="cviz" data-viz="limit-sequence"></div>
+
+<div class="note"><b>三个关键词，缺一不可：</b><br>
+① <b>\(\varepsilon\) 的任意性</b>——\(\varepsilon\) 由挑战者随意给定且可以任意小，正因如此 \(|x_n-a|\lt\varepsilon\) 才刻画了"无限接近".若只对某一个固定的 \(\varepsilon\)（比如 \(0.1\)）成立，毫无意义.<br>
+② <b>\(N\) 的存在性与相依性</b>——\(N\) 依赖于 \(\varepsilon\)（常记作 \(N(\varepsilon)\)），\(\varepsilon\) 越小 \(N\) 一般越大.\(N\) 不要求最小，找到<b>一个</b>能用的即可，这给了我们"放大法"的自由.<br>
+③ <b>"当 \(n\gt N\) 时"</b>——只关心<b>充分靠后</b>的项.改变数列前面有限项，不影响极限的存在与取值.</div>
+
+<div class="ex"><div class="lab">例 2.1　用定义证明 \(\lim\limits_{n\to\infty}\dfrac{1}{n}=0\)</div>
+  <p class="sol"><span class="mk">证</span>任给 \(\varepsilon\gt0\).要使 \(\left|\dfrac{1}{n}-0\right|=\dfrac{1}{n}\lt\varepsilon\)，只需 \(n\gt\dfrac{1}{\varepsilon}\).</p>
+  <p>故取 \(N=\left[\dfrac{1}{\varepsilon}\right]\)（取整），则当 \(n\gt N\) 时恒有 \(\left|\dfrac{1}{n}-0\right|\lt\varepsilon\).由定义得 \(\lim\limits_{n\to\infty}\dfrac{1}{n}=0\).</p>
+  <p class="muted">例如挑战者给 \(\varepsilon=0.001\)，取 \(N=1000\)，则第 1001 项起全部满足；给 \(\varepsilon=10^{-6}\)，取 \(N=10^{6}\) 即可.<b>每一次挑战都能应答，这就是收敛.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 2.2　用定义证明 \(\lim\limits_{n\to\infty}\dfrac{3n+1}{2n-1}=\dfrac{3}{2}\)</div>
+  <p class="sol"><span class="mk">证</span>先化简差的绝对值：</p>
+  \[\left|\frac{3n+1}{2n-1}-\frac{3}{2}\right|=\left|\frac{2(3n+1)-3(2n-1)}{2(2n-1)}\right|=\frac{5}{2(2n-1)}.\]
+  <p>任给 \(\varepsilon\gt0\).解不等式 \(\dfrac{5}{2(2n-1)}\lt\varepsilon\) 略显麻烦，采用<b>放大法</b>：当 \(n\ge1\) 时 \(2n-1\ge n\)，故</p>
+  \[\frac{5}{2(2n-1)}\le\frac{5}{2n}.\]
+  <p>只需 \(\dfrac{5}{2n}\lt\varepsilon\)，即 \(n\gt\dfrac{5}{2\varepsilon}\).取 \(N=\left[\dfrac{5}{2\varepsilon}\right]+1\)，当 \(n\gt N\) 时不等式成立.证毕.</p>
+  <p class="muted"><b>放大法要领：</b>把 \(|x_n-a|\) 放大成一个<b>形式简单、易解不等式</b>的表达式，且放大后仍趋于 \(0\).放大过程中允许附加"当 \(n\) 充分大时"的条件（如 \(n\ge1\)、\(n\gt3\)），最后取 \(N\) 时把这些条件一并纳入即可.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.3　证明 \(\lim\limits_{n\to\infty}q^{n}=0\)，其中 \(|q|\lt1\)</div>
+  <p class="sol"><span class="mk">证</span>若 \(q=0\) 结论显然.设 \(0\lt|q|\lt1\)，任给 \(\varepsilon\gt0\)（不妨设 \(\varepsilon\lt1\)）.要使</p>
+  \[|q^{n}-0|=|q|^{n}\lt\varepsilon,\]
+  <p>两边取自然对数（注意 \(\ln|q|\lt0\)，不等号方向改变）：\(n\ln|q|\lt\ln\varepsilon\)，即 \(n\gt\dfrac{\ln\varepsilon}{\ln|q|}\).</p>
+  <p>取 \(N=\left[\dfrac{\ln\varepsilon}{\ln|q|}\right]\)，当 \(n\gt N\) 时 \(|q^{n}-0|\lt\varepsilon\).证毕.</p>
+  <p class="muted">这是极为常用的基本结论：\(|q|\lt1\Rightarrow q^{n}\to0\).例如 \(0.9^{n}\to0\)，尽管 \(0.9\) 很接近 \(1\)——取 \(\varepsilon=0.001\) 时需 \(n\gt65.6\)，即第 66 项后进入.它也是几何级数收敛（第 13 章）与迭代算法收敛速度分析的基石.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.4　证明 \(\{(-1)^{n}\}\) 发散</div>
+  <p class="sol"><span class="mk">证</span>（反证法）假设 \(\lim\limits_{n\to\infty}(-1)^{n}=a\).取 \(\varepsilon=\dfrac{1}{2}\)，则存在 \(N\)，当 \(n\gt N\) 时 \(|(-1)^{n}-a|\lt\dfrac{1}{2}\).</p>
+  <p>取 \(n\) 为大于 \(N\) 的偶数得 \(|1-a|\lt\dfrac12\)；取 \(n\) 为大于 \(N\) 的奇数得 \(|-1-a|\lt\dfrac12\).两式相加并用三角不等式：</p>
+  \[2=|1-a|+|1+a|\ge|(1-a)+(1+a)|=2\quad\text{的反向估计给出}\quad 2\lt\frac12+\frac12=1,\]
+  <p>矛盾.故极限不存在，数列发散.</p>
+  <p class="muted"><b>技巧：</b>证明发散常用"取一个特定的小 \(\varepsilon\)（如 \(\tfrac12\)）导出矛盾"，或用后面的<b>子列判别法</b>：奇子列 \(\to-1\)、偶子列 \(\to1\)，两个子列极限不同，故原数列发散.后者更快.</p>
+</div>
+
+<h3>三、收敛数列的性质</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.1</span>极限的唯一性</div>
+  <p>若数列 \(\{x_n\}\) 收敛，则它的极限唯一.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>用<b>反证法</b>.设 \(\lim\limits_{n\to\infty}x_n=a\) 且 \(\lim\limits_{n\to\infty}x_n=b\)，而 \(a
+eq b\).不妨设 \(a\lt b\).</p>
+<p><span class="stp">取定 \(\varepsilon\)：</span>令 \(\varepsilon=\dfrac{b-a}{2}\gt0\).</p>
+<p><span class="stp">用定义：</span>由 \(x_n\to a\)，存在 \(N_1\)，当 \(n\gt N_1\) 时 \(|x_n-a|\lt\varepsilon\)，即</p>
+\[x_n\lt a+\varepsilon=a+\frac{b-a}{2}=\frac{a+b}{2}.\]
+<p>由 \(x_n\to b\)，存在 \(N_2\)，当 \(n\gt N_2\) 时 \(|x_n-b|\lt\varepsilon\)，即</p>
+\[x_n\gt b-\varepsilon=b-\frac{b-a}{2}=\frac{a+b}{2}.\]
+<p><span class="stp">导出矛盾：</span>取 \(N=\max\{N_1,N_2\}\)，则当 \(n\gt N\) 时上述两式同时成立，于是</p>
+\[\frac{a+b}{2}\lt x_n\lt\frac{a+b}{2},\]
+<p>这是不可能的.故假设不成立，必有 \(a=b\)，即极限唯一.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.2</span>收敛数列的有界性</div>
+  <p>若 \(\{x_n\}\) 收敛，则 \(\{x_n\}\) 有界，即存在 \(M\gt0\) 使 \(|x_n|\le M\) 对一切 \(n\) 成立.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>用极限定义取一个固定的 \(\varepsilon\)（这里取 \(1\)），把"尾部"圈进一个界；再和前面有限项比较，取一个统一的大界.这正是收敛数列"几乎都挤在极限附近"的几何直觉.</p>
+<p><span class="stp">第一步：</span>设 \(\lim\limits_{n\to\infty}x_n=a\).按定义取 \(\varepsilon=1\gt0\)，则存在正整数 \(N\)，当 \(n\gt N\) 时</p>
+\[|x_n-a|\lt1.\]
+<p>于是</p>
+\[|x_n|\le |a|+|x_n-a|\lt |a|+1,\qquad (n\gt N).\]
+<p><span class="stp">第二步：</span>前 \(N\) 项只有有限个，令</p>
+\[M=\max\{|x_1|,|x_2|,\dots,|x_N|,|a|+1\}.\]
+<p>则对一切 \(n\in\mathbf{N}\) 都有 \(|x_n|\le M\)，即 \(\{x_n\}\) 有界.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>有界是收敛的必要而非充分条件.</b>\(\{(-1)^{n}\}\) 有界但发散.逆否命题很有用：<b>无界数列必发散</b>（如 \(\{2^{n}\}\)、\(\{n\sin n\}\) 中的无界情形）.</div>
+<div class="def"><div class="lab"><span class="n">定理 2.3</span>保号性</div>
+  <p>若 \(\lim\limits_{n\to\infty}x_n=a\) 且 \(a\gt0\)（或 \(a\lt0\)），则存在正整数 \(N\)，当 \(n\gt N\) 时恒有 \(x_n\gt0\)（或 \(x_n\lt0\)）.</p>
+  <p><b>推论：</b>若数列 \(\{x_n\}\) 从某项起有 \(x_n\ge0\)，且 \(x_n\to a\)，则 \(a\ge0\).</p>
+  <p class="muted">注意推论中<b>不能</b>由 \(x_n\gt0\) 推出 \(a\gt0\).反例：\(x_n=\dfrac{1}{n}\gt0\)，但极限 \(a=0\).<b>严格不等式取极限后会"退化"为非严格不等式</b>，这是常见易错点.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步（\(a\gt0\) 的情形）：</span>取 \(\varepsilon=\dfrac{a}{2}\gt0\).由 \(\lim\limits_{n\to\infty}x_n=a\)，存在正整数 \(N\)，当 \(n\gt N\) 时</p>
+\[|x_n-a|\lt\frac{a}{2}.\]
+<p>从而 \(x_n\gt a-\dfrac{a}{2}=\dfrac{a}{2}\gt0\)，即 \(x_n\gt0\).</p>
+<p><span class="stp">第二步（\(a\lt0\) 的情形）：</span>取 \(\varepsilon=-\dfrac{a}{2}\gt0\)，同理存在 \(N\)，当 \(n\gt N\) 时 \(|x_n-a|\lt-\dfrac{a}{2}\)，于是</p>
+\[x_n\lt a+\left(-\frac{a}{2}\right)=\frac{a}{2}\lt0,\]
+<p>即 \(x_n\lt0\).保号性得证.</p>
+<p><span class="stp">推论的证明：</span>若 \(\{x_n\}\) 从某项起恒有 \(x_n\ge0\) 且 \(x_n\to a\).若反设 \(a\lt0\)，则由刚证的保号性，当 \(n\) 充分大时应有 \(x_n\lt0\)，与 \(x_n\ge0\) 矛盾.故必有 \(a\ge0\).（注意不能由 \(x_n\gt0\) 推出 \(a\gt0\)，如 \(x_n=\dfrac1n\to0\).）</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.4</span>子数列的收敛性</div>
+  <p>若数列 \(\{x_n\}\) 收敛于 \(a\)，则它的<b>任一子数列</b> \(\{x_{n_k}\}\) 也收敛，且极限同为 \(a\).</p>
+  <p><b>常用逆否形式：</b>若能找到两个子列收敛于<b>不同</b>的极限，或找到一个发散的子列，则原数列<b>发散</b>.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(x_n\to a\)，\(\{x_{n_k}\}\) 是 \(\{x_n\}\) 的任一子数列，其中 \(n_1\lt n_2\lt\cdots\) 且 \(n_k\to\infty\)（故当 \(k\) 充分大时 \(n_k\gt k\)）.</p>
+<p><span class="stp">用定义：</span>对任意 \(\varepsilon\gt0\)，由 \(x_n\to a\)，存在正整数 \(N\)，当 \(n\gt N\) 时 \(|x_n-a|\lt\varepsilon\).取 \(K=N+1\)，则当 \(k\gt K\) 时，</p>
+\[n_k\ge k\gt K\gt N,\]
+<p>从而 \(|x_{n_k}-a|\lt\varepsilon\).这说明 \(\lim\limits_{k\to\infty}x_{n_k}=a\)，与原数列极限相同.</p>
+<p><span class="stp">逆否的应用：</span>因此若某数列有两个子列收敛于不同极限，或有一个发散的子列，原数列必发散（否则其子列都应收敛到同一极限）.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 2.5　用子列法判定发散</div>
+  <p class="stmt">判断 \(x_n=\cos\dfrac{n\pi}{2}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>逐项写出：\(0,-1,0,1,0,-1,0,1,\dots\)</p>
+  <p>取子列 \(n=4k\)：\(x_{4k}=\cos2k\pi=1\to1\)；取子列 \(n=4k+2\)：\(x_{4k+2}=\cos(2k+1)\pi=-1\to-1\).</p>
+  <p>两个子列极限不同（\(1
+eq-1\)），由定理 2.4 知 \(\{x_n\}\) <b>发散</b>.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 迭代算法的收敛速度：从 \(\varepsilon\text{-}N\) 到"需要跑多少轮"</div>
+  <details><summary>展开查看：牛顿迭代法求 \(\sqrt{2}\) 的逐轮误差与"二次收敛"的含义</summary>
+  <div class="body">
+    <p>深夜的工位上，工程师刚跑起一段求 \(\sqrt{2}\) 的牛顿迭代：第 1 轮误差还有 8.6%，第 3 轮就掉到百万分之二，屏幕每刷新一次有效数字就翻一倍.工程上关心的从来不只是"会不会收敛"，而是"<b>要多少轮才能达到精度</b>"——这正是 \(\varepsilon\text{-}N\) 定义中 \(N\) 关于 \(\varepsilon\) 的增长速度问题.</p>
+    <p>用牛顿迭代求 \(\sqrt{2}\)：解 \(f(x)=x^{2}-2=0\)，迭代式</p>
+    \[x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}=x_n-\frac{x_n^{2}-2}{2x_n}=\frac{1}{2}\left(x_n+\frac{2}{x_n}\right).\]
+    <p>取初值 \(x_0=1\)，逐轮计算（真值 \(\sqrt2=1.41421356237\dots\)）：</p>
+    <table class="dt">
+      <tr><th>\(n\)</th><th>\(x_n\)</th><th>误差 \(|x_n-\sqrt2|\)</th></tr>
+      <tr><td>0</td><td>1.000000000</td><td>\(4.1\times10^{-1}\)</td></tr>
+      <tr><td>1</td><td>1.500000000</td><td>\(8.6\times10^{-2}\)</td></tr>
+      <tr><td>2</td><td>1.416666667</td><td>\(2.5\times10^{-3}\)</td></tr>
+      <tr><td>3</td><td>1.414215686</td><td>\(2.1\times10^{-6}\)</td></tr>
+      <tr><td>4</td><td>1.414213562</td><td>\(1.6\times10^{-12}\)</td></tr>
+    </table>
+    <p>误差的指数依次约为 \(-1,-2,-3,-6,-12\)——<b>有效位数每轮翻倍</b>，这叫<b>二次收敛</b>.若要求 \(\varepsilon=10^{-12}\)，只需 \(N=4\).</p>
+    <p>对比之下，二分法每轮误差减半，要达到 \(10^{-12}\) 需 \(N\approx40\) 轮.同样是"收敛"，\(N(\varepsilon)\) 的增长速度天差地别：</p>
+    \[\text{二分法}:N\sim\log_2\frac{1}{\varepsilon},\qquad\text{牛顿法}:N\sim\log_2\log_2\frac{1}{\varepsilon}.\]
+    <p>这就是为什么 CPU 的开方指令、GPU 里的快速平方根倒数、深度学习优化器的设计，都要死磕收敛阶数.<b>极限定义里那个不起眼的 \(N\)，在工程中就是真金白银的算力成本.</b></p>
+  </div>
+  </details>
+</div>
+
+<div class="cviz" data-viz="newton"></div>
+
+    <!-- ============ §2.2 ============ -->
+
+    
+
+<!--MODBEG-->
+
+<div class="case"><div class="lab">应用探微 · 梯度下降：学习率 η 怎样决定收敛与发散</div>
+\[w_{n+1}=w_n-\eta f'(w_n)=(1-2a\eta)\,w_n=(1-4\eta)\,w_n.\]
+<p>于是 \(w_n=q^{n}w_0\)，其中 \(q=1-4\eta\).<b>这是一个标准的等比数列</b>，由本节例 2.3，\(w_n\to0\) 的充要条件正是 \(|q|\lt1\).</p>
+<table class="dt">
+<tr><th>学习率 \(\eta\)</th><th>\(q=1-4\eta\)</th><th>\(|q|\)</th><th>使 \(|w_n|\lt10^{-6}\) 的最小 \(n\)</th><th>判定</th></tr>
+<tr><td>0.10</td><td>0.60</td><td>0.60</td><td>28</td><td>收敛（偏慢）</td></tr>
+<tr><td>0.20</td><td>0.20</td><td>0.20</td><td>9</td><td>收敛（快）</td></tr>
+<tr><td>0.25</td><td>0.00</td><td>0.00</td><td>1</td><td>一步到位（理论最优）</td></tr>
+<tr><td>0.45</td><td>\(-0.80\)</td><td>0.80</td><td>62</td><td>振荡收敛</td></tr>
+<tr><td>0.50</td><td>\(-1.00\)</td><td>1.00</td><td>不存在</td><td>等幅振荡，发散</td></tr>
+<tr><td>0.60</td><td>\(-1.40\)</td><td>1.40</td><td>不存在</td><td>振荡发散（损失爆炸）</td></tr>
+</table>
+<p class="sol"> 以 \(\eta=0.2\) 为例：\(w_5=0.2^{5}=3.2\times10^{-4}\)，损失 \(L_5=2w_5^{2}=2.048\times10^{-7}\)；要使 \(0.2^{n}\lt10^{-6}\)，两边取对数得 \(n\gt\dfrac{6}{\lg 5}=8.58\)，故 \(N=9\).而 \(\eta=0.6\) 时 \(|w_{20}|=1.4^{20}\approx836\)，二十轮就放大了近千倍——屏幕上看到的就是「loss 变 inf」.</p>
+<p><b>工程结论：</b> 收敛的安全区间是 \(0\lt\eta\lt\dfrac{2}{L}=0.5\)，理论最快取 \(\eta=\dfrac{1}{L}=0.25\).这条调参惯例的数学根据就是 \(|q|\lt1\).</p>
+
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 芯片锁相环（PLL）多少个时钟周期才能锁定</summary>
+<p><b>场景：</b> 5G 基带芯片里的锁相环把本地时钟对齐到参考时钟.设第 \(n\) 拍相位误差 \(e_n\) 满足 \(e_{n+1}=(1-K)e_n\)（\(K\) 为环路增益），故 \(e_n=(1-K)^{n}e_0\)，又是等比数列.取 \(e_0=90^{\circ}\)，锁定判据 \(|e_n|\lt0.1^{\circ}\)，每拍 \(0.1\ \mathrm{\mu s}\).</p>
+<table class="dt">
+<tr><th>环路增益 \(K\)</th><th>\(q=1-K\)</th><th>锁定所需拍数 \(n\)</th><th>锁定时间</th></tr>
+<tr><td>0.1</td><td>0.9</td><td>65</td><td>\(6.5\ \mathrm{\mu s}\)</td></tr>
+<tr><td>0.5</td><td>0.5</td><td>10</td><td>\(1.0\ \mathrm{\mu s}\)</td></tr>
+<tr><td>1.0</td><td>0.0</td><td>1</td><td>\(0.1\ \mathrm{\mu s}\)</td></tr>
+<tr><td>1.9</td><td>\(-0.9\)</td><td>65</td><td>\(6.5\ \mathrm{\mu s}\)（振荡）</td></tr>
+<tr><td>2.1</td><td>\(-1.1\)</td><td>不收敛</td><td>永不锁定</td></tr>
+</table>
+<p class="sol"> 需 \(|q|^{n}\cdot90\lt0.1\)，即 \(|q|^{n}\lt\dfrac{1}{900}\)，取对数得 \(n\gt\dfrac{\ln 900}{\ln(1/|q|)}=\dfrac{6.802}{\ln(1/|q|)}\).代入 \(|q|=0.5\) 得 \(n\gt9.81\)，故 \(n=10\)；代入 \(|q|=0.9\) 得 \(n\gt64.6\)，故 \(n=65\).</p>
+<p><b>工程结论：</b> 收敛条件为 \(0\lt K\lt2\).\(K=1\) 理论上一拍锁定却对增益误差零容限，工艺偏差一旦使 \(K\gt2\) 立刻发散；工程取 \(K\approx0.5\) 折中.<b>\(\varepsilon\text{-}N\) 定义里的 \(N\)，在这里就是芯片上电后必须等待的死区周期数.</b></p>
+<p class="cn-point">国产 5G 基带芯片里，锁相环把增益定在 \(K=0.5\)，就得等 10 拍、1 微秒才锁定——比理论最快的 \(K=1\) 慢了十倍，却换来对工艺偏差的容错.\(|q|\lt1\) 这条等比数列生死线，划定的正是每一块射频芯片的可靠边界.</p>
+<div class="sim" style="margin:14px 0 4px">
+  <p style="font-size:13px;color:#33473f;margin:0 0 6px"><b>仿真器：</b>拖动环路增益 K，看相位误差 e_n=90°·(1−K)^n 如何收敛到锁定阈值 0.1°（ε−N 的工程化身）.</p>
+  <canvas id="ch2-pll" width="720" height="340" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)"></canvas>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">环路增益 K = <b id="ch2-pll-range-v" style="color:#0F6E56">?</b></label>
+    <input type="range" id="ch2-pll-range" min="0.1" max="2.1" step="0.05" value="0.5" style="flex:1;min-width:140px;accent-color:#0F6E56">
+    <span id="ch2-pll-out" style="font-size:12px;color:#64748b"></span>
+  </div>
+</div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch2-pll'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||340;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null, e0=90, beat=0.1, thr=0.1;
+  var range=document.getElementById('ch2-pll-range'),
+      kv=document.getElementById('ch2-pll-range-v'),
+      out=document.getElementById('ch2-pll-out');
+  function draw(){
+    var K=parseFloat(range.value); kv.textContent=K.toFixed(2);
+    if(!s) s=setup();
+    var ctx=s.ctx, W=s.W, H=s.H, mL=46, mR=14, mT=18, mB=32, pW=W-mL-mR, pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var q=1-K;
+    var nMax=200, lockN=null;
+    if(Math.abs(q)<1 && q!==0){
+      for(var n=0;n<=400;n++){ if(Math.abs(e0*Math.pow(q,n))<thr){lockN=n;break;} }
+      var nn=Math.ceil(Math.log(900)/Math.log(1/Math.abs(q)));
+      if(isFinite(nn)&&nn<200) nMax=Math.max(20,nn+8);
+    }
+    function X(n){return mL+(n/nMax)*pW;}
+    function Y(e){return mT+(1-Math.min(e,e0)/e0)*pH;}
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    var yT=Y(thr);
+    ctx.strokeStyle='#dc2626'; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(mL,yT); ctx.lineTo(mL+pW,yT); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626'; ctx.font='10px sans-serif'; ctx.textAlign='left'; ctx.fillText('锁定阈值 0.1°', mL+4, yT-4);
+    var divergent=Math.abs(q)>=1;
+    ctx.strokeStyle=divergent?'#dc2626':'#0F6E56'; ctx.lineWidth=2; ctx.beginPath();
+    for(var n=0;n<=nMax;n++){
+      var e=Math.abs(q)<1?Math.abs(e0*Math.pow(q,n)):(q===0?0:Math.abs(e0*Math.pow(q,n)));
+      var px=X(n), py=Y(e);
+      if(n===0)ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    if(lockN!==null){
+      var lx=X(lockN);
+      ctx.fillStyle='#0284c7'; ctx.beginPath(); ctx.arc(lx,yT,4,0,6.28); ctx.fill();
+      ctx.strokeStyle='#0284c7'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(lx,mT+pH); ctx.lineTo(lx,yT); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('拍数 n', mL+pW/2, H-6);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left'; ctx.fillText('锁相环相位误差 e_n = 90°·(1−K)^n', mL, mT-5);
+    var msg;
+    if(divergent) msg='发散：|q|≥1 → 永不锁定';
+    else if(q===0) msg='K=1：理论 1 拍锁定（对增益误差零容限）';
+    else if(lockN!==null) msg='q='+q.toFixed(2)+' ｜ 锁定需 '+lockN+' 拍 ≈ '+(lockN*beat).toFixed(1)+' µs';
+    else msg='收敛中…';
+    out.textContent=msg;
+  }
+  range.addEventListener('input', draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</details>
+</div>
+
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s021" data-ch="2" data-n="5"></div>
+<h2 id="s022"><span class="num">§2.2</span>函数的极限</h2>
+    
+<div class="ex"><div class="lab">引例一　自动驾驶的"碰撞时间"：为什么要研究 \(x\to x_0\) 而不是 \(x=x_0\)</div>
+  <p class="stmt">自动驾驶系统时刻计算与前车的<b>碰撞时间</b>（TTC，Time To Collision）：\(\mathrm{TTC}=\dfrac{d}{v_{\text{rel}}}\)，其中 \(d\) 为车距、\(v_{\text{rel}}\) 为相对速度.当两车速度趋于一致（\(v_{\text{rel}}\to0\)）时，TTC 会怎样？</p>
+  <p>设某时刻车距 \(d=20\,\mathrm{m}\) 固定，相对速度逐渐减小：</p>
+  <table class="dt">
+    <tr><th>\(v_{\text{rel}}\)（m/s）</th><th>2.0</th><th>0.5</th><th>0.1</th><th>0.01</th><th>0.001</th></tr>
+    <tr><td>TTC（s）</td><td>10</td><td>40</td><td>200</td><td>2000</td><td>20000</td></tr>
+  </table>
+  <p>TTC 无限增大——数学上 \(v_{\text{rel}}=0\) 处根本<b>无定义</b>（除以零），但系统必须知道"接近零时会发生什么".注意：我们关心的是 \(v_{\text{rel}}\) <b>趋近</b> \(0\) 时的行为，而<b>不关心</b> \(v_{\text{rel}}=0\) 这一点本身的取值.</p>
+  <p><b>这正是函数极限与函数值的根本区别：</b>\(\lim\limits_{x\to x_0}f(x)\) 描述的是 \(x_0\) 的<b>去心邻域</b>内的趋势，与 \(f(x_0)\) 是否有定义、等于多少<b>毫无关系</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　CT 图像重建中的 sinc 函数：0 处的"填补"</div>
+  <p class="stmt">医学 CT 与雷达信号处理中反复出现函数 \(\operatorname{sinc}(x)=\dfrac{\sin x}{x}\).它在 \(x=0\) 处无定义，但工程代码里 \(\operatorname{sinc}(0)\) 必须返回一个值——返回什么？</p>
+  <p>数值试验：</p>
+  <table class="dt">
+    <tr><th>\(x\)</th><th>\(\pm0.5\)</th><th>\(\pm0.1\)</th><th>\(\pm0.01\)</th><th>\(\pm0.001\)</th></tr>
+    <tr><td>\(\dfrac{\sin x}{x}\)</td><td>0.958851</td><td>0.998334</td><td>0.999983</td><td>0.99999983</td></tr>
+  </table>
+  <p>无论从左还是从右趋近，值都趋于 \(1\).所以工程实现里规定 \(\operatorname{sinc}(0)=1\)——这不是随意补的，而是<b>由极限 \(\lim\limits_{x\to0}\dfrac{\sin x}{x}=1\) 唯一确定</b>的（本章 §2.5 将严格证明）.这种"用极限值填补孔洞"的操作，就是后面要讲的<b>可去间断点的连续延拓</b>.</p>
+</div>
+
+<h3>一、自变量趋于有限值时函数的极限</h3>
+<p>数列极限中自变量只能取正整数、只能 \(n\to\infty\).函数的自变量是连续变化的，趋近方式更丰富：可以 \(x\to x_0\)（含左、右两侧），也可以 \(x\to\infty\)（含 \(+\infty,-\infty\)）.核心思想不变：<b>用"任意小的目标精度"配"足够近的距离范围"</b>.</p>
+
+<div class="def"><div class="lab"><span class="n">定义 2.3</span>函数极限（\(\varepsilon\text{-}\delta\) 定义）</div>
+  <p>设函数 \(f(x)\) 在点 \(x_0\) 的某个<b>去心邻域</b>内有定义.若存在常数 \(A\)，使得对任意给定的 \(\varepsilon\gt0\)，总存在 \(\delta\gt0\)，当</p>
+  \[0\lt|x-x_0|\lt\delta\]
+  <p>时，恒有 \(|f(x)-A|\lt\varepsilon\)，则称 \(A\) 为函数 \(f(x)\) 当 \(x\to x_0\) 时的<b>极限</b>，记作</p>
+  \[\lim_{x\to x_0}f(x)=A\qquad\text{或}\qquad f(x)\to A\;(x\to x_0).\]
+</div>
+<div class="cviz" data-viz="limit-eps-delta"></div>
+
+<div class="note"><b>\(0\lt|x-x_0|\) 这个"\(0\lt\)"是全部要害.</b>它把 \(x=x_0\) 这一点<b>排除在外</b>：极限只看邻域里的趋势，不看该点本身.因此：<br>
+· \(f(x_0)\) 可以无定义（如 \(\dfrac{\sin x}{x}\) 在 \(0\) 处）；<br>
+· \(f(x_0)\) 可以有定义但不等于 \(A\)（如 \(f(x)=\begin{cases}1,&x
+eq0\\5,&x=0\end{cases}\)，\(\lim\limits_{x\to0}f(x)=1
+eq5=f(0)\)）；<br>
+· \(\delta\) 依赖 \(\varepsilon\)，不要求最大，找到一个可用的即可.</div>
+
+<div class="ex"><div class="lab">例 2.6　用定义证明 \(\lim\limits_{x\to1}(3x-1)=2\)</div>
+  <p class="sol"><span class="mk">证</span>任给 \(\varepsilon\gt0\).考察</p>
+  \[|f(x)-A|=|(3x-1)-2|=3|x-1|.\]
+  <p>要使 \(3|x-1|\lt\varepsilon\)，只需 \(|x-1|\lt\dfrac{\varepsilon}{3}\).故取 \(\delta=\dfrac{\varepsilon}{3}\)，则当 \(0\lt|x-1|\lt\delta\) 时 \(|f(x)-2|\lt\varepsilon\).证毕.</p>
+  <p class="muted">对线性函数，\(\delta\) 可由 \(\varepsilon\) 直接解出，是最简单的情形.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.7　证明 \(\lim\limits_{x\to2}\dfrac{x^{2}-4}{x-2}=4\)</div>
+  <p class="sol"><span class="mk">证</span>注意 \(x=2\) 时函数无定义，但极限只考察 \(0\lt|x-2|\lt\delta\)，此时可约分：</p>
+  \[\left|\frac{x^{2}-4}{x-2}-4\right|=\left|\frac{(x-2)(x+2)}{x-2}-4\right|=|(x+2)-4|=|x-2|.\]
+  <p>任给 \(\varepsilon\gt0\)，取 \(\delta=\varepsilon\)，则当 \(0\lt|x-2|\lt\delta\) 时上式 \(\lt\varepsilon\).证毕.</p>
+  <p class="muted"><b>这个例子把"极限与函数值无关"演示得淋漓尽致：</b>函数在 \(x=2\) 处是个"洞"，但极限照样存在且等于 \(4\).约分之所以合法，正是因为定义里 \(x
+eq x_0\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.8　证明 \(\lim\limits_{x\to x_0}x^{2}=x_0^{2}\)（\(x_0
+eq0\)）</div>
+  <p class="sol"><span class="mk">证</span>\(|x^{2}-x_0^{2}|=|x-x_0|\cdot|x+x_0|\).第二个因子含 \(x\)，需先<b>限定范围以控制它</b>.</p>
+  <p>先设 \(|x-x_0|\lt1\)，则 \(|x|\lt|x_0|+1\)，于是</p>
+  \[|x+x_0|\le|x|+|x_0|\lt2|x_0|+1.\]
+  <p>因此 \(|x^{2}-x_0^{2}|\lt(2|x_0|+1)\,|x-x_0|\).任给 \(\varepsilon\gt0\)，取</p>
+  \[\delta=\min\left\{1,\;\frac{\varepsilon}{2|x_0|+1}\right\},\]
+  <p>则当 \(0\lt|x-x_0|\lt\delta\) 时 \(|x^{2}-x_0^{2}|\lt\varepsilon\).证毕.</p>
+  <p class="muted"><b>"先限定、再放大、最后取 min"是 \(\varepsilon\text{-}\delta\) 证明的标准套路.</b>凡是 \(|f(x)-A|\) 分解后仍含 \(x\) 的因子，都要先用一个预备限制（常取 \(|x-x_0|\lt1\)）把它界住.</p>
+</div>
+
+<h3>二、单侧极限</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.4</span>左极限与右极限</div>
+  <p>把定义 2.3 中的 \(0\lt|x-x_0|\lt\delta\) 改为：</p>
+  <p>· \(x_0-\delta\lt x\lt x_0\)（\(x\) 从左侧趋近），得<b>左极限</b>，记作 \(\lim\limits_{x\to x_0^{-}}f(x)=A\) 或 \(f(x_0^{-})\)；</p>
+  <p>· \(x_0\lt x\lt x_0+\delta\)（\(x\) 从右侧趋近），得<b>右极限</b>，记作 \(\lim\limits_{x\to x_0^{+}}f(x)=A\) 或 \(f(x_0^{+})\).</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.5</span>极限存在的充要条件</div>
+  \[\lim_{x\to x_0}f(x)=A\iff f(x_0^{-})=f(x_0^{+})=A.\]
+  <p>即：极限存在 \(\iff\) 左右极限<b>都存在且相等</b>.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>记 \(f(x_0^{-})=\lim\limits_{x\to x_0^{-}}f(x)\)，\(f(x_0^{+})=\lim\limits_{x\to x_0^{+}}f(x)\).</p>
+<p><span class="stp">必要性：</span>若 \(\lim\limits_{x\to x_0}f(x)=A\)，即对任意 \(\varepsilon\gt0\)，存在 \(\delta\gt0\)，当 \(0\lt|x-x_0|\lt\delta\) 时 \(|f(x)-A|\lt\varepsilon\).把 \(x\) 限制在 \(x_0-\delta\lt x\lt x_0\) 内即得左极限为 \(A\)；限制在 \(x_0\lt x\lt x_0+\delta\) 内即得右极限为 \(A\).故 \(f(x_0^{-})=f(x_0^{+})=A\).</p>
+<p><span class="stp">充分性：</span>若 \(f(x_0^{-})=f(x_0^{+})=A\).对任意 \(\varepsilon\gt0\)，由左极限存在，存在 \(\delta_1\gt0\)，当 \(x_0-\delta_1\lt x\lt x_0\) 时 \(|f(x)-A|\lt\varepsilon\)；由右极限存在，存在 \(\delta_2\gt0\)，当 \(x_0\lt x\lt x_0+\delta_2\) 时 \(|f(x)-A|\lt\varepsilon\).取 \(\delta=\min\{\delta_1,\delta_2\}\)，则当 \(0\lt|x-x_0|\lt\delta\) 时（无论左、右两侧）都有 \(|f(x)-A|\lt\varepsilon\).故 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>必须用左右极限讨论的三类函数：</b>① 分段函数在分界点；② 含 \(|x-a|\) 的函数在 \(x=a\)；③ 含 \(\mathrm{e}^{1/x}\)、\(\arctan\dfrac{1}{x}\)、\([x]\) 等在特殊点.考试中一见这三类，先条件反射地写左右极限.</div>
+
+<div class="ex"><div class="lab">例 2.9　分段函数的单侧极限</div>
+  <p class="stmt">设 \(f(x)=\begin{cases}x-1,&x\lt0,\\0,&x=0,\\x+1,&x\gt0,\end{cases}\) 讨论 \(\lim\limits_{x\to0}f(x)\).</p>
+  <p class="sol"><span class="mk">解</span>\(f(0^{-})=\lim\limits_{x\to0^{-}}(x-1)=-1\)，\(f(0^{+})=\lim\limits_{x\to0^{+}}(x+1)=1\).</p>
+  <p>因 \(-1
+eq1\)，由定理 2.5 知 \(\lim\limits_{x\to0}f(x)\) <b>不存在</b>（虽然 \(f(0)=0\) 有定义）.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.10　含 \(\mathrm{e}^{1/x}\) 的经典题</div>
+  <p class="stmt">求 \(\lim\limits_{x\to0}\mathrm{e}^{1/x}\) 与 \(\lim\limits_{x\to0}\dfrac{1}{1+\mathrm{e}^{1/x}}\).</p>
+  <p class="sol"><span class="mk">解</span>先看 \(\mathrm{e}^{1/x}\)：</p>
+  <p>\(x\to0^{+}\) 时 \(\dfrac1x\to+\infty\)，故 \(\mathrm{e}^{1/x}\to+\infty\)；\(x\to0^{-}\) 时 \(\dfrac1x\to-\infty\)，故 \(\mathrm{e}^{1/x}\to0\).左右不等，\(\lim\limits_{x\to0}\mathrm{e}^{1/x}\) <b>不存在</b>.</p>
+  <p>再看第二式：\(x\to0^{+}\) 时分母 \(\to+\infty\)，整体 \(\to0\)；\(x\to0^{-}\) 时分母 \(\to1+0=1\)，整体 \(\to1\).</p>
+  <p>左右极限 \(1
+eq0\)，故 \(\lim\limits_{x\to0}\dfrac{1}{1+\mathrm{e}^{1/x}}\) <b>不存在</b>.</p>
+  <p class="muted">这是考研高频陷阱题.<b>凡见 \(\mathrm{e}^{1/x}\) 在 \(x\to0\)，必分左右讨论.</b>类似地 \(\arctan\dfrac1x\) 在 \(x\to0\) 时左右极限为 \(-\dfrac{\pi}{2}\) 与 \(\dfrac{\pi}{2}\).</p>
+</div>
+
+<h3>三、自变量趋于无穷大时函数的极限</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.5</span>\(x\to\infty\) 时的极限</div>
+  <p>设 \(f(x)\) 当 \(|x|\) 大于某正数时有定义.若对任意 \(\varepsilon\gt0\)，存在 \(X\gt0\)，当 \(|x|\gt X\) 时恒有 \(|f(x)-A|\lt\varepsilon\)，则称 \(A\) 为 \(f(x)\) 当 \(x\to\infty\) 时的极限，记作 \(\lim\limits_{x\to\infty}f(x)=A\).</p>
+  <p>把 \(|x|\gt X\) 换成 \(x\gt X\) 得 \(\lim\limits_{x\to+\infty}f(x)=A\)；换成 \(x\lt-X\) 得 \(\lim\limits_{x\to-\infty}f(x)=A\).</p>
+  <p><b>充要条件：</b>\(\lim\limits_{x\to\infty}f(x)=A\iff\lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to-\infty}f(x)=A\).</p>
+</div>
+<div class="note"><b>几何意义：</b>\(\lim\limits_{x\to\infty}f(x)=A\) 表示直线 \(y=A\) 是曲线 \(y=f(x)\) 的<b>水平渐近线</b>.这是第 4 章描绘函数图形的基础.</div>
+
+<div class="ex"><div class="lab">例 2.11　\(\arctan x\) 与 \(\mathrm{e}^{x}\) 在无穷远的行为</div>
+  <p class="sol"><span class="mk">解</span>\(\lim\limits_{x\to+\infty}\arctan x=\dfrac{\pi}{2}\)，\(\lim\limits_{x\to-\infty}\arctan x=-\dfrac{\pi}{2}\).两者不等，故 \(\lim\limits_{x\to\infty}\arctan x\) <b>不存在</b>（但两条水平渐近线都存在）.</p>
+  <p>\(\lim\limits_{x\to+\infty}\mathrm{e}^{x}=+\infty\)（不存在，为无穷大），\(\lim\limits_{x\to-\infty}\mathrm{e}^{x}=0\).故 \(\lim\limits_{x\to\infty}\mathrm{e}^{x}\) 不存在.</p>
+  <p class="muted"><b>必须分 \(+\infty,-\infty\) 讨论的常见函数：</b>\(\arctan x\)、\(\mathrm{e}^{x}\)、\(\dfrac{\sqrt{x^2+1}}{x}\)（因 \(\sqrt{x^{2}}=|x|\)）、\(\dfrac{a^x-1}{a^x+1}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.12　根式在无穷远的符号陷阱</div>
+  <p class="stmt">求 \(\lim\limits_{x\to+\infty}\dfrac{\sqrt{4x^{2}+1}}{x+3}\) 与 \(\lim\limits_{x\to-\infty}\dfrac{\sqrt{4x^{2}+1}}{x+3}\).</p>
+  <p class="sol"><span class="mk">解</span>关键在 \(\sqrt{x^{2}}=|x|\).</p>
+  <p>当 \(x\to+\infty\)（\(x\gt0\)，\(|x|=x\)）：</p>
+  \[\frac{\sqrt{4x^{2}+1}}{x+3}=\frac{|x|\sqrt{4+1/x^{2}}}{x(1+3/x)}=\frac{\sqrt{4+1/x^{2}}}{1+3/x}\to\frac{2}{1}=2.\]
+  <p>当 \(x\to-\infty\)（\(x\lt0\)，\(|x|=-x\)）：</p>
+  \[\frac{\sqrt{4x^{2}+1}}{x+3}=\frac{-x\sqrt{4+1/x^{2}}}{x(1+3/x)}=\frac{-\sqrt{4+1/x^{2}}}{1+3/x}\to-2.\]
+  <p>两者不等，故 \(\lim\limits_{x\to\infty}\) 不存在.</p>
+  <p class="muted"><b>口诀：根号提 \(x\) 出来必带绝对值.</b>这是最容易丢分的地方之一.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 2.6</span>函数极限的性质</div>
+  <p>与数列极限完全平行（证明思路也相同，把 \(N\) 换成 \(\delta\)）：</p>
+  <p>① <b>唯一性</b>：若极限存在则唯一.</p>
+  <p>② <b>局部有界性</b>：若 \(\lim\limits_{x\to x_0}f(x)=A\)，则存在 \(x_0\) 的去心邻域，\(f(x)\) 在其上有界.</p>
+  <p>③ <b>局部保号性</b>：若 \(A\gt0\)，则存在去心邻域使 \(f(x)\gt0\)（反之，若邻域内 \(f(x)\ge0\) 则 \(A\ge0\)）.</p>
+  <p>④ <b>函数极限与数列极限的关系（海涅定理）</b>：\(\lim\limits_{x\to x_0}f(x)=A\) 的充要条件是——对任何以 \(x_0\) 为极限的数列 \(\{x_n\}\)（\(x_n
+eq x_0\)），都有 \(\lim\limits_{n\to\infty}f(x_n)=A\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">① 唯一性：</span>与数列极限唯一性的反证法完全平行.若 \(\lim\limits_{x\to x_0}f(x)=A\) 且 \(=B\)，\(A
+eq B\)，取 \(\varepsilon=\dfrac{|A-B|}{2}\gt0\)，则 \(A\)、\(B\) 的 \(\delta\)-邻域互不相交，而 \(f(x)\) 在 \(x\to x_0\) 时须同时落入两者，矛盾.故 \(A=B\).</p>
+<p><span class="stp">② 局部有界性：</span>设 \(\lim\limits_{x\to x_0}f(x)=A\).取 \(\varepsilon=1\)，存在 \(\delta\gt0\)，当 \(0\lt|x-x_0|\lt\delta\) 时 \(|f(x)-A|\lt1\)，于是 \(|f(x)|\le|A|+1\).即在去心邻域 \(U^\circ(x_0,\delta)\) 内 \(f(x)\) 有界.</p>
+<p><span class="stp">③ 局部保号性：</span>设 \(A\gt0\)，取 \(\varepsilon=\dfrac{A}{2}\gt0\)，存在 \(\delta\gt0\) 使 \(0\lt|x-x_0|\lt\delta\) 时 \(|f(x)-A|\lt\dfrac{A}{2}\)，从而 \(f(x)\gt\dfrac{A}{2}\gt0\).反之，若在某去心邻域内 \(f(x)\ge0\) 且 \(\lim f=A\)，则由数列极限的保号性推论（对任一趋于 \(x_0\) 的数列取函数值）可得 \(A\ge0\).</p>
+<p><span class="stp">④ 海涅定理：</span>（\(\Rightarrow\)）设 \(\lim\limits_{x\to x_0}f(x)=A\).任取数列 \(x_n\to x_0\) 且 \(x_n
+eq x_0\).对任意 \(\varepsilon\gt0\)，存在 \(\delta\gt0\) 使 \(0\lt|x-x_0|\lt\delta\Rightarrow|f(x)-A|\lt\varepsilon\).因 \(x_n\to x_0\)，存在 \(N\) 使 \(n\gt N\) 时 \(0\lt|x_n-x_0|\lt\delta\)，故 \(|f(x_n)-A|\lt\varepsilon\)，即 \(f(x_n)\to A\).</p>
+<p>（\(\Leftarrow\)）用反证法.若 \(\lim\limits_{x\to x_0}f(x)
+eq A\)（或不存在），则存在某个 \(\varepsilon_0\gt0\)，对任意 \(\delta\gt0\) 都能找到 \(x\) 满足 \(0\lt|x-x_0|\lt\delta\) 但 \(|f(x)-A|\ge\varepsilon_0\).依次取 \(\delta=\dfrac1n\)，得到数列 \(x_n\to x_0\) 且 \(x_n
+eq x_0\)，但 \(|f(x_n)-A|\ge\varepsilon_0\)，即 \(f(x_n)
+ot\to A\)，与已知矛盾.故 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>海涅定理是"证明极限不存在"的利器：</b>只要找出两个都趋于 \(x_0\) 的数列 \(\{x_n\},\{y_n\}\)，使 \(f(x_n)\) 与 \(f(y_n)\) 趋于不同的值，即可断定 \(\lim\limits_{x\to x_0}f(x)\) 不存在.</div>
+
+<div class="ex"><div class="lab">例 2.13　用海涅定理证明 \(\lim\limits_{x\to0}\sin\dfrac{1}{x}\) 不存在</div>
+  <p class="sol"><span class="mk">证</span>取两个趋于 \(0\) 的数列：</p>
+  <p>\(x_n=\dfrac{1}{n\pi}\to0\)，此时 \(f(x_n)=\sin(n\pi)=0\to0\)；</p>
+  <p>\(y_n=\dfrac{1}{2n\pi+\frac{\pi}{2}}\to0\)，此时 \(f(y_n)=\sin\left(2n\pi+\dfrac{\pi}{2}\right)=1\to1\).</p>
+  <p>两个数列都趋于 \(0\)，但函数值序列趋于不同的极限 \(0
+eq1\).由海涅定理，\(\lim\limits_{x\to0}\sin\dfrac{1}{x}\) <b>不存在</b>.</p>
+  <p class="muted">几何上，\(\sin\dfrac1x\) 在 \(x\to0\) 时以越来越快的频率在 \([-1,1]\) 之间无限振荡，永远"定不下来".对比：\(x\sin\dfrac1x\to0\)（振幅被压缩，见 §2.4 有界量乘无穷小）.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从 \(\varepsilon\text{-}\delta\) 到工程容差：光刻机如何把"极限"变成良率</div>
+  <details><summary>展开查看：套刻精度的 \(\varepsilon\text{-}\delta\) 解读与具体数值</summary>
+  <div class="body">
+    <p>无尘车间里，造价十几亿的光刻机正把电路图案投到晶圆上：图案中心与目标位置的偏差（套刻误差）被卡在 \(\varepsilon=2\,\mathrm{nm}\) 以内——那只有不到十个硅原子并排的宽度，超了良率就崩.偏差 \(E\) 与工作台定位误差 \(u\) 之间近似满足</p>
+    \[E=f(u)=k\,u+c\,u^{2},\qquad k=1.2,\;c=0.05\ (\text{单位 nm}).\]
+    <p>问题：工作台定位误差 \(u\) 需要控制在多少以内（这就是 \(\delta\)），才能保证 \(|E|\lt\varepsilon=2\)？</p>
+    <p><b>这正是 \(\varepsilon\text{-}\delta\) 定义的工程原型：给定输出精度 \(\varepsilon\)，反求输入容差 \(\delta\).</b></p>
+    <p>先限定 \(|u|\lt1\,\mathrm{nm}\)，则</p>
+    \[|E|=|u|\,|k+cu|\le|u|(k+c)=1.25|u|.\]
+    <p>要使 \(1.25|u|\lt2\)，只需 \(|u|\lt1.6\).结合预备限制，取</p>
+    \[\delta=\min\{1,\;1.6\}=1\ \mathrm{nm}.\]
+    <p>即工作台定位误差控制在 \(1\,\mathrm{nm}\) 以内，套刻误差必然小于 \(2\,\mathrm{nm}\).不同精度要求对应的容差：</p>
+    <table class="dt">
+      <tr><th>套刻要求 \(\varepsilon\)（nm）</th><th>2.0</th><th>1.0</th><th>0.5</th><th>0.2</th></tr>
+      <tr><td>定位容差 \(\delta\)（nm）</td><td>1.00</td><td>0.80</td><td>0.40</td><td>0.16</td></tr>
+    </table>
+    <p>\(\varepsilon\) 每缩小一半，\(\delta\) 也随之收紧——<b>"对任意 \(\varepsilon\) 都存在 \(\delta\)"，在半导体产线上就是"对任意良率目标都存在可达的工艺窗口"</b>.当 \(\delta\) 小到机械与热漂移无法保证时，这一代工艺就走到了物理极限，必须换技术路线（如 EUV）.数学定义里那句抽象的"任给 \(\varepsilon\)，存在 \(\delta\)"，在这里是几十亿美元的产线决策.</p>
+    <p class="cn-point">套刻要求从 \(\varepsilon=2\ \mathrm{nm}\) 收紧到 \(1\ \mathrm{nm}\)，定位容差 \(\delta\) 就得从 \(1.0\ \mathrm{nm}\) 压到 \(0.8\ \mathrm{nm}\)——国产光刻每前进一步，卡的就是这句「任给 \(\varepsilon\)，存在 \(\delta\)」里那零点几个纳米.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §2.3 ============ -->
+
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 5G 大规模天线阵：波束指向容差怎么算出来</summary>
+<p><b>场景：</b> 5G 试验网楼顶，64 振子的天线阵列正在朝远处终端校波束——阵列越大波束越尖，偏零点几度增益就掉几个分贝.\(N\) 元阵列的归一化增益 \(G(\psi)=\left|\dfrac{\sin(N\psi/2)}{N\sin(\psi/2)}\right|\)，这是 \(\varepsilon\text{-}\delta\) 反问题：给定输出精度 \(\varepsilon\) 反求输入容差 \(\delta\).取 \(N=64\)、\(d=\lambda/2\)，则 \(\psi=\pi\sin\theta\).用 \(\sin u=u-\dfrac{u^{3}}{6}+o(u^{3})\) 得</p>
+\[1-G(\psi)\approx\frac{N^{2}\psi^{2}}{24},\qquad\text{故}\quad|\psi|\lt\delta=\frac{\sqrt{24\varepsilon}}{N}.\]
+<table class="dt">
+<tr><th>增益损失 \(\varepsilon\)</th><th>相位容差 \(\delta=|\psi|\)</th><th>指向角容差 \(|\theta|\)</th><th>折合 dB</th></tr>
+<tr><td>0.100</td><td>0.02421</td><td>\(0.442^{\circ}\)</td><td>\(-0.92\ \mathrm{dB}\)</td></tr>
+<tr><td>0.050</td><td>0.01712</td><td>\(0.312^{\circ}\)</td><td>\(-0.45\ \mathrm{dB}\)</td></tr>
+<tr><td>0.010</td><td>0.00765</td><td>\(0.140^{\circ}\)</td><td>\(-0.09\ \mathrm{dB}\)</td></tr>
+<tr><td>0.005</td><td>0.00541</td><td>\(0.099^{\circ}\)</td><td>\(-0.04\ \mathrm{dB}\)</td></tr>
+</table>
+<p class="sol"> 取 \(\varepsilon=0.01\)：\(\delta=\dfrac{\sqrt{0.24}}{64}=\dfrac{0.4899}{64}=7.655\times10^{-3}\)，故 \(|\theta|\le0.140^{\circ}\).</p>
+<p><b>工程结论：</b> 阵列越大波束越尖，对准要求也越苛刻：\(\delta\propto\dfrac{1}{N}\).<b>「任给 \(\varepsilon\) 存在 \(\delta\)」在这里就是「任给体验指标都能反算出一套硬件规格」.</b></p>
+<p class="cn-point">64 元阵列只给了 \(0.140^{\circ}\) 的指向容差，阵元翻倍到 128 元，容差就要再苛刻一倍——国产 5G 基站里每一路移相器的精度，都被 \(\delta\propto\dfrac{1}{N}\) 这条反比例定死了.</p>
+<div class="sim" style="margin:14px 0 4px">
+  <p style="font-size:13px;color:#33473f;margin:0 0 6px"><b>仿真器：</b>拖动增益损失容限 ε，看 64 元阵列的方向图与可容忍的波束指向角 |θ|（ε−δ 反问题）.</p>
+  <canvas id="ch2-beam" width="720" height="340" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)"></canvas>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">增益损失 ε = <b id="ch2-beam-range-v" style="color:#0F6E56">?</b></label>
+    <input type="range" id="ch2-beam-range" min="0.005" max="0.1" step="0.005" value="0.01" style="flex:1;min-width:140px;accent-color:#0F6E56">
+    <span id="ch2-beam-out" style="font-size:12px;color:#64748b"></span>
+  </div>
+</div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch2-beam'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||340;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null, N=64;
+  var range=document.getElementById('ch2-beam-range'),
+      kv=document.getElementById('ch2-beam-range-v'),
+      out=document.getElementById('ch2-beam-out');
+  function G(psi){ var a=Math.sin(N*psi/2), b=N*Math.sin(psi/2); if(Math.abs(b)<1e-9) return 1; return Math.abs(a/b); }
+  function draw(){
+    var eps=parseFloat(range.value); kv.textContent=eps.toFixed(3);
+    if(!s) s=setup();
+    var ctx=s.ctx, W=s.W, H=s.H, mL=40, mR=14, mT=18, mB=30, pW=W-mL-mR, pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var dpsi=Math.sqrt(24*eps)/N;
+    var thetaTol=dpsi/Math.PI;
+    var thetaMax=0.6*Math.PI/180;
+    function X(th){ return mL + (th+thetaMax)/(2*thetaMax)*pW; }
+    function Y(g){ return mT + (1-g)*pH; }
+    var xb1=X(-thetaTol), xb2=X(thetaTol);
+    ctx.fillStyle='rgba(15,110,86,0.08)'; ctx.fillRect(xb1, mT, xb2-xb1, pH);
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2; ctx.beginPath();
+    for(var i=0;i<=pW;i+=2){
+      var th=-thetaMax + (i/pW)*2*thetaMax;
+      var psi=Math.PI*Math.sin(th);
+      var g=G(psi); if(g>1.3)g=1.3;
+      var px=mL+i, py=Y(g);
+      if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.strokeStyle='#0284c7'; ctx.setLineDash([4,3]); ctx.beginPath();
+    ctx.moveTo(xb1,mT); ctx.lineTo(xb1,mT+pH); ctx.moveTo(xb2,mT); ctx.lineTo(xb2,mT+pH); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('指向角 θ (°)', mL+pW/2, H-6);
+    ctx.fillStyle='#0284c7'; ctx.textAlign='center';
+    ctx.fillText('±'+(thetaTol*180/Math.PI).toFixed(3)+'°', (xb1+xb2)/2, mT+12);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('64 元阵列方向图 G(θ) 与指向容差', mL, mT-5);
+    out.textContent='δ=|ψ|='+dpsi.toFixed(4)+' ｜ |θ|≈'+(thetaTol*180/Math.PI).toFixed(3)+'° ｜ 增益损失 ε='+eps.toFixed(3);
+  }
+  range.addEventListener('input', draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 自动驾驶 TTC：相对速度趋零时测速精度为何失效</summary>
+<p><b>场景：</b> 高速上 100 km/h 巡航，前车刹车灯一亮，毫米波雷达开始汇报相对速度——数字越来越小，可仪表盘上的碰撞时间读数反而越来越不可信.\(\mathrm{TTC}=\dfrac{d}{v_{\text{rel}}}\) 在 \(v_{\text{rel}}\to0\) 时趋于无穷.工程上真正致命的是<b>精度崩塌</b>：雷达测速误差 \(\Delta v\) 固定，TTC 误差却随 \(v_{\text{rel}}\) 变小急剧放大.设 \(d=20\ \mathrm{m}\)、要求 TTC 误差不超过 \(\varepsilon=0.1\ \mathrm{s}\)，由</p>
+\[|\Delta \mathrm{TTC}|\approx\frac{d}{v_{\text{rel}}^{2}}\,|\Delta v|\lt\varepsilon\quad\Longrightarrow\quad|\Delta v|\lt\delta=\frac{\varepsilon\,v_{\text{rel}}^{2}}{d}.\]
+<table class="dt">
+<tr><th>\(v_{\text{rel}}\)（m/s）</th><th>TTC（s）</th><th>所需测速精度 \(\delta\)（m/s）</th><th>雷达能否满足（\(\Delta v=0.1\)）</th></tr>
+<tr><td>10.0</td><td>2.00</td><td>0.500</td><td>可以</td></tr>
+<tr><td>5.0</td><td>4.00</td><td>0.125</td><td>可以</td></tr>
+<tr><td>4.47</td><td>4.47</td><td>0.100</td><td>临界</td></tr>
+<tr><td>1.0</td><td>20.0</td><td>0.005</td><td>严重不满足</td></tr>
+</table>
+<p class="sol"> 令 \(\delta=\Delta v=0.1\)，解 \(\dfrac{0.1\,v_{\text{rel}}^{2}}{20}=0.1\) 得 \(v_{\text{rel}}=\sqrt{20}=4.47\ \mathrm{m/s}\)；当 \(v_{\text{rel}}=1\ \mathrm{m/s}\) 时 TTC 误差已放大约 20 倍.</p>
+<p><b>工程结论：</b> 相对速度低于约 \(4.5\ \mathrm{m/s}\) 时 TTC 预警彻底不可信，量产方案改用车距阈值加加速度预测.<b>极限 \(\lim\limits_{v\to0}\dfrac{d}{v}=\infty\) 在标定表里对应着一条真实的模式切换线.</b></p>
+<p class="cn-point">相对速度一低于 \(4.47\ \mathrm{m/s}\)，TTC 误差就被放大约 20 倍——自动驾驶的安全冗余画在哪条线上，取决于把 \(\lim\limits_{v\to0}\dfrac{d}{v}=\infty\) 的精度崩塌点算得有多准，这道题国产量产车同样绕不过去.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s022" data-ch="2" data-n="5"></div>
+<h2 id="s023"><span class="num">§2.3</span>极限的性质与运算法则</h2>
+    
+<div class="ex"><div class="lab">引例一　算法复杂度的"渐近比较"：为什么 \(O(n\log n)\) 完胜 \(O(n^{2})\)</div>
+  <p class="stmt">排序 \(n\) 个数据，冒泡排序约需 \(T_1(n)=\dfrac{n^{2}}{2}\) 次比较，快速排序约需 \(T_2(n)=n\log_2 n\) 次.当数据量增大，两者差距如何？</p>
+  <p>考察比值 \(R(n)=\dfrac{T_1(n)}{T_2(n)}=\dfrac{n}{2\log_2 n}\)：</p>
+  <table class="dt">
+    <tr><th>\(n\)</th><th>\(10^{3}\)</th><th>\(10^{5}\)</th><th>\(10^{7}\)</th><th>\(10^{9}\)</th></tr>
+    <tr><td>\(T_1=n^{2}/2\)</td><td>\(5\times10^{5}\)</td><td>\(5\times10^{9}\)</td><td>\(5\times10^{13}\)</td><td>\(5\times10^{17}\)</td></tr>
+    <tr><td>\(T_2=n\log_2 n\)</td><td>\(1.0\times10^{4}\)</td><td>\(1.7\times10^{6}\)</td><td>\(2.3\times10^{8}\)</td><td>\(3.0\times10^{10}\)</td></tr>
+    <tr><td>倍数 \(R(n)\)</td><td>50</td><td>3010</td><td>\(2.2\times10^{5}\)</td><td>\(1.7\times10^{7}\)</td></tr>
+  </table>
+  <p>\(\lim\limits_{n\to\infty}R(n)=+\infty\)——差距无限拉大.十亿条数据时，若快排耗时 30 秒，冒泡要跑 <b>16 年</b>.</p>
+  <p>要严格得出这类结论，靠的不是一项项试算，而是<b>极限的四则运算法则与比较技巧</b>：把复杂表达式拆成已知极限的组合.本节就来建立这套"计算工具箱".</p>
+</div>
+
+<h3>一、极限的四则运算法则</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.7</span>极限的四则运算法则</div>
+  <p>设 \(\lim f(x)=A\)，\(\lim g(x)=B\)（这里 \(\lim\) 表示同一自变量变化过程，如 \(x\to x_0\) 或 \(x\to\infty\)），则</p>
+  <p>① \(\lim[f(x)\pm g(x)]=A\pm B\)；</p>
+  <p>② \(\lim[f(x)\cdot g(x)]=A\cdot B\)，特别地 \(\lim[c\,f(x)]=cA\)；</p>
+  <p>③ 当 \(B
+eq0\) 时，\(\lim\dfrac{f(x)}{g(x)}=\dfrac{A}{B}\)；</p>
+  <p>④ \(\lim[f(x)]^{n}=A^{n}\)（\(n\) 为正整数），\(\lim\sqrt[n]{f(x)}=\sqrt[n]{A}\)（\(n\) 为偶数时需 \(A\ge0\)）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>证明的<b>总钥匙</b>是定理 2.9（极限与无穷小的关系）：\(\lim f=A\) 当且仅当 \(f=A+\alpha\)，其中 \(\alpha\) 是同一过程下的无穷小.据此设</p>
+\[f(x)=A+\alpha,\qquad g(x)=B+\beta,\qquad \alpha\to0,\ \beta\to0 .\]
+<p><span class="stp">① 和差：</span>\(f\pm g=(A\pm B)+(\alpha\pm\beta)\).由无穷小的运算性质（定理 2.10），\(\alpha\pm\beta\) 仍为无穷小，故 \(\lim(f\pm g)=A\pm B\).</p>
+<p><span class="stp">② 乘积：</span>展开</p>
+\[fg=(A+\alpha)(B+\beta)=AB+\underbrace{(A\beta+B\alpha+\alpha\beta)}_{\textstyle \gamma}.\]
+<p>其中 \(A\beta,\ B\alpha\) 是常数乘无穷小，仍是无穷小；\(\alpha\beta\) 是两个无穷小之积，也是无穷小.故 \(\gamma\to0\)，从而 \(\lim(fg)=AB\).取 \(g\equiv c\) 即得 \(\lim(cf)=cA\).</p>
+<p><span class="stp">③ 商：</span>设 \(B
+eq0\).先证 \(\dfrac1g\to\dfrac1B\).因 \(g\to B
+eq0\)，由保号性，在该过程的某个邻域内 \(|g|\gt\dfrac{|B|}{2}\).于是</p>
+\[\left|\frac1g-\frac1B\right|=\frac{|B-g|}{|g||B|}\lt\frac{2}{|B|^{2}}\,|g-B| .\]
+<p>右端是无穷小的常数倍，故 \(\dfrac1g-\dfrac1B\to0\)，即 \(\dfrac1g\to\dfrac1B\).再由②的乘积法则，</p>
+\[\lim\frac{f}{g}=\lim\left(f\cdot\frac1g\right)=A\cdot\frac1B=\frac{A}{B}.\]
+<p><span class="stp">④ 幂与根：</span>把 \([f]^{n}\) 看作 \(n\) 个 \(f\) 相乘，对②反复使用 \(n-1\) 次即得 \(\lim[f]^{n}=A^{n}\).至于 \(\sqrt[n]{f}\to\sqrt[n]{A}\)，它是复合函数极限定理（定理 2.8）与 \(y=\sqrt[n]{x}\) 在 \(A\) 处连续的直接推论.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>使用法则的三条铁律：</b><br>
+① <b>必须两个极限都存在</b>才能拆.\(\lim\limits_{x\to0}\left(x\cdot\sin\dfrac1x\right)=0\) 是对的（后面用有界量乘无穷小），但拆成 \(\lim x\cdot\lim\sin\dfrac1x\) 是<b>错的</b>，因为后者不存在.<br>
+② 法则可推广到<b>有限个</b>函数，<b>不能</b>推广到无限个.\(\lim\limits_{n\to\infty}\left(\dfrac1{n^2}+\dfrac2{n^2}+\dots+\dfrac{n}{n^2}\right)\) 不等于逐项极限之和 \(0\)，实际为 \(\dfrac12\)（每项趋于 0，但项数也在增加）.<br>
+③ 出现 \(\dfrac{0}{0},\dfrac{\infty}{\infty},\infty-\infty,0\cdot\infty,1^{\infty},\infty^{0},0^{0}\) 等<b>未定式</b>时法则失效，必须先变形.</div>
+
+<h3>二、常用的极限计算方法</h3>
+<div class="ex"><div class="lab">例 2.14　多项式与有理分式（直接代入）</div>
+  <p class="sol"><span class="mk">解</span>由法则反复使用可得：<b>若 \(P(x)\) 为多项式，则 \(\lim\limits_{x\to x_0}P(x)=P(x_0)\)</b>.</p>
+  <p>对有理分式 \(\dfrac{P(x)}{Q(x)}\)，若 \(Q(x_0)
+eq0\)，则 \(\lim\limits_{x\to x_0}\dfrac{P(x)}{Q(x)}=\dfrac{P(x_0)}{Q(x_0)}\).</p>
+  <p>例如 \(\lim\limits_{x\to2}\dfrac{x^{2}+3x-1}{x+5}=\dfrac{4+6-1}{7}=\dfrac{9}{7}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.15　\(\dfrac{0}{0}\) 型：因式分解约分</div>
+  <p class="stmt">求 \(\lim\limits_{x\to1}\dfrac{x^{3}-1}{x^{2}-3x+2}\).</p>
+  <p class="sol"><span class="mk">解</span>直接代入分子分母同为 \(0\)，是 \(\dfrac00\) 型.分解因式：</p>
+  \[\frac{x^{3}-1}{x^{2}-3x+2}=\frac{(x-1)(x^{2}+x+1)}{(x-1)(x-2)}=\frac{x^{2}+x+1}{x-2}\quad(x
+eq1).\]
+  <p>于是原式 \(=\dfrac{1+1+1}{1-2}=-3\).</p>
+  <p class="muted"><b>\(\dfrac00\) 型的本质是分子分母有公因子</b>.因 \(x\to1\) 时 \(x
+eq1\)，约去 \((x-1)\) 完全合法.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.16　\(\dfrac{\infty}{\infty}\) 型：同除最高次幂</div>
+  <p class="stmt">求 \(\lim\limits_{x\to\infty}\dfrac{3x^{3}-2x+1}{5x^{3}+x^{2}-7}\) 及 \(\lim\limits_{x\to\infty}\dfrac{2x^{2}+1}{x^{3}-x}\).</p>
+  <p class="sol"><span class="mk">解</span>第一式分子分母同除 \(x^{3}\)：</p>
+  \[\lim_{x\to\infty}\frac{3-\dfrac{2}{x^{2}}+\dfrac{1}{x^{3}}}{5+\dfrac{1}{x}-\dfrac{7}{x^{3}}}=\frac{3-0+0}{5+0-0}=\frac{3}{5}.\]
+  <p>第二式同除 \(x^{3}\)：\(\dfrac{\frac{2}{x}+\frac{1}{x^{3}}}{1-\frac{1}{x^{2}}}\to\dfrac{0}{1}=0\).</p>
+  <div class="note"><b>有理分式在 \(x\to\infty\) 时的通用结论（务必记住）：</b>
+  \[\lim_{x\to\infty}\frac{a_0x^{m}+a_1x^{m-1}+\cdots+a_m}{b_0x^{n}+b_1x^{n-1}+\cdots+b_n}=\begin{cases}\dfrac{a_0}{b_0},&m=n,\\[4pt]0,&m\lt n,\\[4pt]\infty,&m\gt n.\end{cases}\]
+  口诀：<b>次数比大小——上小下大趋于零，上大下小趋无穷，次数相同看系数比.</b></div>
+</div>
+
+<div class="ex"><div class="lab">例 2.17　\(\infty-\infty\) 型：通分或有理化</div>
+  <p class="stmt">求 ① \(\lim\limits_{x\to1}\left(\dfrac{1}{1-x}-\dfrac{3}{1-x^{3}}\right)\)；② \(\lim\limits_{x\to+\infty}\left(\sqrt{x^{2}+x}-x\right)\).</p>
+  <p class="sol"><span class="mk">解</span>① 通分（注意 \(1-x^{3}=(1-x)(1+x+x^{2})\)）：</p>
+  \[\frac{1}{1-x}-\frac{3}{1-x^{3}}=\frac{1+x+x^{2}-3}{1-x^{3}}=\frac{(x-1)(x+2)}{(1-x)(1+x+x^{2})}=\frac{-(x+2)}{1+x+x^{2}}.\]
+  <p>令 \(x\to1\) 得 \(\dfrac{-3}{3}=-1\).</p>
+  <p>② 根式差用<b>共轭有理化</b>（分子分母同乘 \(\sqrt{x^{2}+x}+x\)）：</p>
+  \[\sqrt{x^{2}+x}-x=\frac{(x^{2}+x)-x^{2}}{\sqrt{x^{2}+x}+x}=\frac{x}{\sqrt{x^{2}+x}+x}=\frac{1}{\sqrt{1+\frac1x}+1}\to\frac{1}{2}.\]
+  <p class="muted">最后一步分子分母同除 \(x\)（因 \(x\to+\infty\) 时 \(x\gt0\)，\(\sqrt{x^{2}+x}=x\sqrt{1+\frac1x}\)）.<b>若改为 \(x\to-\infty\)，则 \(\sqrt{x^{2}+x}=-x\sqrt{1+\frac1x}\)，答案变为 \(+\infty\)</b>，务必小心符号.</p>
+</div>
+
+<h3>三、复合函数的极限运算法则</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.8</span>复合函数的极限</div>
+  <p>设 \(y=f[g(x)]\) 由 \(y=f(u)\) 与 \(u=g(x)\) 复合而成.若</p>
+  <p>① \(\lim\limits_{x\to x_0}g(x)=u_0\)；② \(\lim\limits_{u\to u_0}f(u)=A\)；③ 在 \(x_0\) 的某去心邻域内 \(g(x)
+eq u_0\)，</p>
+  <p>则 \(\lim\limits_{x\to x_0}f[g(x)]=\lim\limits_{u\to u_0}f(u)=A\).</p>
+  <p class="muted">条件 ③ 不可少.反例：\(g(x)\equiv0\)，\(f(u)=\begin{cases}1,&u
+eq0\\0,&u=0\end{cases}\)，则 \(\lim\limits_{u\to0}f(u)=1\) 但 \(f[g(x)]\equiv0\to0\).若 \(f\) 在 \(u_0\) 处连续（§2.6），条件 ③ 可以去掉.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>要证 \(\lim\limits_{x\to x_0}f[g(x)]=A\)，即让 \(g(x)\) 落入 \(f\) 在 \(u_0\) 处的 \(\eta\)-邻域.由于 \(\lim\limits_{u\to u_0}f(u)=A\)，只要 \(g(x)\) 足够接近 \(u_0\) 即可；而 \(g(x)\to u_0\) 正保证这一点.条件③用来保证 \(g(x)
+eq u_0\)，使 \(f\) 的极限定义中的"\(0\lt|u-u_0|\)"成立.</p>
+<p><span class="stp">证明：</span>对任意 \(\varepsilon\gt0\)，因 \(\lim\limits_{u\to u_0}f(u)=A\)，存在 \(\eta\gt0\)，当 \(0\lt|u-u_0|\lt\eta\) 时</p>
+\[|f(u)-A|\lt\varepsilon.\]
+<p>又因 \(\lim\limits_{x\to x_0}g(x)=u_0\)，存在 \(\delta_1\gt0\)，当 \(0\lt|x-x_0|\lt\delta_1\) 时 \(|g(x)-u_0|\lt\eta\).再由条件③，存在 \(\delta_2\gt0\)，当 \(0\lt|x-x_0|\lt\delta_2\) 时 \(g(x)
+eq u_0\).令 \(\delta=\min\{\delta_1,\delta_2\}\)，则当 \(0\lt|x-x_0|\lt\delta\) 时，</p>
+\[0\lt|g(x)-u_0|\lt\eta,\]
+<p>从而 \(|f[g(x)]-A|\lt\varepsilon\).故 \(\lim\limits_{x\to x_0}f[g(x)]=A\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>这条定理就是"变量代换法"的依据</b>：计算 \(\lim\limits_{x\to0}\dfrac{\sin 3x}{3x}\) 时令 \(u=3x\)，转化为 \(\lim\limits_{u\to0}\dfrac{\sin u}{u}=1\).后面两个重要极限的各种变形，全靠它.</div>
+
+<div class="ex"><div class="lab">例 2.18　变量代换求极限</div>
+  <p class="stmt">求 \(\lim\limits_{x\to4}\dfrac{\sqrt{x}-2}{x-4}\).</p>
+  <p class="sol"><span class="mk">解</span>令 \(t=\sqrt{x}\)，则 \(x=t^{2}\)，\(x\to4\) 时 \(t\to2\)（且 \(t
+eq2\)）.</p>
+  \[\lim_{t\to2}\frac{t-2}{t^{2}-4}=\lim_{t\to2}\frac{t-2}{(t-2)(t+2)}=\lim_{t\to2}\frac{1}{t+2}=\frac{1}{4}.\]
+  <p class="muted">也可用有理化：分子分母同乘 \(\sqrt x+2\)，得 \(\dfrac{x-4}{(x-4)(\sqrt x+2)}=\dfrac{1}{\sqrt x+2}\to\dfrac14\).<b>根式极限首选有理化或换元.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 2.19　考研经典：由极限反求参数</div>
+  <p class="stmt">已知 \(\lim\limits_{x\to1}\dfrac{x^{2}+ax+b}{x-1}=3\)，求常数 \(a,b\).</p>
+  <p class="sol"><span class="mk">解</span><b>关键推理：</b>分母 \(x-1\to0\)，而整个分式的极限为有限值 \(3\)，故分子必须也趋于 \(0\)（否则分式趋于 \(\infty\)）.</p>
+  <p>于是 \(\lim\limits_{x\to1}(x^{2}+ax+b)=1+a+b=0\)，得 \(b=-1-a\).代回：</p>
+  \[\frac{x^{2}+ax-1-a}{x-1}=\frac{(x-1)(x+1+a)}{x-1}=x+1+a\to 2+a=3,\]
+  <p>故 \(a=1\)，\(b=-2\).</p>
+  <p class="muted"><b>这是"反求参数"的标准套路，务必掌握：</b>若 \(\lim\dfrac{f}{g}=A\)（有限）且 \(g\to0\)，则必有 \(f\to0\)；若 \(\lim\dfrac{f}{g}=A
+eq0\) 且 \(f\to0\)，则必有 \(g\to0\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.20　数列极限：先求和再取极限</div>
+  <p class="stmt">求 \(\lim\limits_{n\to\infty}\left(\dfrac{1}{n^{2}}+\dfrac{2}{n^{2}}+\cdots+\dfrac{n}{n^{2}}\right)\).</p>
+  <p class="sol"><span class="mk">解</span>项数随 \(n\) 变化，<b>不能</b>逐项取极限.先求和：</p>
+  \[\frac{1+2+\cdots+n}{n^{2}}=\frac{\frac{n(n+1)}{2}}{n^{2}}=\frac{n+1}{2n}=\frac12\left(1+\frac1n\right)\to\frac{1}{2}.\]
+  <p class="muted">若错误地逐项取极限，会得到 \(0+0+\cdots=0\)，答案完全错误.<b>凡"项数随 \(n\) 增加"的和式，必须先求和、或用夹逼准则（§2.5）、或化为定积分（第 5 章）.</b></p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 深度学习学习率衰减：极限运算法则的实战</div>
+  <details><summary>展开查看：三种衰减策略的极限分析与收敛判定</summary>
+  <div class="body">
+    <p>训练神经网络时，学习率 \(\eta_n\) 需随轮次衰减：太大则震荡不收敛，太小则学不动.三种常用策略：</p>
+    \[\text{① 指数衰减 }\eta_n=\eta_0\gamma^{n};\quad\text{② 倒数衰减 }\eta_n=\frac{\eta_0}{1+kn};\quad\text{③ 余弦退火 }\eta_n=\frac{\eta_0}{2}\left(1+\cos\frac{n\pi}{N}\right).\]
+    <p>取 \(\eta_0=0.1,\;\gamma=0.95,\;k=0.01,\;N=1000\)，计算各轮学习率：</p>
+    <table class="dt">
+      <tr><th>轮次 \(n\)</th><th>0</th><th>100</th><th>500</th><th>1000</th></tr>
+      <tr><td>① 指数</td><td>0.1000</td><td>0.000592</td><td>\(7.3\times10^{-14}\)</td><td>\(5.3\times10^{-27}\)</td></tr>
+      <tr><td>② 倒数</td><td>0.1000</td><td>0.050000</td><td>0.016667</td><td>0.009091</td></tr>
+      <tr><td>③ 余弦</td><td>0.1000</td><td>0.097553</td><td>0.050000</td><td>0.000000</td></tr>
+    </table>
+    <p><b>极限分析：</b>三者都满足 \(\lim\limits_{n\to\infty}\eta_n=0\)（策略 ① 用 \(|\gamma|\lt1\Rightarrow\gamma^{n}\to0\)；策略 ② 用 \(\dfrac{\eta_0}{1+kn}\)，分母 \(\to\infty\)）.但收敛理论还要求<b>学习率之和发散</b>（保证能走到最优点）：</p>
+    \[\text{① }\sum_{n=0}^{\infty}\eta_0\gamma^{n}=\frac{\eta_0}{1-\gamma}=2\ (\text{收敛，有限}),\qquad\text{② }\sum_{n=0}^{\infty}\frac{\eta_0}{1+kn}=+\infty\ (\text{发散}).\]
+    <p>这两个判断分别用到了本节的<b>四则运算法则</b>与第 13 章的<b>级数敛散性</b>.一个看似纯粹的调参技巧，背后是完整的极限理论.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §2.4 ============ -->
+
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · Amdahl 定律：GPU 堆到无穷多张，加速比能到多少</summary>
+<p><b>场景：</b> 智算中心机房里，GPU 从 256 张加到 1024 张，电费单翻了几番，训练一轮的墙钟时间却几乎没再缩短——钱烧在了哪？设程序中可并行部分占比 \(p\)，串行部分占 \(1-p\)，用 \(n\) 个计算核的加速比为</p>
+\[S(n)=\frac{1}{(1-p)+\dfrac{p}{n}}.\]
+<p>「无限堆卡」的效果就是求 \(\lim\limits_{n\to\infty}S(n)\).由极限的四则运算法则，\(\dfrac{p}{n}\to0\)，且分母极限 \(1-p
+eq0\)，故可直接用商的法则：</p>
+\[\lim_{n\to\infty}S(n)=\frac{1}{(1-p)+0}=\frac{1}{1-p}.\]
+<table class="dt">
+<tr><th>核数 \(n\)</th><th>4</th><th>16</th><th>64</th><th>256</th><th>1024</th><th>\(\to\infty\)</th></tr>
+<tr><td>\(S(n)\)（\(p=0.95\)）</td><td>3.48</td><td>9.14</td><td>15.42</td><td>18.62</td><td>19.64</td><td>20.00</td></tr>
+<tr><td>并行效率 \(S/n\)</td><td>87%</td><td>57%</td><td>24%</td><td>7.3%</td><td>1.9%</td><td>0</td></tr>
+<tr><td>\(S(n)\)（\(p=0.99\)）</td><td>3.88</td><td>13.91</td><td>39.26</td><td>72.11</td><td>91.18</td><td>100.0</td></tr>
+</table>
+<p class="sol"> 取 \(p=0.95,\;n=256\)：\(S=\dfrac{1}{0.05+\frac{0.95}{256}}=\dfrac{1}{0.05+0.003711}=\dfrac{1}{0.053711}=18.62\).从 256 核加到 1024 核（成本翻两番），加速比只从 18.62 涨到 19.64，<b>仅提升 5.5%</b>.</p>
+<p><b>工程结论：</b> 加速比有一个由串行占比锁死的天花板 \(\dfrac{1}{1-p}\)：\(p=0.95\) 时最多 20 倍，再多的卡都是浪费.所以分布式训练的真正工作不是「加卡」，而是把 \(p\) 从 0.95 推到 0.99（消除通信同步、数据加载等串行环节）——天花板随即从 20 跳到 100.<b>一条看似枯燥的商的极限法则，决定了千万级算力投资的方向.</b></p>
+<p class="cn-point">256 张卡加到 1024 张，加速比只从 18.62 爬到 19.64——国产智算集群上万张卡的投入值不值，瓶颈不在卡数而在串行占比 \(p\)：把它从 0.95 压到 0.99，\(\dfrac{1}{1-p}\) 给的天花板就翻 5 倍.</p>
+<div class="sim" style="margin:14px 0 4px">
+  <p style="font-size:13px;color:#33473f;margin:0 0 6px"><b>仿真器：</b>拖动并行占比 p 与核数 n，看加速比 S(n)=1/((1−p)+p/n) 的天花板 1/(1−p).</p>
+  <canvas id="ch2-amd" width="720" height="340" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)"></canvas>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">并行占比 p = <b id="ch2-amd-range-v" style="color:#0F6E56">?</b></label>
+    <input type="range" id="ch2-amd-range" min="0.5" max="0.999" step="0.001" value="0.95" style="flex:1;min-width:120px;accent-color:#0F6E56">
+    <label style="font-size:13px;color:#33473f">核数 n = <b id="ch2-amd-n-v" style="color:#0F6E56">256</b></label>
+    <input type="range" id="ch2-amd-n" min="1" max="1024" step="1" value="256" style="flex:1;min-width:120px;accent-color:#0F6E56">
+    <span id="ch2-amd-out" style="font-size:12px;color:#64748b"></span>
+  </div>
+</div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch2-amd'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||340;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var prange=document.getElementById('ch2-amd-range'),
+      pkv=document.getElementById('ch2-amd-range-v'),
+      nrange=document.getElementById('ch2-amd-n'),
+      out=document.getElementById('ch2-amd-out');
+  function draw(){
+    var p=parseFloat(prange.value); pkv.textContent=p.toFixed(3);
+    var n=parseFloat(nrange.value);
+    if(!s) s=setup();
+    var ctx=s.ctx, W=s.W, H=s.H, mL=44, mR=14, mT=18, mB=32, pW=W-mL-mR, pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var nMin=1, nMax=1024;
+    function X(nn){ return mL + (Math.log(nn)-Math.log(nMin))/(Math.log(nMax)-Math.log(nMin))*pW; }
+    function Y(sv){ var smax=1/(1-p)+1; return mT + (1-Math.min(sv,smax)/smax)*pH; }
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    var ceil=1/(1-p), yc=Y(ceil);
+    ctx.strokeStyle='#dc2626'; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(mL,yc); ctx.lineTo(mL+pW,yc); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626'; ctx.font='10px sans-serif'; ctx.textAlign='left'; ctx.fillText('天花板 1/(1−p)='+ceil.toFixed(1), mL+4, yc-4);
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2; ctx.beginPath();
+    for(var i=0;i<=pW;i+=2){
+      var nn=Math.exp(Math.log(nMin)+(i/pW)*(Math.log(nMax)-Math.log(nMin)));
+      var sv=1/((1-p)+p/nn);
+      var px=mL+i, py=Y(sv);
+      if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    var cx=X(n), csv=1/((1-p)+p/n), cy=Y(csv);
+    ctx.fillStyle='#0284c7'; ctx.beginPath(); ctx.arc(cx,cy,4,0,6.28); ctx.fill();
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('核数 n (对数)', mL+pW/2, H-6);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left'; ctx.fillText('Amdahl 加速比 S(n)', mL, mT-5);
+    out.textContent='n='+n+' ｜ S='+csv.toFixed(2)+' ｜ 效率 '+(csv/n*100).toFixed(1)+'%';
+  }
+  prange.addEventListener('input', draw);
+  nrange.addEventListener('input', draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 机器人关节 PID：为什么纯比例控制永远差一点</summary>
+<p><b>场景：</b> 产线上六轴机器人要把末端停到 500 mm 行程内的指定点，指标是误差不超过 0.5%.可无论怎么加大比例增益，机械臂总差一小截才停稳——被控对象直流增益 \(K=2\)，控制器增益 \(K_p\) 再大也有限.在单位阶跃目标下，闭环稳态误差为</p>
+\[e_{ss}(K_p)=\frac{1}{1+K_pK}=\frac{1}{1+2K_p}.\]
+<p>「增益调到无穷大误差就没了吗」——这是一个 \(K_p\to+\infty\) 的极限问题.分子分母同除 \(K_p\)：</p>
+\[\lim_{K_p\to+\infty}\frac{1}{1+2K_p}=\lim_{K_p\to+\infty}\frac{1/K_p}{1/K_p+2}=\frac{0}{0+2}=0.\]
+<table class="dt">
+<tr><th>\(K_p\)</th><th>1</th><th>5</th><th>20</th><th>100</th><th>\(\to\infty\)</th></tr>
+<tr><td>稳态误差 \(e_{ss}\)</td><td>0.3333</td><td>0.0909</td><td>0.02439</td><td>0.004975</td><td>0</td></tr>
+<tr><td>折合定位误差（行程 500 mm）</td><td>166.7 mm</td><td>45.5 mm</td><td>12.2 mm</td><td>2.5 mm</td><td>0 mm</td></tr>
+</table>
+<p class="sol"> 若要求定位误差不超过行程的 \(0.5\%\)，即 \(e_{ss}\le0.005\)，解 \(\dfrac{1}{1+2K_p}\le0.005\) 得 \(K_p\ge99.5\).但实测该关节的机械谐振频率对应的增益上限只有 \(K_p\approx30\)，超过即引发啸叫.取 \(K_p=30\) 时 \(e_{ss}=\dfrac{1}{61}=0.0164\)，定位误差 \(8.2\ \mathrm{mm}\)，<b>比指标差 3 倍多</b>.</p>
+<p><b>工程结论：</b> 极限值 \(0\) 只在 \(K_p\to\infty\) 时取到，任何有限增益都留有残差——这是纯比例控制的<b>结构性缺陷</b>，不是调参能解决的.工程解法是引入积分项（PI 控制），让开环增益在零频处本身就是无穷大，从而在有限的 \(K_p\) 下把稳态误差严格压到 0.<b>「趋于但取不到」这个极限特征，正是 PID 里那个 I 存在的全部理由.</b></p>
+<p class="cn-point">谐振上限把增益锁在 \(K_p\approx30\)，纯比例控制的残差 8.2 mm 比 0.5% 的指标差 3 倍多——国产工业机器人追精度，不是把增益往天上调，而是承认 \(\lim\limits_{K_p\to\infty}\dfrac{1}{1+2K_p}=0\) 的边界，用积分项把残差结构性清零.</p>
+<div class="sim" style="margin:14px 0 4px">
+  <p style="font-size:13px;color:#33473f;margin:0 0 6px"><b>仿真器：</b>拖动比例增益 K_p，看稳态误差 e_ss=1/(1+2K_p) 如何趋于 0，以及机械谐振对增益的上限.</p>
+  <canvas id="ch2-pid" width="720" height="340" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)"></canvas>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">K_p = <b id="ch2-pid-range-v" style="color:#0F6E56">?</b></label>
+    <input type="range" id="ch2-pid-range" min="1" max="100" step="1" value="5" style="flex:1;min-width:140px;accent-color:#0F6E56">
+    <span id="ch2-pid-out" style="font-size:12px;color:#64748b"></span>
+  </div>
+</div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch2-pid'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||340;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null, K=2, stroke=500, target=0.005, kpMax=30;
+  var range=document.getElementById('ch2-pid-range'),
+      kv=document.getElementById('ch2-pid-range-v'),
+      out=document.getElementById('ch2-pid-out');
+  function ess(kp){ return 1/(1+K*kp); }
+  function draw(){
+    var kp=parseFloat(range.value); kv.textContent=kp.toFixed(0);
+    if(!s) s=setup();
+    var ctx=s.ctx, W=s.W, H=s.H, mL=46, mR=14, mT=18, mB=32, pW=W-mL-mR, pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var kpMaxX=100;
+    function X(k){ return mL + (k/kpMaxX)*pW; }
+    function Y(e){ var emax=0.4; return mT + (1-Math.min(e,emax)/emax)*pH; }
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    var yT=Y(target);
+    ctx.strokeStyle='#dc2626'; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(mL,yT); ctx.lineTo(mL+pW,yT); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626'; ctx.font='10px sans-serif'; ctx.textAlign='left'; ctx.fillText('指标 0.5% (=0.005)', mL+4, yT-4);
+    var xr=X(kpMax);
+    ctx.strokeStyle='#f59e0b'; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(xr,mT); ctx.lineTo(xr,mT+pH); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#b45309'; ctx.textAlign='center'; ctx.fillText('谐振上限 K_p≈30', xr, mT+12);
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2; ctx.beginPath();
+    for(var k=1;k<=kpMaxX;k++){ var px=X(k), py=Y(ess(k)); if(k===1)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+    ctx.stroke();
+    var cx=X(kp), cy=Y(ess(kp));
+    ctx.fillStyle='#0284c7'; ctx.beginPath(); ctx.arc(cx,cy,4,0,6.28); ctx.fill();
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('比例增益 K_p', mL+pW/2, H-6);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left'; ctx.fillText('纯比例控制稳态误差 e_ss = 1/(1+2K_p)', mL, mT-5);
+    var mm=ess(kp)*stroke;
+    var status = kp>kpMax ? '超谐振上限→啸叫风险' : (ess(kp)<=target ? '满足指标 ✓' : '未达指标');
+    out.textContent='e_ss='+ess(kp).toFixed(4)+' ｜ 定位误差 '+(mm).toFixed(1)+' mm ｜ '+status;
+  }
+  range.addEventListener('input', draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s023" data-ch="2" data-n="5"></div>
+<h2 id="s024"><span class="num">§2.4</span>无穷小与无穷大</h2>
+    
+<div class="ex"><div class="lab">引例一　芯片小信号分析：为什么工程师敢把 \(\sin\theta\) 直接写成 \(\theta\)</div>
+  <p class="stmt">MEMS 陀螺仪、微镜、运放电路的分析中，工程师常做"小角度近似" \(\sin\theta\approx\theta\)、\(\cos\theta\approx1-\dfrac{\theta^{2}}{2}\)、\(\mathrm{e}^{x}\approx1+x\).这样"偷懒"到底会带来多大误差？</p>
+  <table class="dt">
+    <tr><th>\(\theta\)（弧度）</th><th>\(\sin\theta\)</th><th>近似值 \(\theta\)</th><th>相对误差</th></tr>
+    <tr><td>0.1000</td><td>0.0998334</td><td>0.1000</td><td>\(0.167\%\)</td></tr>
+    <tr><td>0.0100</td><td>0.0099998</td><td>0.0100</td><td>\(0.0017\%\)</td></tr>
+    <tr><td>0.0010</td><td>0.0009999998</td><td>0.0010</td><td>\(1.7\times10^{-5}\%\)</td></tr>
+  </table>
+  <p>角度越小，相对误差越快趋于零.用数学语言说：\(\sin\theta\) 与 \(\theta\) 在 \(\theta\to0\) 时是<b>等价无穷小</b>，记作 \(\sin\theta\sim\theta\).</p>
+  <p><b>这不是"近似"的经验之谈，而是有严格定义与误差阶数保证的数学结论.</b>本节建立无穷小的比较理论，让这类替换从"工程直觉"升级为"可证明、可估阶"的工具.</p>
+</div>
+
+<h3>一、无穷小</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.6</span>无穷小</div>
+  <p>若在自变量的某个变化过程中函数 \(f(x)\) 的极限为<b>零</b>，则称 \(f(x)\) 为该过程中的<b>无穷小</b>（量）.</p>
+  <p class="muted"><b>两个常见误解务必澄清：</b><br>
+  ① 无穷小是<b>变量</b>，不是"很小的数".\(0.0000001\) 不是无穷小，它是常数；<b>唯一是无穷小的常数是 \(0\)</b>.<br>
+  ② 必须指明<b>变化过程</b>.\(x-1\) 在 \(x\to1\) 时是无穷小，在 \(x\to2\) 时就不是.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.9</span>极限与无穷小的关系</div>
+  \[\lim f(x)=A\iff f(x)=A+\alpha,\ \text{其中}\ \alpha\ \text{是同一过程中的无穷小}.\]
+  <p class="muted">这个"分解定理"把极限问题化为无穷小问题，是许多证明的出发点（如四则运算法则的证明）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设同一变化过程中，\(f(x)\) 的极限为 \(A\)，\(\alpha(x)\) 是同一过程的无穷小.</p>
+<p><span class="stp">必要性：</span>若 \(\lim f(x)=A\)，按定义，对该过程的任意 \(\varepsilon\gt0\)，当变量进入相应邻域时 \(|f(x)-A|\lt\varepsilon\).令 \(\alpha(x)=f(x)-A\)，则 \(|\alpha(x)|\lt\varepsilon\)，即 \(\alpha(x)\to0\)，所以 \(\alpha\) 是无穷小，且 \(f(x)=A+\alpha(x)\).</p>
+<p><span class="stp">充分性：</span>若 \(f(x)=A+\alpha(x)\) 且 \(\alpha(x)\to0\).则对邻域内任意点，\(|f(x)-A|=|\alpha(x)|\to0\)，故 \(\lim f(x)=A\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.10</span>无穷小的运算性质</div>
+  <p>① <b>有限个</b>无穷小的<b>和、差、积</b>仍是无穷小；</p>
+  <p>② <b>有界函数与无穷小之积</b>仍是无穷小；</p>
+  <p>③ 常数与无穷小之积是无穷小.</p>
+  <p class="muted">注意 ① 强调"有限个"：\(\underbrace{\dfrac1n+\dfrac1n+\cdots+\dfrac1n}_{n\ \text{项}}=1\) 不是无穷小.<br>
+  性质 ② 极为好用，是处理振荡因子的标准武器.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>以下均指"同一变化过程".</p>
+<p><span class="stp">① 有限个无穷小的和、差、积：</span>设有 \(m\) 个无穷小 \(\alpha_1,\dots,\alpha_m\)（\(m\) 为固定正整数）.对任意 \(\varepsilon\gt0\)，由每个 \(\alpha_i\to0\)，存在公共邻域使各 \(|\alpha_i|\lt\dfrac{\varepsilon}{m}\)，于是</p>
+\[|\alpha_1+\cdots+\alpha_m|\le|\alpha_1|+\cdots+|\alpha_m|\lt m\cdot\frac{\varepsilon}{m}=\varepsilon.\]
+<p>故和为无穷小.差同理.对积：\(|\alpha_1\cdots\alpha_m|\le|\alpha_1|\cdots|\alpha_m|\)，每个因子可任意小，其积更小，故积也是无穷小（对两个的情形反复用之即可）.</p>
+<p><span class="stp">② 有界函数与无穷小之积：</span>设 \(|f(x)|\le M\)（\(M\gt0\) 常数），\(\alpha\) 为无穷小.则</p>
+\[|f(x)\alpha(x)|\le M|\alpha(x)|\to0,\]
+<p>故 \(f\alpha\) 为无穷小.</p>
+<p><span class="stp">③ 常数与无穷小之积：</span>常数 \(c\) 本身有界（\(|c|\le|c|\)），由②即得 \(c\alpha\to0\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 2.21　有界量乘无穷小</div>
+  <p class="stmt">求 ① \(\lim\limits_{x\to0}x\sin\dfrac{1}{x}\)；② \(\lim\limits_{x\to\infty}\dfrac{\arctan x}{x}\)；③ \(\lim\limits_{n\to\infty}\dfrac{(-1)^{n}}{n}\).</p>
+  <p class="sol"><span class="mk">解</span>① \(\left|\sin\dfrac1x\right|\le1\) 有界，\(x\to0\) 是无穷小，故乘积为无穷小，极限 \(=0\).（注意 \(\lim\limits_{x\to0}\sin\dfrac1x\) 本身不存在，<b>不能用乘法法则</b>，只能用本性质.）</p>
+  <p>② \(|\arctan x|\lt\dfrac{\pi}{2}\) 有界，\(\dfrac{1}{x}\to0\) 是无穷小，故极限 \(=0\).</p>
+  <p>③ \(|(-1)^{n}|=1\) 有界，\(\dfrac1n\to0\)，故极限 \(=0\).</p>
+</div>
+
+<h3>二、无穷大</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.7</span>无穷大</div>
+  <p>若对任意给定的正数 \(M\)（无论多大），总存在 \(\delta\gt0\)（或 \(X\gt0\)），使当 \(0\lt|x-x_0|\lt\delta\)（或 \(|x|\gt X\)）时恒有 \(|f(x)|\gt M\)，则称 \(f(x)\) 为该过程中的<b>无穷大</b>，记作 \(\lim f(x)=\infty\).</p>
+  <p class="muted">记号 \(\lim f(x)=\infty\) 只是"极限不存在"的一种<b>特定描述方式</b>，并不表示极限存在.若恒有 \(f(x)\gt M\) 则记 \(+\infty\)，恒有 \(f(x)\lt-M\) 则记 \(-\infty\).</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.11</span>无穷大与无穷小的倒数关系</div>
+  <p>在同一变化过程中：若 \(f(x)\) 为无穷大，则 \(\dfrac{1}{f(x)}\) 为无穷小；若 \(f(x)\) 为无穷小且 \(f(x)
+eq0\)，则 \(\dfrac{1}{f(x)}\) 为无穷大.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一部分：</span>设 \(f(x)\) 为无穷大.即对任意 \(M\gt0\)，当变量进入相应邻域时 \(|f(x)|\gt M\).于是</p>
+\[0\lt\left|\frac{1}{f(x)}\right|\lt\frac{1}{M}.\]
+<p>由 \(M\) 任意大知 \(\dfrac{1}{f(x)}\to0\)，即其为无穷小.</p>
+<p><span class="stp">第二部分：</span>设 \(f(x)\to0\) 且 \(f(x)
+eq0\).对任意 \(M\gt0\)，存在邻域使 \(0\lt|f(x)|\lt\dfrac{1}{M}\)，于是</p>
+\[\left|\frac{1}{f(x)}\right|\gt M.\]
+<p>由 \(M\) 任意大知 \(\dfrac{1}{f(x)}\) 为无穷大.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>常用无穷大结论：</b>\(\lim\limits_{x\to0}\dfrac1x=\infty\)、\(\lim\limits_{x\to0^{+}}\ln x=-\infty\)、\(\lim\limits_{x\to\frac{\pi}{2}}\tan x=\infty\)、\(\lim\limits_{x\to+\infty}\mathrm{e}^{x}=+\infty\).<br>
+<b>无穷大必无界，但无界未必是无穷大.</b>反例：\(f(x)=x\sin x\) 在 \(x\to+\infty\) 时无界（取 \(x=2n\pi+\frac\pi2\) 趋于 \(+\infty\)），但不是无穷大（取 \(x=n\pi\) 时值恒为 \(0\)）.这是考研常考的概念辨析.</div>
+
+<h3>三、无穷小的比较</h3>
+<p>都趋于零，但"趋零的快慢"可以天差地别.当 \(x\to0\)：\(x^{2}\) 比 \(x\) 快得多，\(\sqrt{x}\) 比 \(x\) 慢.用<b>比值的极限</b>来刻画这种快慢.</p>
+<div class="def"><div class="lab"><span class="n">定义 2.8</span>无穷小的阶</div>
+  <p>设 \(\alpha,\beta\) 是同一过程中的无穷小，且 \(\alpha
+eq0\).</p>
+  <table class="dt">
+    <tr><th>\(\lim\dfrac{\beta}{\alpha}\)</th><th>称谓</th><th>记号</th></tr>
+    <tr><td>\(0\)</td><td>\(\beta\) 是比 \(\alpha\) <b>高阶</b>的无穷小</td><td>\(\beta=o(\alpha)\)</td></tr>
+    <tr><td>\(\infty\)</td><td>\(\beta\) 是比 \(\alpha\) <b>低阶</b>的无穷小</td><td>——</td></tr>
+    <tr><td>\(c
+eq0\)</td><td>\(\beta\) 与 \(\alpha\) 是<b>同阶</b>无穷小</td><td>\(\beta=O(\alpha)\)</td></tr>
+    <tr><td>\(1\)</td><td>\(\beta\) 与 \(\alpha\) 是<b>等价</b>无穷小</td><td>\(\beta\sim\alpha\)</td></tr>
+    <tr><td>\(c
+eq0\)（对 \(\alpha^{k}\)）</td><td>\(\beta\) 是关于 \(\alpha\) 的 \(k\) <b>阶</b>无穷小</td><td>——</td></tr>
+  </table>
+</div>
+
+<div class="note"><b>【必背】\(x\to0\) 时的等价无穷小（考研核心工具）：</b>
+\[\sin x\sim x,\quad \tan x\sim x,\quad \arcsin x\sim x,\quad \arctan x\sim x,\]
+\[1-\cos x\sim\frac{x^{2}}{2},\quad \ln(1+x)\sim x,\quad \mathrm{e}^{x}-1\sim x,\]
+\[a^{x}-1\sim x\ln a,\quad (1+x)^{\alpha}-1\sim\alpha x,\quad \sqrt[n]{1+x}-1\sim\frac{x}{n},\]
+\[x-\sin x\sim\frac{x^{3}}{6},\quad \tan x-x\sim\frac{x^{3}}{3},\quad x-\ln(1+x)\sim\frac{x^{2}}{2}.\]
+最后一行三个是<b>三阶/二阶的精细结论</b>，处理"抵消型"极限时必用（第 4 章泰勒公式将统一解释它们的来源）.</div>
+
+<div class="def"><div class="lab"><span class="n">定理 2.12</span>等价无穷小替换定理</div>
+  <p>设 \(\alpha\sim\alpha'\)，\(\beta\sim\beta'\)，且 \(\lim\dfrac{\beta'}{\alpha'}\) 存在，则</p>
+  \[\lim\frac{\beta}{\alpha}=\lim\frac{\beta'}{\alpha'}.\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>已知 \(\alpha\sim\alpha'\) 即 \(\lim\dfrac{\alpha}{\alpha'}=1\)；\(\beta\sim\beta'\) 即 \(\lim\dfrac{\beta}{\beta'}=1\).且 \(\lim\dfrac{\beta'}{\alpha'}\) 存在.</p>
+<p><span class="stp">分解比值：</span>在 \(\alpha'
+eq0\) 的邻域内有</p>
+\[\frac{\beta}{\alpha}=\frac{\beta}{\beta'}\cdot\frac{\beta'}{\alpha'}\cdot\frac{\alpha'}{\alpha}
+=\left(\frac{\beta}{\beta'}\right)\cdot\left(\frac{\beta'}{\alpha'}\right)\cdot\left(\frac{\alpha'}{\alpha}\right).\]
+<p>取极限，前、后两因子分别趋于 \(1\)，中间因子极限存在，故</p>
+\[\lim\frac{\beta}{\alpha}=\lim\frac{\beta'}{\alpha'}.\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>替换的适用范围（血泪教训）：</b><br>
+✅ <b>乘除因子可以整体替换</b>；<br>
+❌ <b>加减项中的部分不能随意替换</b>！<br>
+反例：求 \(\lim\limits_{x\to0}\dfrac{\tan x-\sin x}{x^{3}}\).若把 \(\tan x\sim x,\ \sin x\sim x\) 分别代入分子，得 \(\dfrac{x-x}{x^{3}}=0\)，<b>错误</b>.<br>
+正确做法：\(\tan x-\sin x=\tan x(1-\cos x)\sim x\cdot\dfrac{x^{2}}{2}=\dfrac{x^{3}}{2}\)，故极限为 \(\dfrac12\).<br>
+<b>口诀：乘除随便换，加减要小心；能提公因式就提，提不出用泰勒.</b></div>
+
+<div class="ex"><div class="lab">例 2.22　等价无穷小的标准应用</div>
+  <p class="stmt">求 ① \(\lim\limits_{x\to0}\dfrac{\sin 3x}{\tan 5x}\)；② \(\lim\limits_{x\to0}\dfrac{1-\cos 2x}{x\sin x}\)；③ \(\lim\limits_{x\to0}\dfrac{\ln(1+2x)}{\mathrm{e}^{3x}-1}\).</p>
+  <p class="sol"><span class="mk">解</span>① \(\sin3x\sim3x\)，\(\tan5x\sim5x\)，原式 \(=\lim\limits_{x\to0}\dfrac{3x}{5x}=\dfrac{3}{5}\).</p>
+  <p>② \(1-\cos2x\sim\dfrac{(2x)^{2}}{2}=2x^{2}\)，\(x\sin x\sim x\cdot x=x^{2}\)，原式 \(=\dfrac{2x^{2}}{x^{2}}=2\).</p>
+  <p>③ \(\ln(1+2x)\sim2x\)，\(\mathrm{e}^{3x}-1\sim3x\)，原式 \(=\dfrac{2x}{3x}=\dfrac{2}{3}\).</p>
+  <p class="muted"><b>要点：等价式中的"\(x\)"可以换成任何趋于 \(0\) 的表达式</b>（这正是复合函数极限法则的应用）.如 \(\sin(x^{2}+x)\sim x^{2}+x\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.23　考研经典：加减项的正确处理</div>
+  <p class="stmt">求 \(\lim\limits_{x\to0}\dfrac{\sqrt{1+x^{2}}-1}{x\sin x}\) 与 \(\lim\limits_{x\to0}\dfrac{x-\sin x}{x^{3}}\).</p>
+  <p class="sol"><span class="mk">解</span>第一式：用 \((1+u)^{\alpha}-1\sim\alpha u\)，取 \(u=x^{2},\alpha=\dfrac12\)，得 \(\sqrt{1+x^{2}}-1\sim\dfrac{x^{2}}{2}\).分母 \(x\sin x\sim x^{2}\).故极限 \(=\dfrac{1}{2}\).</p>
+  <p>第二式：分子是"抵消型"，<b>不能</b>用 \(\sin x\sim x\)（会得 \(0\)）.直接用精细等价 \(x-\sin x\sim\dfrac{x^{3}}{6}\)，得极限 \(=\dfrac{1}{6}\).</p>
+  <p class="muted">若不记得精细等价式，可用第 4 章洛必达法则连续三次，或用泰勒展开 \(\sin x=x-\dfrac{x^{3}}{6}+o(x^{3})\).<b>三种方法殊途同归，泰勒最快最稳.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 2.24　求无穷小的阶</div>
+  <p class="stmt">当 \(x\to0\) 时，确定 \(\beta=\sqrt[3]{1+x^{2}}-1\) 是关于 \(x\) 的几阶无穷小.</p>
+  <p class="sol"><span class="mk">解</span>\(\sqrt[3]{1+x^{2}}-1=(1+x^{2})^{1/3}-1\sim\dfrac{1}{3}x^{2}\).</p>
+  <p>由 \(\lim\limits_{x\to0}\dfrac{\beta}{x^{2}}=\dfrac13
+eq0\)，知 \(\beta\) 是关于 \(x\) 的 <b>2 阶</b>无穷小.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 浮点数灾难：\(\ln(1+x)\) 与 log1p 函数的诞生</div>
+  <details><summary>展开查看：等价无穷小如何拯救数值精度（含具体误差数据）</summary>
+  <div class="body">
+    <p>在金融计算、机器学习的对数似然、通信的信噪比换算中，经常要算 \(\ln(1+x)\)，其中 \(x\) 极小（如 \(10^{-16}\)）.直接按定义算会出大事.</p>
+    <p><b>问题根源：</b>双精度浮点数只有约 16 位有效数字.当 \(x=10^{-16}\) 时，计算机先算 \(1+x\)，结果被<b>舍入为 \(1.0\)</b>（\(x\) 被完全吞掉），再取对数得 \(\ln 1=0\)——精度<b>全部丢失</b>.</p>
+    <p>而真值应为 \(\ln(1+10^{-16})\approx10^{-16}\).相对误差 \(100\%\).</p>
+    <table class="dt">
+      <tr><th>\(x\)</th><th>朴素算法 \(\ln(1+x)\)</th><th>真值</th><th>相对误差</th></tr>
+      <tr><td>\(10^{-8}\)</td><td>\(9.99999994\times10^{-9}\)</td><td>\(9.99999995\times10^{-9}\)</td><td>\(\sim10^{-9}\)</td></tr>
+      <tr><td>\(10^{-14}\)</td><td>\(9.992\times10^{-15}\)</td><td>\(1.0000\times10^{-14}\)</td><td>\(0.08\%\)</td></tr>
+      <tr><td>\(10^{-16}\)</td><td>\(0\)</td><td>\(1.0000\times10^{-16}\)</td><td>\(100\%\)</td></tr>
+    </table>
+    <p><b>解决方案正是等价无穷小与它的高阶修正.</b>由 \(\ln(1+x)\sim x\)，并保留更高阶项：</p>
+    \[\ln(1+x)=x-\frac{x^{2}}{2}+\frac{x^{3}}{3}-\cdots\quad(|x|\lt1).\]
+    <p>当 \(|x|\lt10^{-8}\) 时，只取首项 \(x\) 的误差不超过 \(\dfrac{x^{2}}{2}=5\times10^{-17}\)，完全可忽略；取两项则精度更高.因此所有科学计算库（C 的 <code>log1p</code>、Python 的 <code>math.log1p</code>、NumPy 的 <code>np.log1p</code>）都<b>专门提供一个函数</b>，内部对小 \(x\) 走级数展开、对大 \(x\) 走标准对数.</p>
+    <p>同理还有 <code>expm1(x)</code> 计算 \(\mathrm{e}^{x}-1\)（用 \(\mathrm{e}^{x}-1\sim x\)），道理完全一样.</p>
+    <p><b>结论：</b>"\(\ln(1+x)\sim x\)"在教科书上只是一行等价式，在工程上却是一个必须单独实现的标准库函数——<b>无穷小的阶，直接决定了浮点计算的成败.</b></p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §2.5 ============ -->
+<div class="labx">
+  <div class="lab">交互 · 重要极限：(\((1+1/x)^x \to e\))</div>
+  <div class="desc">拖动滑块增大 x，观察 (\((1+1/x)^x\)) 如何逼近自然常数 (\(e \approx 2.71828\)).</div>
+  <div class="row"><canvas id="viz-elimit" width="520" height="240" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">x = <b id="viz-ex-val" style="color:#2dd4bf;font-size:14px">10</b></label>
+    <input type="range" id="viz-ex" min="1" max="200" step="1" value="10" style="flex:1;min-width:100px;accent-color:#2dd4bf">
+    <span style="font-size:12px;color:#6b8179">(1+1/x)^x ≈ <b id="viz-eres" style="color:#fbbf24">2.5937</b></span>
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-elimit'),ctx=c.getContext('2d');
+  var xS=document.getElementById('viz-ex'),xV=document.getElementById('viz-ex-val'),er=document.getElementById('viz-eres');
+  function draw(){var X=parseInt(xS.value);xV.textContent=X;var v=Math.pow(1+1/X,X);er.textContent=v.toFixed(4);
+    var W=c.width,H=c.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/20){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/8){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.strokeStyle='#e67e88';ctx.lineWidth=2.5;ctx.beginPath();
+    for(var px=0;px<=W;px+=2){var x=(px/W)*220+1;var y=Math.pow(1+1/x,x);var py=H*0.78-y*H*0.26;ctx[px===0?'moveTo':'lineTo'](px,py);}ctx.stroke();
+    ctx.fillStyle='#0F6E56';ctx.beginPath();ctx.arc(X/220*W,H*0.78-v*H*0.26,5,0,6.28);ctx.fill();
+    ctx.setLineDash([4,3]);ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.beginPath();
+    ctx.moveTo(0,H*0.78-Math.E*H*0.26);ctx.lineTo(W,H*0.78-Math.E*H*0.26);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#33473f';ctx.font='11px sans-serif';ctx.fillStyle='#33473f';ctx.fillText('e≈2.71828',W*0.62,H*0.1);
+  }requestAnimationFrame(function(){draw();});xS.addEventListener('input',draw);
+})();
+</script>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 惯性导航：小角度近似的误差会攒成多大漂移</summary>
+<p><b>场景：</b> 捷联惯导为省算力普遍用 \(\sin\theta\approx\theta\).由精细等价式 \(\theta-\sin\theta\sim\dfrac{\theta^{3}}{6}\)，<b>单步误差是 3 阶小量</b>.但一秒要积分上千步，攒起来还小吗？设 \(\omega=100^{\circ}/\mathrm{s}=1.745\ \mathrm{rad/s}\)，单步转角 \(\theta=\omega\Delta t\).</p>
+<table class="dt">
+<tr><th>采样周期 \(\Delta t\)</th><th>单步转角 \(\theta\)（rad）</th><th>单步误差 \(\theta^{3}/6\)（rad）</th><th>等效漂移率</th><th>判定</th></tr>
+<tr><td>\(1\ \mathrm{ms}\)</td><td>\(1.745\times10^{-3}\)</td><td>\(8.86\times10^{-10}\)</td><td>\(0.18^{\circ}/\mathrm{h}\)</td><td>可接受</td></tr>
+<tr><td>\(10\ \mathrm{ms}\)</td><td>\(1.745\times10^{-2}\)</td><td>\(8.86\times10^{-7}\)</td><td>\(18.3^{\circ}/\mathrm{h}\)</td><td>超标</td></tr>
+</table>
+<p class="sol"> 取 \(\Delta t=1\ \mathrm{ms}\)：单步误差 \(8.86\times10^{-10}\ \mathrm{rad}\)，折合约 \(0.18^{\circ}/\mathrm{h}\)；\(\Delta t=10\ \mathrm{ms}\) 时净放大 100 倍，得 \(18.3^{\circ}/\mathrm{h}\).</p>
+<p><b>工程结论：</b> \(1\ \mathrm{ms}\) 下近似误差 \(0.18^{\circ}/\mathrm{h}\) 远低于陀螺零偏；放宽到 \(10\ \mathrm{ms}\) 算法误差反成主导，须补三阶修正.<b>净误差 \(\propto\Delta t^{2}\)，「平方」正是无穷小阶数的定量预言.</b></p>
+<p class="cn-point">捷联惯导 1 ms 采样时误差只有 \(0.18^{\circ}/\mathrm{h}\)，放宽到 10 ms 就爆到 \(18.3^{\circ}/\mathrm{h}\)——潜艇、导弹、无人机不依赖卫星也能定位的底气，正是把每步积分的误差阶数算清：净误差 \(\propto\Delta t^{2}\)，采样周期差 10 倍，漂移差 100 倍.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 香农容量在低信噪比下的线性等价式</summary>
+<p><b>场景：</b> 几亿公里外，火星探测器回传的遥测信号穿过深空噪声落到地面站，信噪比只有 0.01（\(-20\ \mathrm{dB}\)）.链路预算员要在一版又一版数据里反复算容量，可香农公式 \(C=B\log_2(1+\mathrm{SNR})\) 里的对数每次都嫌慢——低信噪比场景（深空测控、NB-IoT）下，实时链路预算希望用更快的近似.由 \(\ln(1+u)\sim u\;(u\to0)\) 得</p>
+\[\log_2(1+s)=\frac{\ln(1+s)}{\ln 2}\sim\frac{s}{\ln 2}=1.4427\,s,\qquad\text{故}\quad C\approx1.4427\,B\cdot\mathrm{SNR}.\]
+<p>取带宽 \(B=100\ \mathrm{MHz}\)，比较真值与近似值：</p>
+<table class="dt">
+<tr><th>\(\mathrm{SNR}\)</th><th>真值 \(C\)</th><th>线性近似</th><th>相对误差</th></tr>
+<tr><td>0.01（\(-20\ \mathrm{dB}\)）</td><td>\(1.4356\ \mathrm{Mbps}\)</td><td>\(1.4427\ \mathrm{Mbps}\)</td><td>\(0.50\%\)</td></tr>
+<tr><td>0.1（\(-10\ \mathrm{dB}\)）</td><td>\(13.750\ \mathrm{Mbps}\)</td><td>\(14.427\ \mathrm{Mbps}\)</td><td>\(4.92\%\)</td></tr>
+<tr><td>1.0（\(0\ \mathrm{dB}\)）</td><td>\(100.00\ \mathrm{Mbps}\)</td><td>\(144.27\ \mathrm{Mbps}\)</td><td>\(44.3\%\)</td></tr>
+</table>
+<p class="sol"> \(\mathrm{SNR}=0.01\) 时 \(\log_2(1.01)=\dfrac{\ln1.01}{\ln2}=0.0143559\)，故 \(C=1.4356\ \mathrm{Mbps}\)，近似值 \(1.4427\ \mathrm{Mbps}\)，误差 \(0.50\%\).由下一项 \(\ln(1+s)=s-\dfrac{s^{2}}{2}+o(s^{2})\) 知相对误差约 \(\dfrac{s}{2}\)，与表中数据吻合.</p>
+<p><b>工程结论：</b> 相对误差约等于 \(\mathrm{SNR}/2\)，故 \(\mathrm{SNR}\lt0.02\) 时（误差 \(\lt1\%\)）可放心换用线性近似，\(\mathrm{SNR}\gt0.1\) 必须回到原式.<b>等价无穷小不仅告诉我们「可以替换」，更通过下一阶项给出「何时不能再替换」的定量红线.</b></p>
+<p class="cn-point">火星探测器回传的信号信噪比只有 0.01（\(-20\ \mathrm{dB}\)），敢用线性近似算链路预算，是因为相对误差 0.50% 被算得明明白白——深空测控里每一帧遥测数据，都押在 \(\ln(1+u)\sim u\) 的适用边界上.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s024" data-ch="2" data-n="5"></div>
+<h2 id="s025"><span class="num">§2.5</span>极限的存在准则与两个重要极限</h2>
+    
+<div class="ex"><div class="lab">引例一　复利与自然常数 \(\mathrm{e}\)：连续复利是怎么算出来的</div>
+  <p class="stmt">本金 1 元，年利率 \(100\%\).若一年只结息一次，年末得 2 元；若半年结一次（每次 \(50\%\)），得 \(\left(1+\dfrac12\right)^{2}=2.25\) 元.结息越频繁，钱越多——那么"每时每刻都结息"能得多少？会不会无限多？</p>
+  <table class="dt">
+    <tr><th>结息次数 \(n\)</th><th>1</th><th>12（每月）</th><th>365（每日）</th><th>\(8760\)（每时）</th><th>\(\to\infty\)</th></tr>
+    <tr><td>\(\left(1+\frac1n\right)^{n}\)</td><td>2.000000</td><td>2.613035</td><td>2.714567</td><td>2.718127</td><td>\(\mathrm{e}=2.718282\)</td></tr>
+  </table>
+  <p>数值稳稳地趋于一个常数 \(2.71828\dots\)，绝不会无限增长.这个常数就是<b>自然常数 \(\mathrm{e}\)</b>，它由极限</p>
+  \[\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{n}=\mathrm{e}\]
+  <p>定义.为什么它一定收敛而不是发散？这需要<b>单调有界准则</b>——本节的第一个核心工具.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　5G 波束赋形中的 \(\dfrac{\sin x}{x}\)：阵列增益的极限</div>
+  <p class="stmt">5G 基站用几十上百根天线组成阵列，通过调相把能量"聚成一束"射向用户.阵列在偏离主瓣角 \(\theta\) 处的归一化增益为</p>
+  \[G(\psi)=\left|\frac{\sin(N\psi/2)}{N\sin(\psi/2)}\right|,\qquad \psi=\frac{2\pi d}{\lambda}\sin\theta.\]
+  <p>主瓣中心 \(\psi\to0\) 时，分子分母同时趋于 \(0\).取 \(N=64\) 阵元做数值试验：</p>
+  <table class="dt">
+    <tr><th>\(\psi\)（弧度）</th><th>0.01</th><th>0.001</th><th>0.0001</th><th>\(\to0\)</th></tr>
+    <tr><td>\(G(\psi)\)</td><td>0.998296</td><td>0.999983</td><td>0.9999998</td><td>1</td></tr>
+  </table>
+  <p>增益趋于 \(1\)（即 \(0\,\mathrm{dB}\) 归一化最大值），主瓣中心处能量最强.这个结论的数学核心正是</p>
+  \[\lim_{x\to0}\frac{\sin x}{x}=1,\]
+  <p>——本节的第二个核心工具.它同时也是 CT 重建、JPEG 压缩、数字滤波器设计中 sinc 函数的理论基石.</p>
+</div>
+
+<h3>一、夹逼准则</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.13</span>夹逼准则（两边夹定理）</div>
+  <p><b>数列形式：</b>若存在 \(N_0\)，当 \(n\gt N_0\) 时有 \(y_n\le x_n\le z_n\)，且 \(\lim\limits_{n\to\infty}y_n=\lim\limits_{n\to\infty}z_n=a\)，则 \(\lim\limits_{n\to\infty}x_n=a\).</p>
+  <p><b>函数形式：</b>若在 \(x_0\) 的某去心邻域内 \(g(x)\le f(x)\le h(x)\)，且 \(\lim\limits_{x\to x_0}g(x)=\lim\limits_{x\to x_0}h(x)=A\)，则 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">数列形式：</span>设当 \(n\gt N_0\) 时 \(y_n\le x_n\le z_n\)，且 \(\lim y_n=\lim z_n=a\).对任意 \(\varepsilon\gt0\)，存在 \(N_1,N_2\)，当 \(n\gt N_1\) 时 \(|y_n-a|\lt\varepsilon\)，当 \(n\gt N_2\) 时 \(|z_n-a|\lt\varepsilon\).取 \(N=\max\{N_0,N_1,N_2\}\)，则当 \(n\gt N\) 时</p>
+\[a-\varepsilon\lt y_n\le x_n\le z_n\lt a+\varepsilon,\]
+<p>即 \(|x_n-a|\lt\varepsilon\).故 \(\lim x_n=a\).</p>
+<p><span class="stp">函数形式：</span>在 \(x_0\) 的某去心邻域内 \(g(x)\le f(x)\le h(x)\)，且 \(\lim\limits_{x\to x_0}g(x)=\lim\limits_{x\to x_0}h(x)=A\).对任意 \(\varepsilon\gt0\)，存在 \(\delta_1,\delta_2\) 使 \(0\lt|x-x_0|\lt\delta_1\Rightarrow|g-A|\lt\varepsilon\)，\(0\lt|x-x_0|\lt\delta_2\Rightarrow|h-A|\lt\varepsilon\).取 \(\delta=\min\{\delta_1,\delta_2\}\)，则当 \(0\lt|x-x_0|\lt\delta\) 时</p>
+\[A-\varepsilon\lt g(x)\le f(x)\le h(x)\lt A+\varepsilon,\]
+<p>即 \(|f(x)-A|\lt\varepsilon\)，故 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>用夹逼准则的两个信号：</b>① 表达式含 \(n\) 项之和且项数随 \(n\) 变化；② 含取整函数 \([x]\)、\(\sin\)、\(\cos\) 等可界定的因子.<br>
+<b>关键技巧：放缩时要"松紧适度"</b>——两边的极限必须相等，放得太狠（如把每项都放成最大项之和）会导致两边极限不等而失败.</div>
+
+<div class="ex"><div class="lab">例 2.25　夹逼准则求和式极限</div>
+  <p class="stmt">求 \(\lim\limits_{n\to\infty}\left(\dfrac{1}{\sqrt{n^{2}+1}}+\dfrac{1}{\sqrt{n^{2}+2}}+\cdots+\dfrac{1}{\sqrt{n^{2}+n}}\right)\).</p>
+  <p class="sol"><span class="mk">解</span>共 \(n\) 项，每项介于最小项与最大项之间：</p>
+  \[\frac{n}{\sqrt{n^{2}+n}}\le x_n\le\frac{n}{\sqrt{n^{2}+1}}.\]
+  <p>左端 \(=\dfrac{n}{\sqrt{n^{2}+n}}=\dfrac{1}{\sqrt{1+1/n}}\to1\)；右端 \(=\dfrac{1}{\sqrt{1+1/n^{2}}}\to1\).</p>
+  <p>由夹逼准则得 \(\lim\limits_{n\to\infty}x_n=1\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.26　含 \(n\) 次根的夹逼</div>
+  <p class="stmt">求 \(\lim\limits_{n\to\infty}\sqrt[n]{1^{n}+2^{n}+3^{n}}\).</p>
+  <p class="sol"><span class="mk">解</span>三项中最大者为 \(3^{n}\)，故</p>
+  \[3=\sqrt[n]{3^{n}}\le\sqrt[n]{1^{n}+2^{n}+3^{n}}\le\sqrt[n]{3\cdot3^{n}}=3\sqrt[n]{3}.\]
+  <p>因 \(\lim\limits_{n\to\infty}\sqrt[n]{3}=1\)，右端 \(\to3\).由夹逼准则，原极限 \(=3\).</p>
+  <p class="muted"><b>通用结论：</b>\(\lim\limits_{n\to\infty}\sqrt[n]{a_1^{n}+a_2^{n}+\cdots+a_k^{n}}=\max\{a_1,\dots,a_k\}\)（\(a_i\gt0\)）.<b>"\(n\) 次根号下求和，取最大项"</b>，考研常考.</p>
+</div>
+
+<h3>二、单调有界准则</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.14</span>单调有界准则</div>
+  <p><b>单调有界数列必有极限.</b>具体地：单调递增且有上界的数列必收敛；单调递减且有下界的数列必收敛.</p>
+  <p class="muted">这条准则的深刻之处在于：<b>它只判断极限"存在"，不给出极限"是多少"</b>.求值需另想办法（通常是对递推式两边取极限解方程）.它的理论基础是实数系的连续性（确界原理）.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需实数完备性，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：构造上界集合.</span>以"单调递增且有上界"为例.设 \(\{x_n\}\) 单调递增（\(x_1\le x_2\le\cdots\)）且存在上界 \(M\).考虑它的全体上界构成的集合 \(E=\{u\in\mathbf{R}:x_n\le u,\ \forall n\}\)；由假设 \(M\in E\)，故 \(E\) 非空且有下界（任何一项 \(x_n\) 都是下界），所以 \(E\) 有下确界.</p>
+<p><span class="stp">第二步：用确界定义定出极限.</span>令 \(a=\inf E\)（即最小上界）.由确界定义：一方面对每个 \(n\) 有 \(x_n\le a\)；另一方面对任意 \(\varepsilon\gt0\)，\(a-\varepsilon\) 不再是上界，故存在某项 \(x_N\gt a-\varepsilon\).又因数列递增，当 \(n\ge N\) 时 \(x_n\ge x_N\gt a-\varepsilon\)，且恒有 \(x_n\le a\lt a+\varepsilon\).于是 \(|x_n-a|\lt\varepsilon\)，即 \(x_n\to a\).</p>
+<p><span class="stp">第三步：递减情形同理，</span>对下界取上确界即可.单调递减有下界 ⇒ 收敛.</p>
+<div class="bey"><b>为什么说"超纲"：</b>上面的核心工具是<b>确界原理</b>——"有上界的非空实数集必有上确界".它陈述的是<b>实数轴没有"洞"</b>（连续性），属于《数学分析》开篇的实数系基本定理.工科《高等数学》把这条准则作为已知公理使用，其本身无法在纯极限定义框架内严格证明.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 2.27　递推数列的收敛性（考研经典题型）</div>
+  <p class="stmt">设 \(x_1=\sqrt{2}\)，\(x_{n+1}=\sqrt{2+x_n}\;(n=1,2,\dots)\)，证明 \(\{x_n\}\) 收敛并求其极限.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：证有界（用数学归纳法证 \(x_n\lt2\)）.</b></p>
+  <p>\(x_1=\sqrt2\lt2\) 成立.设 \(x_k\lt2\)，则 \(x_{k+1}=\sqrt{2+x_k}\lt\sqrt{2+2}=2\).故对一切 \(n\) 有 \(0\lt x_n\lt2\).</p>
+  <p><b>第二步：证单调递增.</b></p>
+  \[x_{n+1}-x_n=\sqrt{2+x_n}-x_n=\frac{2+x_n-x_n^{2}}{\sqrt{2+x_n}+x_n}=\frac{-(x_n-2)(x_n+1)}{\sqrt{2+x_n}+x_n}.\]
+  <p>由 \(0\lt x_n\lt2\) 知 \(x_n-2\lt0,\;x_n+1\gt0\)，故分子 \(\gt0\)，即 \(x_{n+1}\gt x_n\)，数列严格递增.</p>
+  <p><b>第三步：由单调有界准则，极限存在，设为 \(a\).</b>对递推式两边取 \(n\to\infty\)：</p>
+  \[a=\sqrt{2+a}\;\Rightarrow\;a^{2}-a-2=0\;\Rightarrow\;a=2\ \text{或}\ a=-1.\]
+  <p>因 \(x_n\gt0\)，由保号性 \(a\ge0\)，舍去 \(-1\)，得 \(\lim\limits_{n\to\infty}x_n=2\).</p>
+  <p class="muted"><b>标准三步法（务必背熟）：证有界 → 证单调 → 取极限解方程.</b>第三步<b>必须</b>建立在前两步之上：若不先证明极限存在就直接"设极限为 \(a\) 解方程"，是严重的逻辑漏洞（发散数列也能解出方程）.</p>
+</div>
+
+<h3>三、第一个重要极限</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.15</span>第一个重要极限</div>
+  \[\boxed{\lim_{x\to0}\frac{\sin x}{x}=1}\]
+  <p class="muted"><b>证明要点（用夹逼准则）：</b>设 \(0\lt x\lt\dfrac{\pi}{2}\)，在单位圆中比较三块面积——三角形 \(OAB\)、扇形 \(OAB\)、三角形 \(OAD\)：</p>
+  \[\frac{1}{2}\sin x\lt\frac{1}{2}x\lt\frac{1}{2}\tan x.\]
+  <p>各项除以 \(\dfrac12\sin x\gt0\) 得 \(1\lt\dfrac{x}{\sin x}\lt\dfrac{1}{\cos x}\)，取倒数得</p>
+  \[\cos x\lt\frac{\sin x}{x}\lt1.\]
+  <p>因 \(\lim\limits_{x\to0}\cos x=1\)，由夹逼准则得证.又因 \(\dfrac{\sin x}{x}\) 是偶函数，\(x\to0^{-}\) 结论相同.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>在单位圆里用面积比较得到夹逼不等式，再用夹逼准则（定理 2.13）.</p>
+<p><span class="stp">第一步（面积比较）：</span>设 \(0\lt x\lt\dfrac{\pi}{2}\).在单位圆中，比较三角形 \(OAB\)、扇形 \(OAB\)、三角形 \(OAD\) 的面积：</p>
+\[\frac{1}{2}\sin x\lt\frac{1}{2}x\lt\frac{1}{2}\tan x.\]
+<p>各项同除以 \(\dfrac12\sin x\gt0\)，得 \(1\lt\dfrac{x}{\sin x}\lt\dfrac{1}{\cos x}\)；取倒数（不等号反向）得</p>
+\[\cos x\lt\frac{\sin x}{x}\lt1.\]
+<p><span class="stp">第二步（夹逼）：</span>因 \(\lim\limits_{x\to0^{+}}\cos x=1\)，且常值函数极限为 \(1\)，由夹逼准则</p>
+\[\lim_{x\to0^{+}}\frac{\sin x}{x}=1.\]
+<p><span class="stp">第三步（左极限）：</span>由于 \(\dfrac{\sin x}{x}\) 是偶函数，\(\lim\limits_{x\to0^{-}}\dfrac{\sin x}{x}=\lim\limits_{t\to0^{+}}\dfrac{\sin(-t)}{-t}=1\).左右极限相等，故</p>
+\[\lim_{x\to0}\frac{\sin x}{x}=1.\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>识别特征：\(\dfrac{0}{0}\) 型 + 三角函数.</b>推广形式：只要 \(\square\to0\)，就有 \(\lim\dfrac{\sin\square}{\square}=1\).由它可导出 \(\lim\limits_{x\to0}\dfrac{\tan x}{x}=1\)、\(\lim\limits_{x\to0}\dfrac{\arcsin x}{x}=1\)、\(\lim\limits_{x\to0}\dfrac{1-\cos x}{x^{2}}=\dfrac12\).</div>
+
+<div class="ex"><div class="lab">例 2.28　第一个重要极限的应用</div>
+  <p class="stmt">求 ① \(\lim\limits_{x\to0}\dfrac{\sin 5x}{\sin 3x}\)；② \(\lim\limits_{x\to0}\dfrac{1-\cos x}{x^{2}}\)；③ \(\lim\limits_{x\to\pi}\dfrac{\sin x}{\pi-x}\).</p>
+  <p class="sol"><span class="mk">解</span>① 分子分母同除 \(x\)：\(\dfrac{\frac{\sin5x}{x}}{\frac{\sin3x}{x}}=\dfrac{5\cdot\frac{\sin5x}{5x}}{3\cdot\frac{\sin3x}{3x}}\to\dfrac{5}{3}\).</p>
+  <p>② 用半角公式 \(1-\cos x=2\sin^{2}\dfrac{x}{2}\)：</p>
+  \[\frac{2\sin^{2}\frac{x}{2}}{x^{2}}=\frac{1}{2}\left(\frac{\sin\frac{x}{2}}{\frac{x}{2}}\right)^{2}\to\frac{1}{2}\cdot1^{2}=\frac{1}{2}.\]
+  <p>③ 令 \(t=\pi-x\)，则 \(x\to\pi\) 时 \(t\to0\)，且 \(\sin x=\sin(\pi-t)=\sin t\).原式 \(=\lim\limits_{t\to0}\dfrac{\sin t}{t}=1\).</p>
+</div>
+
+<h3>四、第二个重要极限</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.16</span>第二个重要极限</div>
+  \[\boxed{\lim_{x\to\infty}\left(1+\frac{1}{x}\right)^{x}=\mathrm{e}}\qquad\text{等价形式}\qquad\boxed{\lim_{t\to0}(1+t)^{\frac{1}{t}}=\mathrm{e}}\]
+  <p class="muted"><b>存在性证明要点（用单调有界准则）：</b>对 \(x_n=\left(1+\dfrac1n\right)^{n}\) 作二项式展开</p>
+  \[x_n=\sum_{k=0}^{n}\binom{n}{k}\frac{1}{n^{k}}=1+1+\frac{1}{2!}\left(1-\frac1n\right)+\cdots+\frac{1}{n!}\left(1-\frac1n\right)\cdots\left(1-\frac{n-1}{n}\right).\]
+  <p>与 \(x_{n+1}\) 逐项比较：\(x_{n+1}\) 项数更多、每项更大，故 \(\{x_n\}\) <b>单调递增</b>；又</p>
+  \[x_n\lt1+1+\frac{1}{2!}+\cdots+\frac{1}{n!}\lt1+1+\frac{1}{2}+\frac{1}{2^{2}}+\cdots+\frac{1}{2^{n-1}}\lt3,\]
+  <p>故<b>有上界</b>.由单调有界准则极限存在，记作 \(\mathrm{e}=2.718281828459\dots\)（无理数、超越数）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>先对整数列 \(x_n=\left(1+\dfrac1n\right)^n\) 用二项式展开证其单调增且有上界，由单调有界准则（定理 2.14）知极限存在，记为 \(\mathrm{e}\)；再用夹逼把实数 \(x\to\infty\) 的情形化归到整数列.</p>
+<p><span class="stp">第一步（整数列单调增）：</span>由二项式定理</p>
+\[x_n=\sum_{k=0}^{n}\binom{n}{k}\frac{1}{n^{k}}
+=1+1+\frac{1}{2!}\left(1-\frac1n\right)+\cdots+\frac{1}{n!}\left(1-\frac1n\right)\cdots\left(1-\frac{n-1}{n}\right).\]
+<p>与 \(x_{n+1}\) 逐项比较：后者项数更多、且每一对应项都因多乘了小于 \(1\) 的正因子而更大，故 \(x_n\lt x_{n+1}\)，即 \(\{x_n\}\) 单调递增.</p>
+<p><span class="stp">第二步（有上界）：</span>由上式</p>
+\[x_n\lt1+1+\frac{1}{2!}+\frac{1}{3!}+\cdots+\frac{1}{n!}
+\lt1+1+\frac{1}{2}+\frac{1}{2^{2}}+\cdots+\frac{1}{2^{n-1}}\lt3.\]
+<p>故 \(\{x_n\}\) 有上界 \(3\).由定理 2.14，\(\lim\limits_{n\to\infty}x_n\) 存在，记其值为 \(\mathrm{e}\).</p>
+<p><span class="stp">第三步（实数情形）：</span>设 \(x\to+\infty\)，令 \(n=[x]\)（整数部分），则 \(n\le x\lt n+1\).于是</p>
+\[\left(1+\frac{1}{n+1}\right)^{n}\lt\left(1+\frac{1}{x}\right)^{x}\lt\left(1+\frac{1}{n}\right)^{n+1}.\]
+<p>右端 \(\left(1+\dfrac1n\right)^{n+1}=\left(1+\dfrac1n\right)^n\left(1+\dfrac1n\right)\to\mathrm{e}\cdot1=\mathrm{e}\)；左端 \(\left(1+\dfrac{1}{n+1}\right)^{n}=\left(1+\dfrac{1}{n+1}\right)^{n+1}\Big/\left(1+\dfrac{1}{n+1}\right)\to\mathrm{e}/1=\mathrm{e}\).由夹逼准则得 \(\lim\limits_{x\to\infty}\left(1+\dfrac1x\right)^x=\mathrm{e}\).令 \(t=1/x\) 即得等价形式 \(\lim\limits_{t\to0}(1+t)^{1/t}=\mathrm{e}\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>识别特征：\(1^{\infty}\) 型</b>（底数趋于 1，指数趋于无穷）.<br>
+<b>万能公式（强烈推荐）：</b>若 \(\lim u(x)=1,\ \lim v(x)=\infty\)，则
+\[\lim u^{v}=\mathrm{e}^{\lim v\,(u-1)}.\]
+理由：\(u^{v}=\mathrm{e}^{v\ln u}\)，而 \(\ln u=\ln[1+(u-1)]\sim u-1\).<b>一步到位，比凑标准形式快得多.</b></div>
+
+<div class="ex"><div class="lab">例 2.29　第二个重要极限的应用</div>
+  <p class="stmt">求 ① \(\lim\limits_{x\to\infty}\left(1+\dfrac{3}{x}\right)^{2x}\)；② \(\lim\limits_{x\to\infty}\left(\dfrac{x+1}{x-1}\right)^{x}\)；③ \(\lim\limits_{x\to0}(1+2x)^{\frac{3}{x}}\).</p>
+  <p class="sol"><span class="mk">解</span>① <b>凑标准形式：</b></p>
+  \[\left(1+\frac{3}{x}\right)^{2x}=\left[\left(1+\frac{3}{x}\right)^{\frac{x}{3}}\right]^{6}\to\mathrm{e}^{6}.\]
+  <p>用万能公式验证：\(v(u-1)=2x\cdot\dfrac{3}{x}=6\)，得 \(\mathrm{e}^{6}\).✓</p>
+  <p>② 用万能公式：\(u=\dfrac{x+1}{x-1}\to1\)，\(v=x\to\infty\)，</p>
+  \[v(u-1)=x\left(\frac{x+1}{x-1}-1\right)=x\cdot\frac{2}{x-1}=\frac{2x}{x-1}\to2,\]
+  <p>故原式 \(=\mathrm{e}^{2}\).</p>
+  <p>③ \(v(u-1)=\dfrac{3}{x}\cdot2x=6\)，故原式 \(=\mathrm{e}^{6}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.30　考研经典：\(1^{\infty}\) 与等价无穷小综合</div>
+  <p class="stmt">求 \(\lim\limits_{x\to0}\left(\dfrac{1+\tan x}{1+\sin x}\right)^{\frac{1}{x^{3}}}\).</p>
+  <p class="sol"><span class="mk">解</span>这是 \(1^{\infty}\) 型，用万能公式：</p>
+  \[v(u-1)=\frac{1}{x^{3}}\left(\frac{1+\tan x}{1+\sin x}-1\right)=\frac{1}{x^{3}}\cdot\frac{\tan x-\sin x}{1+\sin x}.\]
+  <p>由例 2.23 的思路：\(\tan x-\sin x=\tan x(1-\cos x)\sim x\cdot\dfrac{x^{2}}{2}=\dfrac{x^{3}}{2}\)，而 \(1+\sin x\to1\).故</p>
+  \[v(u-1)\to\frac{1}{x^{3}}\cdot\frac{x^{3}}{2}=\frac{1}{2},\]
+  <p>原式 \(=\mathrm{e}^{1/2}=\sqrt{\mathrm{e}}\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从 \(\mathrm{e}\) 到 Softmax：AI 为什么偏爱自然常数</div>
+  <details><summary>展开查看：Softmax 的具体数值计算与温度参数的极限行为</summary>
+  <div class="body">
+    <p>神经网络分类任务的最后一层几乎清一色使用 <b>Softmax</b> 函数，把任意实数打分转成概率：</p>
+    \[p_i=\frac{\mathrm{e}^{z_i/T}}{\sum_{j=1}^{K}\mathrm{e}^{z_j/T}},\]
+    <p><b>具体计算.</b>设三分类的原始打分 \(z=(2.0,\;1.0,\;0.1)\)，考察不同温度：</p>
+    <p>当 \(T=1\)：\(\mathrm{e}^{2.0}=7.389,\;\mathrm{e}^{1.0}=2.718,\;\mathrm{e}^{0.1}=1.105\)，总和 \(=11.212\).</p>
+    <table class="dt">
+      <tr><th>温度 \(T\)</th><th>\(p_1\)</th><th>\(p_2\)</th><th>\(p_3\)</th><th>分布特征</th></tr>
+      <tr><td>\(T=0.1\)</td><td>0.99995</td><td>0.00005</td><td>0.00000</td><td>几乎确定（硬）</td></tr>
+      <tr><td>\(T=1\)</td><td>0.6590</td><td>0.2424</td><td>0.0986</td><td>正常</td></tr>
+      <tr><td>\(T=10\)</td><td>0.3672</td><td>0.3323</td><td>0.3005</td><td>接近均匀（软）</td></tr>
+      <tr><td>\(T=100\)</td><td>0.3396</td><td>0.3362</td><td>0.3332</td><td>更均匀</td></tr>
+    </table>
+    <p><b>两端的极限行为：</b></p>
+    <p>① \(T\to0^{+}\)：设 \(z_1\) 严格最大，则对 \(i
+eq1\)，\(\mathrm{e}^{(z_i-z_1)/T}\to0\)（因指数 \(\to-\infty\)），于是</p>
+    \[p_1=\frac{1}{1+\sum_{i
+eq1}\mathrm{e}^{(z_i-z_1)/T}}\to1,\qquad p_i\to0\;(i
+eq1).\]
+    <p>Softmax 退化为 <b>argmax（硬判决）</b>，这正是"温度"这个名字的来源——低温则"冻结"到唯一答案.</p>
+    <p>② \(T\to+\infty\)：所有 \(z_i/T\to0\)，故 \(\mathrm{e}^{z_i/T}\to1\)，得 \(p_i\to\dfrac{1}{K}=\dfrac13\)，退化为<b>均匀分布</b>（完全随机猜）.</p>
+    <p><b>工程含义：</b>大模型生成文本时的 <code>temperature</code> 参数就是这个 \(T\).调低（如 0.2）输出保守稳定，调高（如 1.5）输出多样有创意.你在调用 API 时拨动的那个滑块，背后是两个极限过程的连续插值.</p>
+    <p>此外，知识蒸馏（Knowledge Distillation）刻意用 \(T=3\sim5\) 的"软标签"训练小模型，让它学到大模型对"次优类别"的判断——这些信息在 \(T=1\) 时几乎被压没了.<b>极限的两端是退化，中间的连续过渡才是价值所在.</b></p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §2.6 ============ -->
+<div class="labx">
+  <div class="lab">无穷小的比较</div>
+  <div class="desc">当 (\(x\to0\)) 时，(\(x\))（青）、(\(x^{2}\))（红）、(\(x^{3}\))（橙）趋于 0 的速度依次更快.</div>
+  <canvas id="cv_p26" width="720" height="320"></canvas>
+  
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p26'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p26');
+    var vo=document.getElementById('vo_p26');
+    var W=cv.width,H=cv.height;
+    var xmin=-1,xmax=1,ymin=-0.4,ymax=1;
+    var p=1;
+    function fx(x){ return x; }
+    function gx(x){ return x*x; }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function curve(fn,color){
+      ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.beginPath();var f=true;
+      for(var px=0;px<=W;px++){var x=xmin+px/W*(xmax-xmin);var y=fn(x);
+        if(!isFinite(y)){f=true;continue;} var py=Y(y);
+        if(f){ctx.moveTo(px,py);f=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+    }
+    function draw(){
+      if(rg){p=parseFloat(rg.value); if(vo)vo.textContent=(+p).toFixed(2);}
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(15,110,86,.08)';ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv++){if(gxv===0)continue;ctx.beginPath();ctx.moveTo(X(gxv),0);ctx.lineTo(X(gxv),H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv++){if(gyv===0)continue;ctx.beginPath();ctx.moveTo(0,Y(gyv));ctx.lineTo(W,Y(gyv));ctx.stroke();}
+      ctx.strokeStyle='rgba(15,110,86,.25)';ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.moveTo(X(0),0);ctx.lineTo(X(0),H);ctx.moveTo(0,Y(0));ctx.lineTo(W,Y(0));ctx.stroke();
+      curve(fx,'#0F6E56');
+      if(true){curve(gx,'#fca5a5');}
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · Adam 优化器的 β：指数移动平均的「记忆窗口」有多长</summary>
+<p>令 \(N=\dfrac{1}{1-\beta}\)，即 \(\beta=1-\dfrac{1}{N}\)，则回看 \(N\) 步时的权重衰减因子为</p>
+\[\beta^{N}=\left(1-\frac{1}{N}\right)^{N}\xrightarrow{\;N\to\infty\;}\mathrm{e}^{-1}=0.367879.\]
+<table class="dt">
+<tr><th>\(\beta\)</th><th>\(N=1/(1-\beta)\)</th><th>\(\beta^{N}\) 实际值</th><th>与 \(1/\mathrm{e}\) 之差</th></tr>
+<tr><td>0.9</td><td>10</td><td>0.348678</td><td>\(-0.019201\)</td></tr>
+<tr><td>0.99</td><td>100</td><td>0.366032</td><td>\(-0.001847\)</td></tr>
+<tr><td>0.999</td><td>1000</td><td>0.367695</td><td>\(-0.000184\)</td></tr>
+<tr><td>0.9999</td><td>10000</td><td>0.367861</td><td>\(-0.000018\)</td></tr>
+</table>
+<p class="sol"> 由 \(\left(1-\dfrac1N\right)^{N}=\mathrm{e}^{N\ln(1-1/N)}\)，展开 \(N\ln(1-1/N)=-1-\dfrac{1}{2N}+o(N^{-1})\)，得 \(\beta^{N}\approx\mathrm{e}^{-1}(1-\tfrac{1}{2N})\).取 \(N=10\)：\(0.367879\times0.95=0.349485\)，与实测 0.348678 差 \(0.1\%\)，吻合极限公式.</p>
+<p><b>工程结论：</b> Adam 默认 \(\beta_1=0.9,\;\beta_2=0.999\)，对应约 10 步与 1000 步的「\(1/\mathrm{e}\) 记忆窗口」.规则：总步数须远大于 1000 否则二阶矩未热身；初期 \(m_t\) 被零初值拉低，须除以偏差修正 \(1-\beta^{t}\).<b>那两个神秘小数，本质是 \(\lim\limits_{n\to\infty}\left(1+\dfrac1n\right)^{n}=\mathrm{e}\) 的工程化身.</b></p>
+<div class="sim" style="margin:14px 0 4px">
+  <p style="font-size:13px;color:#33473f;margin:0 0 6px"><b>仿真器：</b>拖动 β，看指数滑动平均的「记忆窗口」N=1/(1−β) 与 β^N→1/e 的收敛.</p>
+  <canvas id="ch2-adam" width="720" height="340" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)"></canvas>
+  <div style="display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">β = <b id="ch2-adam-range-v" style="color:#0F6E56">?</b></label>
+    <input type="range" id="ch2-adam-range" min="0.8" max="0.9999" step="0.0001" value="0.9" style="flex:1;min-width:140px;accent-color:#0F6E56">
+    <span id="ch2-adam-out" style="font-size:12px;color:#64748b"></span>
+  </div>
+</div>
+<script data-ia>
+
+(function(){
+  var cv=document.getElementById('ch2-adam'); if(!cv) return;
+  function setup(){
+    var LW=+cv.getAttribute('width')||cv.width||720;
+    var LH=+cv.getAttribute('height')||cv.height||340;
+    var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+    var W=r.width||LW, H=r.height||LH;
+    cv.width=W*d; cv.height=H*d;
+    var ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0);
+    return {ctx:ctx,W:W,H:H};
+  }
+  var s=null;
+  var range=document.getElementById('ch2-adam-range'),
+      kv=document.getElementById('ch2-adam-range-v'),
+      out=document.getElementById('ch2-adam-out');
+  function draw(){
+    var beta=parseFloat(range.value); kv.textContent=beta.toFixed(4);
+    if(!s) s=setup();
+    var ctx=s.ctx, W=s.W, H=s.H, mL=44, mR=14, mT=18, mB=32, pW=W-mL-mR, pH=H-mT-mB;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+    var N=1/(1-beta);
+    var mMax=Math.max(20, Math.ceil(N*2.2));
+    function X(m){ return mL + (m/mMax)*pW; }
+    function Y(v){ var vmax=1.05; return mT + (1-Math.min(v,vmax)/vmax)*pH; }
+    ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(mL,mT); ctx.lineTo(mL,mT+pH); ctx.lineTo(mL+pW,mT+pH); ctx.stroke();
+    var ye=Y(1/Math.E);
+    ctx.strokeStyle='#dc2626'; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(mL,ye); ctx.lineTo(mL+pW,ye); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626'; ctx.font='10px sans-serif'; ctx.textAlign='left'; ctx.fillText('1/e ≈ 0.3679', mL+4, ye-4);
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2; ctx.beginPath();
+    for(var m=0;m<=mMax;m++){ var px=X(m), py=Y(Math.pow(beta,m)); if(m===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+    ctx.stroke();
+    var nShow=Math.min(N,mMax);
+    var xn=X(nShow);
+    ctx.fillStyle='#0284c7'; ctx.beginPath(); ctx.arc(xn,Y(Math.pow(beta,nShow)),4,0,6.28); ctx.fill();
+    ctx.strokeStyle='#0284c7'; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(xn,mT+pH); ctx.lineTo(xn,Y(Math.pow(beta,nShow))); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('步数 m', mL+pW/2, H-6);
+    ctx.fillStyle='#1e293b'; ctx.font='bold 12px sans-serif'; ctx.textAlign='left'; ctx.fillText('Adam 记忆窗口：β^m', mL, mT-5);
+    out.textContent='N=1/(1−β)='+N.toFixed(0)+' ｜ β^N='+Math.pow(beta,N).toFixed(4)+' (≈1/e)';
+  }
+  range.addEventListener('input', draw);
+  requestAnimationFrame(draw);
+})();
+
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 高速 DAC 的 sinc 衰减与补偿滤波器</summary>
+<p><b>场景：</b> 基站发射通道里，100 MHz 采样率的高速 DAC 正把数字波形还原成模拟信号——频谱仪上频率越高，输出幅度掉得越凶，明明在带内的信号也保不住平坦.原来 DAC 采用零阶保持输出，频响正是 sinc 函数：</p>
+\[H(f)=\left|\frac{\sin(\pi f/f_s)}{\pi f/f_s}\right|.\]
+<p>由第一个重要极限，\(f\to0\) 时 \(H\to1\)；随频率升高衰减迅速累积.取 \(f_s=100\ \mathrm{MHz}\)：</p>
+<table class="dt">
+<tr><th>输出频率 \(f\)</th><th>\(u=\pi f/f_s\)</th><th>\(H(f)=\sin u/u\)</th><th>衰减</th></tr>
+<tr><td>\(10\ \mathrm{MHz}\)</td><td>0.31416</td><td>0.98363</td><td>\(-0.14\ \mathrm{dB}\)</td></tr>
+<tr><td>\(20\ \mathrm{MHz}\)</td><td>0.62832</td><td>0.93549</td><td>\(-0.58\ \mathrm{dB}\)</td></tr>
+<tr><td>\(30\ \mathrm{MHz}\)</td><td>0.94248</td><td>0.85840</td><td>\(-1.33\ \mathrm{dB}\)</td></tr>
+<tr><td>\(40\ \mathrm{MHz}\)</td><td>1.25664</td><td>0.75683</td><td>\(-2.42\ \mathrm{dB}\)</td></tr>
+</table>
+<p class="sol"> 以 \(f=40\ \mathrm{MHz}\) 为例：\(u=\pi\times0.4=1.25664\)，\(H=\dfrac{\sin u}{u}=\dfrac{0.95106}{1.25664}=0.75683\)，衰减 \(20\lg0.75683=-2.42\ \mathrm{dB}\)；带内平坦度差远超 \(0.5\ \mathrm{dB}\) 典型要求.</p>
+<p><b>工程结论：</b> 须预加「\(1/\mathrm{sinc}\)」补偿滤波器，或把带宽限在 \(0.2f_s\) 内（衰减仅 \(0.58\ \mathrm{dB}\)）.<b>\(\lim\limits_{u\to0}\dfrac{\sin u}{u}=1\) 保证直流无衰减、频响无孔洞，让「归一化到 0 dB」有意义.</b></p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s025" data-ch="2" data-n="5"></div>
+<h2 id="s026"><span class="num">§2.6</span>函数的连续性</h2>
+    
+<div class="ex"><div class="lab">引例一　机器人轨迹为什么必须"连续"：一个抖动就是一次撞机</div>
+  <p class="stmt">工业机器人沿规划路径运动，位置由 \(s(t)\) 描述.若某时刻 \(t_0\) 处 \(s(t)\) 有跳跃（\(s(t_0^{-})
+eq s(t_0^{+})\)），意味着机器人要在<b>零时间内瞬移一段距离</b>——物理上不可能，实际表现为伺服电机瞬间过载报警，或机械臂剧烈抖动甚至撞击.</p>
+  <p>考察两条候选轨迹（单位：mm，时间 s）：</p>
+  <table class="dt">
+    <tr><th>时刻 \(t\)</th><th>0.99</th><th>0.999</th><th>1.000</th><th>1.001</th><th>1.01</th></tr>
+    <tr><td>轨迹 A：\(s_A(t)=100t^{2}\)</td><td>98.01</td><td>99.80</td><td>100.00</td><td>100.20</td><td>102.01</td></tr>
+    <tr><td>轨迹 B（分段跳变）</td><td>98.01</td><td>99.80</td><td>100.00</td><td>150.20</td><td>152.01</td></tr>
+  </table>
+  <p>轨迹 A 处处"接得上"：\(t\to1\) 时值趋于 \(100=s_A(1)\)；轨迹 B 在 \(t=1\) 处右极限为 \(150\)，与函数值 \(100\) 不符，出现 \(50\,\mathrm{mm}\) 的跳跃.</p>
+  <p><b>"极限值 = 函数值"就是连续性.</b>机器人控制的第一条硬约束——轨迹必须连续（实际还要求一阶、二阶导数连续，即速度、加速度不突变）——在数学上正是本节要严格定义的概念.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　二分法求根：零点定理如何变成一行代码</div>
+  <p class="stmt">求方程 \(x^{3}-x-1=0\) 在 \([1,2]\) 上的根.这个方程没有简单的求根公式，怎么办？</p>
+  <p>令 \(f(x)=x^{3}-x-1\)，注意 \(f(1)=-1\lt0\)，\(f(2)=5\gt0\)，两端异号.由于 \(f\) 连续，图像必然穿过 \(x\) 轴——这就是<b>零点定理</b>.反复取中点判断符号：</p>
+  <table class="dt">
+    <tr><th>迭代</th><th>区间 \([a,b]\)</th><th>中点 \(c\)</th><th>\(f(c)\)</th><th>区间长</th></tr>
+    <tr><td>1</td><td>[1.0000, 2.0000]</td><td>1.5000</td><td>\(+0.8750\)</td><td>1.000</td></tr>
+    <tr><td>2</td><td>[1.0000, 1.5000]</td><td>1.2500</td><td>\(-0.2969\)</td><td>0.500</td></tr>
+    <tr><td>3</td><td>[1.2500, 1.5000]</td><td>1.3750</td><td>\(+0.2246\)</td><td>0.250</td></tr>
+    <tr><td>4</td><td>[1.2500, 1.3750]</td><td>1.3125</td><td>\(-0.0515\)</td><td>0.125</td></tr>
+    <tr><td>10</td><td>[1.3242, 1.3252]</td><td>1.3247</td><td>\(\approx0\)</td><td>0.00098</td></tr>
+  </table>
+  <p>10 步后精度已达 \(10^{-3}\)，20 步可达 \(10^{-6}\).这段逻辑就是所有科学计算库中 <code>bisect</code> 函数的实现，而<b>它能成立的唯一理由，是"连续函数的介值性"</b>——若函数可以跳跃，异号两端之间未必有根.</p>
+</div>
+
+<h3>一、函数连续性的定义</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.9</span>函数在一点连续</div>
+  <p>设函数 \(f(x)\) 在点 \(x_0\) 的某<b>邻域</b>内有定义.若</p>
+  \[\lim_{x\to x_0}f(x)=f(x_0),\]
+  <p>则称 \(f(x)\) 在点 \(x_0\) <b>连续</b>，称 \(x_0\) 为 \(f(x)\) 的<b>连续点</b>.</p>
+  <p><b>增量形式：</b>记 \(\Delta x=x-x_0\)，\(\Delta y=f(x_0+\Delta x)-f(x_0)\)，则连续等价于</p>
+  \[\lim_{\Delta x\to0}\Delta y=0.\]
+  <p><b>单侧连续：</b>若 \(f(x_0^{-})=f(x_0)\) 称<b>左连续</b>；若 \(f(x_0^{+})=f(x_0)\) 称<b>右连续</b>.</p>
+</div>
+<div class="note"><b>连续的三个条件缺一不可（判断连续性的标准清单）：</b><br>
+① \(f(x)\) 在 \(x_0\) 处<b>有定义</b>（注意：极限只要求去心邻域有定义，连续要求 \(x_0\) 本身也有定义）；<br>
+② \(\lim\limits_{x\to x_0}f(x)\) <b>存在</b>（即左右极限存在且相等）；<br>
+③ 二者<b>相等</b>.<br>
+<b>充要条件：\(f\) 在 \(x_0\) 连续 \(\iff\) 在 \(x_0\) 既左连续又右连续.</b>这是处理分段函数的标准工具.</div>
+
+<div class="def"><div class="lab"><span class="n">定义 2.10</span>区间上的连续函数</div>
+  <p>若 \(f(x)\) 在开区间 \((a,b)\) 内每一点都连续，称 \(f(x)\) 在 \((a,b)\) 内连续.</p>
+  <p>若还在左端点 \(a\) <b>右连续</b>、在右端点 \(b\) <b>左连续</b>，则称 \(f(x)\) 在闭区间 \([a,b]\) 上连续，记作 \(f\in C[a,b]\).</p>
+  <p class="muted">连续函数的图像是一条<b>连绵不断的曲线</b>——可以"一笔画成"而不提笔.</p>
+</div>
+
+<h3>二、间断点及其分类</h3>
+<div class="def"><div class="lab"><span class="n">定义 2.11</span>间断点</div>
+  <p>若 \(f(x)\) 在 \(x_0\) 处不满足连续的三个条件之一，则称 \(x_0\) 为 \(f(x)\) 的<b>间断点</b>（不连续点）.</p>
+  <p><b>分类（按左右极限是否都存在）：</b></p>
+  <table class="dt">
+    <tr><th>大类</th><th>小类</th><th>特征</th><th>典型例子</th></tr>
+    <tr><td rowspan="2"><b>第一类</b><br>（左右极限<b>都存在</b>）</td><td><b>可去间断点</b></td><td>\(f(x_0^{-})=f(x_0^{+})
+eq f(x_0)\)，或 \(f(x_0)\) 无定义</td><td>\(\dfrac{\sin x}{x}\) 在 \(x=0\)</td></tr>
+    <tr><td><b>跳跃间断点</b></td><td>\(f(x_0^{-})
+eq f(x_0^{+})\)</td><td>\(\mathrm{sgn}\,x\) 在 \(x=0\)</td></tr>
+    <tr><td rowspan="2"><b>第二类</b><br>（左右极限<b>至少一个不存在</b>）</td><td><b>无穷间断点</b></td><td>左或右极限为 \(\infty\)</td><td>\(\dfrac1x\) 在 \(x=0\)；\(\tan x\) 在 \(x=\dfrac{\pi}{2}\)</td></tr>
+    <tr><td><b>振荡间断点</b></td><td>极限不存在且非无穷（无限振荡）</td><td>\(\sin\dfrac1x\) 在 \(x=0\)</td></tr>
+  </table>
+</div>
+<div class="note"><b>判断间断点类型的固定流程：</b>先求 \(f(x_0^{-})\) 与 \(f(x_0^{+})\) → 都存在则是第一类（相等为可去、不等为跳跃）→ 有一个不存在则是第二类（趋于无穷为无穷型、来回振荡为振荡型）.<br>
+<b>"可去"的含义：</b>只需重新定义 \(f(x_0)=\lim\limits_{x\to x_0}f(x)\)，函数就变连续了——这正是引例中 \(\operatorname{sinc}(0)=1\) 的由来.</div>
+
+<div class="ex"><div class="lab">例 2.31　间断点的判定与分类</div>
+  <p class="stmt">求 \(f(x)=\dfrac{x^{2}-1}{x^{2}-3x+2}\) 的间断点并分类.</p>
+  <p class="sol"><span class="mk">解</span>分母 \(x^{2}-3x+2=(x-1)(x-2)=0\) 得 \(x=1,2\)，这两点函数无定义，是间断点.</p>
+  <p><b>在 \(x=1\)：</b>\(f(x)=\dfrac{(x-1)(x+1)}{(x-1)(x-2)}=\dfrac{x+1}{x-2}\)（\(x
+eq1\)），故</p>
+  \[\lim_{x\to1}f(x)=\frac{2}{-1}=-2\ (\text{存在}).\]
+  <p>左右极限相等但函数无定义，为<b>可去间断点</b>.补充定义 \(f(1)=-2\) 即可连续.</p>
+  <p><b>在 \(x=2\)：</b>\(\lim\limits_{x\to2}\dfrac{x+1}{x-2}=\infty\)，为<b>第二类·无穷间断点</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.32　分段函数的连续性与待定参数（考研高频）</div>
+  <p class="stmt">设 \(f(x)=\begin{cases}\dfrac{\sin ax}{x},&x\lt0,\\[4pt] b,&x=0,\\[4pt] \dfrac{\ln(1+2x)}{x},&x\gt0,\end{cases}\) 问 \(a,b\) 取何值时 \(f(x)\) 在 \(x=0\) 处连续.</p>
+  <p class="sol"><span class="mk">解</span>分别求左右极限：</p>
+  \[f(0^{-})=\lim_{x\to0^{-}}\frac{\sin ax}{x}=\lim_{x\to0^{-}}a\cdot\frac{\sin ax}{ax}=a,\]
+  \[f(0^{+})=\lim_{x\to0^{+}}\frac{\ln(1+2x)}{x}=\lim_{x\to0^{+}}\frac{2x}{x}=2\quad(\text{用}\ \ln(1+u)\sim u).\]
+  <p>连续要求 \(f(0^{-})=f(0^{+})=f(0)\)，即 \(a=2=b\).</p>
+  <p>故 \(a=2,\;b=2\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.33　含参数的间断点分析</div>
+  <p class="stmt">讨论 \(f(x)=\lim\limits_{n\to\infty}\dfrac{x^{2n}-1}{x^{2n}+1}\) 的连续性.</p>
+  <p class="sol"><span class="mk">解</span>先求出 \(f(x)\) 的表达式，分三种情况：</p>
+  <p>· \(|x|\lt1\)：\(x^{2n}\to0\)，故 \(f(x)=\dfrac{0-1}{0+1}=-1\)；</p>
+  <p>· \(|x|=1\)：\(x^{2n}=1\)，故 \(f(x)=\dfrac{1-1}{1+1}=0\)；</p>
+  <p>· \(|x|\gt1\)：分子分母同除 \(x^{2n}\)，\(f(x)=\lim\dfrac{1-x^{-2n}}{1+x^{-2n}}=1\).</p>
+  \[f(x)=\begin{cases}-1,&|x|\lt1,\\0,&|x|=1,\\1,&|x|\gt1.\end{cases}\]
+  <p>在 \(x=1\) 处：\(f(1^{-})=-1,\;f(1^{+})=1\)，左右极限存在但不等，为<b>跳跃间断点</b>.同理 \(x=-1\) 也是跳跃间断点.其余各点连续.</p>
+  <p class="muted">这类"含极限定义的函数"是考研经典题型：<b>先分区间求出显式表达式，再逐点讨论</b>.</p>
+</div>
+
+<h3>三、连续函数的运算与初等函数的连续性</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.17</span>连续函数的四则运算</div>
+  <p>若 \(f(x),g(x)\) 在 \(x_0\) 处连续，则 \(f\pm g\)、\(f\cdot g\)、\(\dfrac{f}{g}\)（\(g(x_0)
+eq0\)）都在 \(x_0\) 处连续.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(f(x),g(x)\) 在 \(x_0\) 处连续，即 \(\lim\limits_{x\to x_0}f(x)=f(x_0)\)，\(\lim\limits_{x\to x_0}g(x)=g(x_0)\).</p>
+<p><span class="stp">和差与积：</span>由极限四则运算法则（定理 2.7），</p>
+\[\lim_{x\to x_0}(f\pm g)=\lim f\pm\lim g=f(x_0)\pm g(x_0),\]
+\[\lim_{x\to x_0}(fg)=\left(\lim f\right)\left(\lim g\right)=f(x_0)g(x_0).\]
+<p>故 \(f\pm g\)、\(fg\) 在 \(x_0\) 处连续.</p>
+<p><span class="stp">商：</span>当 \(g(x_0)
+eq0\) 时，由定理 2.7 之商的法则，</p>
+\[\lim_{x\to x_0}\frac{f}{g}=\frac{\lim f}{\lim g}=\frac{f(x_0)}{g(x_0)},\]
+<p>且因 \(g(x_0)
+eq0\)，在 \(x_0\) 附近 \(g(x)
+eq0\)，故 \(\dfrac{f}{g}\) 在 \(x_0\) 处连续.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.18</span>复合函数与反函数的连续性</div>
+  <p>① 若 \(u=g(x)\) 在 \(x_0\) 连续、\(y=f(u)\) 在 \(u_0=g(x_0)\) 连续，则复合函数 \(f[g(x)]\) 在 \(x_0\) 连续.此时</p>
+  \[\lim_{x\to x_0}f[g(x)]=f\left[\lim_{x\to x_0}g(x)\right]=f(u_0),\]
+  <p>即<b>极限符号可以与连续的函数符号交换次序</b>.</p>
+  <p>② 若 \(y=f(x)\) 在区间上单调且连续，则其反函数在对应区间上也单调且连续.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">① 复合函数：</span>设 \(u=g(x)\) 在 \(x_0\) 连续，即 \(\lim\limits_{x\to x_0}g(x)=g(x_0)=u_0\)；\(y=f(u)\) 在 \(u_0\) 连续，即 \(\lim\limits_{u\to u_0}f(u)=f(u_0)\).因为 \(f\) 在 \(u_0\) 连续，复合函数极限定理（定理 2.8）的条件③可以去掉（\(g(x)=u_0\) 时也仍满足 \(f(g(x))\to f(u_0)\)）.于是</p>
+\[\lim_{x\to x_0}f[g(x)]=f(u_0)=f[g(x_0)],\]
+<p>即 \(f[g(x)]\) 在 \(x_0\) 连续，且极限符号可与连续函数符号交换.</p>
+<p><span class="stp">② 反函数：</span>设 \(y=f(x)\) 在区间 \(I\) 上单调且连续，则其反函数 \(x=g(y)\) 存在且同单调.任取 \(x_0\in I\)，\(y_0=f(x_0)\).对任意 \(\varepsilon\gt0\)（使 \([x_0-\varepsilon,x_0+\varepsilon]\subset I\)），由 \(f\) 连续知 \(a=f(x_0-\varepsilon)\)、\(b=f(x_0+\varepsilon)\) 存在（端点取单侧），且因严格单调有 \(a\lt b\).取 \(\delta=\min\{y_0-a,\ b-y_0\}\gt0\)，则当 \(|y-y_0|\lt\delta\) 时 \(a\lt y\lt b\)，从而</p>
+\[x_0-\varepsilon=g(a)\lt g(y)\lt g(b)=x_0+\varepsilon,\]
+<p>即 \(|g(y)-x_0|\lt\varepsilon\).故反函数 \(g\) 在 \(y_0\) 连续；由 \(x_0\) 任意，\(g\) 在对应区间上连续且同单调.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.19</span>初等函数的连续性</div>
+  <p><b>一切初等函数在其定义区间内都是连续的.</b></p>
+  <p class="muted">这是一条极其好用的结论：<b>对初等函数求极限，若 \(x_0\) 在定义区间内，直接代入即可</b>.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>初等函数由五类基本初等函数经有限次四则运算与复合得到.先确认基本初等函数在其定义域内连续，再用定理 2.17、2.18 把连续性"遗传"下去.</p>
+<p><span class="stp">第一步（基本初等函数）：</span>常数函数、幂函数 \(x^a\)、指数函数 \(a^x\)、对数函数 \(\log_a x\)、三角函数与反三角函数等，都可直接由定义（或用和差化积、\(\lim\limits_{h\to0}\dfrac{\sin h}{h}=1\) 等）验证在其定义域内连续.</p>
+<p><span class="stp">第二步（遗传）：</span>由定理 2.17，连续函数的和、差、积、商（分母不为 \(0\)）仍连续；由定理 2.18，连续函数的复合仍连续.于是任何由基本初等函数经有限次四则运算与复合构成的初等函数，必在其定义区间内连续.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 2.34　利用连续性求极限</div>
+  <p class="stmt">求 ① \(\lim\limits_{x\to0}\dfrac{\ln(1+x)}{x}\)；② \(\lim\limits_{x\to0}\dfrac{\mathrm{e}^{x}-1}{x}\)；③ \(\lim\limits_{x\to\frac{\pi}{4}}\ln(\tan x+\sin x)\).</p>
+  <p class="sol"><span class="mk">解</span>① 利用对数连续性把极限移入：</p>
+  \[\lim_{x\to0}\frac{\ln(1+x)}{x}=\lim_{x\to0}\ln(1+x)^{\frac1x}=\ln\left[\lim_{x\to0}(1+x)^{\frac1x}\right]=\ln \mathrm{e}=1.\]
+  <p>② 令 \(t=\mathrm{e}^{x}-1\)，则 \(x=\ln(1+t)\)，\(x\to0\) 时 \(t\to0\)：</p>
+  \[\lim_{t\to0}\frac{t}{\ln(1+t)}=1\quad(\text{由 ①}).\]
+  <p>③ 被积表达式是初等函数且 \(x=\dfrac\pi4\) 在定义区间内，直接代入：</p>
+  \[\ln\left(\tan\frac\pi4+\sin\frac\pi4\right)=\ln\left(1+\frac{\sqrt2}{2}\right)\approx\ln1.7071\approx0.5348.\]
+  <p class="muted">①② 正是等价无穷小 \(\ln(1+x)\sim x\) 与 \(\mathrm{e}^{x}-1\sim x\) 的严格来源.</p>
+</div>
+
+<h3>四、闭区间上连续函数的性质</h3>
+<div class="def"><div class="lab"><span class="n">定理 2.20</span>有界性与最大最小值定理</div>
+  <p>若 \(f\in C[a,b]\)（闭区间上连续），则 \(f(x)\) 在 \([a,b]\) 上<b>有界</b>，且一定<b>取得最大值 \(M\) 与最小值 \(m\)</b>.</p>
+  <p class="muted"><b>"闭区间"与"连续"两个条件缺一不可：</b><br>
+  · \(f(x)=\dfrac1x\) 在开区间 \((0,1]\) 上连续但无界；<br>
+  · \(f(x)=x\) 在开区间 \((0,1)\) 上连续有界，但取不到最值；<br>
+  · 在 \([0,1]\) 上定义 \(f(x)=\dfrac1x\ (x
+eq0),\;f(0)=0\)，闭区间但不连续，无界.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需实数完备性，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：先证有界.</span>用<b>反证法 + 致密性定理</b>.若 \(f\) 在 \([a,b]\) 上无界，则对每个 \(n\in\mathbb N\)，可取 \(x_n\in[a,b]\) 使 \(|f(x_n)|\gt n\).数列 \(\{x_n\}\) 有界，由<b>致密性定理（Bolzano–Weierstrass）</b>，存在收敛子列 \(x_{n_k}\to x_0\)；因 \([a,b]\) 是闭区间，极限点 \(x_0\in[a,b]\).由 \(f\) 在 \(x_0\) 连续，得 \(f(x_{n_k})\to f(x_0)\)，说明 \(\{f(x_{n_k})\}\) 有界；但由取法 \(|f(x_{n_k})|\gt n_k\to+\infty\)，矛盾.故 \(f\) 有界.</p>
+<p><span class="stp">第二步：再证最值可达.</span>既然有界，记上确界 \(M=\sup\limits_{[a,b]}f\).由上确界的定义，对每个 \(n\) 存在 \(y_n\in[a,b]\) 使</p>
+\[M-\frac1n\lt f(y_n)\le M .\]
+<p>再用一次致密性定理取收敛子列 \(y_{n_k}\to\eta\in[a,b]\).由连续性 \(f(y_{n_k})\to f(\eta)\)，而由夹逼准则 \(f(y_{n_k})\to M\)，故 \(f(\eta)=M\)，即最大值在 \(\eta\) 处取到.对 \(-f\) 重复同样论证即得最小值.</p>
+<div class="bey"><b>为什么说"超纲"：</b>上面两步都依赖<b>致密性定理</b>，而它又源于实数的<b>完备性（确界原理／区间套定理）</b>——这套关于实数系本身的理论是《数学分析》的开篇内容，工科《高等数学》不作要求.此处给出思路，是为了让你明白：这条看似"显然"的定理，其真正根基不在函数，而在<b>实数轴没有"洞"</b>这一事实.教材中的三个反例正是从"闭""连续"两侧说明条件不可删.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.21</span>零点定理</div>
+  <p>若 \(f\in C[a,b]\) 且 \(f(a)\cdot f(b)\lt0\)（两端<b>异号</b>），则至少存在一点 \(\xi\in(a,b)\)，使 \(f(\xi)=0\).</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需实数完备性，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：构造集合.</span>设 \(f\in C[a,b]\) 且 \(f(a)f(b)\lt0\)，不妨设 \(f(a)\lt0\lt f(b)\).令</p>
+\[S=\{x\in[a,b]:f(t)\lt0,\ \forall\,t\in[a,x]\}.\]
+<p>因 \(f(a)\lt0\) 且 \(f\) 连续，\(S\) 含某个右邻域，非空；又 \(S\subset[a,b]\) 有上界，故 \(S\) 有上确界.</p>
+<p><span class="stp">第二步：用确界定出零点.</span>记 \(\xi=\sup S\in[a,b]\).若 \(f(\xi)\lt0\)，由连续性存在 \(\delta\gt0\) 使在 \([\xi,\xi+\delta]\) 上仍 \(f\lt0\)，则 \(\xi+\delta\in S\)，与 \(\xi\) 是上确界矛盾.若 \(f(\xi)\gt0\)，由连续性存在 \(\delta\gt0\) 使在 \([\xi-\delta,\xi]\) 上 \(f\gt0\)，则 \(\xi-\delta\) 已是比 \(\xi\) 更大的上界候选，矛盾.故只能 \(f(\xi)=0\)，且由端点异号知 \(\xi\in(a,b)\).</p>
+<p><span class="stp">第三步：</span>若 \(f(a)\gt0\gt f(b)\)，对 \(-f\) 重复上述论证即可.</p>
+<div class="bey"><b>为什么说"超纲"：</b>关键一步是"非空有上界的实数集有上确界"——即<b>确界原理</b>，源于实数系的连续性，属《数学分析》内容.工科《高等数学》把零点定理作为连续函数的基本性质直接使用.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 2.22</span>介值定理</div>
+  <p>若 \(f\in C[a,b]\)，\(m,M\) 分别为其最小值与最大值，则对任意 \(c\in[m,M]\)，至少存在一点 \(\xi\in[a,b]\) 使 \(f(\xi)=c\).</p>
+  <p><b>推论：</b>闭区间上的连续函数必能取得介于 \(f(a)\) 与 \(f(b)\) 之间的任何值.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需实数完备性，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：化为零点问题.</span>设 \(f\in C[a,b]\)，\(m,M\) 为其最小值与最大值，\(c\in[m,M]\).</p>
+<p><span class="stp">第二步（用有界最值定出取到 \(m,M\) 的点）：</span>由闭区间上连续函数的有界最值定理（定理 2.20，其严格证明同样依赖实数完备性），存在 \(\alpha,\beta\in[a,b]\) 使 \(f(\alpha)=m\)、\(f(\beta)=M\).</p>
+<p><span class="stp">第三步：套用零点定理.</span>若 \(c=m\) 或 \(c=M\) 已得证.否则令 \(F(x)=f(x)-c\)，则 \(F(\alpha)=m-c\le0\)、\(F(\beta)=M-c\ge0\).若等号不同时成立（即一端严格小于、一端严格大于），由零点定理（定理 2.21）在 \(\alpha,\beta\) 之间存在 \(\xi\) 使 \(F(\xi)=0\)，即 \(f(\xi)=c\).若 \(F(\alpha)=F(\beta)=0\) 则两端点即满足.</p>
+<p><span class="stp">推论：</span>取 \(m'=\min\{f(a),f(b)\}\)、\(M'=\max\{f(a),f(b)\}\)，对任意介于 \(f(a),f(b)\) 之间的值，套用上面结论即得.</p>
+<div class="bey"><b>为什么说"超纲"：</b>本定理建立在有界最值定理与零点定理之上，而二者最终都依赖<b>实数完备性（确界原理／区间套）</b>，属《数学分析》范畴.工科教材将其作为连续函数的基本性质直接应用.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 2.35　零点定理证明根的存在性（考研经典）</div>
+  <p class="stmt">证明方程 \(x\cdot2^{x}=1\) 在区间 \((0,1)\) 内至少有一个实根.</p>
+  <p class="sol"><span class="mk">证</span>令 \(f(x)=x\cdot2^{x}-1\).它是初等函数，在 \([0,1]\) 上连续.</p>
+  <p>计算端点值：\(f(0)=0\cdot1-1=-1\lt0\)，\(f(1)=1\cdot2-1=1\gt0\).</p>
+  <p>两端异号，由零点定理，存在 \(\xi\in(0,1)\) 使 \(f(\xi)=0\)，即 \(\xi\cdot2^{\xi}=1\).证毕.</p>
+  <p class="muted"><b>三步法：构造辅助函数 \(F(x)\) → 验证闭区间连续 → 算两端点值异号.</b>这是最常考的证明题型之一.若还要证<b>唯一性</b>，再补一句"\(f'(x)=2^{x}(1+x\ln2)\gt0\) 在 \((0,1)\) 上恒成立，故 \(f\) 严格递增，根唯一"（用到第 3 章导数）.</p>
+</div>
+
+<div class="ex"><div class="lab">例 2.36　介值定理的应用：不动点问题</div>
+  <p class="stmt">设 \(f\in C[0,1]\) 且 \(0\le f(x)\le1\).证明存在 \(\xi\in[0,1]\) 使 \(f(\xi)=\xi\).</p>
+  <p class="sol"><span class="mk">证</span>令 \(F(x)=f(x)-x\)，则 \(F\) 在 \([0,1]\) 上连续.</p>
+  <p>\(F(0)=f(0)-0=f(0)\ge0\)；\(F(1)=f(1)-1\le0\).</p>
+  <p>若 \(F(0)=0\) 则 \(\xi=0\) 即可；若 \(F(1)=0\) 则 \(\xi=1\) 即可.</p>
+  <p>否则 \(F(0)\gt0,\;F(1)\lt0\)，由零点定理存在 \(\xi\in(0,1)\) 使 \(F(\xi)=0\)，即 \(f(\xi)=\xi\).证毕.</p>
+  <p class="muted"><b>"不动点"在计算机科学中意义重大：</b>迭代算法 \(x_{n+1}=f(x_n)\) 的收敛目标就是不动点.本题的一维结论推广到高维即<b>布劳威尔不动点定理</b>，是博弈论纳什均衡存在性证明的核心工具.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 自动驾驶的"安全走廊"：连续性如何转化为可证明的安全边界</div>
+  <details><summary>展开查看：从介值定理到轨迹规划的碰撞检测（含具体数值验证）</summary>
+  <div class="body">
+    <p>自动驾驶的轨迹规划要回答一个致命问题：<b>规划出的这条路径，会不会在某个瞬间擦到障碍物？</b>如果只在离散时刻（如每 \(0.1\,\mathrm{s}\)）检查一次，两次检查之间会不会"钻过去"？</p>
+    <p><b>数学建模.</b>设车辆中心轨迹为 \(\boldsymbol{p}(t)=(x(t),y(t))\)，障碍物中心为 \(\boldsymbol{q}\)，定义距离函数</p>
+    \[d(t)=\|\boldsymbol{p}(t)-\boldsymbol{q}\|=\sqrt{(x(t)-q_x)^{2}+(y(t)-q_y)^{2}}.\]
+    <p>由于 \(x(t),y(t)\) 连续，且根式与平方都是连续运算，由<b>连续函数的四则运算与复合定理</b>，\(d(t)\) 在整个时间区间上连续.</p>
+    <p><b>关键推论（介值定理的逆用）：</b>若 \(d(t_1)\gt R\) 且 \(d(t_2)\gt R\)（\(R\) 为安全半径），能否断定中间不会小于 \(R\)？<b>不能</b>——介值定理只保证"取到中间值"，不保证"不取到更小值".</p>
+    <p>但反过来：<b>若在某段时间内 \(d(t)\) 曾小于 \(R\)，则由连续性，\(d(t)\) 必然在某时刻恰好等于 \(R\)</b>——碰撞不会"凭空发生"，一定有一个"刚好接触"的临界时刻.这给了我们可靠的检测方法.</p>
+    <p><b>具体算例.</b>设车辆做匀速转弯：\(x(t)=10\cos(0.2t),\;y(t)=10\sin(0.2t)\)，障碍物在 \(\boldsymbol{q}=(9,3)\)，安全半径 \(R=1.2\,\mathrm{m}\).计算：</p>
+    <table class="dt">
+      <tr><th>\(t\)（s）</th><th>\(x(t)\)</th><th>\(y(t)\)</th><th>\(d(t)\)（m）</th><th>安全？</th></tr>
+      <tr><td>0.0</td><td>10.000</td><td>0.000</td><td>3.162</td><td>✓</td></tr>
+      <tr><td>1.0</td><td>9.801</td><td>1.987</td><td>1.243</td><td>✓ 勉强</td></tr>
+      <tr><td>1.5</td><td>9.553</td><td>2.955</td><td>0.554</td><td>✗ <b>碰撞</b></td></tr>
+      <tr><td>2.0</td><td>9.211</td><td>3.894</td><td>0.919</td><td>✗ <b>碰撞</b></td></tr>
+      <tr><td>3.0</td><td>8.253</td><td>5.646</td><td>2.789</td><td>✓</td></tr>
+    </table>
+    <p>若只在 \(t=0\) 与 \(t=3\) 检查，两点都安全（3.162 与 2.789），会误判为"整段安全"——实际在 \(t\in[1.2,2.4]\) 附近已经撞上了.</p>
+    <p><b>由连续性得到的正确做法：</b>由零点定理，令 \(g(t)=d(t)-R\)，若 \(g(1.0)=+0.043\gt0\) 而 \(g(1.5)=-0.646\lt0\)，则存在 \(\xi\in(1.0,1.5)\) 使 \(d(\xi)=R\) —— <b>这是数学上可证明的"必然穿越安全边界"</b>.工业界的做法是：</p>
+    <p>① 用<b>李普希茨常数</b> \(L\)（\(|d(t_1)-d(t_2)|\le L|t_1-t_2|\)，由车速上界给出）确定采样间隔上限 \(\Delta t\lt\dfrac{d_{\min}-R}{L}\)，保证两次采样之间不可能"钻过"；</p>
+    <p>② 或直接求 \(d(t)\) 在区间上的<b>最小值</b>——由<b>闭区间上连续函数的最值定理</b>，这个最小值必然存在且可达，只要 \(\min d(t)\gt R\) 就<b>数学上严格保证</b>全程安全.</p>
+    <p><b>这就是"连续性"在工程中的真正价值：</b>它把"我采样检查了几百次都没问题"这种概率性的自信，升级为"在整个连续时间上都安全"的确定性保证.自动驾驶的功能安全认证（ISO 26262）要求的正是后者.</p>
+  </div>
+  </details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 从芝诺悖论到 ε-N：人类花了两千年才敢谈「无穷」</summary>
+
+<p>公元前五世纪，古希腊爱利亚学派的芝诺抛出了一串让人头皮发麻的问题.最有名的是「阿基里斯追不上乌龟」：跑得最快的阿基里斯让乌龟先跑一段，当他到达乌龟的出发点时，乌龟已经向前挪了一小截；当他跑完这一小截，乌龟又挪了更小的一截……如此无穷无尽，阿基里斯似乎永远追不上.另一个「二分法悖论」更狠：要走完一段路，得先走完一半，而走完这一半又得先走完一半的一半——运动<b>根本无法开始</b>.</p>
+<p>芝诺当然知道阿基里斯能追上乌龟.他要刺痛的是当时人们对「无穷」的含混使用：如果一件事需要完成无穷多个步骤，它怎么可能在有限时间内完成？这个诘问戳中了要害，以至于亚里士多德只能用「潜无穷」与「实无穷」的区分来搪塞——无穷只是一个「可以不断继续下去」的过程，而不是一个「已经完成」的对象.</p>
+<p>但绕不开的终究要面对.阿基米德用「穷竭法」求抛物线弓形面积时，本质上已经在做求和取极限，只是每一步都要用反证法（双重归谬）把结论逼出来，繁琐得惊人.东方的处理更加从容：魏晋时期的刘徽在《九章算术》注中提出割圆术，「割之弥细，所失弥少，割之又割，以至于不可割，则与圆合体而无所失矣」.这已经是极限思想的精确表达，只差一套形式语言.</p>
+<p>十七世纪，牛顿与莱布尼茨造出了微积分这台威力惊人的机器，却是踩着含混的「无穷小」上路的.那个神秘的量 \(\mathrm{d}x\) 一会儿被当作非零（可以做分母），一会儿又被当作零（可以直接扔掉）.1734 年，爱尔兰主教贝克莱写了一本《分析学家》，对此发出著名的嘲讽：这些无穷小究竟是什么？「它们既不是有限量，也不是无穷小量，又不是零.难道我们不能称它们为<b>消逝量的鬼魂</b>吗？」这一击极其致命，因为它完全正确——微积分在当时确实没有逻辑基础，只是因为算得准而被接受.</p>
+<p>这个「鬼魂」在数学的地基里游荡了一百多年.柯西在 1821 年的《分析教程》中第一次把「无穷小」明确定义为「以零为极限的变量」，把它从名词变成了动词.但柯西的表述仍是文字性的：「当一个变量相继取的值无限趋近于一个定值，其差可以任意小时……」——「无限趋近」「任意小」这些词本身，仍然依赖直觉.</p>
+<p>最后一步由魏尔斯特拉斯完成.他做的事情说来简单却石破天惊：把所有涉及「无限」的动态描述，统统翻译成只含<b>有限量</b>的静态不等式.「\(x_n\) 无限趋近 \(a\)」被改写成「\(\forall\varepsilon\gt0,\exists N,\forall n\gt N:|x_n-a|\lt\varepsilon\)」.这句话里没有一个「无穷小」，没有一个「趋近」，只有可以逐一验证的不等式.<b>无穷不再是需要完成的过程，而是一个可以被任意有限精度检验的性质.</b></p>
+<p>从芝诺到魏尔斯特拉斯，中间隔了两千三百年.它是人类为了驯服「无穷」这头猛兽而锻造的笼子，每一根栏杆都对应着一场曾经的思想灾难.当你在证明题里写下「任给 \(\varepsilon\gt0\)」时，你重复的是两千年智力挣扎的最终结论.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] M. Kline《古今数学思想》，上海科学技术出版社；[2] G. Berkeley, <i>The Analyst</i> (1734)；[3] 刘徽《九章算术注》；[4] Wikipedia 词条 “Zeno's paradoxes”、“(ε, δ)-definition of limit”.</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 柯西与魏尔斯特拉斯：分析严格化的一个世纪</summary>
+
+<p>1815 年，二十六岁的柯西成为巴黎综合理工学院的教师.这所由法国大革命催生的学校要培养的是工程师，课程紧凑、考核严苛.柯西面对的现实问题是：微积分要怎么讲，才能让学生不只是「会算」，而是「知道为什么对」？</p>
+<p>他给出的答案是 1821 年出版的《分析教程》（<i>Cours d'Analyse</i>）.它拒绝了当时流行的「用代数形式操作无穷级数」的做法，坚持一切从极限出发.柯西把无穷小重新定义为「以零为极限的变量」——一句话就把贝克莱的鬼魂请出了房间.他还给出了收敛的判别法、连续性的定义、以及后来以他命名的柯西收敛准则.可以说，现代分析学的骨架是柯西搭起来的.</p>
+<p>但柯西并不完美，而他的错误恰恰最能说明「严格化」为什么艰难.《分析教程》中有一条命题：连续函数项级数的和仍然连续.1826 年，年仅二十四岁的挪威人阿贝尔举出了反例——傅里叶级数 \(\sin x-\dfrac{\sin 2x}{2}+\dfrac{\sin 3x}{3}-\cdots\) 每一项都连续，和函数却在 \(x=\pi\) 处跳变.<b>逐点收敛与一致收敛的区别，就是从这个失误里被逼出来的</b>.这件事的教训极为深刻：即使是柯西这样的顶级头脑，只要语言不够精确，量词的次序就会悄悄溜走.</p>
+<p>还有一位几乎被历史遗忘的先行者.1817 年，布拉格的神父波尔查诺发表了一篇长文，用今天看来完全现代的方式证明了介值定理，其中已经出现了 \(\varepsilon\) 式的论证和上确界的思想.直到半个多世纪后，人们才发现他早已走到了前面.数学史上，正确的思想若没有传播的渠道，也会被埋没.</p>
+<p>真正把语言锻造成型的，是魏尔斯特拉斯.他的经历堪称传奇：大学时沉迷击剑与啤酒，没能拿到学位，此后在德意志的偏远小镇当了十几年中学教师，教数学、物理、植物学，甚至体育.他在批改作业的间隙研究阿贝尔函数，直到 1854 年在《克雷尔杂志》上发表论文，一举震动学界，随即被柏林大学延聘.</p>
+<p>魏尔斯特拉斯在柏林讲了三十年课，其贡献主要不在论文而在讲义.他系统地用 \(\varepsilon\text{-}\delta\) 重铸了极限、连续、一致连续、一致收敛的每一个概念，把柯西留下的所有含混之处逐一钉死.1872 年，他向柏林科学院展示了一个函数：处处连续，却处处不可导.但魏尔斯特拉斯的构造无懈可击.<b>这个例子宣告了一件事：在无穷的世界里，直觉不是证据.</b></p>
+<p>同一年，戴德金发表《连续性与无理数》，用「分割」构造实数；康托尔用基本列给出另一条路径.至此，从实数系到极限、从连续到微积分的整条链条被完全建立在算术之上，史称「分析的算术化」.一个世纪的接力就此完成：波尔查诺开局，柯西立柱，阿贝尔纠错，魏尔斯特拉斯定型，戴德金与康托尔浇筑地基.</p>
+<p>这段历史对今天的读者有直接的用处.数值分析里的误差估计、机器学习中收敛速度的证明、控制理论中的稳定性判据，用的都是同一套 \(\varepsilon\text{-}\delta\) 语法.你在写「任给 \(\varepsilon\gt0\)，存在 \(N\)」时，实际上是在使用一台经过百年调试、能够在直觉完全失灵的地方仍然给出可靠答案的推理机器.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] M. Kline《古今数学思想》，上海科学技术出版社；[2] A.-L. Cauchy, <i>Cours d'Analyse de l'École Royale Polytechnique</i> (1821)；[3] R. Dedekind, <i>Stetigkeit und irrationale Zahlen</i> (1872)；[4] Wikipedia 词条 “Karl Weierstrass”、“Bernard Bolzano”、“Weierstrass function”.</p>
+</details>
+</div>
+
+<div class="ky" id="adv2">
+<div class="ky-hd">🎯 考研选讲 · 第二章 极限与连续</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题，数学一、数学二常考）求 \(\lim\limits_{x\to0}\dfrac{\tan x-\sin x}{x^{3}}\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是等价无穷小替换的头号陷阱题.分子是「抵消型」差式，若分别用 \(\tan x\sim x\) 与 \(\sin x\sim x\) 代入，会得到 \(\dfrac{x-x}{x^{3}}=0\)——<b>错误</b>.原因是替换产生的误差是 \(o(x)\) 量级，而两项主部抵消后真正的主部恰好落在 \(x^{3}\) 量级，被扔掉的误差与它同阶甚至更大.破解办法有二：提公因式化差为积，或直接泰勒展开.</p>
+<p class="sol"><span class="mk">解</span> <b>方法一（提公因式）：</b>注意 \(\tan x-\sin x=\dfrac{\sin x}{\cos x}-\sin x=\tan x\,(1-\cos x)\).这已经化成<b>乘积</b>形式，各因子可以放心替换：\(\tan x\sim x\)，\(1-\cos x\sim\dfrac{x^{2}}{2}\)，故</p>
+\[\lim_{x\to0}\frac{\tan x(1-\cos x)}{x^{3}}=\lim_{x\to0}\frac{x\cdot\dfrac{x^{2}}{2}}{x^{3}}=\frac{1}{2}.\]
+<p><b>方法二（泰勒展开）：</b>\(\tan x=x+\dfrac{x^{3}}{3}+o(x^{3})\)，\(\sin x=x-\dfrac{x^{3}}{6}+o(x^{3})\)，两式相减得 \(\tan x-\sin x=\dfrac{x^{3}}{3}+\dfrac{x^{3}}{6}+o(x^{3})=\dfrac{x^{3}}{2}+o(x^{3})\)，故极限为 \(\dfrac12\).</p>
+<p class="ky-idea"><b>命题意图.</b> 考查等价无穷小替换的适用边界——乘除因子可整体替换、加减项须谨慎，并检验考生是否掌握「提公因式」与「泰勒展开」两条退路.命题人特意设计成两种错解（得 0 或得 1）都很自然，用以区分「会背公式」与「懂原理」.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题，数学一常考）求 \(\lim\limits_{x\to0}(\cos x)^{\frac{1}{x\sin x}}\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 底数 \(\cos x\to1\)、指数 \(\dfrac{1}{x\sin x}\to\infty\)，是标准的 \(1^{\infty}\) 型.切忌「底数趋于 1 所以结果是 1」——这是最常见的错误.用 §2.5 的万能公式 \(\lim u^{v}=\mathrm{e}^{\lim v(u-1)}\) 一步到位，比凑 \(\left(1+\dfrac1t\right)^{t}\) 的标准形式快得多.</p>
+<p class="sol"><span class="mk">解</span> 记 \(u=\cos x,\;v=\dfrac{1}{x\sin x}\)，则 \(u\to1,\;v\to\infty\)，属 \(1^{\infty}\) 型.计算</p>
+\[v(u-1)=\frac{\cos x-1}{x\sin x}.\]
+<p>分子用 \(1-\cos x\sim\dfrac{x^{2}}{2}\)，即 \(\cos x-1\sim-\dfrac{x^{2}}{2}\)；分母用 \(\sin x\sim x\)，即 \(x\sin x\sim x^{2}\).二者均为乘除形式，可直接替换：</p>
+\[\lim_{x\to0}v(u-1)=\lim_{x\to0}\frac{-\dfrac{x^{2}}{2}}{x^{2}}=-\frac{1}{2}.\]
+<p>故原式 \(=\mathrm{e}^{-1/2}=\dfrac{1}{\sqrt{\mathrm{e}}}\approx0.6065\).</p>
+<p class="ky-idea"><b>命题意图.</b> 考查 \(1^{\infty}\) 未定式的识别与标准处理流程，同时检验 \(1-\cos x\sim\dfrac{x^{2}}{2}\) 这一高频等价式的熟练度.万能公式的本质是 \(u^{v}=\mathrm{e}^{v\ln u}\) 配合 \(\ln[1+(u-1)]\sim u-1\)，考场上写出这一句即可保证步骤分.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题，数学一常考）求 \(\lim\limits_{x\to0}\dfrac{(1+x)^{\frac{1}{x}}-\mathrm{e}}{x}\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是「洛必达 vs 泰勒」的经典对照题.分子分母都趋于 \(0\)，直接洛必达要对 \((1+x)^{1/x}\) 求导，导数表达式极其繁琐，考场上几乎必错.正确策略是先把幂指函数<b>指数化</b>，再对指数部分做泰勒展开，把 \(\mathrm{e}\) 提出来.关键是要展开到 \(x\) 的一次项.</p>
+<p class="sol"><span class="mk">解</span> 先指数化：\((1+x)^{\frac1x}=\mathrm{e}^{\frac{\ln(1+x)}{x}}\).对指数用 \(\ln(1+x)=x-\dfrac{x^{2}}{2}+\dfrac{x^{3}}{3}+o(x^{3})\)，得</p>
+\[\frac{\ln(1+x)}{x}=1-\frac{x}{2}+\frac{x^{2}}{3}+o(x^{2}).\]
+<p>于是</p>
+\[(1+x)^{\frac1x}=\mathrm{e}\cdot\mathrm{e}^{-\frac{x}{2}+\frac{x^{2}}{3}+o(x^{2})}=\mathrm{e}\left[1+\left(-\frac{x}{2}\right)+o(x)\right]=\mathrm{e}-\frac{\mathrm{e}}{2}x+o(x).\]
+<p>代回原式：</p>
+\[\lim_{x\to0}\frac{\mathrm{e}-\dfrac{\mathrm{e}}{2}x+o(x)-\mathrm{e}}{x}=\lim_{x\to0}\frac{-\dfrac{\mathrm{e}}{2}x+o(x)}{x}=-\frac{\mathrm{e}}{2}.\]
+<p class="ky-idea"><b>命题意图.</b> 考查幂指函数的通用处理手法「指数化 + 泰勒」，并检验考生对 \(\mathrm{e}^{u}=1+u+o(u)\) 与 \(\ln(1+x)\) 展开式的组合使用能力.本题若强行洛必达也能做出，但计算量是泰勒法的数倍——命题意图正在于筛选方法选择的判断力.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题，数学一常考）求函数 \(f(x)=\dfrac{x-x^{3}}{\sin(\pi x)}\) 的全部间断点，并判定其类型.</p>
+<p class="ky-hint"><b>思路点拨.</b> 分母为零的点即间断点，这里是全体整数 \(x=k\).陷阱在于：<b>不能一概判为无穷间断点</b>——若分子在该点也为零，就可能是可去间断点.分子 \(x-x^{3}=x(1-x)(1+x)\) 恰在 \(x=0,\pm1\) 处为零，这三点必须单独计算极限，其余整数点才是无穷型.</p>
+<p class="sol"><span class="mk">解</span> 由 \(\sin(\pi x)=0\) 得间断点为 \(x=k\;(k\in\mathbb{Z})\).分子 \(x-x^{3}=x(1-x)(1+x)\).</p>
+<p><b>① \(x=0\)：</b>用 \(\sin(\pi x)\sim\pi x\)，</p>
+\[\lim_{x\to0}\frac{x(1-x^{2})}{\sin(\pi x)}=\lim_{x\to0}\frac{x(1-x^{2})}{\pi x}=\frac{1}{\pi}.\]
+<p>极限存在而 \(f(0)\) 无定义，故 \(x=0\) 为<b>可去间断点</b>.</p>
+<p><b>② \(x=1\)：</b>令 \(t=x-1\;(t\to0)\)，则分子 \(=(1+t)(-t)(2+t)\to-2t\)，分母 \(\sin(\pi+\pi t)=-\sin(\pi t)\sim-\pi t\)，故</p>
+\[\lim_{x\to1}f(x)=\lim_{t\to0}\frac{-2t}{-\pi t}=\frac{2}{\pi}.\]
+<p>为<b>可去间断点</b>.同理令 \(t=x+1\) 可得 \(\lim\limits_{x\to-1}f(x)=\dfrac{2}{\pi}\)，\(x=-1\) 也是<b>可去间断点</b>.</p>
+<p><b>③ 其余整数 \(x=k\;(|k|\ge2)\)：</b>分子 \(k(1-k^{2})
+eq0\) 为非零常数，分母趋于 \(0\)，由无穷小的倒数关系知 \(f(x)\to\infty\)，故均为<b>第二类·无穷间断点</b>.</p>
+<p class="ky-idea"><b>命题意图.</b> 考查间断点分类的完整流程，重点检验「先看分子分母是否有公共零点」这一关键判断.命题人用 \(\sin(\pi x)\) 制造了无穷多个间断点，迫使考生分类讨论而非逐点蛮算，同时考查换元求极限与等价无穷小在非零点处的正确使用.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 5】</b>（考研典型题，数学一、数学二常考）设 \(f(x)\) 在 \([0,2a]\) 上连续（\(a\gt0\)），且 \(f(0)=f(2a)\).证明：存在 \(\xi\in[0,a]\)，使 \(f(\xi)=f(\xi+a)\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 结论形如「\(F(\xi)=0\)」，标准做法是构造辅助函数 \(F(x)=f(x+a)-f(x)\) 并在 \([0,a]\) 上用零点定理.难点在于 \(F(0)\) 与 \(F(a)\) 的符号未知——巧妙之处是利用条件 \(f(0)=f(2a)\) 证明二者<b>互为相反数</b>，从而乘积非正.还要单独处理端点取零的退化情形，这一步是评分点.</p>
+<p class="sol"><span class="mk">解</span> 令 \(F(x)=f(x+a)-f(x),\;x\in[0,a]\).当 \(x\in[0,a]\) 时 \(x+a\in[a,2a]\subset[0,2a]\)，故 \(f(x)\) 与 \(f(x+a)\) 均有定义且连续，由连续函数的四则运算知 \(F(x)\) 在 \([0,a]\) 上连续.</p>
+<p>计算两端点值：</p>
+\[F(0)=f(a)-f(0),\qquad F(a)=f(2a)-f(a)=f(0)-f(a)=-F(0),\]
+<p>这里第二个等号用到了已知条件 \(f(2a)=f(0)\).</p>
+<p><b>情形一：</b>若 \(F(0)=0\)，即 \(f(a)=f(0)\)，取 \(\xi=0\) 即满足 \(f(\xi)=f(\xi+a)\)，结论成立.</p>
+<p><b>情形二：</b>若 \(F(0)
+eq0\)，则</p>
+\[F(0)\cdot F(a)=F(0)\cdot[-F(0)]=-[F(0)]^{2}\lt0,\]
+<p>即 \(F\) 在区间两端异号.由零点定理，存在 \(\xi\in(0,a)\) 使 \(F(\xi)=0\)，即 \(f(\xi)=f(\xi+a)\).</p>
+<p>综合两种情形，必存在 \(\xi\in[0,a]\) 使 \(f(\xi)=f(\xi+a)\).证毕.</p>
+<p class="ky-idea"><b>命题意图.</b> 考查闭区间上连续函数性质的综合运用：辅助函数的构造、连续性的验证、零点定理的严格使用，以及对退化情形的完备讨论.本题的结论有直观含义——一段首尾等高的路径上，总能找到相距 \(a\) 的等高两点，这在图像识别的模板匹配与信号处理的自相关分析中都有直接对应.</p>
+</div>
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 自动驾驶安全走廊：用二分法找出「刚好擦到」的时刻</summary>
+<p><b>场景：</b> 仿真里这辆车正沿弧线逼近障碍物：\(t=1.0\ \mathrm{s}\) 时距离安全边界还差 0.043 m，\(t=1.5\ \mathrm{s}\) 已经侵入 0.646 m——碰撞就发生在这一秒之间，你得把那个"刚好擦到"的时刻挖出来.沿用引例轨迹 \(x(t)=10\cos(0.2t),\;y(t)=10\sin(0.2t)\)，障碍物 \(\boldsymbol{q}=(9,3)\)，安全半径 \(R=1.2\ \mathrm{m}\).距离函数 \(d(t)\) 连续，令 \(g(t)=d(t)-R\)，已知 \(g(1.0)=+0.043\gt0\)、\(g(1.5)=-0.646\lt0\)，由<b>零点定理</b>必存在临界时刻 \(\xi\in(1.0,1.5)\) 触碰边界.用二分法找出：</p>
+<table class="dt">
+<tr><th>迭代</th><th>区间 \([a,b]\)</th><th>中点 \(c\)</th><th>\(d(c)\)（m）</th><th>\(g(c)\)</th><th>区间长</th></tr>
+<tr><td>1</td><td>[1.0000, 1.5000]</td><td>1.2500</td><td>0.8669</td><td>\(-0.333\)</td><td>0.5000</td></tr>
+<tr><td>2</td><td>[1.0000, 1.2500]</td><td>1.1250</td><td>1.0730</td><td>\(-0.127\)</td><td>0.2500</td></tr>
+<tr><td>3</td><td>[1.0000, 1.1250]</td><td>1.0625</td><td>1.1809</td><td>\(-0.019\)</td><td>0.1250</td></tr>
+</table>
+<p class="sol"> 验算 \(t=1.0625\)：\(x=9.7751,\ y=2.1090\)，得 \(d=1.1809\ \mathrm{m}\lt R\)，已越界，区间左移.5 步后得 \(\xi\approx1.047\ \mathrm{s}\)；按 \(v=2\ \mathrm{m/s}\) 折算位置不确定度 \(\pm3.2\ \mathrm{cm}\)，10 步后降到 \(\pm1\ \mathrm{mm}\).</p>
+<p><b>工程结论：</b> 只在 \(t=0\) 与 \(t=3\) 抽查会误判「全程安全」；而连续性 + 零点定理下，区间两端 \(g\) 异号即可<b>确定地</b>断言越界时刻存在.<b>这把「采样多次都没事」的概率自信，升级为 ISO 26262 要求的确定性保证.</b></p>
+<p class="cn-point">采样检查几百次都不能证明安全，零点定理却保证越界时刻 \(\xi\approx1.047\ \mathrm{s}\) 必然存在——国产智能驾驶过功能安全认证（ISO 26262），靠的正是这种把概率自信换成确定性证明的数学.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 控制指令的跳跃间断：一次换道抖动的定量分析</summary>
+<p><b>场景：</b> 高速上以 25 m/s 巡航，决策模块在 \(t_0\) 从「直行」切到「换道」，前轮转角指令 \(\delta(t)\) 硬切换（\(\delta=0\) 当 \(t\lt t_0\)，\(\delta=0.01\ \mathrm{rad}\) 当 \(t\ge t_0\)）——车是转过来了，车上每个人却被猛地甩了一下，转向电机跟着报警.\(\delta(t)\) 在 \(t_0\) 处是<b>跳跃间断点</b>：\(\delta(t_0^{-})=0
+eq0.01=\delta(t_0^{+})\).车速 \(v=25\ \mathrm{m/s}\)，轴距 \(L=2.8\ \mathrm{m}\)，由自行车模型侧向加速度</p>
+\[a_y=\frac{v^{2}\tan\delta}{L}=\frac{625\times0.01}{2.8}=2.23\ \mathrm{m/s^{2}}.\]
+<p>侧向加加速度（jerk）\(j=\dfrac{\Delta a_y}{T}\)，其中 \(T\) 为指令过渡时间，ISO 舒适阈值约 \(2\ \mathrm{m/s^{3}}\).</p>
+<table class="dt">
+<tr><th>指令形式</th><th>过渡时间 \(T\)</th><th>jerk \(j\)（\(\mathrm{m/s^{3}}\)）</th><th>评价</th></tr>
+<tr><td>硬切换（跳跃间断）</td><td>\(\to0\)</td><td>\(\to\infty\)</td><td>转向电机堵转报警</td></tr>
+<tr><td>线性过渡</td><td>\(0.3\ \mathrm{s}\)</td><td>7.44</td><td>明显冲击</td></tr>
+<tr><td>线性过渡</td><td>\(0.6\ \mathrm{s}\)</td><td>3.72</td><td>可执行但不适</td></tr>
+<tr><td>线性过渡</td><td>\(1.2\ \mathrm{s}\)</td><td>1.86</td><td>达标</td></tr>
+</table>
+<p class="sol"> 由 \(j=\dfrac{a_y}{T}\le2\) 解得 \(T\ge\dfrac{2.23}{2}=1.12\ \mathrm{s}\).硬切换时 \(T\to0^{+}\)，故 \(\lim\limits_{T\to0^{+}}\dfrac{2.23}{T}=+\infty\)，jerk 为<b>无穷大</b>，电机出现电流尖峰.</p>
+<p><b>工程结论：</b> 控制指令不仅要连续（消除跳跃间断），还要一阶导数有界（限制 jerk）.量产方案在决策后串一级<b>速率限幅器</b>，过渡时间设为 \(1.2\sim1.5\ \mathrm{s}\).<b>「函数连续」在车规规范里就是一行斜率约束——间断点不是抽象概念，它是一场真实的方向盘抖动.</b></p>
+<p class="cn-point">硬切换前轮转角，jerk 趋于无穷大，转向电机瞬间过流报警；过渡时间拉到 1.2 s 才达标——车规里那一行斜率约束，就是 \(\lim\limits_{T\to0^{+}}\dfrac{2.23}{T}=+\infty\) 在量产车上写成的限幅器参数.</p>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC2">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq2" data-ch=2><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第2章 · 极限与连续</div>
+<a href="#s021">2.1 数列的极限</a>
+<a href="#s022">2.2 函数的极限</a>
+<a href="#s023">2.3 极限的性质与运算法则</a>
+<a href="#s024">2.4 无穷小与无穷大</a>
+<a href="#s025">2.5 极限的存在准则与两个重要极限</a>
+<a href="#s026">2.6 函数的连续性</a>
+<a href="ch2.html#adv2">考研选讲</a>
+<a href="ch2.html#cq2">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 2, "list": [["s021", "2.1 数列的极限"], ["s022", "2.2 函数的极限"], ["s023", "2.3 极限的性质与运算法则"], ["s024", "2.4 无穷小与无穷大"], ["s025", "2.5 极限的存在准则与两个重要极限"], ["s026", "2.6 函数的连续性"], ["adv2", "考研选讲"], ["cq2", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

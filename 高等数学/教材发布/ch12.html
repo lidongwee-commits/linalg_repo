@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第12章 · 曲面积分</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第12章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第12章 · 曲面积分</div>
+<a href="ch12.html">整章</a>
+<a href="ch12.html#adv12">考研选讲</a>
+<a href="ch12.html#cq12">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH12 -->
+<div class="kicker">Chapter 12</div>
+<h1 class="title">曲面积分<span class="en">Surface Integrals</span></h1>
+<p class="lede">本章建立对面积与对坐标两类曲面积分，借助高斯公式与斯托克斯公式，把空间曲面积分、曲线积分与三重、曲面积分联系起来，完成多元积分学基本定理的拼图.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>对面积积分</b> → 表面传感器覆盖统计</li>
+<li><b>对坐标积分</b> → 热流/通量场</li>
+<li><b>高斯公式</b> → 散度 = 源强，表面算体积</li>
+<li><b>应用</b> → 电场/流体通量</li>
+  </ul>
+</div>
+
+     data-fp="2*x" data-fq="2*y" data-flow="1"
+     data-xr="-2,2" data-yr="-2,2"
+
+    <!-- ============ §12.1 ============ -->
+<div class="labx">
+  <div class="lab">第一类曲面积分 · 曲面片</div>
+  <div class="desc">固定 (\(y=y_0\))（拖动）得到截面曲线 (\(z=f(x,y_0)=0.4\cos x\cos y_0\)).</div>
+  <canvas id="cv_p121" width="720" height="320"></canvas>
+  <div class="ctrl"><label>y₀ = <span id="vo_p121">0</span></label>
+  <input type="range" id="rg_p121" min="-1" max="1" step="0.1" value="0"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p121'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p121');
+    var vo=document.getElementById('vo_p121');
+    var W=cv.width,H=cv.height;
+    var xmin=-3,xmax=3,ymin=-1,ymax=1;
+    var p=0;
+    function fx(x){ return 0.4*Math.cos(x)*Math.cos(p); }
+    function gx(x){  }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.12)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv+=2){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv+=2){var yy=Y(gyv)*H;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
+      // axes
+      var y0=Y(0)*H, x0=X(0)*W;
+      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x0,0);ctx.lineTo(x0,H);ctx.moveTo(0,y0);ctx.lineTo(W,y0);ctx.stroke();
+      // f(x)=x*sin x
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.8; ctx.lineCap='round'; ctx.beginPath();
+      var f1=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fx(x);
+        if(!isFinite(y)){f1=true;continue;}var py=Y(y);
+        if(py<0||py>1){f1=true;continue;}var sx=px,sy=py*H;
+        if(f1){ctx.moveTo(sx,sy);f1=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // f'(x)=sin x+x*cos x
+      ctx.strokeStyle='#D97706'; ctx.lineWidth=2.2; ctx.beginPath();
+      var f2=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fpx(x);
+        if(!isFinite(y)){f2=true;continue;}var py=Y(y);
+        if(py<0||py>1){f2=true;continue;}var sx=px,sy=py*H;
+        if(f2){ctx.moveTo(sx,sy);f2=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // legend
+      ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#0F6E56'; ctx.fillRect(W-145,10,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=x\u00b7sin x', W-125,16);
+      ctx.fillStyle='#D97706'; ctx.fillRect(W-145,26,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText("f\u2032(x)=sin x+x\u00b7cos x", W-125,32);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    <h2 id="s121"><span class="num">§12.1</span>对面积的曲面积分</h2>
+    
+<div class="ex"><div class="lab">引例一　卫星太阳能帆板：真实受光面积与光通量到底怎么算</div>
+  <p class="stmt">一颗遥感卫星的太阳能帆板，为了在发射时折叠、在轨后抗微振动，被做成<b>微弧面</b>而非平板.工程师面对两个必须精确回答的问题：① 铺设光电薄膜要用多少平方米材料（这取决于<b>真实曲面面积</b>）；② 正对太阳时能收到多少瓦光功率（这取决于<b>每一小片曲面的受光角度</b>）.</p>
+  <p>把帆板建模为柱面的一块：</p>
+  \[\Sigma:\ z=\sqrt{R^{2}-x^{2}},\qquad -a\le x\le a,\quad 0\le y\le L,\]
+  <p>取 \(R=5\,\mathrm{m}\)（曲率半径）、\(a=2\,\mathrm{m}\)、\(L=3\,\mathrm{m}\).此时</p>
+  \[z_x=\frac{-x}{\sqrt{R^{2}-x^{2}}},\quad z_y=0,\qquad
+    \sqrt{1+z_x^{2}+z_y^{2}}=\sqrt{\frac{R^{2}}{R^{2}-x^{2}}}=\frac{R}{\sqrt{R^{2}-x^{2}}}.\]
+  <p>于是曲面上一小块的面积微元与它在 \(xOy\) 面上投影的关系是</p>
+  \[\mathrm{d}S=\frac{R}{\sqrt{R^{2}-x^{2}}}\,\mathrm{d}x\,\mathrm{d}y .\]
+  <p><b>具体模拟计算</b>（沿 \(x\) 取几个位置，看"放大倍数"如何变化）：</p>
+  <table class="dt">
+    <tr><th>\(x\)（m）</th><th>\(\sqrt{R^2-x^2}\)</th><th>放大因子 \(\dfrac{\mathrm{d}S}{\mathrm{d}x\mathrm{d}y}\)</th><th>法向余弦 \(\cos\gamma\)</th></tr>
+    <tr><td>0.0</td><td>5.0000</td><td>1.0000</td><td>1.0000</td></tr>
+    <tr><td>1.0</td><td>4.8990</td><td>1.0206</td><td>0.9798</td></tr>
+    <tr><td>1.5</td><td>4.7697</td><td>1.0483</td><td>0.9539</td></tr>
+    <tr><td>2.0</td><td>4.5826</td><td>1.0911</td><td>0.9165</td></tr>
+  </table>
+  <p><b>① 真实面积</b>（把所有小块加起来）：</p>
+  \[A=\iint_\Sigma \mathrm{d}S=\int_0^{L}\!\!\int_{-a}^{a}\frac{R\,\mathrm{d}x}{\sqrt{R^{2}-x^{2}}}\,\mathrm{d}y
+   =L\,R\Bigl[\arcsin\frac{x}{R}\Bigr]_{-a}^{a}=2LR\arcsin\frac{a}{R}.\]
+  <p>代入数据：\(2\times3\times5\times\arcsin0.4=30\times0.41152=12.35\,\mathrm{m}^{2}\).而它的平面投影只有 \(2aL=12\,\mathrm{m}^{2}\)——<b>弯曲让材料多用了 2.88%</b>，一颗卫星就是几万元的差价.</p>
+  <p><b>② 光通量</b>.太阳常数 \(S_0=1361\,\mathrm{W/m^2}\)，阳光沿 \(-z\) 方向入射，则每一小片曲面实际接收的功率密度为 \(S_0\cos\gamma\)，其中 \(\cos\gamma=\dfrac{1}{\sqrt{1+z_x^2+z_y^2}}=\dfrac{\sqrt{R^2-x^2}}{R}\).总功率为</p>
+  \[\Phi=\iint_\Sigma S_0\cos\gamma\,\mathrm{d}S
+   =\iint_{D}S_0\cdot\frac{\sqrt{R^{2}-x^{2}}}{R}\cdot\frac{R}{\sqrt{R^{2}-x^{2}}}\,\mathrm{d}x\,\mathrm{d}y
+   =S_0\iint_{D}\mathrm{d}x\,\mathrm{d}y=1361\times12=16332\ \mathrm{W}.\]
+  <p>按 30% 光电转换效率，输出电功率约 \(4.90\,\mathrm{kW}\).注意这里发生了一次漂亮的抵消：<b>"面积放大"与"余弦缩小"恰好互为倒数</b>，所以光功率只与投影面积有关.这不是巧合，而是曲面积分内在结构的必然——本节要做的，正是把这类"在曲面上累加"的运算严格化.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　火箭整流罩蒙皮的质量：曲面形构件的称重问题</div>
+  <p class="stmt">运载火箭整流罩的锥段蒙皮是碳纤维复合材料，为承受气动载荷，靠近底部铺层更厚.设该锥段为</p>
+  \[\Sigma:\ z=\sqrt{x^{2}+y^{2}},\qquad 1\le\sqrt{x^{2}+y^{2}}\le 3\ (\mathrm{m}),\]
+  <p>其面密度（单位面积质量）随高度线性变化：\(\mu(x,y,z)=2+0.5z\ \ (\mathrm{kg/m^2})\).求蒙皮总质量.</p>
+  <p class="sol"><span class="mk">解</span>思路完全平行于第 5 章"分割—近似—求和—取极限"：把曲面分成 \(n\) 小片 \(\Delta S_i\)，每片上密度近似为常数 \(\mu(\xi_i,\eta_i,\zeta_i)\)，则</p>
+  \[m\approx\sum_{i=1}^{n}\mu(\xi_i,\eta_i,\zeta_i)\,\Delta S_i .\]
+  <p>先做<b>有限片的模拟计算</b>（沿半径切成 4 条环带，每条取中点值）：</p>
+  <table class="dt">
+    <tr><th>环带 \(r\in\)</th><th>中点 \(r\)</th><th>面密度 \(\mu\)（kg/m²）</th><th>环带面积 \(\Delta S\)（m²）</th><th>质量 \(\mu\Delta S\)（kg）</th></tr>
+    <tr><td>[1.0, 1.5]</td><td>1.25</td><td>2.625</td><td>5.554</td><td>14.58</td></tr>
+    <tr><td>[1.5, 2.0]</td><td>1.75</td><td>2.875</td><td>7.775</td><td>22.35</td></tr>
+    <tr><td>[2.0, 2.5]</td><td>2.25</td><td>3.125</td><td>9.996</td><td>31.24</td></tr>
+    <tr><td>[2.5, 3.0]</td><td>2.75</td><td>3.375</td><td>12.218</td><td>41.24</td></tr>
+    <tr><td colspan="3">合计</td><td>35.543</td><td>109.41</td></tr>
+  </table>
+  <p>让环带无限细下去，和式的极限就写成曲面积分.锥面上 \(z_x=\dfrac{x}{r},z_y=\dfrac{y}{r}\)，故 \(1+z_x^2+z_y^2=2\)，\(\mathrm{d}S=\sqrt2\,\mathrm{d}x\,\mathrm{d}y\)：</p>
+  \[m=\iint_\Sigma\mu\,\mathrm{d}S=\sqrt2\int_0^{2\pi}\!\!\int_1^{3}(2+0.5r)\,r\,\mathrm{d}r\,\mathrm{d}\theta
+   =2\sqrt2\,\pi\Bigl[r^{2}+\tfrac{r^{3}}{6}\Bigr]_1^{3}=2\sqrt2\,\pi\cdot\frac{37}{3}=109.59\ \mathrm{kg}.\]
+  <p>4 条环带的中点法已给出 \(109.41\,\mathrm{kg}\)，相对误差仅 \(0.17\%\).<b>"分片—近似—求和—取极限"这条老路，在曲面上依旧走得通</b>，只不过累加的载体从区间、平面区域，换成了空间中的一张曲面.</p>
+</div>
+
+<h3>一、对面积的曲面积分的概念</h3>
+<p>把引例二的过程抽象出来.设 \(\Sigma\) 是空间中一张<b>光滑曲面</b>（即处处有连续变化的切平面），其上分布着面密度 \(f(x,y,z)\).任意把 \(\Sigma\) 分成 \(n\) 小片 \(\Delta S_1,\dots,\Delta S_n\)（同时用 \(\Delta S_i\) 表示其面积），在第 \(i\) 片上任取一点 \((\xi_i,\eta_i,\zeta_i)\)，作和式 \(\sum f(\xi_i,\eta_i,\zeta_i)\Delta S_i\).当所有小片直径的最大值 \(\lambda\to0\) 时，若和式极限存在且与分法、取点无关，就得到下面的定义.</p>
+
+<div class="def"><div class="lab"><span class="n">定义 12.1</span>对面积的曲面积分（第一类曲面积分）</div>
+  <p>设曲面 \(\Sigma\) 光滑且面积有限，函数 \(f(x,y,z)\) 在 \(\Sigma\) 上有界.若极限</p>
+  \[\lim_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\,\Delta S_i\]
+  <p>存在，则称此极限为 \(f\) 在 \(\Sigma\) 上<b>对面积的曲面积分</b>，或称<b>第一类曲面积分</b>，记作</p>
+  \[\iint_\Sigma f(x,y,z)\,\mathrm{d}S ,\]
+  <p>其中 \(f\) 称为被积函数，\(\Sigma\) 称为积分曲面，\(\mathrm{d}S\) 称为<b>面积元素</b>.若 \(\Sigma\) 是闭曲面，习惯记作 \(\displaystyle\oiint_\Sigma f\,\mathrm{d}S\).</p>
+</div>
+<div class="note">当 \(f\) 在光滑（或分片光滑）曲面 \(\Sigma\) 上<b>连续</b>时，\(\displaystyle\iint_\Sigma f\,\mathrm{d}S\) 一定存在.今后不再逐次声明这一存在性条件.</div>
+
+<h3>二、第一类曲面积分的性质</h3>
+<div class="def"><div class="lab"><span class="n">性质</span>四条基本性质</div>
+  <p><b>(1) 线性性：</b>\(\displaystyle\iint_\Sigma\bigl(\alpha f+\beta g\bigr)\mathrm{d}S=\alpha\iint_\Sigma f\,\mathrm{d}S+\beta\iint_\Sigma g\,\mathrm{d}S\)（\(\alpha,\beta\) 为常数）.</p>
+  <p><b>(2) 对曲面的可加性：</b>若 \(\Sigma=\Sigma_1+\Sigma_2\)（两片除边界外不重叠），则</p>
+  \[\iint_\Sigma f\,\mathrm{d}S=\iint_{\Sigma_1}f\,\mathrm{d}S+\iint_{\Sigma_2}f\,\mathrm{d}S .\]
+  <p><b>(3) 求面积：</b>\(\displaystyle\iint_\Sigma 1\,\mathrm{d}S=A(\Sigma)\)，即 \(\Sigma\) 的面积.</p>
+  <p><b>(4) 与曲面的侧无关：</b>\(\mathrm{d}S\) 恒取<b>正</b>的面积值，因此第一类曲面积分的值只依赖于曲面本身，与"从哪一侧看"毫无关系.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>一切都回到第一类曲面积分的定义：把 \(\Sigma\) 任意分成 \(n\) 小片 \(\Delta S_i\)（\(\Delta S_i\) 同时表示第 \(i\) 片的<b>面积</b>），在每片上任取一点 \(M_i(\xi_i,\eta_i,\zeta_i)\)，作和并令各小片直径的最大值 \(\lambda\to0\)：</p>
+\[\iint_\Sigma f\,\mathrm{d}S=\lim\limits_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\,\Delta S_i .\]
+<p><span class="stp">(1) 线性性：</span>对同一个分割与同一组取点，有和式的恒等式</p>
+\[\sum_i\bigl[\alpha f(M_i)+\beta g(M_i)\bigr]\Delta S_i=\alpha\sum_i f(M_i)\Delta S_i+\beta\sum_i g(M_i)\Delta S_i .\]
+<p>令 \(\lambda\to0\)，由极限的四则运算法则（三个极限均存在）即得所需等式.</p>
+<p><span class="stp">(2) 可加性：</span>因 \(\Sigma_1,\Sigma_2\) 除公共边界外互不重叠，可以<b>只取那些不跨越公共边界的分割</b>（这总办得到：先把公共边界作为分界线，再分别细分两片）.此时和式自然裂成两组：</p>
+\[\sum_{i}f(M_i)\Delta S_i=\sum_{\Delta S_i\subset\Sigma_1}f(M_i)\Delta S_i+\sum_{\Delta S_i\subset\Sigma_2}f(M_i)\Delta S_i .\]
+<p>令 \(\lambda\to0\)，三个和式分别趋于 \(\iint_\Sigma f\mathrm{d}S,\ \iint_{\Sigma_1}f\mathrm{d}S,\ \iint_{\Sigma_2}f\mathrm{d}S\).又因积分存在时其值与分割方式无关，故等式成立.</p>
+<p><span class="stp">(3) 求面积：</span>取 \(f\equiv1\)，则对任何分割 \(\sum_i 1\cdot\Delta S_i=\sum_i\Delta S_i=A(\Sigma)\) 恒等于 \(\Sigma\) 的面积.常数列的极限就是它自己，故 \(\displaystyle\iint_\Sigma1\,\mathrm{d}S=A(\Sigma)\).</p>
+<p><span class="stp">(4) 与侧无关：</span>上述定义中出现的 \(\Delta S_i\) 是小片的<b>面积</b>，是一个非负的几何量，它的构造过程（分割、取点、求和、取极限）里根本没有出现法向量，也没有任何地方需要指定"从哪一侧看".因此和式与极限都与侧无关，积分值自然只依赖于曲面本身与被积函数.这正是第一类曲面积分与下一节第二类曲面积分（用<b>有向</b>投影面积作和，换侧要变号）的本质区别.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>这是第一类与第二类曲面积分最本质的分界.</b>本节的积分像"称重"——不论你站在曲面上方还是下方，这块蒙皮的质量都是 \(109.59\,\mathrm{kg}\)；而下一节的积分像"记流量"——顺流为正、逆流为负，换个方向就要变号.</div>
+
+<h3>三、计算法：化为二重积分</h3>
+<p>第一类曲面积分的计算，核心是把 \(\mathrm{d}S\) 换成投影面上的 \(\mathrm{d}x\mathrm{d}y\)（或 \(\mathrm{d}y\mathrm{d}z\)、\(\mathrm{d}z\mathrm{d}x\)）.</p>
+
+<div class="def"><div class="lab"><span class="n">定理 12.1</span>投影到 \(xOy\) 面的计算公式</div>
+  <p>设曲面 \(\Sigma\) 由方程 \(z=z(x,y)\) 给出，它在 \(xOy\) 面上的投影区域为 \(D_{xy}\)，且 \(z(x,y)\) 在 \(D_{xy}\) 上有连续偏导数，\(f(x,y,z)\) 在 \(\Sigma\) 上连续，则</p>
+  \[\iint_\Sigma f(x,y,z)\,\mathrm{d}S=\iint_{D_{xy}}f\bigl(x,y,z(x,y)\bigr)\sqrt{1+z_x^{2}+z_y^{2}}\;\mathrm{d}x\,\mathrm{d}y .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>曲面积分的定义里出现的是小片<b>曲面</b>的面积 \(\Delta S_i\)，我们不会直接算它；但它在 \(xOy\) 面上的<b>影子</b> \(\Delta\sigma_i\) 是平面区域，是会算的.只要找到"曲面片面积"与"影子面积"之间的放大倍数，就能把曲面积分翻译成二重积分.这个倍数就是 \(\sqrt{1+z_x^{2}+z_y^{2}}\).</p>
+<p><span class="stp">第一步：分割与投影.</span>把 \(\Sigma\) 任意分成 \(n\) 小片 \(\Delta S_i\)，它们在 \(xOy\) 面上的投影记为 \(\Delta\sigma_i\)（同时表示其面积）.因 \(\Sigma:z=z(x,y)\) 是单值曲面，这些 \(\Delta\sigma_i\) 恰好构成 \(D_{xy}\) 的一个分割.</p>
+<p><span class="stp">第二步：面积元素公式.</span>由曲面面积公式（重积分应用一章），</p>
+\[\Delta S_i=\iint_{\Delta\sigma_i}\sqrt{1+z_x^{2}+z_y^{2}}\;\mathrm{d}x\,\mathrm{d}y .\]
+<p>因 \(z_x,z_y\) 连续，被积函数在闭区域 \(\Delta\sigma_i\) 上连续，由二重积分中值定理，存在点 \((\xi_i,\eta_i)\in\Delta\sigma_i\) 使</p>
+\[\Delta S_i=\sqrt{1+z_x^{2}(\xi_i,\eta_i)+z_y^{2}(\xi_i,\eta_i)}\;\Delta\sigma_i .\]
+<p><span class="stp">第三步：取点作和.</span>第一类曲面积分的值与每片上取点的方式无关，因此我们<b>就把第二步中值定理送来的点</b>取作代表点：令 \(\zeta_i=z(\xi_i,\eta_i)\)，则 \(M_i(\xi_i,\eta_i,\zeta_i)\in\Delta S_i\).代入定义中的和式：</p>
+\[\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\,\Delta S_i=\sum_{i=1}^{n}f\bigl(\xi_i,\eta_i,z(\xi_i,\eta_i)\bigr)\sqrt{1+z_x^{2}(\xi_i,\eta_i)+z_y^{2}(\xi_i,\eta_i)}\;\Delta\sigma_i .\]
+<p><span class="stp">第四步：取极限.</span>右端恰是二元函数</p>
+\[H(x,y)=f\bigl(x,y,z(x,y)\bigr)\sqrt{1+z_x^{2}+z_y^{2}}\]
+<p>在 \(D_{xy}\) 上的二重积分和.由 \(f\) 在 \(\Sigma\) 上连续、\(z,z_x,z_y\) 在 \(D_{xy}\) 上连续知 \(H\) 连续，故可积.又当曲面片直径 \(\lambda\to0\) 时其投影的直径也趋于零，于是令 \(\lambda\to0\)，等式两端分别趋于曲面积分与二重积分：</p>
+\[\iint_\Sigma f(x,y,z)\,\mathrm{d}S=\iint_{D_{xy}}f\bigl(x,y,z(x,y)\bigr)\sqrt{1+z_x^{2}+z_y^{2}}\;\mathrm{d}x\,\mathrm{d}y .\]
+<p><span class="stp">记忆要点：</span>公式可概括为"<b>一投、二代、三换元</b>"——投影定出积分区域 \(D_{xy}\)，把 \(z=z(x,y)\) 代入被积函数，再把 \(\mathrm{d}S\) 换成 \(\sqrt{1+z_x^{2}+z_y^{2}}\,\mathrm{d}x\mathrm{d}y\).若曲面向 \(yOz\) 或 \(zOx\) 面投影，只需把变量的角色轮换.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="case"><div class="lab">应用探微 · 面积元素公式 \(\mathrm{d}S=\sqrt{1+z_x^2+z_y^2}\,\mathrm{d}x\mathrm{d}y\) 从哪来</div>
+  <details><summary>展开查看：一块小平行四边形的几何推导</summary>
+  <div class="body">
+    <p>在 \(D_{xy}\) 中取一个小矩形 \([x,x+\mathrm{d}x]\times[y,y+\mathrm{d}y]\).它在曲面上"抬起"成的那一小片，可用<b>切平面上的平行四边形</b>近似.曲面 \(z=z(x,y)\) 在该点的两个切向量是</p>
+    \[\boldsymbol{r}_x=(1,0,z_x),\qquad \boldsymbol{r}_y=(0,1,z_y).\]
+    <p>小片面积等于这两个向量张成的平行四边形面积，即叉积的模：</p>
+    \[\boldsymbol{r}_x\times\boldsymbol{r}_y=(-z_x,\,-z_y,\,1),\qquad
+      |\boldsymbol{r}_x\times\boldsymbol{r}_y|=\sqrt{z_x^{2}+z_y^{2}+1}.\]
+    <p>于是 \(\mathrm{d}S=\sqrt{1+z_x^2+z_y^2}\,\mathrm{d}x\mathrm{d}y\).</p>
+    <p>顺带得到曲面的<b>单位法向量</b>（指向上侧）：</p>
+    \[\boldsymbol{n}=\frac{(-z_x,-z_y,1)}{\sqrt{1+z_x^{2}+z_y^{2}}}=(\cos\alpha,\cos\beta,\cos\gamma),\qquad
+      \cos\gamma=\frac{1}{\sqrt{1+z_x^{2}+z_y^{2}}}.\]
+    <p>因此 \(\mathrm{d}x\mathrm{d}y=\cos\gamma\,\mathrm{d}S\)：<b>"投影面积 = 真实面积 × 法向倾角的余弦"</b>.引例一中光通量的那次抵消，本质就是这一条恒等式.</p>
+  </div>
+  </details>
+</div>
+
+<p>如果曲面用 \(x=x(y,z)\) 或 \(y=y(z,x)\) 表示，公式完全对称：</p>
+\[\iint_\Sigma f\,\mathrm{d}S=\iint_{D_{yz}}f\bigl(x(y,z),y,z\bigr)\sqrt{1+x_y^{2}+x_z^{2}}\;\mathrm{d}y\,\mathrm{d}z
+ =\iint_{D_{zx}}f\bigl(x,y(z,x),z\bigr)\sqrt{1+y_z^{2}+y_x^{2}}\;\mathrm{d}z\,\mathrm{d}x .\]
+
+<div class="note"><b>三种投影方向怎么选？口诀：投影要"一对一、不退化".</b><br>
+· 曲面能写成 \(z=z(x,y)\) 的单值形式，就投影到 \(xOy\) 面；<br>
+· 若曲面是<b>母线平行于 \(z\) 轴的柱面</b>（如 \(x^2+y^2=R^2\)），它在 \(xOy\) 面上的投影退化成一条曲线，面积为零，<b>必须改投到 \(yOz\) 或 \(zOx\) 面</b>，或者干脆直接用参数（如 \(\mathrm{d}S=R\,\mathrm{d}\theta\,\mathrm{d}z\)）；<br>
+· 若曲面在某方向"卷回来"（如整个球面对 \(xOy\) 的投影是二对一），要<b>先分片</b>再分别投影.</div>
+
+<div class="note"><b>解题三步口诀（第一类）：一代、二换、三投.</b><br>
+<b>一代</b>：把曲面方程代入被积函数，消去一个变量（这是第一类曲面积分的最大红利，很多复杂被积函数会瞬间化简）；<br>
+<b>二换</b>：把 \(\mathrm{d}S\) 换成 \(\sqrt{1+z_x^2+z_y^2}\,\mathrm{d}x\mathrm{d}y\)；<br>
+<b>三投</b>：定出投影区域 \(D_{xy}\)，化成二重积分算完.</div>
+
+<h3>四、对称性的运用</h3>
+<div class="def"><div class="lab"><span class="n">定理 12.2</span>对称性与轮换对称性</div>
+  <p><b>(1) 奇偶对称：</b>若 \(\Sigma\) 关于 \(xOy\) 面对称，则</p>
+  \[\iint_\Sigma f\,\mathrm{d}S=\begin{cases}0,&f(x,y,-z)=-f(x,y,z),\\[2pt]
+    2\displaystyle\iint_{\Sigma_1}f\,\mathrm{d}S,&f(x,y,-z)=f(x,y,z),\end{cases}\]
+  <p>其中 \(\Sigma_1\) 是 \(\Sigma\) 中 \(z\ge0\) 的部分.关于另两个坐标面对称时同理.</p>
+  <p><b>(2) 轮换对称：</b>若把 \(\Sigma\) 的方程中的 \(x,y,z\) 轮换后曲面不变（如球面 \(x^2+y^2+z^2=a^2\)、平面 \(x+y+z=1\) 在第一卦限的部分），则</p>
+  \[\iint_\Sigma f(x,y,z)\,\mathrm{d}S=\iint_\Sigma f(y,z,x)\,\mathrm{d}S=\iint_\Sigma f(z,x,y)\,\mathrm{d}S .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>两条结论的共同根据只有一条：<b>刚体运动（反射、旋转）不改变面积</b>，因而不改变 \(\mathrm{d}S\).于是在积分中作一个保持曲面不变的几何变换，被积函数被"搬动"，而积分值不变，两式相减或相加即得结论.</p>
+<p><span class="stp">(1) 奇偶对称.</span>设 \(\Sigma\) 关于 \(xOy\) 面对称，记 \(\Sigma_1=\{(x,y,z)\in\Sigma: z\ge0\},\ \Sigma_2=\{(x,y,z)\in\Sigma: z\le0\}\).</p>
+<p><span class="stp">第一步：作反射变换.</span>令 \(T(x,y,z)=(x,y,-z)\).\(T\) 是关于 \(xOy\) 面的镜面反射，是<b>正交变换</b>（保持任意两点间距离），因此把曲面片映成面积相等的曲面片，即 \(T\) 保持面积元素 \(\mathrm{d}S\) 不变.由 \(\Sigma\) 的对称性有 \(T(\Sigma_2)=\Sigma_1\).</p>
+<p><span class="stp">第二步：换元.</span>于是对任意在 \(\Sigma\) 上连续的 \(f\)，</p>
+\[\iint_{\Sigma_2}f(x,y,z)\,\mathrm{d}S=\iint_{\Sigma_1}f(x,y,-z)\,\mathrm{d}S .\]
+<p>（左端在 \(\Sigma_2\) 上取点 \((x,y,z)\)，其像 \((x,y,-z)\) 跑遍 \(\Sigma_1\)；因面积不变，两个积分和逐项相等.）</p>
+<p><span class="stp">第三步：分片相加.</span>由第一类曲面积分对曲面的可加性，</p>
+\[\iint_\Sigma f\,\mathrm{d}S=\iint_{\Sigma_1}f(x,y,z)\,\mathrm{d}S+\iint_{\Sigma_1}f(x,y,-z)\,\mathrm{d}S=\iint_{\Sigma_1}\bigl[f(x,y,z)+f(x,y,-z)\bigr]\mathrm{d}S .\]
+<p>若 \(f\) 关于 \(z\) 为奇函数，即 \(f(x,y,-z)=-f(x,y,z)\)，则方括号恒为 \(0\)，积分为 \(0\)；若 \(f\) 关于 \(z\) 为偶函数，即 \(f(x,y,-z)=f(x,y,z)\)，则方括号为 \(2f\)，积分为 \(2\displaystyle\iint_{\Sigma_1}f\,\mathrm{d}S\).关于另两个坐标面对称的情形，把变量角色轮换后重复上述三步即可.</p>
+<p><span class="stp">(2) 轮换对称.</span></p>
+<p><span class="stp">第一步：作轮换变换.</span>令 \(T(x,y,z)=(y,z,x)\).它的矩阵是置换矩阵，满足 \(T^{\mathrm{T}}T=E\)，故 \(T\) 是正交变换（几何上是绕直线 \(x=y=z\) 转 \(120^\circ\) 的旋转），同样保持面积元素 \(\mathrm{d}S\) 不变.</p>
+<p><span class="stp">第二步：利用曲面不变性.</span>题设"把方程中的 \(x,y,z\) 轮换后曲面不变"正是说 \(T(\Sigma)=\Sigma\).例如球面 \(x^2+y^2+z^2=a^2\) 与平面 \(x+y+z=1\) 的第一卦限部分都满足此条件.</p>
+<p><span class="stp">第三步：换元.</span>对任意连续函数 \(g\)，由 \(T\) 保面积及 \(T(\Sigma)=\Sigma\)，</p>
+\[\iint_{\Sigma}g(u,v,w)\,\mathrm{d}S=\iint_{T(\Sigma)}g(u,v,w)\,\mathrm{d}S=\iint_{\Sigma}g\bigl(T(x,y,z)\bigr)\,\mathrm{d}S=\iint_{\Sigma}g(y,z,x)\,\mathrm{d}S .\]
+<p>取 \(g=f\) 即得 \(\displaystyle\iint_\Sigma f(x,y,z)\mathrm{d}S=\iint_\Sigma f(y,z,x)\mathrm{d}S\)；把这一等式再用一次（即对 \(T\) 作两次），得 \(\displaystyle\iint_\Sigma f(y,z,x)\mathrm{d}S=\iint_\Sigma f(z,x,y)\mathrm{d}S\).三者相等.</p>
+<p><span class="stp">常用推论：</span>三式相加再除以 \(3\)，得</p>
+\[\iint_\Sigma f(x,y,z)\,\mathrm{d}S=\frac13\iint_\Sigma\bigl[f(x,y,z)+f(y,z,x)+f(z,x,y)\bigr]\mathrm{d}S ,\]
+<p>这是计算 \(\displaystyle\iint_{x^2+y^2+z^2=a^2}x^{2}\mathrm{d}S\) 一类积分的利器.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>五、典型例题</h3>
+
+<div class="ex"><div class="lab">例 12.1　平面片上的曲面积分</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma(x+2y+3z)\,\mathrm{d}S\)，其中 \(\Sigma\) 是平面 \(x+y+z=1\) 在第一卦限中的部分.</p>
+  <p class="sol"><span class="mk">解</span><b>一代</b>：由 \(z=1-x-y\)，被积函数化为</p>
+  \[x+2y+3(1-x-y)=3-2x-y .\]
+  <p><b>二换</b>：\(z_x=z_y=-1\)，故 \(\mathrm{d}S=\sqrt{1+1+1}\,\mathrm{d}x\mathrm{d}y=\sqrt3\,\mathrm{d}x\mathrm{d}y\).</p>
+  <p><b>三投</b>：\(D_{xy}\) 是三角形 \(x\ge0,y\ge0,x+y\le1\)，其上 \(\displaystyle\iint_{D}\mathrm{d}x\mathrm{d}y=\frac12,\ \iint_{D}x\,\mathrm{d}x\mathrm{d}y=\iint_{D}y\,\mathrm{d}x\mathrm{d}y=\frac16\).于是</p>
+  \[\iint_\Sigma(x+2y+3z)\,\mathrm{d}S=\sqrt3\Bigl(3\cdot\frac12-2\cdot\frac16-\frac16\Bigr)=\sqrt3\Bigl(\frac32-\frac12\Bigr)=\boxed{\sqrt3}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.2　锥面上的曲面积分</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma z\,\mathrm{d}S\)，其中 \(\Sigma:\ z=\sqrt{x^{2}+y^{2}}\ (0\le z\le1)\).</p>
+  <p class="sol"><span class="mk">解</span>由 \(z_x=\dfrac{x}{\sqrt{x^2+y^2}},\ z_y=\dfrac{y}{\sqrt{x^2+y^2}}\) 得 \(1+z_x^2+z_y^2=2\)，故 \(\mathrm{d}S=\sqrt2\,\mathrm{d}x\mathrm{d}y\).投影区域 \(D_{xy}:x^{2}+y^{2}\le1\).用极坐标：</p>
+  \[\iint_\Sigma z\,\mathrm{d}S=\sqrt2\iint_{D_{xy}}\sqrt{x^{2}+y^{2}}\,\mathrm{d}x\mathrm{d}y
+   =\sqrt2\int_0^{2\pi}\!\!\int_0^1 r\cdot r\,\mathrm{d}r\,\mathrm{d}\theta
+   =\sqrt2\cdot2\pi\cdot\frac13=\frac{2\sqrt2\,\pi}{3}\approx2.9619 .\]
+  <p class="muted">锥面的 \(\mathrm{d}S=\sqrt2\,\mathrm{d}x\mathrm{d}y\) 是一个值得记住的常数因子：正圆锥面 \(z=\sqrt{x^2+y^2}\) 的半顶角为 \(45^\circ\)，其面积恰为投影面积的 \(\sqrt2\) 倍.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.3　抛物面上的曲面积分（换元技巧）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma z\,\mathrm{d}S\)，其中 \(\Sigma:\ z=x^{2}+y^{2}\ (0\le z\le1)\).</p>
+  <p class="sol"><span class="mk">解</span>\(z_x=2x,z_y=2y\)，故 \(\mathrm{d}S=\sqrt{1+4x^{2}+4y^{2}}\,\mathrm{d}x\mathrm{d}y\)，投影 \(D_{xy}:x^{2}+y^{2}\le1\).用极坐标：</p>
+  \[I=\int_0^{2\pi}\!\!\int_0^1 r^{2}\sqrt{1+4r^{2}}\;r\,\mathrm{d}r\,\mathrm{d}\theta=2\pi\int_0^1 r^{3}\sqrt{1+4r^{2}}\,\mathrm{d}r .\]
+  <p>令 \(u=1+4r^{2}\)，则 \(r^{2}=\dfrac{u-1}{4}\)，\(r\,\mathrm{d}r=\dfrac{\mathrm{d}u}{8}\)，当 \(r:0\to1\) 时 \(u:1\to5\).于是</p>
+  \[\int_0^1 r^{3}\sqrt{1+4r^{2}}\,\mathrm{d}r=\frac{1}{32}\int_1^{5}\bigl(u^{3/2}-u^{1/2}\bigr)\mathrm{d}u
+   =\frac{1}{32}\Bigl[\frac25u^{5/2}-\frac23u^{3/2}\Bigr]_1^{5}=\frac{1}{32}\cdot\frac{100\sqrt5+4}{15}.\]
+  <p>所以</p>
+  \[I=2\pi\cdot\frac{100\sqrt5+4}{480}=\frac{\pi\,(25\sqrt5+1)}{60}\approx2.9793 .\]
+</div>
+
+<div class="ex"><div class="lab">例 12.4　球面上的曲面积分（\(\mathrm{d}S=\frac{a}{z}\mathrm{d}x\mathrm{d}y\) 技巧）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma z\,\mathrm{d}S\)，其中 \(\Sigma\) 是球面 \(x^{2}+y^{2}+z^{2}=a^{2}\) 被平面 \(z=h\ (0\lt h\lt a)\) 截出的上半部分.</p>
+  <p class="sol"><span class="mk">解</span>在 \(\Sigma\) 上 \(z=\sqrt{a^{2}-x^{2}-y^{2}}\)，则</p>
+  \[z_x=\frac{-x}{z},\quad z_y=\frac{-y}{z},\qquad
+    \sqrt{1+z_x^{2}+z_y^{2}}=\sqrt{\frac{z^{2}+x^{2}+y^{2}}{z^{2}}}=\frac{a}{z}.\]
+  <p>这就是球面上极常用的公式 \(\mathrm{d}S=\dfrac{a}{z}\,\mathrm{d}x\mathrm{d}y\).投影区域为 \(D_{xy}:x^{2}+y^{2}\le a^{2}-h^{2}\)，故</p>
+  \[\iint_\Sigma z\,\mathrm{d}S=\iint_{D_{xy}}z\cdot\frac{a}{z}\,\mathrm{d}x\mathrm{d}y
+   =a\iint_{D_{xy}}\mathrm{d}x\mathrm{d}y=a\cdot\pi(a^{2}-h^{2})=\boxed{\pi a(a^{2}-h^{2})}.\]
+  <p class="muted">被积函数 \(z\) 与 \(\mathrm{d}S\) 中的 \(1/z\) 恰好抵消——这类"抵消"是球面题的常见红利，做题前先看一眼能不能约掉.特别地令 \(h\to0\) 得上半球面上 \(\displaystyle\iint z\,\mathrm{d}S=\pi a^{3}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.5　柱面上的曲面积分（投影退化的处理）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma(x+y+z)\,\mathrm{d}S\)，其中 \(\Sigma\) 是柱面 \(x^{2}+y^{2}=4\) 介于 \(z=0\) 与 \(z=3\) 之间的部分.</p>
+  <p class="sol"><span class="mk">解</span>柱面在 \(xOy\) 面上的投影是圆周 \(x^2+y^2=4\)，<b>面积为零，不能投影到 \(xOy\) 面</b>.改用柱面参数：\(x=2\cos\theta,\ y=2\sin\theta,\ z=z\)，此时曲面沿母线方向和圆周方向的弧长元分别是 \(\mathrm{d}z\) 与 \(2\,\mathrm{d}\theta\)，故</p>
+  \[\mathrm{d}S=2\,\mathrm{d}\theta\,\mathrm{d}z,\qquad 0\le\theta\le2\pi,\ 0\le z\le3 .\]
+  <p>由对称性，\(\displaystyle\int_0^{2\pi}\cos\theta\,\mathrm{d}\theta=\int_0^{2\pi}\sin\theta\,\mathrm{d}\theta=0\)，故 \(x,y\) 两项贡献为零：</p>
+  \[\iint_\Sigma(x+y+z)\,\mathrm{d}S=\int_0^{2\pi}\!\!\int_0^{3}z\cdot2\,\mathrm{d}z\,\mathrm{d}\theta
+   =2\cdot2\pi\cdot\frac{9}{2}=\boxed{18\pi}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.6　用对称性简化（考研常考）</div>
+  <p class="stmt">设 \(\Sigma\) 是球面 \(x^{2}+y^{2}+z^{2}=a^{2}\).求 (1) \(\displaystyle\oiint_\Sigma(x+y+z)\,\mathrm{d}S\)；(2) \(\displaystyle\oiint_\Sigma(x^{2}+y^{2})\,\mathrm{d}S\).</p>
+  <p class="sol"><span class="mk">解</span>(1) 球面关于 \(yOz\) 面对称，而 \(x\) 是关于 \(x\) 的奇函数，故 \(\displaystyle\oiint_\Sigma x\,\mathrm{d}S=0\)；同理另两项也为零.所以原积分 \(=0\).</p>
+  <p>(2) 球面具有<b>轮换对称性</b>，故</p>
+  \[\oiint_\Sigma x^{2}\,\mathrm{d}S=\oiint_\Sigma y^{2}\,\mathrm{d}S=\oiint_\Sigma z^{2}\,\mathrm{d}S
+   =\frac13\oiint_\Sigma(x^{2}+y^{2}+z^{2})\,\mathrm{d}S=\frac13\oiint_\Sigma a^{2}\,\mathrm{d}S .\]
+  <p>而 \(\displaystyle\oiint_\Sigma\mathrm{d}S=4\pi a^{2}\)，故上式 \(=\dfrac13a^{2}\cdot4\pi a^{2}=\dfrac{4\pi a^{4}}{3}\).于是</p>
+  \[\oiint_\Sigma(x^{2}+y^{2})\,\mathrm{d}S=2\cdot\frac{4\pi a^{4}}{3}=\boxed{\frac{8\pi a^{4}}{3}}.\]
+  <p class="muted">关键一步是把 \(x^2+y^2+z^2\) <b>整体代成常数 \(a^2\)</b>——这是"一代"这一步的威力所在.若硬投影到 \(xOy\) 面，将陷入一个可算但冗长的反常二重积分.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.7　分片曲面（闭曲面）上的积分</div>
+  <p class="stmt">计算 \(\displaystyle\oiint_\Sigma(x^{2}+y^{2})\,\mathrm{d}S\)，其中 \(\Sigma\) 是锥面 \(z=\sqrt{x^{2}+y^{2}}\) 与平面 \(z=1\) 所围立体的<b>整个边界曲面</b>.</p>
+  <p class="sol"><span class="mk">解</span>把 \(\Sigma\) 分成两片：锥侧面 \(\Sigma_1\) 与顶盖圆盘 \(\Sigma_2:z=1,\ x^{2}+y^{2}\le1\).两片的投影区域都是 \(D:x^{2}+y^{2}\le1\).</p>
+  <p>在 \(\Sigma_1\) 上 \(\mathrm{d}S=\sqrt2\,\mathrm{d}x\mathrm{d}y\)：</p>
+  \[\iint_{\Sigma_1}(x^{2}+y^{2})\,\mathrm{d}S=\sqrt2\int_0^{2\pi}\!\!\int_0^{1}r^{2}\cdot r\,\mathrm{d}r\,\mathrm{d}\theta=\sqrt2\cdot2\pi\cdot\frac14=\frac{\sqrt2\,\pi}{2}.\]
+  <p>在 \(\Sigma_2\) 上 \(z_x=z_y=0\)，\(\mathrm{d}S=\mathrm{d}x\mathrm{d}y\)：</p>
+  \[\iint_{\Sigma_2}(x^{2}+y^{2})\,\mathrm{d}S=\int_0^{2\pi}\!\!\int_0^{1}r^{2}\cdot r\,\mathrm{d}r\,\mathrm{d}\theta=\frac{\pi}{2}.\]
+  <p>由可加性，</p>
+  \[\oiint_\Sigma(x^{2}+y^{2})\,\mathrm{d}S=\frac{\sqrt2\,\pi}{2}+\frac{\pi}{2}=\frac{(\sqrt2+1)\pi}{2}\approx3.7924 .\]
+</div>
+
+<div class="case"><div class="lab">应用探微 · FAST "中国天眼"：500 米口径球面反射面到底有多大</div>
+  <details><summary>展开查看：从球冠面积公式到 4450 块面板的完整核算</summary>
+  <div class="body">
+    <p>贵州 FAST 射电望远镜的主反射面是一个<b>球冠</b>：球面半径 \(R=300\,\mathrm{m}\)，口径（球冠底圆直径）\(D=500\,\mathrm{m}\)，即底圆半径 \(a=250\,\mathrm{m}\).它由数千块可主动变形的三角形面板拼成.要采购多少面板？</p>
+    <p><b>第一步：用曲面积分求球冠面积.</b>取球面下半部分 \(z=-\sqrt{R^{2}-x^{2}-y^{2}}\)（开口朝上的锅），由例 12.4 的公式 \(\mathrm{d}S=\dfrac{R}{\sqrt{R^{2}-r^{2}}}\,\mathrm{d}x\mathrm{d}y\)，投影区域 \(D:x^{2}+y^{2}\le a^{2}\)：</p>
+    \[A=\iint_\Sigma\mathrm{d}S=\int_0^{2\pi}\!\!\int_0^{a}\frac{R}{\sqrt{R^{2}-r^{2}}}\,r\,\mathrm{d}r\,\mathrm{d}\theta
+     =2\pi R\Bigl[-\sqrt{R^{2}-r^{2}}\Bigr]_0^{a}=2\pi R\bigl(R-\sqrt{R^{2}-a^{2}}\bigr).\]
+    <p>记球冠高 \(h=R-\sqrt{R^{2}-a^{2}}\)，即得著名的<b>球冠面积公式</b> \(A=2\pi Rh\)——它<b>只与球半径和冠高有关</b>，与底圆半径的具体形式无关，这是曲面积分给出的一个惊人结论（阿基米德早在两千年前就发现了它）.</p>
+    <p><b>第二步：代入数据.</b></p>
+    \[\sqrt{R^{2}-a^{2}}=\sqrt{300^{2}-250^{2}}=\sqrt{27500}=165.83\ \mathrm{m},\qquad h=300-165.83=134.17\ \mathrm{m},\]
+    \[A=2\pi\times300\times134.17=2.529\times10^{5}\ \mathrm{m^{2}}.\]
+    <p><b>第三步：面板核算.</b>FAST 实际由 4450 块边长约 \(11\,\mathrm{m}\) 的等边三角形面板组成，单块面积</p>
+    \[A_1=\frac{\sqrt3}{4}\times11^{2}=52.4\ \mathrm{m^{2}},\qquad 4450\times52.4=2.33\times10^{5}\ \mathrm{m^{2}} .\]
+    <p>与曲面积分算出的 \(2.53\times10^{5}\,\mathrm{m^2}\) 相差约 8%——这部分正是面板之间为主动变形预留的<b>缝隙与索网节点</b>.若误按平面圆盘估算，面积只有 \(\pi\times250^{2}=1.96\times10^{5}\,\mathrm{m^2}\)，将<b>少订 22% 的面板</b>，工程直接失败.</p>
+    <table class="dt">
+      <tr><th>估算方式</th><th>公式</th><th>面积（\(\mathrm{m^2}\)）</th><th>相对真值偏差</th></tr>
+      <tr><td>平面圆盘（错误）</td><td>\(\pi a^{2}\)</td><td>196350</td><td>\(-22.4\%\)</td></tr>
+      <tr><td>曲面积分（球冠）</td><td>\(2\pi Rh\)</td><td>252900</td><td>基准</td></tr>
+      <tr><td>面板实际铺装</td><td>\(4450A_1\)</td><td>233180</td><td>\(-7.8\%\)</td></tr>
+    </table>
+    <p><b>结论：</b>凡是"在弯曲表面上分布着某种量"（面积、质量、光通量、涂层用量、热流），第一类曲面积分就是唯一正确的会计方式.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §12.2 ============ -->
+    
+
+<!--MODBEG-->
+
+<details><summary>应用案例 · 卫星通信：抛物面天线表面积与波束增益</summary>
+<p><b>场景：</b> 一颗低轨通信卫星的接收天线为旋转抛物面，口径半径 \(R=1.2\ \mathrm{m}\)，焦距 \(p=0.6\ \mathrm{m}\)，曲面方程 \(z=\dfrac{r^{2}}{4p}\)（\(r^{2}=x^{2}+y^{2}\)）.天线真实表面积正是第一类曲面积分 \(A=\iint_{\Sigma}\mathrm{d}S\)，它决定可喷涂金属反射膜的面积与整机质量；而波束增益 \(G\) 又和口径直径 \(D=2R\) 强相关.先算真实表面积，再据表面积与投影圆面积之比看「被拉伸」了多少.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>口径半径</td><td>\(R\)</td><td>\(1.2\ \mathrm{m}\)</td></tr>
+<tr><td>焦距</td><td>\(p\)</td><td>\(0.6\ \mathrm{m}\)</td></tr>
+<tr><td>工作频率</td><td>\(f\)</td><td>\(12\ \mathrm{GHz}\)</td></tr>
+<tr><td>波长</td><td>\(\lambda\)</td><td>\(0.025\ \mathrm{m}\)</td></tr>
+<tr><td>口径效率</td><td>\(\eta\)</td><td>\(0.55\)</td></tr>
+</table>
+<p class="sol"> 曲面绕轴旋转，用第一类曲面积分的面积元</p>
+\[\mathrm{d}S=\sqrt{1+\left(\frac{\mathrm{d}z}{\mathrm{d}r}\right)^{2}}\;2\pi r\,\mathrm{d}r,\qquad \frac{\mathrm{d}z}{\mathrm{d}r}=\frac{r}{2p}.\]
+<p>代入 \(p=0.6\)：</p>
+\[A=\int_{0}^{R}2\pi r\sqrt{1+\frac{r^{2}}{4p^{2}}}\,\mathrm{d}r
+ =\frac{\pi}{p}\int_{0}^{R}r\sqrt{4p^{2}+r^{2}}\,\mathrm{d}r
+ =\frac{\pi}{3p}\Bigl[(4p^{2}+r^{2})^{3/2}\Bigr]_{0}^{R}.\]
+<p>数值：\(4p^{2}=1.44\)，\(4p^{2}+R^{2}=2.88\)，\(\sqrt{2.88}=1.6971\)，故</p>
+\[A=\frac{\pi}{3\times0.6}\bigl(2.88^{3/2}-1.44^{3/2}\bigr)
+ =\frac{\pi}{1.8}(4.8875-1.728)=5.514\ \mathrm{m^{2}}.\]
+<p>投影圆面积 \(\pi R^{2}=\pi\times1.44=4.524\ \mathrm{m^{2}}\)，拉伸比 \(5.514/4.524=1.218\).增益</p>
+\[G=\eta\Bigl(\frac{\pi D}{\lambda}\Bigr)^{2}
+ =0.55\times\Bigl(\frac{\pi\times2.4}{0.025}\Bigr)^{2}
+ =0.55\times301.6^{2}=5.00\times10^{4},\]
+\[\text{即 }10\log_{10}G\approx47.0\ \mathrm{dBi}.\]
+<p><b>工程结论：</b> 第一类曲面积分告诉我们：抛物面真实表面积是投影圆的 \(1.218\) 倍——喷涂反射膜与结构蒙皮都得按 \(5.5\ \mathrm{m^{2}}\) 备料，按 \(4.5\ \mathrm{m^{2}}\) 会少算约 \(22\%\) 的金属化成本与质量.而 \(47\ \mathrm{dBi}\) 的高增益正来自大口径直径 \(D\)：增益随 \(D^{2}\) 增长，所以星载天线宁可做成深抛物面（面积更大）也要把 \(D\) 做大.<b>「对面积的曲面积分 = 真实表面积」</b>是天线、雷达罩、反射面设计的硬核算子.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch12-fair" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>口径半径 a <input type="range" id="ch12-fair-a" min="100" max="290" step="5" value="250" style="width:220px;accent-color:#0F6E56"> <b id="ch12-fair-a-t"></b> m</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch12-fair-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch12-fair'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var R=300;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var a=+document.getElementById('ch12-fair-a').value; // 口径半径
+      var cx=W*0.3, cy=H*0.5, sc=Math.min(W,H)*0.45/300;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 球冠（下半球开口朝上的锅）
+      ctx.fillStyle='rgba(15,110,86,0.22)';
+      ctx.beginPath();
+      ctx.arc(cx,cy,R*sc,Math.PI*0.9+0.6,Math.PI*1.05-0.6,false);
+      ctx.arc(cx,cy,R*sc,Math.PI*0.9+0.6,Math.PI*1.05-0.6,false);
+      ctx.closePath();ctx.fill();
+      // 简化：画半圆球冠 + 口径线
+      var hC=R-Math.sqrt(R*R-a*a);
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      ctx.arc(cx,cy,R*sc,Math.PI/2+Math.acos(Math.min(1,a/R)),Math.PI*1.5-Math.acos(Math.min(1,a/R)),false);
+      ctx.stroke();
+      // 口径线
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(cx-a*sc,cy+hC*sc);ctx.lineTo(cx+a*sc,cy+hC*sc);ctx.stroke();
+      ctx.fillStyle='#ca8a04';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('口径 2a='+(2*a).toFixed(0)+' m',cx,cy+hC*sc-8);
+      // 球心
+      ctx.fillStyle='#1e293b';
+      ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fill();
+      // 数值
+      var A=2*Math.PI*R*hC;
+      var panels=Math.round(A/52.4);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('球冠面积 A = 2πRh = 2π×300×'+hC.toFixed(1)+' = '+(A/1e5).toFixed(3)+'×10⁵ m²   折算面板 ≈ '+(panels/1000).toFixed(0)+' 千块',20,22);
+      var out=document.getElementById('ch12-fair-out');
+      out.textContent = 'FAST 实际：R=300 m、口径 500 m、面板 4450 块——球冠面积公式 A=2πRh 是反射面工程的起点';
+    }
+    document.getElementById('ch12-fair-a').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+
+
+<div class="case">
+<details><summary>应用案例 · 无人驾驶：激光雷达点云重建曲面面积</summary>
+<p><b>场景：</b> 自动驾驶的激光雷达（LiDAR）对障碍物（如车身、护栏）扫描得到离散点云.要估计该曲面的真实面积，常把点云三角化后求和：\(\widehat{A}=\sum_{i}|\triangle_{i}|\).这正是对面积曲面积分的离散版——把连续积分 \(\iint_{\Sigma}\mathrm{d}S\) 换成三角形面积之和.取一段圆柱侧面（半径 \(R=0.4\ \mathrm{m}\)、长 \(L=3\ \mathrm{m}\)）作基准，看网格密度对面积估计精度的影响.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>圆柱半径</td><td>\(R\)</td><td>\(0.4\ \mathrm{m}\)</td></tr>
+<tr><td>母线长</td><td>\(L\)</td><td>\(3\ \mathrm{m}\)</td></tr>
+<tr><td>环向网格数</td><td>\(M\)</td><td>\(64\)</td></tr>
+<tr><td>轴向网格数</td><td>\(N\)</td><td>\(120\)</td></tr>
+</table>
+<p class="sol"> 圆柱侧面积精确值（第一类曲面积分）：</p>
+\[A=\iint_{\Sigma}\mathrm{d}S=\int_{0}^{L}\int_{0}^{2\pi}R\,\mathrm{d}\theta\,\mathrm{d}z
+ =2\pi R L=2\pi\times0.4\times3=7.540\ \mathrm{m^{2}}.\]
+<p>三角化时，每段环向弧长对应的「弦」比「弧」短，单段低估因子约 \(\cos(\Delta\theta/2)\approx1-(\Delta\theta)^{2}/8\)，其中 \(\Delta\theta=2\pi/M\).总低估比例</p>
+\[\delta\approx\frac{1}{8}\Bigl(\frac{2\pi}{M}\Bigr)^{2}
+ =\frac{1}{8}\Bigl(\frac{2\pi}{64}\Bigr)^{2}
+ =\frac{1}{8}(0.09817)^{2}=1.20\times10^{-3}.\]
+<p>故估计面积</p>
+\[\widehat{A}=A(1-\delta)=7.540\times(1-0.00120)=7.531\ \mathrm{m^{2}}.\]
+<p><b>工程结论：</b> 离散三角化是连续「对面积曲面积分」的数值化身：网格越密，\(\widehat{A}\) 越逼近 \(7.540\ \mathrm{m^{2}}\)，本例 \(M=64,N=120\) 时误差仅 \(0.12\%\).在感知融合里，若用面积做障碍物分类（如区分圆柱杆与平板），必须先用点云三角化把 \(\iint_{\Sigma}\mathrm{d}S\) 算准——否则会把一根细杆的面积算小、误判为远处小目标.<b>「连续积分 → 三角化和」</b>是三维重建模块的数学底座.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch12-lidar" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>周向网格数 M <input type="range" id="ch12-lidar-m" min="8" max="128" step="2" value="64" style="width:220px;accent-color:#0F6E56"> <b id="ch12-lidar-m-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch12-lidar-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch12-lidar'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var Rc=0.4, L=3.0;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var M=+document.getElementById('ch12-lidar-m').value; // 周向网格数
+      var cx=W*0.3, cy=H*0.5, sc=Math.min(W,H)*0.5/0.5;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 圆柱面（投影画圆环）
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.ellipse(cx,cy,Rc*sc,Rc*sc*0.35,0,0,Math.PI*2);ctx.stroke();
+      // 网格点（三角化示意）
+      for(var k=0;k<M;k++){
+        var ang=k/M*Math.PI*2;
+        var px=cx+Rc*sc*Math.cos(ang), py=cy+Rc*sc*0.35*Math.sin(ang);
+        ctx.fillStyle='#dc2626';
+        ctx.beginPath();ctx.arc(px,py,2.5,0,Math.PI*2);ctx.fill();
+      }
+      ctx.fillStyle='#334155';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('圆柱面：R='+(Rc).toFixed(1)+' m, L='+L.toFixed(0)+' m（周向 M='+M.toFixed(0)+' 段）',cx,cy+Rc*sc*0.35+18);
+      // 数值
+      var A=2*Math.PI*Rc*L;
+      var delta=(2*Math.PI/M)*(2*Math.PI/M)/8;
+      var Ahat=A*(1-delta);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('真实面积 A = 2πRL = '+A.toFixed(3)+' m²   三角化 Â = '+Ahat.toFixed(3)+' m²   相对误差 '+(delta*100).toFixed(3)+'%',20,22);
+      var out=document.getElementById('ch12-lidar-out');
+      var tip = delta<0.002 ? '✔ 网格足够密：误差 <0.2%，三角化和可当连续曲面积分用' : '⚠ 网格偏疏：误差 '+(delta*100).toFixed(2)+'%，感知分类会误判障碍物';
+      out.textContent = tip;
+    }
+    document.getElementById('ch12-lidar-m').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s121" data-ch="12" data-n="5"></div>
+<h2 id="s122"><span class="num">§12.2</span>对坐标的曲面积分</h2>
+    
+<div class="ex"><div class="lab">引例一　数据中心风冷：一台机柜到底"吹"进去多少立方米空气</div>
+  <p class="stmt">大型数据中心 40% 的电费花在制冷上.冷通道的一个圆形送风口半径 \(R=0.4\,\mathrm{m}\)，由于管壁摩擦，风速在截面上并不均匀，实测拟合为抛物型分布</p>
+  \[\boldsymbol{v}=v_z\,\boldsymbol{k},\qquad v_z=v_0\Bigl(1-\frac{x^{2}+y^{2}}{R^{2}}\Bigr),\quad v_0=8\,\mathrm{m/s}.\]
+  <p>问：单位时间内通过送风口的空气体积（<b>流量</b>）是多少？这一股风能带走多少热量？</p>
+  <p><b>具体模拟计算</b>（先看风速的径向分布）：</p>
+  <table class="dt">
+    <tr><th>\(r\)（m）</th><th>0.0</th><th>0.1</th><th>0.2</th><th>0.3</th><th>0.4</th></tr>
+    <tr><th>\(v_z\)（m/s）</th><th>8.00</th><th>7.50</th><th>6.00</th><th>3.50</th><th>0.00</th></tr>
+  </table>
+  <p>把送风口面 \(\Sigma\)（取<b>朝上</b>的一侧为正）分成小块 \(\Delta S_i\)，每块上风速近似为常数，则该块单位时间流出的体积约为 \(v_z\Delta S_i\)（一根底面为 \(\Delta S_i\)、高为 \(v_z\) 的柱体）.求和取极限得</p>
+  \[Q=\iint_\Sigma v_z\,\mathrm{d}x\,\mathrm{d}y
+   =\int_0^{2\pi}\!\!\int_0^{R}v_0\Bigl(1-\frac{r^{2}}{R^{2}}\Bigr)r\,\mathrm{d}r\,\mathrm{d}\theta
+   =2\pi v_0\Bigl[\frac{r^{2}}{2}-\frac{r^{4}}{4R^{2}}\Bigr]_0^{R}=\frac{\pi v_0R^{2}}{2}.\]
+  <p>代入数据：\(Q=\dfrac{\pi\times8\times0.16}{2}=0.64\pi=2.011\,\mathrm{m^3/s}=7238\,\mathrm{m^3/h}\).等效平均风速 \(\bar v=Q/(\pi R^{2})=4.0\,\mathrm{m/s}=v_0/2\)——<b>若粗暴地用中心风速 \(8\,\mathrm{m/s}\) 乘面积，流量会高估一倍，制冷设计将严重失准.</b></p>
+  <p>进一步，空气密度 \(\rho=1.2\,\mathrm{kg/m^3}\)、定压比热 \(c_p=1005\,\mathrm{J/(kg\cdot K)}\)、进出风温差 \(\Delta T=12\,\mathrm{K}\)，则这股风的散热能力为</p>
+  \[P=\rho\,c_p\,\Delta T\cdot Q=1.2\times1005\times12\times2.011=2.91\times10^{4}\ \mathrm{W}\approx29.1\ \mathrm{kW},\]
+  <p>恰好够压住一列高密度 GPU 机柜.注意这里出现了一个全新的记号 \(\mathrm{d}x\,\mathrm{d}y\) 而不是 \(\mathrm{d}S\)：它是<b>带方向的投影面积</b>.若把送风口翻转过来（风朝下吹），流量应记为 \(-2.011\,\mathrm{m^3/s}\).<b>"侧"，从此成为积分的一部分.</b></p>
+</div>
+
+<div class="ex"><div class="lab">引例二　风洞里的机翼前缘整流罩：常速流场穿过曲面</div>
+  <p class="stmt">某型无人机机翼前缘装有半球形整流罩 \(\Sigma:x^{2}+y^{2}+z^{2}=a^{2}\ (z\ge0)\)，\(a=0.15\,\mathrm{m}\).风洞中来流为均匀气流 \(\boldsymbol{v}=v_0\boldsymbol{k}\)，\(v_0=60\,\mathrm{m/s}\).求单位时间穿过整流罩<b>上侧</b>的空气体积.</p>
+  <p class="sol"><span class="mk">解</span>穿过一小块曲面的体积流量等于 \(\boldsymbol{v}\cdot\boldsymbol{n}\,\Delta S\)，其中 \(\boldsymbol{n}\) 为该小块的<b>单位法向量</b>.取上侧时 \(\boldsymbol{n}=(\cos\alpha,\cos\beta,\cos\gamma)\) 且 \(\cos\gamma\gt0\)，故</p>
+  \[\boldsymbol{v}\cdot\boldsymbol{n}\,\Delta S=v_0\cos\gamma\,\Delta S=v_0\,(\Delta S)_{xy},\]
+  <p>其中 \((\Delta S)_{xy}\) 是该小块在 \(xOy\) 面上<b>带符号</b>的投影面积.求和取极限：</p>
+  \[Q=\iint_\Sigma v_0\,\mathrm{d}x\,\mathrm{d}y=v_0\cdot\pi a^{2}=60\times\pi\times0.0225=4.241\ \mathrm{m^{3}/s}.\]
+  <p>质量流量为 \(\rho Q=1.225\times4.241=5.195\,\mathrm{kg/s}\).</p>
+  <p>两个值得玩味的结论：<b>(a)</b> 对匀速流场，穿过曲面的流量只取决于曲面在垂直于流向的平面上的投影，与曲面弯得多厉害无关；<b>(b)</b> 若改取<b>下侧</b>，则 \(\cos\gamma\lt0\)，结果变为 \(-4.241\,\mathrm{m^3/s}\)——<b>换侧变号，这是第二类曲面积分区别于第一类的根本特征.</b></p>
+</div>
+
+<h3>一、有向曲面与曲面的侧</h3>
+<p>通常遇到的曲面都是<b>双侧曲面</b>：一张纸有正反两面，一个球面有内外两侧.要把"侧"数学化，就用<b>法向量的指向</b>.</p>
+<div class="def"><div class="lab"><span class="n">定义 12.2</span>有向曲面</div>
+  <p>设 \(\Sigma\) 是光滑曲面.在 \(\Sigma\) 上每一点取定单位法向量 \(\boldsymbol{n}=(\cos\alpha,\cos\beta,\cos\gamma)\)，若 \(\boldsymbol{n}\) 随点<b>连续变化</b>，则称选定了 \(\Sigma\) 的<b>一侧</b>；取定了侧的曲面称为<b>有向曲面</b>.常用的侧有：</p>
+  <p>· 对 \(z=z(x,y)\)：\(\cos\gamma\gt0\) 为<b>上侧</b>，\(\cos\gamma\lt0\) 为<b>下侧</b>；</p>
+  <p>· 对 \(x=x(y,z)\)：\(\cos\alpha\gt0\) 为<b>前侧</b>，\(\cos\alpha\lt0\) 为<b>后侧</b>；</p>
+  <p>· 对 \(y=y(z,x)\)：\(\cos\beta\gt0\) 为<b>右侧</b>，\(\cos\beta\lt0\) 为<b>左侧</b>；</p>
+  <p>· 对闭曲面：法向量朝外为<b>外侧</b>，朝内为<b>内侧</b>.</p>
+</div>
+<div class="note"><b>并非所有曲面都有两侧.</b>把一条纸带扭转 \(180^\circ\) 后首尾粘合，得到<b>莫比乌斯带</b>：沿着它走一圈，法向量会连续地变成原来的反方向——它是<b>单侧曲面</b>，无法定向，第二类曲面积分对它没有意义.本章讨论的曲面一律假定为双侧可定向的.</div>
+
+<div class="def"><div class="lab"><span class="n">定义 12.3</span>有向曲面元在坐标面上的投影</div>
+  <p>设 \(\Delta S\) 是有向曲面 \(\Sigma\) 上的一小块，其在 \(xOy\) 面上投影区域的面积为 \((\Delta\sigma)_{xy}\ge0\).规定该小块的<b>有向投影</b>为</p>
+  \[(\Delta S)_{xy}=\begin{cases}\ \ (\Delta\sigma)_{xy},&\cos\gamma\gt0\ \text{（上侧）},\\[2pt]
+   -(\Delta\sigma)_{xy},&\cos\gamma\lt0\ \text{（下侧）},\\[2pt]
+   \ \ 0,&\cos\gamma\equiv0 .\end{cases}\]
+  <p>\((\Delta S)_{yz}\) 与 \((\Delta S)_{zx}\) 类似定义.</p>
+</div>
+
+<h3>二、对坐标的曲面积分的概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 12.4</span>对坐标的曲面积分（第二类曲面积分）</div>
+  <p>设 \(\Sigma\) 是光滑的有向曲面，函数 \(R(x,y,z)\) 在 \(\Sigma\) 上有界.把 \(\Sigma\) 任意分成 \(n\) 小块 \(\Delta S_i\)，在其上任取点 \((\xi_i,\eta_i,\zeta_i)\).若极限</p>
+  \[\lim_{\lambda\to0}\sum_{i=1}^{n}R(\xi_i,\eta_i,\zeta_i)\,(\Delta S_i)_{xy}\]
+  <p>存在，则称之为 \(R\) 在有向曲面 \(\Sigma\) 上<b>对坐标 \(x,y\) 的曲面积分</b>，记作 \(\displaystyle\iint_\Sigma R(x,y,z)\,\mathrm{d}x\,\mathrm{d}y\).类似地定义</p>
+  \[\iint_\Sigma P(x,y,z)\,\mathrm{d}y\,\mathrm{d}z,\qquad \iint_\Sigma Q(x,y,z)\,\mathrm{d}z\,\mathrm{d}x .\]
+  <p>三者之和习惯写成合并形式</p>
+  \[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y ,\]
+</div>
+
+<div class="def"><div class="lab"><span class="n">性质</span>第二类曲面积分的两条性质</div>
+  <p><b>(1) 可加性：</b>若 \(\Sigma=\Sigma_1+\Sigma_2\)（保持侧的一致），则积分等于两片积分之和.</p>
+  <p><b>(2) 换侧变号：</b>记 \(\Sigma^{-}\) 为与 \(\Sigma\) 取相反侧的同一曲面，则</p>
+  \[\iint_{\Sigma^{-}}P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y
+   =-\iint_{\Sigma}P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>回到定义.对有向曲面 \(\Sigma\)，把它分成 \(n\) 小片 \(\Delta S_i\)，记 \((\Delta S_i)_{xy}\) 为第 \(i\) 片在 \(xOy\) 面上的<b>有向投影面积</b>：其绝对值等于投影区域的面积，符号由该片法向量的方向余弦 \(\cos\gamma\) 决定（\(\cos\gamma\gt0\) 取正，\(\cos\gamma\lt0\) 取负，\(\cos\gamma=0\) 取零）.于是</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=\lim\limits_{\lambda\to0}\sum_{i=1}^{n}R(\xi_i,\eta_i,\zeta_i)\,(\Delta S_i)_{xy},\]
+<p>另两个分量同理.<b>与第一类的唯一差别就在于这个符号</b>，两条性质都由此而来.</p>
+<p><span class="stp">(1) 可加性.</span>设 \(\Sigma=\Sigma_1+\Sigma_2\) 且两片的侧与 \(\Sigma\) 一致（即在公共边界两侧法向量连续过渡）.取以公共边界为分界线的分割，则每一小片要么属于 \(\Sigma_1\)、要么属于 \(\Sigma_2\)，且其有向投影面积在两种看法下完全相同（因为侧一致，\(\cos\gamma\) 的符号没有变）.于是和式裂为两组：</p>
+\[\sum_{i}R(M_i)(\Delta S_i)_{xy}=\sum_{\Delta S_i\subset\Sigma_1}+\sum_{\Delta S_i\subset\Sigma_2},\]
+<p>令 \(\lambda\to0\) 即得 \(\displaystyle\iint_\Sigma=\iint_{\Sigma_1}+\iint_{\Sigma_2}\).对 \(P\mathrm{d}y\mathrm{d}z,\ Q\mathrm{d}z\mathrm{d}x\) 同理，相加即得整个第二类曲面积分的可加性.</p>
+<p><span class="stp">(2) 换侧变号.</span>\(\Sigma^{-}\) 与 \(\Sigma\) 是同一张曲面，只是每一点的单位法向量反号：</p>
+\[\boldsymbol{n}^{-}=-\boldsymbol{n},\qquad\text{即}\qquad \bigl(\cos\alpha,\cos\beta,\cos\gamma\bigr)\ \longmapsto\ \bigl(-\cos\alpha,-\cos\beta,-\cos\gamma\bigr).\]
+<p>取同一个分割与同一组取点.由于投影区域的<b>面积</b>没有变、只有符号由 \(\cos\gamma\) 的符号决定，故</p>
+\[(\Delta S_i)^{-}_{xy}=-(\Delta S_i)_{xy},\]
+<p>对 \(yz,zx\) 两个投影同样成立.于是每一个和式都整体变号：</p>
+\[\sum_i R(M_i)(\Delta S_i)^{-}_{xy}=-\sum_i R(M_i)(\Delta S_i)_{xy}.\]
+<p>令 \(\lambda\to0\)，三项相加即得</p>
+\[\iint_{\Sigma^{-}}P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y=-\iint_{\Sigma}P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y .\]
+<p><span class="stp">物理解读：</span>第二类曲面积分表示流体穿过曲面的<b>流量</b>；把"哪一面算正"翻过来，同样的流动自然由"流出"变成"流入"，流量恰好反号.而第一类曲面积分（如求质量）没有方向问题，故性质(4)说它与侧无关——两者对照，符号的来龙去脉一目了然.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>把两类曲面积分放在一起对比记忆：</b><br>
+· 第一类 \(\displaystyle\iint_\Sigma f\,\mathrm{d}S\)：\(\mathrm{d}S\gt0\) 恒为正，<b>无侧</b>，物理原型是"质量、面积"；<br>
+· 第二类 \(\displaystyle\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y\)：\(\mathrm{d}x\mathrm{d}y\) <b>可正可负</b>，<b>依赖侧</b>，物理原型是"流量、通量".<br>
+一句话：<b>称重与记账的区别</b>——称重只问多少，记账要分收支.</div>
+
+<h3>三、计算法："一投二代三定号"</h3>
+<div class="def"><div class="lab"><span class="n">定理 12.3</span>对坐标的曲面积分的计算</div>
+  <p>设有向曲面 \(\Sigma:\ z=z(x,y)\)，在 \(xOy\) 面上的投影区域为 \(D_{xy}\)，\(z(x,y)\) 有连续偏导数，\(R(x,y,z)\) 在 \(\Sigma\) 上连续，则</p>
+  \[\iint_\Sigma R(x,y,z)\,\mathrm{d}x\,\mathrm{d}y=\pm\iint_{D_{xy}}R\bigl(x,y,z(x,y)\bigr)\,\mathrm{d}x\,\mathrm{d}y ,\]
+  <p>其中 \(\Sigma\) 取<b>上侧</b>时取 \(+\)，取<b>下侧</b>时取 \(-\).同理</p>
+  \[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z=\pm\iint_{D_{yz}}P\bigl(x(y,z),y,z\bigr)\mathrm{d}y\mathrm{d}z\ \ (\text{前}+\text{后}-),\]
+  \[\iint_\Sigma Q\,\mathrm{d}z\mathrm{d}x=\pm\iint_{D_{zx}}Q\bigl(x,y(z,x),z\bigr)\mathrm{d}z\mathrm{d}x\ \ (\text{右}+\text{左}-).\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：写出定义中的和式.</span>把有向曲面 \(\Sigma:z=z(x,y),\ (x,y)\in D_{xy}\) 分成 \(n\) 小片 \(\Delta S_i\)，在每片上取点 \(M_i(\xi_i,\eta_i,\zeta_i)\)，其中 \(\zeta_i=z(\xi_i,\eta_i)\).按定义</p>
+\[\iint_\Sigma R(x,y,z)\,\mathrm{d}x\mathrm{d}y=\lim\limits_{\lambda\to0}\sum_{i=1}^{n}R(\xi_i,\eta_i,\zeta_i)\,(\Delta S_i)_{xy},\]
+<p>其中 \((\Delta S_i)_{xy}\) 是有向投影面积.</p>
+<p><span class="stp">第二步：确定符号.</span>设 \(\Sigma\) 取<b>上侧</b>，即法向量与 \(z\) 轴正向成锐角，\(\cos\gamma\gt0\).此时每一小片的有向投影面积为正，等于投影区域 \(\Delta\sigma_i\) 的面积：</p>
+\[(\Delta S_i)_{xy}=+\Delta\sigma_i .\]
+<p>代入第一步得</p>
+\[\sum_{i=1}^{n}R\bigl(\xi_i,\eta_i,z(\xi_i,\eta_i)\bigr)\,\Delta\sigma_i .\]
+<p><span class="stp">第三步：取极限.</span>上式恰是二元连续函数 \(R\bigl(x,y,z(x,y)\bigr)\) 在 \(D_{xy}\) 上的二重积分和（因 \(z\) 连续、\(R\) 在 \(\Sigma\) 上连续，复合函数连续故可积）.令 \(\lambda\to0\)，得</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=\iint_{D_{xy}}R\bigl(x,y,z(x,y)\bigr)\,\mathrm{d}x\,\mathrm{d}y\qquad(\text{上侧}).\]
+<p><span class="stp">第四步：下侧的情形.</span>若 \(\Sigma\) 取下侧，则 \(\cos\gamma\lt0\)，每片的有向投影面积为 \((\Delta S_i)_{xy}=-\Delta\sigma_i\)，和式整体变号（这也与"换侧变号"性质一致），故</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=-\iint_{D_{xy}}R\bigl(x,y,z(x,y)\bigr)\,\mathrm{d}x\,\mathrm{d}y\qquad(\text{下侧}).\]
+<p>两式合写即为定理中带 \(\pm\) 的公式.</p>
+<p><span class="stp">第五步：另两式.</span>把 \(x,y,z\) 的角色作轮换即可：对 \(\displaystyle\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z\)，需把 \(\Sigma\) 写成 \(x=x(y,z)\) 投影到 \(yOz\) 面得 \(D_{yz}\)，此时符号由 \(\cos\alpha\) 决定，<b>前侧</b>（\(\cos\alpha\gt0\)）取 \(+\)、<b>后侧</b>取 \(-\)；对 \(\displaystyle\iint_\Sigma Q\,\mathrm{d}z\mathrm{d}x\)，写成 \(y=y(z,x)\) 投影到 \(zOx\) 面得 \(D_{zx}\)，符号由 \(\cos\beta\) 决定，<b>右侧</b>取 \(+\)、<b>左侧</b>取 \(-\).</p>
+<p><span class="stp">使用提醒：</span>公式可记作"<b>一投、二代、三定号</b>".若曲面在某个坐标面上的投影不是单值的（例如球面对 \(xOy\) 面），必须先把它<b>分成上下（前后、左右）两片</b>分别计算，再用可加性相加；又若曲面是柱面、其母线平行于 \(z\) 轴，则 \(\cos\gamma\equiv0\)，此时 \(\displaystyle\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=0\)，不必计算.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>口诀：一投、二代、三定号.</b><br>
+<b>一投</b>——看清 \(\mathrm{d}x\mathrm{d}y\) 就投影到 \(xOy\) 面，看清 \(\mathrm{d}y\mathrm{d}z\) 就投影到 \(yOz\) 面，绝不能张冠李戴；<br>
+<b>二代</b>——用曲面方程把被积函数中<b>与投影面无关的那个变量</b>消去（投 \(xOy\) 面就把 \(z\) 换成 \(z(x,y)\)）；<br>
+<b>三定号</b>——由曲面所取的侧决定正负：上前右为 \(+\)，下后左为 \(-\).<br>
+另外还有两条常被忽视的补充：<b>(a)</b> 若曲面是母线平行于 \(z\) 轴的柱面，则 \(\cos\gamma=0\)，此时 \(\displaystyle\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=0\)，<b>可以直接判零</b>；<b>(b)</b> 若曲面对某坐标面的投影是"二对一"（如整个球面对 \(xOy\)），<b>必须先分片再定号</b>.</div>
+
+<h3>四、两类曲面积分的联系</h3>
+<div class="def"><div class="lab"><span class="n">定理 12.4</span>两类曲面积分的联系</div>
+  <p>设 \(\Sigma\) 为有向光滑曲面，其单位法向量为 \(\boldsymbol{n}=(\cos\alpha,\cos\beta,\cos\gamma)\)，则</p>
+  \[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y
+   =\iint_\Sigma\bigl(P\cos\alpha+Q\cos\beta+R\cos\gamma\bigr)\mathrm{d}S
+   =\iint_\Sigma \boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S ,\]
+  <p>其中 \(\boldsymbol{A}=(P,Q,R)\).等价地，\(\mathrm{d}y\mathrm{d}z=\cos\alpha\,\mathrm{d}S,\ \mathrm{d}z\mathrm{d}x=\cos\beta\,\mathrm{d}S,\ \mathrm{d}x\mathrm{d}y=\cos\gamma\,\mathrm{d}S\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>两类曲面积分都能化成同一个二重积分.只要把它们各自化到 \(D_{xy}\) 上，比较被积函数，就能看出 \(\mathrm{d}x\mathrm{d}y\) 与 \(\cos\gamma\,\mathrm{d}S\) 是同一回事.关键的一步是写出 \(z=z(x,y)\) 型曲面的单位法向量.</p>
+\[\boldsymbol{n}=\bigl(\cos\alpha,\cos\beta,\cos\gamma\bigr)=\frac{\bigl(-z_x,\,-z_y,\,1\bigr)}{\sqrt{1+z_x^{2}+z_y^{2}}} .\]
+<p>特别地</p>
+\[\cos\gamma=\frac{1}{\sqrt{1+z_x^{2}+z_y^{2}}}\gt0,\qquad \cos\gamma\cdot\sqrt{1+z_x^{2}+z_y^{2}}=1 .\]
+<p><span class="stp">第二步：把第一类积分化到 \(D_{xy}\).</span>由定理 12.1，</p>
+\[\iint_\Sigma R\cos\gamma\,\mathrm{d}S=\iint_{D_{xy}}R\bigl(x,y,z(x,y)\bigr)\cos\gamma\,\sqrt{1+z_x^{2}+z_y^{2}}\;\mathrm{d}x\mathrm{d}y=\iint_{D_{xy}}R\bigl(x,y,z(x,y)\bigr)\mathrm{d}x\mathrm{d}y .\]
+<p>那个开方因子恰好被 \(\cos\gamma\) 中的分母约掉——这正是两类积分能够互化的机理.</p>
+<p><span class="stp">第三步：把第二类积分化到 \(D_{xy}\).</span>由定理 12.3（上侧取 \(+\)），</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=\iint_{D_{xy}}R\bigl(x,y,z(x,y)\bigr)\mathrm{d}x\mathrm{d}y .\]
+<p>与第二步右端完全相同，故</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=\iint_\Sigma R\cos\gamma\,\mathrm{d}S .\]
+<p><span class="stp">第四步：下侧情形与另两个分量.</span>取下侧时 \(\boldsymbol{n}=\dfrac{(z_x,z_y,-1)}{\sqrt{1+z_x^2+z_y^2}}\)，于是 \(\cos\gamma=\dfrac{-1}{\sqrt{1+z_x^{2}+z_y^{2}}}\lt0\)，第二步的右端变为 \(-\displaystyle\iint_{D_{xy}}R\,\mathrm{d}x\mathrm{d}y\)；而由定理 12.3 下侧取 \(-\)，第三步右端也变为 \(-\displaystyle\iint_{D_{xy}}R\,\mathrm{d}x\mathrm{d}y\).二者仍然相等，可见等式<b>与侧的选取无关</b>（换侧时两端同时变号）.把 \(x,y,z\) 的角色轮换，同样可得</p>
+\[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z=\iint_\Sigma P\cos\alpha\,\mathrm{d}S,\qquad \iint_\Sigma Q\,\mathrm{d}z\mathrm{d}x=\iint_\Sigma Q\cos\beta\,\mathrm{d}S .\]
+<p><span class="stp">第五步：相加.</span>三式相加并用第一类曲面积分的线性性，得</p>
+\[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y=\iint_\Sigma\bigl(P\cos\alpha+Q\cos\beta+R\cos\gamma\bigr)\mathrm{d}S=\iint_\Sigma \boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S ,\]
+<p>其中 \(\boldsymbol{A}=(P,Q,R)\).由 \(P,Q,R\) 的任意性，即得形式记号</p>
+\[\mathrm{d}y\mathrm{d}z=\cos\alpha\,\mathrm{d}S,\qquad \mathrm{d}z\mathrm{d}x=\cos\beta\,\mathrm{d}S,\qquad \mathrm{d}x\mathrm{d}y=\cos\gamma\,\mathrm{d}S .\]
+<p>它的几何含义很朴素：面积元素 \(\mathrm{d}S\) 投影到某坐标面上，要乘以法向量与该坐标轴夹角的余弦，这就是"<b>投影 = 原面积 \(\times\) 倾角余弦</b>".</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<p>由此可得一个极其实用的<b>"合一投影"公式</b>：若 \(\Sigma:z=z(x,y)\) 取<b>上侧</b>，则 \(\boldsymbol{n}\) 与 \((-z_x,-z_y,1)\) 同向，于是</p>
+\[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y
+ =\iint_{D_{xy}}\bigl[-P\,z_x-Q\,z_y+R\bigr]\mathrm{d}x\,\mathrm{d}y ,\]
+<p>取下侧时整体变号.这条公式把三个方向的投影<b>一次性归并到同一个二重积分</b>，是计算三项混合型积分的首选武器.</p>
+
+<h3>五、典型例题</h3>
+
+<div class="ex"><div class="lab">例 12.8　最基本的定号练习</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma z\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是上半球面 \(z=\sqrt{a^{2}-x^{2}-y^{2}}\)，分别取 (1) 上侧；(2) 下侧.</p>
+  <p class="sol"><span class="mk">解</span>投影区域 \(D_{xy}:x^{2}+y^{2}\le a^{2}\).</p>
+  <p>(1) 上侧取 \(+\)：</p>
+  \[\iint_\Sigma z\,\mathrm{d}x\mathrm{d}y=+\iint_{D_{xy}}\sqrt{a^{2}-x^{2}-y^{2}}\,\mathrm{d}x\mathrm{d}y
+   =\int_0^{2\pi}\!\!\int_0^{a}\sqrt{a^{2}-r^{2}}\,r\,\mathrm{d}r\,\mathrm{d}\theta=2\pi\cdot\frac{a^{3}}{3}=\frac{2\pi a^{3}}{3}.\]
+  <p>(2) 下侧只需变号，得 \(-\dfrac{2\pi a^{3}}{3}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.9　整个球面：先分片，再定号</div>
+  <p class="stmt">计算 \(\displaystyle\oiint_\Sigma z\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是球面 \(x^{2}+y^{2}+z^{2}=a^{2}\) 的<b>外侧</b>.</p>
+  <p class="sol"><span class="mk">解</span>球面对 \(xOy\) 面的投影是二对一，必须分成上下两片：</p>
+  <p>· \(\Sigma_1:z_1=\sqrt{a^{2}-x^{2}-y^{2}}\)，外侧即<b>上侧</b>，取 \(+\)；</p>
+  <p>· \(\Sigma_2:z_2=-\sqrt{a^{2}-x^{2}-y^{2}}\)，外侧即<b>下侧</b>，取 \(-\).</p>
+  <p>两片的投影都是 \(D_{xy}:x^{2}+y^{2}\le a^{2}\)，于是</p>
+  \[\oiint_\Sigma z\,\mathrm{d}x\mathrm{d}y
+   =\iint_{D_{xy}}\sqrt{a^{2}-x^{2}-y^{2}}\,\mathrm{d}x\mathrm{d}y-\iint_{D_{xy}}\Bigl(-\sqrt{a^{2}-x^{2}-y^{2}}\Bigr)\mathrm{d}x\mathrm{d}y
+   =2\cdot\frac{2\pi a^{3}}{3}=\frac{4\pi a^{3}}{3}.\]
+  <p class="muted">注意"下侧取负号"与"被积函数本身为负"发生了<b>两次变号</b>，最终两片贡献<b>同号相加</b>.初学者最容易在这里漏掉一个负号而得到 0.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.10　立方体表面：六个面逐一定号</div>
+  <p class="stmt">计算 \(\displaystyle\oiint_\Sigma x^{2}\,\mathrm{d}y\mathrm{d}z+y^{2}\,\mathrm{d}z\mathrm{d}x+z^{2}\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是立方体 \(0\le x,y,z\le a\) 的表面外侧.</p>
+  <p class="sol"><span class="mk">解</span>先看 \(\displaystyle\oiint_\Sigma x^{2}\,\mathrm{d}y\mathrm{d}z\).六个面中，只有 \(x=0\)（后侧）与 \(x=a\)（前侧）两个面对 \(yOz\) 的投影不退化，其余四个面的 \(\cos\alpha=0\)，贡献为零.故</p>
+  \[\oiint_\Sigma x^{2}\,\mathrm{d}y\mathrm{d}z=\underbrace{+\iint_{D_{yz}}a^{2}\,\mathrm{d}y\mathrm{d}z}_{x=a,\ \text{前侧}}\ \underbrace{-\iint_{D_{yz}}0^{2}\,\mathrm{d}y\mathrm{d}z}_{x=0,\ \text{后侧}}=a^{2}\cdot a^{2}=a^{4}.\]
+  <p>由 \(x,y,z\) 的对称地位，另两项也各为 \(a^{4}\).所以原积分 \(=\boxed{3a^{4}}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.11　合一投影公式（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma(z^{2}+x)\,\mathrm{d}y\mathrm{d}z-z\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是旋转抛物面 \(z=\dfrac{1}{2}(x^{2}+y^{2})\) 介于 \(z=0\) 与 \(z=2\) 之间的部分，取<b>下侧</b>.</p>
+  <p class="sol"><span class="mk">解</span>这里 \(P=z^{2}+x,\ Q=0,\ R=-z\)，\(z_x=x,\ z_y=y\).用合一投影公式（下侧整体取负）：</p>
+  \[I=-\iint_{D_{xy}}\bigl[-(z^{2}+x)\cdot x-0\cdot y+(-z)\bigr]\mathrm{d}x\mathrm{d}y
+   =\iint_{D_{xy}}\bigl[x(z^{2}+x)+z\bigr]\mathrm{d}x\mathrm{d}y ,\]
+  <p>其中 \(z=\dfrac{x^{2}+y^{2}}{2}\)，\(D_{xy}:x^{2}+y^{2}\le4\).展开为三项：</p>
+  <p>① \(\displaystyle\iint_{D}x\Bigl(\frac{x^{2}+y^{2}}{2}\Bigr)^{2}\mathrm{d}x\mathrm{d}y=0\)（关于 \(x\) 为奇函数，\(D\) 关于 \(yOz\) 对称）；</p>
+  <p>② \(\displaystyle\iint_{D}x^{2}\,\mathrm{d}x\mathrm{d}y=\frac12\iint_{D}(x^{2}+y^{2})\mathrm{d}x\mathrm{d}y=\frac12\int_0^{2\pi}\!\!\int_0^{2}r^{3}\mathrm{d}r\,\mathrm{d}\theta=\frac12\cdot2\pi\cdot4=4\pi\)；</p>
+  <p>③ \(\displaystyle\iint_{D}\frac{x^{2}+y^{2}}{2}\,\mathrm{d}x\mathrm{d}y=\frac12\cdot 8\pi=4\pi\).</p>
+  <p>故 \(I=0+4\pi+4\pi=\boxed{8\pi}\).</p>
+  <p class="muted">若不用合一投影，就要把 \(\mathrm{d}y\mathrm{d}z\) 那一项单独投影到 \(yOz\) 面，还要把抛物面拆成 \(x\gt0\) 与 \(x\lt0\) 两片分别定号——工作量至少翻三倍.<b>凡遇混合型积分，优先合一投影.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 12.12　用两类积分的联系求解</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma(x+y)\,\mathrm{d}y\mathrm{d}z+(y+z)\,\mathrm{d}z\mathrm{d}x+(z+x)\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是平面 \(x+y+z=1\) 位于第一卦限的部分，取<b>上侧</b>.</p>
+  <p class="sol"><span class="mk">解</span>平面的法向量为 \((1,1,1)\)，取上侧后单位化：</p>
+  \[\boldsymbol{n}=\frac{1}{\sqrt3}(1,1,1),\qquad \cos\alpha=\cos\beta=\cos\gamma=\frac{1}{\sqrt3}.\]
+  <p>由定理 12.4 化为第一类曲面积分：</p>
+  \[I=\iint_\Sigma\frac{(x+y)+(y+z)+(z+x)}{\sqrt3}\,\mathrm{d}S=\frac{2}{\sqrt3}\iint_\Sigma(x+y+z)\,\mathrm{d}S .\]
+  <p>在 \(\Sigma\) 上恒有 \(x+y+z=1\)（<b>一代</b>的威力），故</p>
+  \[I=\frac{2}{\sqrt3}\iint_\Sigma\mathrm{d}S=\frac{2}{\sqrt3}\cdot A(\Sigma).\]
+  <p>\(\Sigma\) 是以 \((1,0,0),(0,1,0),(0,0,1)\) 为顶点的等边三角形，边长 \(\sqrt2\)，面积 \(A=\dfrac{\sqrt3}{4}(\sqrt2)^{2}=\dfrac{\sqrt3}{2}\).所以</p>
+  \[I=\frac{2}{\sqrt3}\cdot\frac{\sqrt3}{2}=\boxed{1}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.13　半球面上的分片计算</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma xyz\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是球面 \(x^{2}+y^{2}+z^{2}=1\) 在 \(x\ge0,\ y\ge0\) 的部分，取<b>外侧</b>.</p>
+  <p class="sol"><span class="mk">解</span>分成上下两片，投影区域同为四分之一圆盘 \(D:x^{2}+y^{2}\le1,\ x\ge0,\ y\ge0\).</p>
+  <p>· 上片 \(z=\sqrt{1-x^{2}-y^{2}}\)，外侧为上侧，取 \(+\)：贡献 \(\displaystyle\iint_D xy\sqrt{1-x^{2}-y^{2}}\,\mathrm{d}x\mathrm{d}y\)；</p>
+  <p>· 下片 \(z=-\sqrt{1-x^{2}-y^{2}}\)，外侧为下侧，取 \(-\)：贡献 \(\displaystyle-\iint_D xy\bigl(-\sqrt{1-x^{2}-y^{2}}\bigr)\mathrm{d}x\mathrm{d}y=+\iint_D xy\sqrt{1-x^{2}-y^{2}}\,\mathrm{d}x\mathrm{d}y\).</p>
+  <p>两片同号，故</p>
+  \[I=2\iint_D xy\sqrt{1-x^{2}-y^{2}}\,\mathrm{d}x\mathrm{d}y
+   =2\int_0^{\pi/2}\!\cos\theta\sin\theta\,\mathrm{d}\theta\int_0^{1}r^{3}\sqrt{1-r^{2}}\,\mathrm{d}r .\]
+  <p>其中 \(\displaystyle\int_0^{\pi/2}\cos\theta\sin\theta\,\mathrm{d}\theta=\frac12\)；令 \(u=1-r^{2}\) 得 \(\displaystyle\int_0^{1}r^{3}\sqrt{1-r^{2}}\,\mathrm{d}r=\frac12\int_0^{1}(1-u)\sqrt u\,\mathrm{d}u=\frac12\Bigl(\frac23-\frac25\Bigr)=\frac{2}{15}\).所以</p>
+  \[I=2\cdot\frac12\cdot\frac{2}{15}=\boxed{\frac{2}{15}}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.14　球面外侧的通量（本章后续反复用到）</div>
+  <p class="stmt">计算 \(\displaystyle\oiint_\Sigma x\,\mathrm{d}y\mathrm{d}z+y\,\mathrm{d}z\mathrm{d}x+z\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是球面 \(x^{2}+y^{2}+z^{2}=a^{2}\) 的外侧.</p>
+  <p class="sol"><span class="mk">解</span>球面外侧的单位法向量恰为径向单位向量：\(\boldsymbol{n}=\dfrac{1}{a}(x,y,z)\).由定理 12.4，</p>
+  \[I=\oiint_\Sigma\bigl(x,y,z\bigr)\cdot\frac{(x,y,z)}{a}\,\mathrm{d}S=\oiint_\Sigma\frac{x^{2}+y^{2}+z^{2}}{a}\,\mathrm{d}S
+   =\oiint_\Sigma\frac{a^{2}}{a}\,\mathrm{d}S=a\cdot4\pi a^{2}=\boxed{4\pi a^{3}}.\]
+</div>
+
+<div class="case"><div class="lab">应用探微 · CFD 求解器如何核算一台服务器机柜的风量守恒</div>
+  <details><summary>展开查看：把机柜包成一个闭曲面，逐面算通量并检验守恒</summary>
+  <div class="body">
+    <p>计算流体力学（CFD）软件把机房离散成上百万个网格单元，对<b>每一个</b>单元执行同一件事：计算流出该单元六个面的通量之和，并要求它等于零（不可压缩流体的质量守恒）.我们把这套流程在一台机柜上手算一遍.</p>
+    <p>把机柜理想化为长方体 \(\Omega:0\le x\le0.6,\ 0\le y\le1.2,\ 0\le z\le2.0\)（单位 m），机房内的稳态风速场经 CFD 拟合为</p>
+    \[\boldsymbol{v}=\bigl(P,Q,R\bigr)=\bigl(2.5-1.5x,\ 0.8y,\ 0.4z\bigr)\quad(\mathrm{m/s}).\]
+    <p>逐面计算通量 \(\displaystyle\iint\boldsymbol{v}\cdot\boldsymbol{n}\,\mathrm{d}S\)（各面上被积函数均为常数或线性，直接乘面积）：</p>
+    <table class="dt">
+      <tr><th>面</th><th>外法向</th><th>面上 \(\boldsymbol{v}\cdot\boldsymbol{n}\)（m/s）</th><th>面积（m²）</th><th>通量（m³/s）</th></tr>
+      <tr><td>\(x=0\)（进风）</td><td>\((-1,0,0)\)</td><td>\(-2.5\)</td><td>2.40</td><td>\(-6.000\)</td></tr>
+      <tr><td>\(x=0.6\)（出风）</td><td>\((1,0,0)\)</td><td>\(2.5-0.9=1.6\)</td><td>2.40</td><td>\(+3.840\)</td></tr>
+      <tr><td>\(y=0\)</td><td>\((0,-1,0)\)</td><td>\(0\)</td><td>1.20</td><td>\(0\)</td></tr>
+      <tr><td>\(y=1.2\)</td><td>\((0,1,0)\)</td><td>\(0.96\)</td><td>1.20</td><td>\(+1.152\)</td></tr>
+      <tr><td>\(z=0\)（地板）</td><td>\((0,0,-1)\)</td><td>\(0\)</td><td>0.72</td><td>\(0\)</td></tr>
+      <tr><td>\(z=2.0\)（顶部）</td><td>\((0,0,1)\)</td><td>\(0.8\)</td><td>0.72</td><td>\(+0.576\)</td></tr>
+      <tr><td colspan="4"><b>净通量合计</b></td><td><b>\(-0.432\)</b></td></tr>
+    </table>
+    <p><b>解读：</b>净通量为 \(-0.432\,\mathrm{m^3/s}\)，即<b>流入多于流出</b>.对不可压缩流体这是不允许的，说明该拟合场并不严格守恒——CFD 求解器正是靠监控这个"残差"来判断迭代是否收敛的.事实上</p>
+    \[\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}=-1.5+0.8+0.4=-0.3\ (\mathrm{s^{-1}}),\]
+    <p>乘以机柜体积 \(V=0.6\times1.2\times2.0=1.44\,\mathrm{m^{3}}\) 得 \(-0.3\times1.44=-0.432\,\mathrm{m^3/s}\)，与逐面求和<b>完全一致</b>.</p>
+    <p>这个"完全一致"不是运气——它就是下一节要证明的<b>高斯公式</b>.一旦掌握它，上面六个面的繁琐计算将被压缩成一次三重积分.</p>
+  </div>
+  </details>
+
+    <!-- ============ §12.3 ============ -->
+<div class="labx">
+  <div class="lab">第二类曲面积分 · 通量</div>
+  <div class="desc">固定 (\(y=y_0\)) 的截面 (\(z=\sin x\cos y_0\))，通量积分在该起伏曲面上进行（示意）.</div>
+  <canvas id="cv_p123" width="720" height="320"></canvas>
+  <div class="ctrl"><label>y₀ = <span id="vo_p123">0</span></label>
+  <input type="range" id="rg_p123" min="-1" max="1" step="0.1" value="0"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p123'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p123');
+    var vo=document.getElementById('vo_p123');
+    var W=cv.width,H=cv.height;
+    var xmin=-3,xmax=3,ymin=-1,ymax=1;
+    var p=0;
+    function fx(x){ return Math.sin(x)*Math.cos(p); }
+    function gx(x){  }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.12)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv+=2){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv+=2){var yy=Y(gyv)*H;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
+      // axes
+      var y0=Y(0)*H, x0=X(0)*W;
+      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x0,0);ctx.lineTo(x0,H);ctx.moveTo(0,y0);ctx.lineTo(W,y0);ctx.stroke();
+      // f(x)=x*sin x
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.8; ctx.lineCap='round'; ctx.beginPath();
+      var f1=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fx(x);
+        if(!isFinite(y)){f1=true;continue;}var py=Y(y);
+        if(py<0||py>1){f1=true;continue;}var sx=px,sy=py*H;
+        if(f1){ctx.moveTo(sx,sy);f1=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // f'(x)=sin x+x*cos x
+      ctx.strokeStyle='#D97706'; ctx.lineWidth=2.2; ctx.beginPath();
+      var f2=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fpx(x);
+        if(!isFinite(y)){f2=true;continue;}var py=Y(y);
+        if(py<0||py>1){f2=true;continue;}var sx=px,sy=py*H;
+        if(f2){ctx.moveTo(sx,sy);f2=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // legend
+      ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#0F6E56'; ctx.fillRect(W-145,10,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=x\u00b7sin x', W-125,16);
+      ctx.fillStyle='#D97706'; ctx.fillRect(W-145,26,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText("f\u2032(x)=sin x+x\u00b7cos x", W-125,32);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 芯片封装：散热片表面的热流通量积分</summary>
+<p><b>场景：</b> 一颗 AI 加速芯片裸 die 功耗 \(\Phi=65\ \mathrm{W}\)，靠翅片式散热片通过对流把热带走.局部法向热流密度 \(q_{n}=h(T_{s}-T_{\infty})\)，其中 \(h\) 为对流换热系数.散热片「实际参与换热的有效面积」就是第二类曲面积分 \(Q=\iint_{\Sigma}q_{n}\,\mathrm{d}S\) 中的被积区域——面积算错，散热能力就估错.给定温升 \(\Delta T=40\ \mathrm{K}\)，反推所需有效面积，再与真实翅片几何核对.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>芯片功耗</td><td>\(\Phi\)</td><td>\(65\ \mathrm{W}\)</td></tr>
+<tr><td>对流系数</td><td>\(h\)</td><td>\(25\ \mathrm{W/(m^{2}\cdot K)}\)</td></tr>
+<tr><td>温升</td><td>\(\Delta T\)</td><td>\(40\ \mathrm{K}\)</td></tr>
+<tr><td>翅片数</td><td>\(N_{f}\)</td><td>\(40\)</td></tr>
+<tr><td>单翅片单面尺寸</td><td>\(a\times b\)</td><td>\(0.04\times0.03\ \mathrm{m^{2}}\)</td></tr>
+</table>
+<p class="sol"> 由对流积分（对坐标曲面积分，法向取外法向）：</p>
+\[Q=\iint_{\Sigma}h(T_{s}-T_{\infty})\,\mathrm{d}S=h\Delta T\cdot A_{\mathrm{eff}}=\Phi.\]
+<p>所需有效面积</p>
+\[A_{\mathrm{eff}}=\frac{\Phi}{h\Delta T}
+ =\frac{65}{25\times40}=0.065\ \mathrm{m^{2}}.\]
+<p>平均法向热流密度</p>
+\[q_{n}=\frac{\Phi}{A_{\mathrm{eff}}}=1000\ \mathrm{W/m^{2}}.\]
+<p>真实翅片几何：每片两面各 \(0.04\times0.03=1.2\times10^{-3}\ \mathrm{m^{2}}\)，\(40\) 片共 \(40\times2\times1.2\times10^{-3}=0.096\ \mathrm{m^{2}}\)，再加基板约 \(0.02\ \mathrm{m^{2}}\)，总换热面积约 \(0.116\ \mathrm{m^{2}}\gt0.065\ \mathrm{m^{2}}\)，裕度 \(78\%\).</p>
+<p><b>工程结论：</b> 散热能力由「第二类曲面积分 \(Q=\iint_{\Sigma}q_{n}\,\mathrm{d}S\)」决定，核心是有效法向面积 \(A_{\mathrm{eff}}\)，不是芯片投影面积.本例真实翅片面积 \(0.116\ \mathrm{m^{2}}\) 远超需求 \(0.065\ \mathrm{m^{2}}\)，说明散热余量大；反之若按 die 的 \(0.04\times0.04=0.0016\ \mathrm{m^{2}}\) 估算会错误地得出温升上千度.封装热仿真（如 Fluent Icepak）底层就是把 \(q_{n}\) 在翅片表面网格上做第二类曲面积分.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch12-flux" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>对流系数 h <input type="range" id="ch12-flux-h" min="20" max="100" step="2" value="40" style="width:140px;accent-color:#0F6E56"> <b id="ch12-flux-h-t"></b> W/(m²·K)</label>
+<label>温差 ΔT <input type="range" id="ch12-flux-dt" min="10" max="50" step="1" value="25" style="width:140px;accent-color:#0F6E56"> <b id="ch12-flux-dt-t"></b> K</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch12-flux-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch12-flux'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var Phi=65, Aact=0.116;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var hC=+document.getElementById('ch12-flux-h').value;
+      var dT=+document.getElementById('ch12-flux-dt').value;
+      var Aeff=Phi/(hC*dT);
+      var ok=Aeff<=Aact;
+      var cx=W*0.32, cy=H*0.5;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 翅片示意（矩形）
+      var wPix=Math.min(W*0.4, Aeff/Aact*W*0.35+20), hPix=Math.min(H*0.5, Aact/Aeff*H*0.5);
+      ctx.fillStyle=ok?'rgba(15,110,86,0.25)':'rgba(220,38,38,0.2)';
+      ctx.fillRect(cx-wPix/2,cy-hPix/2,wPix,hPix);
+      ctx.strokeStyle=ok?'#0F6E56':'#dc2626';ctx.lineWidth=2;
+      ctx.strokeRect(cx-wPix/2,cy-hPix/2,wPix,hPix);
+      ctx.fillStyle='#334155';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('实际翅片面积 '+Aact.toFixed(3)+' m²',cx,cy+hPix/2+18);
+      ctx.fillStyle=ok?'#0F6E56':'#dc2626';ctx.font='bold 11px sans-serif';
+      ctx.fillText('所需有效面积 '+Aeff.toFixed(3)+' m²',cx,cy-hPix/2-10);
+      // 数值
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('A_eff = Φ/(hΔT) = '+Phi.toFixed(0)+'/(h×'+dT.toFixed(0)+') = '+Aeff.toFixed(3)+' m²   （Φ=65 W, 实际 0.116 m²）',20,22);
+      var out=document.getElementById('ch12-flux-out');
+      out.textContent = ok ? '✔ 实际翅片面积够用，散热达标' : '⚠ 有效面积不足！需加大 h（加风扇/热管）或增加翅片';
+    }
+    document.getElementById('ch12-flux-h').addEventListener('input', draw);
+    document.getElementById('ch12-flux-dt').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 流体机械：涡轮叶片表面的压力积分求升力</summary>
+<p><b>场景：</b> 一台微型燃气涡轮的压气机叶片，上下表面受压差推动旋转.叶片所受气动力是压力在第二类曲面积分意义下的「面积分」：\(\boldsymbol{F}=\iint_{\Sigma}p\,\boldsymbol{n}\,\mathrm{d}S\).把叶片上下表面压力差 \(\Delta p\) 在投影平面（弦长 \(c\)×展长 \(b\)）上积分，即得升力 \(L\).取单叶片算其能提供的轴向推力.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>弦长</td><td>\(c\)</td><td>\(0.10\ \mathrm{m}\)</td></tr>
+<tr><td>展长</td><td>\(b\)</td><td>\(0.30\ \mathrm{m}\)</td></tr>
+<tr><td>平均压差</td><td>\(\Delta p\)</td><td>\(8000\ \mathrm{Pa}\)</td></tr>
+<tr><td>气流速度</td><td>\(v\)</td><td>\(120\ \mathrm{m/s}\)</td></tr>
+</table>
+<p class="sol"> 将叶片投影到弦–展平面，升力近似为压差对该投影面的第二类曲面积分（法向取升力方向）：</p>
+\[L=\iint_{\Sigma_{\mathrm{plan}}}(p_{\mathrm{下}}-p_{\mathrm{上}})\,\mathrm{d}S
+ \approx\Delta p\cdot(c\times b).\]
+<p>投影面积 \(A_{p}=0.10\times0.30=0.030\ \mathrm{m^{2}}\)，故</p>
+\[L=8000\times0.030=240\ \mathrm{N}.\]
+<p>若改用环量–升力公式校核：\(L=\rho v\Gamma\)，取 \(\rho=1.225\)，得所需环量 \(\Gamma=L/(\rho v)=240/(1.225\times120)=1.63\ \mathrm{m^{2}/s}\)，量级合理.</p>
+<p><b>工程结论：</b> 叶片受力本质是压力矢量场在曲面上的第二类曲面积分 \(\iint_{\Sigma}p\,\boldsymbol{n}\,\mathrm{d}S\)；工程上常把它投影到平面用平均压差 \(\Delta p\) 简化，但前提是压差分布平缓.若叶尖出现强涡（局部 \(\Delta p\) 剧变），简化会低估峰值应力，必须在 CFD 里老老实实沿曲面做积分.<b>「压力 × 有向面积元 = 受力」</b>正是气动载荷计算的第一条公式.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s122" data-ch="12" data-n="5"></div>
+<h2 id="s123"><span class="num">§12.3</span>高斯公式与斯托克斯公式</h2>
+    
+<div class="ex"><div class="lab">引例一　麦克斯韦方程组的积分形式，就是高斯公式与斯托克斯公式</div>
+  <p class="stmt">1865 年麦克斯韦用一组方程统一了电与磁，预言了电磁波，直接催生了今天的 5G、卫星通信与雷达.这组方程有"积分形式"与"微分形式"两副面孔，而<b>把它们连接起来的桥梁，正是本节的两个公式</b>.</p>
+  <p>四个方程的积分形式（\(\Sigma\) 为闭曲面，\(\Gamma\) 为闭曲线，\(S\) 为以 \(\Gamma\) 为边界的曲面）：</p>
+  \[\oiint_\Sigma \boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=\frac{q}{\varepsilon_0},\qquad
+    \oiint_\Sigma \boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0,\]
+  \[\oint_\Gamma \boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\frac{\mathrm{d}}{\mathrm{d}t}\iint_S\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S},\qquad
+    \oint_\Gamma \boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\mu_0\Bigl(I+\varepsilon_0\frac{\mathrm{d}}{\mathrm{d}t}\iint_S\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}\Bigr).\]
+  <p>前两式是<b>闭曲面上的第二类曲面积分</b>，后两式把<b>闭曲线积分</b>与<b>曲面积分</b>联系起来.本节的高斯公式把第一类关系翻译成 \(
+abla\cdot\boldsymbol{E}=\rho/\varepsilon_0\)，斯托克斯公式把第二类关系翻译成 \(
+abla\times\boldsymbol{B}=\mu_0(\boldsymbol{J}+\varepsilon_0\partial\boldsymbol{E}/\partial t)\).</p>
+  <p><b>具体数值计算（点电荷的电通量）</b>：设一个 MEMS 微电容极板带电 \(q=2.0\times10^{-9}\,\mathrm{C}\)，真空介电常数 \(\varepsilon_0=8.854\times10^{-12}\,\mathrm{F/m}\).以电荷为心作半径 \(r\) 的球面，由库仑定律 \(E=\dfrac{q}{4\pi\varepsilon_0r^{2}}\)，电场处处沿径向，与球面外法向同向，故</p>
+  \[\oiint_\Sigma \boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=E\cdot4\pi r^{2}=\frac{q}{4\pi\varepsilon_0r^{2}}\cdot4\pi r^{2}=\frac{q}{\varepsilon_0}.\]
+  <table class="dt">
+    <tr><th>半径 \(r\)（m）</th><th>场强 \(E\)（V/m）</th><th>球面积 \(4\pi r^2\)（m²）</th><th>通量 \(\varPhi\)（V·m）</th></tr>
+    <tr><td>0.01</td><td>\(1.798\times10^{5}\)</td><td>\(1.257\times10^{-3}\)</td><td>225.9</td></tr>
+    <tr><td>0.03</td><td>\(1.998\times10^{4}\)</td><td>\(1.131\times10^{-2}\)</td><td>225.9</td></tr>
+    <tr><td>0.10</td><td>\(1.798\times10^{3}\)</td><td>\(1.257\times10^{-1}\)</td><td>225.9</td></tr>
+  </table>
+  <p>通量 \(\varPhi=q/\varepsilon_0=2.0\times10^{-9}/8.854\times10^{-12}=225.9\,\mathrm{V\cdot m}\)，<b>与球面半径完全无关</b>！场强按 \(1/r^{2}\) 衰减，面积按 \(r^{2}\) 增长，两者精确抵消.这个"与曲面形状无关"的性质，正是高斯公式的核心内容.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　无线充电线圈：安培环路定律与斯托克斯公式</div>
+  <p class="stmt">手机无线充电靠发射线圈产生交变磁场.设线圈中通过电流 \(I=1.5\,\mathrm{A}\)，真空磁导率 \(\mu_0=4\pi\times10^{-7}\,\mathrm{H/m}\).沿任一环绕导线的闭曲线 \(\Gamma\) 计算磁感应强度的<b>环流量</b>：</p>
+  \[\oint_\Gamma \boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\mu_0 I=4\pi\times10^{-7}\times1.5=1.885\times10^{-6}\ \mathrm{T\cdot m}.\]
+  <p>取 \(\Gamma\) 为半径 \(r=0.05\,\mathrm{m}\) 的同心圆，由对称性 \(B\) 沿圆周为常数，故 \(B\cdot2\pi r=\mu_0I\)，得</p>
+  \[B=\frac{\mu_0 I}{2\pi r}=\frac{2\times10^{-7}\times1.5}{0.05}=6.0\times10^{-6}\ \mathrm{T}.\]
+  <p>关键在于：<b>环流量只与穿过 \(\Gamma\) 的电流有关，与 \(\Gamma\) 的形状、大小完全无关</b>.这正是斯托克斯公式所说的——闭曲线上的环流量等于其张成曲面上"旋度的通量"，而磁场的旋度只在有电流的地方非零.</p>
+</div>
+
+<h3>一、高斯公式</h3>
+<div class="def"><div class="lab"><span class="n">定理 12.5</span>高斯（Gauss）公式</div>
+  <p>设空间闭区域 \(\Omega\) 由分片光滑的<b>闭曲面</b> \(\Sigma\) 围成，函数 \(P,Q,R\) 在 \(\Omega\) 上具有一阶连续偏导数，则</p>
+  \[\oiint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y
+   =\iiint_\Omega\Bigl(\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}\Bigr)\mathrm{d}v ,\]
+  <p>其中 \(\Sigma\) 取<b>外侧</b>.用第一类曲面积分表示即</p>
+  \[\oiint_\Sigma\bigl(P\cos\alpha+Q\cos\beta+R\cos\gamma\bigr)\mathrm{d}S
+   =\iiint_\Omega\Bigl(\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}\Bigr)\mathrm{d}v .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>公式两端各有三项，且 \(P,Q,R\) 的地位完全对称.因此只需证明其中一项</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=\iiint_\Omega\frac{\partial R}{\partial z}\,\mathrm{d}v ,\qquad(\ast)\]
+<p>另两项由变量轮换同理可得，最后相加.而 \((\ast)\) 的证法是<b>把三重积分先对 \(z\) 积分</b>——对 \(z\) 求导再对 \(z\) 积分正好抵消（牛顿–莱布尼茨公式），剩下的上下限恰好就是上下两块曲面.</p>
+<p><span class="stp">第一步：先设 \(\Omega\) 是简单区域.</span>设 \(\Omega\) 是 \(xy\) 型区域，即穿过 \(\Omega\) 内部且平行于 \(z\) 轴的直线与边界曲面只交于两点：</p>
+\[\Omega=\bigl\{(x,y,z)\ :\ z_1(x,y)\le z\le z_2(x,y),\ (x,y)\in D_{xy}\bigr\},\]
+<p>其中 \(z_1\le z_2\) 有连续偏导数.相应地边界 \(\Sigma\)（取外侧）分成三块：下底 \(\Sigma_1:z=z_1(x,y)\) 取<b>下侧</b>，上顶 \(\Sigma_2:z=z_2(x,y)\) 取<b>上侧</b>，以及以 \(D_{xy}\) 的边界为准线、母线平行 \(z\) 轴的侧面 \(\Sigma_3\)（可能退化为空）.</p>
+<p><span class="stp">第二步：计算右端.</span>由三重积分化累次积分（先 \(z\) 后 \(xy\)）及牛顿–莱布尼茨公式，</p>
+\[\iiint_\Omega\frac{\partial R}{\partial z}\,\mathrm{d}v=\iint_{D_{xy}}\Bigl[\int_{z_1(x,y)}^{z_2(x,y)}\frac{\partial R}{\partial z}\,\mathrm{d}z\Bigr]\mathrm{d}x\mathrm{d}y
+=\iint_{D_{xy}}\Bigl[R\bigl(x,y,z_2\bigr)-R\bigl(x,y,z_1\bigr)\Bigr]\mathrm{d}x\mathrm{d}y .\]
+<p><span class="stp">第三步：计算左端.</span>由第二类曲面积分的可加性，\(\displaystyle\iint_\Sigma=\iint_{\Sigma_1}+\iint_{\Sigma_2}+\iint_{\Sigma_3}\).逐块用定理 12.3：</p>
+<p>上顶 \(\Sigma_2\) 取上侧，符号为 \(+\)：</p>
+\[\iint_{\Sigma_2}R\,\mathrm{d}x\mathrm{d}y=\iint_{D_{xy}}R\bigl(x,y,z_2(x,y)\bigr)\,\mathrm{d}x\mathrm{d}y ;\]
+<p>下底 \(\Sigma_1\) 取下侧，符号为 \(-\)：</p>
+\[\iint_{\Sigma_1}R\,\mathrm{d}x\mathrm{d}y=-\iint_{D_{xy}}R\bigl(x,y,z_1(x,y)\bigr)\,\mathrm{d}x\mathrm{d}y ;\]
+<p>侧面 \(\Sigma_3\) 的法向量处处垂直于 \(z\) 轴，即 \(\cos\gamma\equiv0\)，由定理 12.4 得</p>
+\[\iint_{\Sigma_3}R\,\mathrm{d}x\mathrm{d}y=\iint_{\Sigma_3}R\cos\gamma\,\mathrm{d}S=0 .\]
+<p>三块相加：</p>
+\[\iint_\Sigma R\,\mathrm{d}x\mathrm{d}y=\iint_{D_{xy}}\Bigl[R\bigl(x,y,z_2\bigr)-R\bigl(x,y,z_1\bigr)\Bigr]\mathrm{d}x\mathrm{d}y .\]
+<p>与第二步右端完全一致，故 \((\ast)\) 成立.</p>
+<p><span class="stp">第四步：轮换与相加.</span>若 \(\Omega\) 同时又是 \(yz\) 型与 \(zx\) 型区域，把上述论证中 \(x,y,z\) 的角色轮换，同理得</p>
+\[\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z=\iiint_\Omega\frac{\partial P}{\partial x}\mathrm{d}v ,\qquad \iint_\Sigma Q\,\mathrm{d}z\mathrm{d}x=\iiint_\Omega\frac{\partial Q}{\partial y}\mathrm{d}v .\]
+<p>三式相加即得高斯公式</p>
+\[\oiint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y=\iiint_\Omega\Bigl(\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}\Bigr)\mathrm{d}v .\]
+<p>再由定理 12.4 把左端换成第一类曲面积分，即得</p>
+\[\oiint_\Sigma\bigl(P\cos\alpha+Q\cos\beta+R\cos\gamma\bigr)\mathrm{d}S=\iiint_\Omega\operatorname{div}\boldsymbol{A}\,\mathrm{d}v .\]
+<p><span class="stp">第五步：一般区域.</span>若 \(\Omega\) 不是上述简单区域（例如球壳、马蹄形区域），可用有限多张辅助曲面把它<b>切成若干个简单区域</b> \(\Omega_1,\dots,\Omega_s\)，对每块用已证结论后相加.三重积分按可加性直接相加；曲面积分中，每张辅助曲面都被相邻两块各用了一次，而这两次所取的<b>侧恰好相反</b>，由"换侧变号"性质它们成对抵消，最后只剩下原来的外侧边界 \(\Sigma\) 上的积分.故公式对一般的分片光滑闭曲面所围区域仍然成立.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="case">
+  <div class="lab">应用探微 · 从"表面点云"算"内部体积"：高斯公式在三维重建中的用法</div>
+  <details open><summary>展开：为什么扫地机器人能估出房间体积</summary>
+  <div class="body">
+    <p class="stmt">扫地/巡检机器人用深度相机得到物体表面的点云（一张"曲面"）.要估出物体体积，不必真的做三重积分——高斯公式把体积分转为曲面积分：</p>
+    \[\iiint_V (
+abla\cdot\vec F)\,\mathrm dV=\iint_{\partial V}\vec F\cdot\vec n\,\mathrm dS.\]
+    <p>取 \(\vec F=(x,y,z)\)，则散度 \(
+abla\cdot\vec F=3\)，左端 \(=3V\).于是只要求出表面通量即得体积 \(V=	frac13\iint_{\partial V}\vec F\cdot\vec n\,\mathrm dS\).</p>
+    <p><b>数值验证（单位球）：</b>球面 \(r=1\)，外法向 \(\vec n=\vec r\)，\(\vec F\cdot\vec n=r=1\)，表面积 \(4\pi\).故</p>
+    \[V=	frac13\cdot(1	\times4\pi)=\frac{4\pi}{3}\approx4.19.\]
+    <p>机器人对每一帧表面点采样、用上式累加，就能实时估算障碍物的占据体积——这正是高斯公式"把体积变表面"的工程价值.</p>
+  </div></details>
+</div>
+
+<h3>二、通量与散度</h3>
+<div class="def"><div class="lab"><span class="n">定义 12.5</span>通量与散度</div>
+  <p><b>通量：</b>\(\boldsymbol{A}\) 沿有向曲面 \(\Sigma\) 的<b>通量</b>定义为</p>
+  \[\varPhi=\iint_\Sigma \boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S=\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y .\]
+  <p><b>散度：</b>\(\boldsymbol{A}\) 在点 \(M\) 处的<b>散度</b>定义为</p>
+  \[\operatorname{div}\boldsymbol{A}=\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}=
+abla\cdot\boldsymbol{A}.\]
+  <p>于是高斯公式可写成向量形式</p>
+  \[\oiint_\Sigma \boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_\Omega\operatorname{div}\boldsymbol{A}\,\mathrm{d}v .\]
+</div>
+<div class="note"><b>散度的物理意义：单位体积的产出率.</b>把高斯公式用于以 \(M\) 为心的小球 \(\Omega_\rho\)，由积分中值定理可得
+\[\operatorname{div}\boldsymbol{A}(M)=\lim_{\rho\to0}\frac{1}{V(\Omega_\rho)}\oiint_{\Sigma_\rho}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S .\]
+· \(\operatorname{div}\boldsymbol{A}(M)\gt0\)：该点是<b>源</b>（如正电荷、热源、水龙头）；<br>
+· \(\operatorname{div}\boldsymbol{A}(M)\lt0\)：该点是<b>汇</b>（如负电荷、散热片、地漏）；<br>
+· \(\operatorname{div}\boldsymbol{A}\equiv0\)：称为<b>无源场</b>（如磁场 \(
+abla\cdot\boldsymbol{B}=0\)，说明磁单极子不存在）.</div>
+
+<h3>三、用高斯公式计算：补面法与奇点处理</h3>
+
+<div class="ex"><div class="lab">例 12.15　直接使用高斯公式</div>
+  <p class="stmt">计算 \(\displaystyle\oiint_\Sigma x\,\mathrm{d}y\mathrm{d}z+y\,\mathrm{d}z\mathrm{d}x+z\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 为<b>任意</b>分片光滑闭曲面（外侧），它围成的立体体积为 \(V\).</p>
+  <p class="sol"><span class="mk">解</span>\(\operatorname{div}(x,y,z)=1+1+1=3\)，故</p>
+  \[I=\iiint_\Omega 3\,\mathrm{d}v=3V .\]
+  <p>取球面 \(x^2+y^2+z^2=a^2\)，得 \(3\cdot\dfrac{4}{3}\pi a^{3}=4\pi a^{3}\)，与例 12.14 硬算的结果一致——而这次只用了两行.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.16　柱体表面上的通量</div>
+  <p class="stmt">计算 \(\displaystyle\oiint_\Sigma(y-z)x\,\mathrm{d}y\mathrm{d}z+(x-y)\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是柱体 \(\Omega:x^{2}+y^{2}\le1,\ 0\le z\le3\) 的整个表面外侧.</p>
+  <p class="sol"><span class="mk">解</span>这里 \(P=(y-z)x,\ Q=0,\ R=x-y\).</p>
+  \[\operatorname{div}\boldsymbol{A}=\frac{\partial}{\partial x}\bigl[(y-z)x\bigr]+0+\frac{\partial}{\partial z}(x-y)=(y-z)+0=y-z .\]
+  <p>由高斯公式，</p>
+  \[I=\iiint_\Omega(y-z)\,\mathrm{d}v=\iiint_\Omega y\,\mathrm{d}v-\iiint_\Omega z\,\mathrm{d}v .\]
+  <p>第一项因 \(\Omega\) 关于 \(zOx\) 面对称而 \(y\) 为奇函数，等于 0；第二项用"先算截面再沿 \(z\) 积分"：</p>
+  \[\iiint_\Omega z\,\mathrm{d}v=\int_0^{3}z\cdot\pi\cdot1^{2}\,\mathrm{d}z=\pi\cdot\frac{9}{2}=\frac{9\pi}{2}.\]
+  <p>故 \(I=\boxed{-\dfrac{9\pi}{2}}\).若逐面硬算（侧面 + 上下底），至少要做三个二重积分且反复定号.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.17　补面法（考研高频技巧）</div>
+  <p class="stmt">计算 \(\displaystyle\iint_\Sigma 2xz\,\mathrm{d}y\mathrm{d}z+yz\,\mathrm{d}z\mathrm{d}x-z^{2}\,\mathrm{d}x\mathrm{d}y\)，其中 \(\Sigma\) 是上半球面 \(z=\sqrt{1-x^{2}-y^{2}}\)，取<b>上侧</b>.</p>
+  <p class="sol"><span class="mk">解</span>\(\Sigma\) <b>不是闭曲面</b>，不能直接用高斯公式.<b>补面</b>：添加圆盘</p>
+  \[\Sigma_1:\ z=0,\quad x^{2}+y^{2}\le1,\quad \text{取下侧},\]
+  <p>使 \(\Sigma+\Sigma_1\) 成为闭曲面且方向为外侧，所围区域 \(\Omega\) 为上半单位球.</p>
+  <p><b>第一步：对闭曲面用高斯公式.</b></p>
+  \[\operatorname{div}\boldsymbol{A}=\frac{\partial(2xz)}{\partial x}+\frac{\partial(yz)}{\partial y}+\frac{\partial(-z^{2})}{\partial z}=2z+z-2z=z ,\]
+  \[\oiint_{\Sigma+\Sigma_1}=\iiint_\Omega z\,\mathrm{d}v=\int_0^{1}z\cdot\pi(1-z^{2})\,\mathrm{d}z=\pi\Bigl[\frac{z^{2}}{2}-\frac{z^{4}}{4}\Bigr]_0^{1}=\frac{\pi}{4}.\]
+  <p><b>第二步：减去补面上的积分.</b>在 \(\Sigma_1\) 上 \(z=0\)，三个被积函数 \(2xz,\ yz,\ -z^{2}\) 全为零，故</p>
+  \[\iint_{\Sigma_1}=0 .\]
+  <p><b>第三步：</b>\(\displaystyle\iint_\Sigma=\oiint_{\Sigma+\Sigma_1}-\iint_{\Sigma_1}=\boxed{\frac{\pi}{4}}\).</p>
+  <p class="muted"><b>补面三原则：</b>① 补最简单的面（通常是坐标面上的平面片）；② 补面的侧必须使合成曲面成为<b>外侧闭曲面</b>；③ 最后一定要<b>减去</b>补面上的积分.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.18　奇点的处理：挖球法（考研经典）</div>
+  <p class="stmt">设 \(\Sigma\) 是不经过原点的分片光滑闭曲面（外侧），计算</p>
+  \[I=\oiint_\Sigma\frac{x\,\mathrm{d}y\mathrm{d}z+y\,\mathrm{d}z\mathrm{d}x+z\,\mathrm{d}x\mathrm{d}y}{\bigl(x^{2}+y^{2}+z^{2}\bigr)^{3/2}} .\]
+  <p class="sol"><span class="mk">解</span>记 \(r=\sqrt{x^{2}+y^{2}+z^{2}}\)，\(P=\dfrac{x}{r^{3}}\) 等.在 \(r
+eq0\) 处求导：</p>
+  \[\frac{\partial P}{\partial x}=\frac{r^{3}-x\cdot3r^{2}\cdot\frac{x}{r}}{r^{6}}=\frac{r^{2}-3x^{2}}{r^{5}},\]
+  <p>同理另两项，相加得</p>
+  \[\operatorname{div}\boldsymbol{A}=\frac{3r^{2}-3(x^{2}+y^{2}+z^{2})}{r^{5}}=0\qquad(r
+eq0).\]
+  <p><b>情形一：\(\Sigma\) 不包围原点.</b>此时 \(\Omega\) 内处处有 \(\operatorname{div}\boldsymbol{A}=0\)，由高斯公式 \(I=0\).</p>
+  <p><b>情形二：\(\Sigma\) 包围原点.</b>此时被积函数在原点无定义，<b>高斯公式不能直接用</b>.取足够小的 \(\varepsilon\gt0\)，作球面 \(\Sigma_\varepsilon:x^{2}+y^{2}+z^{2}=\varepsilon^{2}\)（取<b>内侧</b>，即朝向原点）.则 \(\Sigma+\Sigma_\varepsilon\) 围成的区域 \(\Omega_\varepsilon\) 中不含原点，散度恒为零，故</p>
+  \[\oiint_{\Sigma}+\oiint_{\Sigma_\varepsilon}=0\quad\Longrightarrow\quad I=-\oiint_{\Sigma_\varepsilon}=\oiint_{\Sigma_\varepsilon^{+}} ,\]
+  <p>其中 \(\Sigma_\varepsilon^{+}\) 表示小球面取<b>外侧</b>.在小球面上 \(r=\varepsilon\)，被积函数化简为</p>
+  \[\frac{1}{\varepsilon^{3}}\oiint_{\Sigma_\varepsilon^{+}}x\,\mathrm{d}y\mathrm{d}z+y\,\mathrm{d}z\mathrm{d}x+z\,\mathrm{d}x\mathrm{d}y
+   =\frac{1}{\varepsilon^{3}}\cdot3\cdot\frac{4}{3}\pi\varepsilon^{3}=4\pi .\]
+  <p>所以</p>
+  \[I=\begin{cases}0,&\Sigma\ \text{不包围原点},\\ 4\pi,&\Sigma\ \text{包围原点}.\end{cases}\]
+  <p class="muted">若把 \(\boldsymbol{A}\) 换成点电荷的电场 \(\boldsymbol{E}=\dfrac{q}{4\pi\varepsilon_0}\dfrac{(x,y,z)}{r^{3}}\)，上式立刻给出 \(\displaystyle\oiint_\Sigma\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=\dfrac{q}{4\pi\varepsilon_0}\cdot4\pi=\dfrac{q}{\varepsilon_0}\)——<b>这就是引例一中"与曲面形状无关"的严格数学解释，也是电磁学高斯定律的完整证明.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 12.19　散度的计算</div>
+  <p class="sol"><span class="mk">解</span></p>
+  \[\operatorname{div}\boldsymbol{A}=\frac{\partial(2x-z)}{\partial x}+\frac{\partial(x^{2}y)}{\partial y}+\frac{\partial(-xz^{2})}{\partial z}=2+x^{2}-2xz .\]
+  <p>在 \(M(1,1,1)\) 处 \(\operatorname{div}\boldsymbol{A}=2+1-2=1\gt0\)，说明该点是一个<b>源点</b>：单位体积每单位时间净流出 1 个单位的"流量".</p>
+</div>
+
+<h3>四、斯托克斯公式</h3>
+<div class="def"><div class="lab"><span class="n">定理 12.6</span>斯托克斯（Stokes）公式</div>
+  <p>设 \(\Gamma\) 为分段光滑的<b>空间有向闭曲线</b>，\(\Sigma\) 是以 \(\Gamma\) 为边界的分片光滑有向曲面，\(\Gamma\) 的正向与 \(\Sigma\) 的侧符合<b>右手法则</b>.若 \(P,Q,R\) 在包含 \(\Sigma\) 的空间区域内有一阶连续偏导数，则</p>
+  \[\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z
+   =\iint_\Sigma\Bigl(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z}\Bigr)\mathrm{d}y\mathrm{d}z
+   +\Bigl(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x}\Bigr)\mathrm{d}z\mathrm{d}x
+   +\Bigl(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\Bigr)\mathrm{d}x\mathrm{d}y .\]
+  <p>为便于记忆，写成<b>行列式形式</b>：</p>
+  \[\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z
+   =\iint_\Sigma\begin{vmatrix}\mathrm{d}y\mathrm{d}z&\mathrm{d}z\mathrm{d}x&\mathrm{d}x\mathrm{d}y\\[2pt]
+   \dfrac{\partial}{\partial x}&\dfrac{\partial}{\partial y}&\dfrac{\partial}{\partial z}\\[6pt] P&Q&R\end{vmatrix}
+   =\iint_\Sigma\begin{vmatrix}\cos\alpha&\cos\beta&\cos\gamma\\[2pt]
+   \dfrac{\partial}{\partial x}&\dfrac{\partial}{\partial y}&\dfrac{\partial}{\partial z}\\[6pt] P&Q&R\end{vmatrix}\mathrm{d}S .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>斯托克斯公式是格林公式从平面到空间的推广，所以证明的策略就是<b>把空间的问题压回平面</b>：把 \(\Sigma\) 投影到 \(xOy\) 面得到平面区域 \(D_{xy}\)，把 \(\Gamma\) 投影成 \(D_{xy}\) 的边界 \(C\)，在平面上用格林公式，再把结果翻译回曲面上.同样地，只需对 \(P\) 证明一个分式，另两个由轮换得到.</p>
+<p><span class="stp">第一步：设定简单曲面.</span>先设 \(\Sigma\) 可表示为 \(z=z(x,y),\ (x,y)\in D_{xy}\)，其中 \(z\) 有连续的二阶偏导数，\(\Sigma\) 取<b>上侧</b>，\(D_{xy}\) 的边界曲线 \(C\) 取<b>逆时针</b>方向.由右手法则，此时 \(\Gamma\) 的正向恰好投影为 \(C\) 的正向.要证的分式为</p>
+\[\oint_\Gamma P\,\mathrm{d}x=\iint_\Sigma\frac{\partial P}{\partial z}\,\mathrm{d}z\mathrm{d}x-\frac{\partial P}{\partial y}\,\mathrm{d}x\mathrm{d}y .\qquad(\ast)\]
+<p><span class="stp">第二步：把左端压到平面上.</span>\(\Gamma\) 上的点满足 \(z=z(x,y)\)，故沿 \(\Gamma\) 有 \(P(x,y,z)=P\bigl(x,y,z(x,y)\bigr)\)，而 \(\mathrm{d}x\) 在投影中不变，于是</p>
+\[\oint_\Gamma P(x,y,z)\,\mathrm{d}x=\oint_C P\bigl(x,y,z(x,y)\bigr)\,\mathrm{d}x .\]
+<p><span class="stp">第三步：用格林公式.</span>记 \(\tilde P(x,y)=P\bigl(x,y,z(x,y)\bigr)\).对平面曲线积分 \(\oint_C\tilde P\,\mathrm{d}x+0\cdot\mathrm{d}y\) 用格林公式：</p>
+\[\oint_C\tilde P\,\mathrm{d}x=-\iint_{D_{xy}}\frac{\partial\tilde P}{\partial y}\,\mathrm{d}x\mathrm{d}y .\]
+<p>由复合函数求导法则（注意 \(z\) 依赖于 \(y\)）</p>
+\[\frac{\partial\tilde P}{\partial y}=\frac{\partial P}{\partial y}+\frac{\partial P}{\partial z}\cdot\frac{\partial z}{\partial y},\]
+<p>故</p>
+\[\oint_\Gamma P\,\mathrm{d}x=-\iint_{D_{xy}}\Bigl(\frac{\partial P}{\partial y}+\frac{\partial P}{\partial z}\,z_y\Bigr)\mathrm{d}x\mathrm{d}y .\qquad(1)\]
+<p><span class="stp">第四步：把右端也压到平面上.</span>由第一步，\(\Sigma\) 取上侧时单位法向量</p>
+\[\boldsymbol{n}=\frac{(-z_x,\,-z_y,\,1)}{\sqrt{1+z_x^{2}+z_y^{2}}},\qquad\text{于是}\qquad \frac{\cos\beta}{\cos\gamma}=-z_y .\]
+<p>由定理 12.4（\(\mathrm{d}z\mathrm{d}x=\cos\beta\,\mathrm{d}S,\ \mathrm{d}x\mathrm{d}y=\cos\gamma\,\mathrm{d}S\)），</p>
+\[\iint_\Sigma\frac{\partial P}{\partial z}\,\mathrm{d}z\mathrm{d}x=\iint_\Sigma\frac{\partial P}{\partial z}\cos\beta\,\mathrm{d}S=\iint_\Sigma\frac{\partial P}{\partial z}\cdot\frac{\cos\beta}{\cos\gamma}\cos\gamma\,\mathrm{d}S=-\iint_\Sigma\frac{\partial P}{\partial z}\,z_y\,\mathrm{d}x\mathrm{d}y .\]
+<p>再对最后一个第二类曲面积分用定理 12.3（上侧取 \(+\)），并同样处理 \(-\displaystyle\iint_\Sigma\frac{\partial P}{\partial y}\mathrm{d}x\mathrm{d}y\)，得 \((\ast)\) 的右端等于</p>
+\[-\iint_{D_{xy}}\frac{\partial P}{\partial z}\,z_y\,\mathrm{d}x\mathrm{d}y-\iint_{D_{xy}}\frac{\partial P}{\partial y}\,\mathrm{d}x\mathrm{d}y=-\iint_{D_{xy}}\Bigl(\frac{\partial P}{\partial y}+\frac{\partial P}{\partial z}\,z_y\Bigr)\mathrm{d}x\mathrm{d}y .\qquad(2)\]
+<p><span class="stp">第五步：比较并轮换.</span>\((1)\) 与 \((2)\) 右端完全相同，故 \((\ast)\) 成立.把 \(x,y,z\) 与 \(P,Q,R\) 的角色作轮换（相应地把 \(\Sigma\) 投影到 \(zOx\) 面、\(yOz\) 面），同理可得</p>
+\[\oint_\Gamma Q\,\mathrm{d}y=\iint_\Sigma\frac{\partial Q}{\partial x}\,\mathrm{d}x\mathrm{d}y-\frac{\partial Q}{\partial z}\,\mathrm{d}y\mathrm{d}z ,\qquad
+\oint_\Gamma R\,\mathrm{d}z=\iint_\Sigma\frac{\partial R}{\partial y}\,\mathrm{d}y\mathrm{d}z-\frac{\partial R}{\partial x}\,\mathrm{d}z\mathrm{d}x .\]
+<p>三式相加，按 \(\mathrm{d}y\mathrm{d}z,\ \mathrm{d}z\mathrm{d}x,\ \mathrm{d}x\mathrm{d}y\) 归并同类项，即得</p>
+\[\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\iint_\Sigma\Bigl(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z}\Bigr)\mathrm{d}y\mathrm{d}z+\Bigl(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x}\Bigr)\mathrm{d}z\mathrm{d}x+\Bigl(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\Bigr)\mathrm{d}x\mathrm{d}y .\]
+<p>再由定理 12.4 把右端换成第一类曲面积分，即得定理中的两个行列式记法（行列式按第一行展开正是上式）.</p>
+<p><span class="stp">第六步：一般曲面.</span>若 \(\Sigma\) 不能用一个单值函数 \(z=z(x,y)\) 表示，可用有限条辅助曲线把它<b>分成若干片</b>，每片都是上述简单曲面，对每片用已证结论后相加：右端的曲面积分按可加性直接相加；左端每条辅助曲线都被相邻两片各走了一次，而<b>方向恰好相反</b>，其上的曲线积分成对抵消，只剩下沿原边界 \(\Gamma\) 的积分.故公式对分片光滑的有向曲面普遍成立.</p>
+<p><span class="stp">注：</span>取 \(\Sigma\) 为 \(xOy\) 面上的平面区域、\(R\equiv0\) 且 \(P,Q\) 不含 \(z\)，上式立刻退化为格林公式；可见格林公式正是斯托克斯公式的平面特例.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>右手法则：</b>右手四指沿 \(\Gamma\) 的正向弯曲，拇指所指方向即为 \(\Sigma\) 所取侧的法向量方向.<br>
+<b>两点观察：</b>① 取 \(\Sigma\) 为 \(xOy\) 面上的平面区域、\(R=0\) 且 \(P,Q\) 与 \(z\) 无关时，斯托克斯公式退化为<b>格林公式</b>；② 公式右端<b>与 \(\Sigma\) 的具体形状无关</b>，只要边界是同一条 \(\Gamma\)——这给了我们"换一张最好算的曲面"的自由.</div>
+
+<div class="def"><div class="lab"><span class="n">定义 12.6</span>环流量与旋度</div>
+  <p>设 \(\boldsymbol{A}=(P,Q,R)\).</p>
+  <p><b>环流量：</b>\(\displaystyle\oint_\Gamma \boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z\).</p>
+  <p><b>旋度：</b></p>
+  \[\operatorname{rot}\boldsymbol{A}=
+abla\times\boldsymbol{A}
+   =\begin{vmatrix}\boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\[2pt]
+   \dfrac{\partial}{\partial x}&\dfrac{\partial}{\partial y}&\dfrac{\partial}{\partial z}\\[6pt] P&Q&R\end{vmatrix}
+   =\Bigl(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z}\Bigr)\boldsymbol{i}
+   +\Bigl(\frac{\partial P}{\partial z}-\frac{\partial R}{\partial x}\Bigr)\boldsymbol{j}
+   +\Bigl(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\Bigr)\boldsymbol{k}.\]
+  <p>斯托克斯公式的向量形式为</p>
+  \[\oint_\Gamma \boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\iint_\Sigma \operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S .\]
+</div>
+<div class="note"><b>旋度的物理意义：单位面积的环流强度，即"局部打转的能力".</b>把一个微小的桨轮放入流场，桨轮转得最快时其轴的方向就是 \(\operatorname{rot}\boldsymbol{A}\) 的方向，转速正比于 \(|\operatorname{rot}\boldsymbol{A}|\).<br>
+· \(\operatorname{rot}\boldsymbol{A}\equiv\boldsymbol{0}\) 的场称为<b>无旋场</b>（保守场）；<br>
+· 电磁学中 \(
+abla\times\boldsymbol{E}=-\partial\boldsymbol{B}/\partial t\) 说明<b>变化的磁场产生涡旋电场</b>（发电机原理）；\(
+abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial\boldsymbol{E}/\partial t\) 说明<b>电流与变化电场产生涡旋磁场</b>（电磁波由此诞生）.</div>
+
+<h3>五、空间曲线积分与路径无关的条件</h3>
+<div class="def"><div class="lab"><span class="n">定理 12.7</span>空间曲线积分与路径无关</div>
+  <p>设 \(G\) 是空间一维单连通区域，\(P,Q,R\) 在 \(G\) 内有一阶连续偏导数，则下列四个命题<b>等价</b>：</p>
+  <p>(1) \(\displaystyle\int_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z\) 在 \(G\) 内与路径无关；</p>
+  <p>(2) 沿 \(G\) 内任一闭曲线 \(\displaystyle\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=0\)；</p>
+  <p>(3) \(\operatorname{rot}\boldsymbol{A}=\boldsymbol{0}\) 在 \(G\) 内处处成立，即</p>
+  \[\frac{\partial P}{\partial y}=\frac{\partial Q}{\partial x},\qquad \frac{\partial Q}{\partial z}=\frac{\partial R}{\partial y},\qquad \frac{\partial R}{\partial x}=\frac{\partial P}{\partial z};\]
+  <p>(4) 存在函数 \(u(x,y,z)\)（称为<b>势函数</b>），使 \(\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z\)，此时</p>
+  \[\int_{M_0}^{M_1}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=u(M_1)-u(M_0).\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>记 \(\boldsymbol{A}=(P,Q,R)\)，注意 \(\operatorname{rot}\boldsymbol{A}=\boldsymbol{0}\) 展开正是 (3) 中的三个等式.我们按 \((1)\Leftrightarrow(2)\)、\((2)\Leftrightarrow(3)\)、\((1)\Leftrightarrow(4)\) 的顺序证明四者等价.</p>
+<p><span class="stp">第一步：\((1)\Rightarrow(2)\).</span>设 \(\Gamma\) 是 \(G\) 内任一闭曲线，在其上任取两点 \(A,B\)，把 \(\Gamma\) 分成从 \(A\) 到 \(B\) 的两段 \(\Gamma_1\) 与从 \(B\) 到 \(A\) 的一段 \(\Gamma_2\).则 \(-\Gamma_2\) 也是从 \(A\) 到 \(B\) 的路径，由路径无关</p>
+\[\int_{\Gamma_1}\boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\int_{-\Gamma_2}\boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=-\int_{\Gamma_2}\boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r},\]
+<p>故 \(\displaystyle\oint_\Gamma=\int_{\Gamma_1}+\int_{\Gamma_2}=0\).</p>
+<p><span class="stp">第二步：\((2)\Rightarrow(1)\).</span>设 \(L_1,L_2\) 是 \(G\) 内从 \(A\) 到 \(B\) 的两条路径，则 \(L_1+(-L_2)\) 是闭曲线，由 (2) 其上积分为零，即 \(\displaystyle\int_{L_1}-\int_{L_2}=0\)，两条路径上的积分相等.</p>
+<p><span class="stp">第三步：\((3)\Rightarrow(2)\).</span>这一步正是斯托克斯公式的用武之地.设 \(\Gamma\) 是 \(G\) 内任一闭曲线.因 \(G\) 是<b>一维单连通</b>区域，\(\Gamma\) 必可张成一张完全含于 \(G\) 内的分片光滑曲面 \(\Sigma\)（这正是"一维单连通"的含义：区域内没有"穿孔的管道"使某些闭曲线无法在区域内收缩）.由定理 12.6，</p>
+\[\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\iint_\Sigma\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S=\iint_\Sigma \boldsymbol{0}\cdot\boldsymbol{n}\,\mathrm{d}S=0 .\]
+<p><span class="stp">第四步：\((2)\Rightarrow(3)\).</span>用反证法.设某点 \(M_0\in G\) 处 \(\operatorname{rot}\boldsymbol{A}(M_0)=\boldsymbol{w}
+eq\boldsymbol{0}\).取以 \(M_0\) 为中心、以 \(\boldsymbol{w}\) 方向为法向、半径为 \(\delta\) 的小圆盘 \(\Sigma_\delta\subset G\)，其单位法向量取 \(\boldsymbol{n}=\dfrac{\boldsymbol{w}}{|\boldsymbol{w}|}\).因 \(P,Q,R\) 有连续偏导数，\(\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\) 连续，且在 \(M_0\) 处取值 \(|\boldsymbol{w}|\gt0\).由连续函数的保号性，当 \(\delta\) 充分小时在整个 \(\Sigma_\delta\) 上</p>
+\[\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\gt\frac{|\boldsymbol{w}|}{2}\gt0 .\]
+<p>设 \(\Gamma_\delta\) 是 \(\Sigma_\delta\) 的边界（按右手法则定向），由斯托克斯公式与积分的保号性</p>
+\[\oint_{\Gamma_\delta}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\iint_{\Sigma_\delta}\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S\ \gt\ \frac{|\boldsymbol{w}|}{2}\cdot\pi\delta^{2}\gt0 ,\]
+<p>与 (2) 矛盾.故 \(\operatorname{rot}\boldsymbol{A}\equiv\boldsymbol{0}\).</p>
+<p><span class="stp">第五步：\((1)\Rightarrow(4)\)（构造势函数）.</span>固定 \(M_0(x_0,y_0,z_0)\in G\)，对任意 \(M(x,y,z)\in G\) 定义</p>
+\[u(x,y,z)=\int_{M_0}^{M}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z .\]
+<p>由 (1)，积分只依赖端点，故 \(u\) 是<b>良好定义</b>的单值函数.求 \(u_x\)：取从 \(M_0\) 到 \(M\) 的任一路径，再接上平行于 \(x\) 轴的直线段到 \(M'(x+\Delta x,y,z)\).在这一段上 \(\mathrm{d}y=\mathrm{d}z=0\)，故</p>
+\[u(x+\Delta x,y,z)-u(x,y,z)=\int_{x}^{x+\Delta x}P(t,y,z)\,\mathrm{d}t=P(x+\theta\Delta x,y,z)\,\Delta x\quad(0\lt\theta\lt1),\]
+<p>末一步用了积分中值定理.两端除以 \(\Delta x\) 并令 \(\Delta x\to0\)，由 \(P\) 连续得 \(\dfrac{\partial u}{\partial x}=P\).同理 \(\dfrac{\partial u}{\partial y}=Q,\ \dfrac{\partial u}{\partial z}=R\).由三个偏导数连续知 \(u\) 可微，且</p>
+\[\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z .\]
+<p><span class="stp">第六步：\((4)\Rightarrow(1)\).</span>设存在这样的 \(u\)，取 \(G\) 内从 \(M_0\) 到 \(M_1\) 的任一光滑路径 \(\Gamma:\ \boldsymbol{r}(t)=\bigl(x(t),y(t),z(t)\bigr),\ t\in[a,b]\).由链式法则</p>
+\[\frac{\mathrm{d}}{\mathrm{d}t}u\bigl(x(t),y(t),z(t)\bigr)=u_xx'+u_yy'+u_zz'=Px'+Qy'+Rz' ,\]
+<p>于是由牛顿–莱布尼茨公式</p>
+\[\int_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\int_a^b\frac{\mathrm{d}}{\mathrm{d}t}u\bigl(\boldsymbol{r}(t)\bigr)\mathrm{d}t=u(M_1)-u(M_0),\]
+<p>右端只与两个端点有关，与路径无关，这同时也给出了定理中的计算公式.</p>
+<p><span class="stp">第七步：合拢.</span>由第一、二步 \((1)\Leftrightarrow(2)\)；由第三、四步 \((2)\Leftrightarrow(3)\)；由第五、六步 \((1)\Leftrightarrow(4)\).故四个命题两两等价.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>六、典型例题</h3>
+
+<div class="ex"><div class="lab">例 12.20　用斯托克斯公式（经典题型）</div>
+  <p class="stmt">计算 \(\displaystyle\oint_\Gamma y\,\mathrm{d}x+z\,\mathrm{d}y+x\,\mathrm{d}z\)，其中 \(\Gamma\) 是平面 \(x+y+z=1\) 与三个坐标面的交线，从 \(z\) 轴正向看去为<b>逆时针</b>方向.</p>
+  <p class="sol"><span class="mk">解</span>取 \(\Sigma\) 为该平面被 \(\Gamma\) 围成的三角形，由右手法则取<b>上侧</b>，单位法向量 \(\boldsymbol{n}=\dfrac{1}{\sqrt3}(1,1,1)\).</p>
+  <p>计算旋度（\(P=y,Q=z,R=x\)）：</p>
+  \[\operatorname{rot}\boldsymbol{A}=\Bigl(\frac{\partial x}{\partial y}-\frac{\partial z}{\partial z},\ \frac{\partial y}{\partial z}-\frac{\partial x}{\partial x},\ \frac{\partial z}{\partial x}-\frac{\partial y}{\partial y}\Bigr)=(-1,-1,-1).\]
+  <p>于是 \(\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}=\dfrac{-3}{\sqrt3}=-\sqrt3\)（常数），三角形面积 \(A=\dfrac{\sqrt3}{2}\)，故</p>
+  \[\oint_\Gamma y\,\mathrm{d}x+z\,\mathrm{d}y+x\,\mathrm{d}z=\iint_\Sigma(-\sqrt3)\,\mathrm{d}S=-\sqrt3\cdot\frac{\sqrt3}{2}=\boxed{-\frac{3}{2}}.\]
+  <p class="muted">若不用斯托克斯公式，需把 \(\Gamma\) 拆成三段直线分别参数化再积分——计算量约为上述的五倍.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.21　立方体截痕上的环流量（考研难题）</div>
+  <p class="stmt">计算 \(\displaystyle\oint_\Gamma(y^{2}-z^{2})\,\mathrm{d}x+(z^{2}-x^{2})\,\mathrm{d}y+(x^{2}-y^{2})\,\mathrm{d}z\)，其中 \(\Gamma\) 是平面 \(x+y+z=\dfrac{3}{2}\) 截立方体 \(0\le x,y,z\le1\) 的边界线，从 \((1,1,1)\) 方向看为逆时针.</p>
+  <p class="sol"><span class="mk">解</span>取 \(\Sigma\) 为截痕所围的平面区域（一个正六边形），法向量 \(\boldsymbol{n}=\dfrac{1}{\sqrt3}(1,1,1)\).</p>
+  <p><b>第一步：求旋度.</b></p>
+  \[\operatorname{rot}\boldsymbol{A}=\bigl(-2y-2z,\ -2z-2x,\ -2x-2y\bigr).\]
+  <p><b>第二步：点乘法向量并利用平面方程化简.</b></p>
+  \[\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}=\frac{-4(x+y+z)}{\sqrt3}=\frac{-4\times\frac32}{\sqrt3}=\frac{-6}{\sqrt3}=-2\sqrt3\quad(\text{常数}).\]
+  <p><b>第三步：求六边形面积.</b>截面通过立方体六条棱的中点，如 \(\bigl(1,\tfrac12,0\bigr)\) 与 \(\bigl(1,0,\tfrac12\bigr)\)，两点距离为</p>
+  \[s=\sqrt{0+\tfrac14+\tfrac14}=\frac{1}{\sqrt2},\]
+  <p>是一个边长为 \(\dfrac{1}{\sqrt2}\) 的正六边形，面积 \(A=\dfrac{3\sqrt3}{2}s^{2}=\dfrac{3\sqrt3}{2}\cdot\dfrac12=\dfrac{3\sqrt3}{4}\).</p>
+  <p><b>第四步：</b></p>
+  \[\oint_\Gamma=\iint_\Sigma(-2\sqrt3)\,\mathrm{d}S=-2\sqrt3\cdot\frac{3\sqrt3}{4}=\boxed{-\frac{9}{2}}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.22　保守场与势函数</div>
+  <p class="stmt">验证 \(\boldsymbol{A}=yz\,\boldsymbol{i}+xz\,\boldsymbol{j}+xy\,\boldsymbol{k}\) 为保守场，求其势函数，并计算 \(\displaystyle\int_{(0,0,0)}^{(1,2,3)}yz\,\mathrm{d}x+xz\,\mathrm{d}y+xy\,\mathrm{d}z\).</p>
+  <p class="sol"><span class="mk">解</span><b>验证无旋：</b></p>
+  \[\operatorname{rot}\boldsymbol{A}=\bigl(x-x,\ y-y,\ z-z\bigr)=\boldsymbol{0},\]
+  <p>且 \(\mathbb{R}^{3}\) 是单连通区域，故该场为保守场，积分与路径无关.</p>
+  <p><b>求势函数：</b>由 \(\dfrac{\partial u}{\partial x}=yz\) 得 \(u=xyz+\varphi(y,z)\)；再由 \(\dfrac{\partial u}{\partial y}=xz+\varphi_y=xz\) 得 \(\varphi_y=0\)；由 \(\dfrac{\partial u}{\partial z}=xy+\varphi_z=xy\) 得 \(\varphi_z=0\).故 \(u=xyz+C\).</p>
+  <p><b>计算：</b></p>
+  \[\int_{(0,0,0)}^{(1,2,3)}=u(1,2,3)-u(0,0,0)=1\times2\times3-0=\boxed{6}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.23　旋度非零的场：判定与计算</div>
+  <p class="stmt">设 \(\boldsymbol{A}=-y\,\boldsymbol{i}+x\,\boldsymbol{j}+c\,\boldsymbol{k}\)（\(c\) 为常数）.求 \(\operatorname{rot}\boldsymbol{A}\)，并用斯托克斯公式计算 \(\boldsymbol{A}\) 沿圆周 \(\Gamma:x^{2}+y^{2}=R^{2},\ z=0\)（从 \(z\) 轴正向看逆时针）的环流量.</p>
+  <p class="sol"><span class="mk">解</span></p>
+  \[\operatorname{rot}\boldsymbol{A}=\bigl(0-0,\ 0-0,\ 1-(-1)\bigr)=(0,0,2)=2\boldsymbol{k}.\]
+  <p>取 \(\Sigma\) 为圆盘 \(x^{2}+y^{2}\le R^{2},z=0\)，上侧，\(\boldsymbol{n}=\boldsymbol{k}\).故</p>
+  \[\oint_\Gamma \boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\iint_\Sigma 2\,\mathrm{d}S=2\pi R^{2}.\]
+  <p>此场描述的是绕 \(z\) 轴的刚体旋转（角速度 1），旋度 \(2\boldsymbol{k}\) 恰为角速度的两倍——<b>这正是"旋度 = 局部角速度的两倍"这一经典结论.</b>由于 \(\operatorname{rot}\boldsymbol{A}
+eq\boldsymbol{0}\)，它<b>不是</b>保守场，环流量不为零也就顺理成章.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从积分形式到微分形式：麦克斯韦方程组的诞生</div>
+  <details><summary>展开查看：两个公式如何把四条实验定律翻译成四个偏微分方程</summary>
+  <div class="body">
+    <p><b>第一步：电场高斯定律.</b>实验事实是 \(\displaystyle\oiint_\Sigma\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=\dfrac{q}{\varepsilon_0}\).把右端写成电荷密度的积分 \(q=\displaystyle\iiint_\Omega\rho\,\mathrm{d}v\)，左端用高斯公式：</p>
+    \[\iiint_\Omega
+abla\cdot\boldsymbol{E}\,\mathrm{d}v=\iiint_\Omega\frac{\rho}{\varepsilon_0}\,\mathrm{d}v .\]
+    <p>由于 \(\Omega\) <b>任意</b>，两个被积函数必处处相等，得 \(
+abla\cdot\boldsymbol{E}=\dfrac{\rho}{\varepsilon_0}\).</p>
+    <p><b>第二步：磁场高斯定律.</b>实验上从未发现磁单极子，\(\displaystyle\oiint_\Sigma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\) 对一切闭曲面成立，同理得 \(
+abla\cdot\boldsymbol{B}=0\).</p>
+    <p><b>第三步：法拉第电磁感应定律.</b>\(\displaystyle\oint_\Gamma\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\frac{\mathrm{d}}{\mathrm{d}t}\iint_S\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}\).左端用斯托克斯公式：</p>
+    \[\iint_S(
+abla\times\boldsymbol{E})\cdot\mathrm{d}\boldsymbol{S}=-\iint_S\frac{\partial\boldsymbol{B}}{\partial t}\cdot\mathrm{d}\boldsymbol{S}\ \Longrightarrow\ 
+abla\times\boldsymbol{E}=-\frac{\partial\boldsymbol{B}}{\partial t}.\]
+    <p><b>第四步：安培–麦克斯韦定律.</b>同样用斯托克斯公式得 \(
+abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\dfrac{\partial\boldsymbol{E}}{\partial t}\).式中最后一项"位移电流"是麦克斯韦的天才补笔.</p>
+    <table class="dt">
+      <tr><th>定律</th><th>积分形式</th><th>所用公式</th><th>微分形式</th></tr>
+      <tr><td>电高斯</td><td>\(\oiint\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=q/\varepsilon_0\)</td><td>高斯公式</td><td>\(
+abla\cdot\boldsymbol{E}=\rho/\varepsilon_0\)</td></tr>
+      <tr><td>磁高斯</td><td>\(\oiint\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)</td><td>高斯公式</td><td>\(
+abla\cdot\boldsymbol{B}=0\)</td></tr>
+      <tr><td>法拉第</td><td>\(\oint\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\dot\varPhi_B\)</td><td>斯托克斯公式</td><td>\(
+abla\times\boldsymbol{E}=-\partial_t\boldsymbol{B}\)</td></tr>
+      <tr><td>安培–麦克斯韦</td><td>\(\oint\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\mu_0(I+\varepsilon_0\dot\varPhi_E)\)</td><td>斯托克斯公式</td><td>\(
+abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial_t\boldsymbol{E}\)</td></tr>
+    </table>
+    <p><b>压轴一步：预言光速.</b>在真空（\(\rho=0,\boldsymbol{J}=\boldsymbol{0}\)）中对第三式两边取旋度，并用恒等式 \(
+abla\times(
+abla\times\boldsymbol{E})=
+abla(
+abla\cdot\boldsymbol{E})-
+abla^{2}\boldsymbol{E}\)，得波动方程</p>
+    \[
+abla^{2}\boldsymbol{E}=\mu_0\varepsilon_0\frac{\partial^{2}\boldsymbol{E}}{\partial t^{2}} .\]
+    <p>波速为</p>
+    \[c=\frac{1}{\sqrt{\mu_0\varepsilon_0}}=\frac{1}{\sqrt{4\pi\times10^{-7}\times8.854\times10^{-12}}}=\frac{1}{\sqrt{1.1127\times10^{-17}}}=2.998\times10^{8}\ \mathrm{m/s}.\]
+    <p>这个纯粹由两个电磁常数算出的数字，与光速实测值分毫不差.麦克斯韦由此断言"光就是电磁波".<b>而支撑这场人类认知革命的数学工具，就是本节的高斯公式与斯托克斯公式.</b></p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §12.4 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 麦克斯韦方程组：高斯定律的数值验证</summary>
+<p><b>场景：</b> 麦克斯韦方程组四条中的「高斯定律（电场）」正是高斯公式在电磁学里的化身：\(\oiint_{\Sigma}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=Q_{\mathrm{enc}}/\varepsilon_{0}\).点电荷 \(Q\) 位于球面中心、半径 \(r\) 处，电场 \(\boldsymbol{E}=\dfrac{1}{4\pi\varepsilon_{0}}\dfrac{Q}{r^{2}}\boldsymbol{e}_{r}\).我们用数值验证「通量与半径 \(r\) 无关、恒等于 \(Q/\varepsilon_{0}\)」这一高斯公式结论.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>点电荷</td><td>\(Q\)</td><td>\(1.0\times10^{-9}\ \mathrm{C}\)</td></tr>
+<tr><td>球面半径</td><td>\(r\)</td><td>\(0.10\ \mathrm{m}\)</td></tr>
+<tr><td>真空介电常数</td><td>\(\varepsilon_{0}\)</td><td>\(8.854\times10^{-12}\ \mathrm{F/m}\)</td></tr>
+</table>
+<p class="sol"> 球面处场强大小</p>
+\[E=\frac{1}{4\pi\varepsilon_{0}}\frac{Q}{r^{2}}
+ =\frac{8.988\times10^{9}\times1.0\times10^{-9}}{0.10^{2}}
+ =\frac{8.988}{0.01}=898.8\ \mathrm{V/m}.\]
+<p>电场处处沿径向、与球面外法向一致，故通量</p>
+\[\Phi_{E}=\oiint_{\Sigma}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}
+ =E\cdot4\pi r^{2}=898.8\times4\pi\times0.01=112.94\ \mathrm{V\cdot m}.\]
+<p>右端</p>
+\[\frac{Q}{\varepsilon_{0}}=\frac{1.0\times10^{-9}}{8.854\times10^{-12}}=112.94\ \mathrm{V\cdot m}.\]
+<p>左右完全相等，且与 \(r\) 无关.若换 \(r=0.05\ \mathrm{m}\)：\(E\) 变 \(4\) 倍、球面面积变 \(1/4\)，乘积不变.</p>
+<p><b>工程结论：</b> 麦克斯韦「高斯定律」就是高斯公式 \(\oiint_{\Sigma}\boldsymbol{F}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_{V}
+abla\cdot\boldsymbol{F}\,\mathrm{d}V\) 在 \(\boldsymbol{F}=\boldsymbol{E}\)、\(
+abla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\) 时的特例.<b>「穿过闭曲面的净通量只取决于被包围的总源强，与曲面形状、大小无关」</b>——这是静电屏蔽、高斯定理法求场分布、以及商用电磁仿真「线积分/面积分校验」的共同理论根基.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch12-gauss" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>球面半径 r <input type="range" id="ch12-gauss-r" min="0.1" max="1.0" step="0.05" value="0.5" style="width:220px;accent-color:#0F6E56"> <b id="ch12-gauss-r-t"></b> m</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch12-gauss-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch12-gauss'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var eps0=8.854e-12, Q=1e-9;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var r=+document.getElementById('ch12-gauss-r').value;
+      var cx=W*0.3, cy=H*0.5, sc=Math.min(W,H)*0.22;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 电荷
+      ctx.fillStyle='#1e293b';
+      ctx.beginPath();ctx.arc(cx,cy,6,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#334155';ctx.font='11px sans-serif';ctx.textAlign='center';
+      ctx.fillText('Q='+(Q*1e9).toFixed(0)+' nC',cx,cy-16);
+      // 球面
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.arc(cx,cy,r*sc,0,Math.PI*2);ctx.stroke();
+      // E 场线（径向）
+      for(var k=0;k<8;k++){
+        var ang=k*Math.PI/4;
+        var x0=cx+r*sc*Math.cos(ang), y0=cy+r*sc*Math.sin(ang);
+        var x1=cx+(r+0.35)*sc*Math.cos(ang), y1=cy+(r+0.35)*sc*Math.sin(ang);
+        ctx.strokeStyle='#eab308';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+      }
+      ctx.fillStyle='#ca8a04';ctx.font='10px sans-serif';
+      ctx.fillText('r='+r.toFixed(2)+' m',cx+r*sc+10,cy-8);
+      // 数值
+      var flux=Q/eps0;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('∮E·dS = Q/ε₀ = '+(Q*1e9).toFixed(1)+'×10⁻⁹ / '+eps0.toExponential(1)+' = '+flux.toFixed(1)+' V·m（与 r 无关！）',20,22);
+      var out=document.getElementById('ch12-gauss-out');
+      out.textContent = '通量只取决于被包围的电荷 Q——高斯定律是静电屏蔽与电磁仿真面积分校验的理论根基';
+    }
+    document.getElementById('ch12-gauss-r').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 动力电池：热失控的散度分析与散热判据</summary>
+<p><b>场景：</b> 锂离子电池热失控时，内部产热率（单位体积）记为 \(q'''\)（\(\mathrm{W/m^{3}}\)）.由能量守恒与高斯公式：内部总产热等于穿出电池表面的净热流通量，即 \(\iiint_{V}q'''\,\mathrm{d}V=\oiint_{\Sigma}(-\boldsymbol{
+abla}T)\cdot\boldsymbol{n}\,k\,\mathrm{d}S\).把电芯近似为圆柱（半径 \(R=0.01\ \mathrm{m}\)、高 \(L=0.065\ \mathrm{m}\)），由触发功率反推产热强度，进而得到表面平均法向热流，作为散热设计判据.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>电芯半径</td><td>\(R\)</td><td>\(0.01\ \mathrm{m}\)</td></tr>
+<tr><td>电芯高</td><td>\(L\)</td><td>\(0.065\ \mathrm{m}\)</td></tr>
+<tr><td>触发总产热</td><td>\(Q\)</td><td>\(2.0\ \mathrm{W}\)</td></tr>
+</table>
+<p class="sol"> 电芯体积</p>
+\[V=\pi R^{2}L=\pi\times(0.01)^{2}\times0.065=2.04\times10^{-5}\ \mathrm{m^{3}}.\]
+<p>均匀产热时体产热率</p>
+\[q'''=\frac{Q}{V}=\frac{2.0}{2.04\times10^{-5}}=9.8\times10^{4}\ \mathrm{W/m^{3}}.\]
+<p>稳态下散度 \(
+abla\cdot\boldsymbol{q}=q'''\)（高斯公式的微分形式）.表面积</p>
+\[A_{s}=2\pi RL+2\pi R^{2}=2\pi\times0.01\times0.065+2\pi\times10^{-4}
+ =4.084\times10^{-3}+6.283\times10^{-4}=4.712\times10^{-3}\ \mathrm{m^{2}}.\]
+<p>表面平均法向热流</p>
+\[q_{n,\mathrm{avg}}=\frac{Q}{A_{s}}=\frac{2.0}{4.712\times10^{-3}}=424.4\ \mathrm{W/m^{2}}.\]
+<p><b>工程结论：</b> 热失控判据可写成<b>「内部散度（产热）能否被表面通量（散热）抵消」</b>：由高斯公式，只有当 \(\oiint_{\Sigma}(-k
+abla T)\cdot\boldsymbol{n}\,\mathrm{d}S\ge\iiint_{V}q'''\,\mathrm{d}V\) 时温度才不发散.本例表面需排掉 \(424\ \mathrm{W/m^{2}}\)，若液冷板对电芯侧壁的换热不足此值，热量将在内部累积、触发链式副反应.BMS（电池管理系统）的热模型本质就是逐电芯做这个「散度–通量」平衡.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s123" data-ch="12" data-n="5"></div>
+<h2 id="s124"><span class="num">§12.4</span>曲面积分的应用</h2>
+    
+<div class="ex"><div class="lab">引例一　芯片散热：从热流密度场算出这颗 CPU 到底发多少瓦</div>
+  <p class="stmt">一颗服务器 CPU 的裸片（die）尺寸 \(10\,\mathrm{mm}\times10\,\mathrm{mm}\times0.5\,\mathrm{mm}\).红外热像与仿真给出裸片内部的<b>热流密度场</b>（单位 \(\mathrm{W/m^2}\)，以裸片几何中心为坐标原点）</p>
+  \[\boldsymbol{q}=\bigl(c_1x,\ c_1y,\ c_2z\bigr),\qquad c_1=4.0\times10^{8},\quad c_2=1.2\times10^{9}\ (\mathrm{W/m^{3}}).\]
+  <p>工程师要回答：这颗芯片单位时间向外释放的<b>总热功率</b>是多少？封装散热器够不够用？</p>
+  <p class="sol"><span class="mk">解</span>总散热功率就是热流密度场穿过裸片表面（外侧）的<b>通量</b>：</p>
+  \[P=\oiint_\Sigma \boldsymbol{q}\cdot\boldsymbol{n}\,\mathrm{d}S .\]
+  <p>裸片有六个面，逐面计算颇为繁琐.用高斯公式一步到位：</p>
+  \[\operatorname{div}\boldsymbol{q}=c_1+c_1+c_2=2\times4.0\times10^{8}+1.2\times10^{9}=2.0\times10^{9}\ \mathrm{W/m^{3}} ,\]
+  \[V=0.010\times0.010\times0.0005=5.0\times10^{-8}\ \mathrm{m^{3}},\]
+  \[P=\operatorname{div}\boldsymbol{q}\cdot V=2.0\times10^{9}\times5.0\times10^{-8}=100\ \mathrm{W}.\]
+  <p><b>散热校核</b>：设封装到散热器的总热阻 \(R_{\mathrm{th}}=0.35\,\mathrm{K/W}\)，机箱进风温度 \(T_a=35\,{}^{\circ}\mathrm{C}\)，则结温</p>
+  \[T_j=T_a+P\,R_{\mathrm{th}}=35+100\times0.35=70\,{}^{\circ}\mathrm{C},\]
+  <p>低于硅结温红线 \(105\,{}^{\circ}\mathrm{C}\)，设计安全.若改用被动散热（\(R_{\mathrm{th}}=0.9\,\mathrm{K/W}\)），则 \(T_j=125\,{}^{\circ}\mathrm{C}\)，<b>芯片将触发降频甚至烧毁</b>.</p>
+  <table class="dt">
+    <tr><th>散热方案</th><th>热阻 \(R_{\mathrm{th}}\)（K/W）</th><th>温升 \(PR_{\mathrm{th}}\)（K）</th><th>结温 \(T_j\)（°C）</th><th>判定</th></tr>
+    <tr><td>被动铝鳍片</td><td>0.90</td><td>90</td><td>125</td><td>超限</td></tr>
+    <tr><td>热管风冷</td><td>0.35</td><td>35</td><td>70</td><td>安全</td></tr>
+    <tr><td>冷板液冷</td><td>0.12</td><td>12</td><td>47</td><td>裕量充足</td></tr>
+  </table>
+  <p><b>请注意这条推理链</b>：散度（每立方米的发热率）→ 三重积分（总发热）→ 曲面积分（表面通量）.散热设计的第一性原理，就是曲面积分的守恒表述.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　散热片表面的非均匀热流：真正的曲面积分</div>
+  <p class="stmt">功率器件的圆形散热基板半径 \(R=0.02\,\mathrm{m}\)，中心正对发热点，实测表面热流密度沿径向递减：</p>
+  \[q(r)=q_0\Bigl(1-\frac{r^{2}}{R^{2}}\Bigr),\qquad q_0=2.5\times10^{5}\ \mathrm{W/m^{2}} .\]
+  <p>求基板释放的总功率.</p>
+  <p class="sol"><span class="mk">解</span>基板是平面，\(\mathrm{d}S=\mathrm{d}x\mathrm{d}y=r\,\mathrm{d}r\,\mathrm{d}\theta\)：</p>
+  \[P=\iint_\Sigma q\,\mathrm{d}S=\int_0^{2\pi}\!\!\int_0^{R}q_0\Bigl(1-\frac{r^{2}}{R^{2}}\Bigr)r\,\mathrm{d}r\,\mathrm{d}\theta
+   =2\pi q_0\cdot\frac{R^{2}}{4}=\frac{\pi q_0R^{2}}{2}.\]
+  <p>代入：\(P=\dfrac{\pi\times2.5\times10^{5}\times4\times10^{-4}}{2}=157.1\ \mathrm{W}\).</p>
+  <p>若错误地用中心峰值乘以面积，得 \(2.5\times10^{5}\times\pi\times4\times10^{-4}=314.2\,\mathrm{W}\)，<b>整整高估一倍</b>，会导致散热器严重过设计、成本翻番.<b>"不均匀分布的量在曲面上求总和"——这就是曲面积分的日常工作.</b></p>
+</div>
+
+<h3>一、场论中的应用：通量与散度</h3>
+<table class="dt">
+  <tr><td>流速场</td><td>\(\boldsymbol{v}\)（m/s）</td><td>体积流量（m³/s）</td><td>单位体积产液率</td></tr>
+  <tr><td>热流场</td><td>\(\boldsymbol{q}\)（W/m²）</td><td>热功率（W）</td><td>单位体积发热率（W/m³）</td></tr>
+  <tr><td>电场</td><td>\(\boldsymbol{E}\)（V/m）</td><td>电通量（V·m）</td><td>\(\rho/\varepsilon_0\)</td></tr>
+  <tr><td>磁场</td><td>\(\boldsymbol{B}\)（T）</td><td>磁通量（Wb）</td><td>恒为 0（无磁单极子）</td></tr>
+  <tr><td>电流密度</td><td>\(\boldsymbol{J}\)（A/m²）</td><td>电流（A）</td><td>\(-\partial\rho/\partial t\)（电荷守恒）</td></tr>
+</table>
+
+<div class="def"><div class="lab"><span class="n">定理 12.8</span>连续性方程（守恒律的一般形式）</div>
+  <p>设某物理量的体密度为 \(\rho(x,y,z,t)\)，其流密度为 \(\boldsymbol{J}\).若该量既不产生也不消灭，则对任一固定闭区域 \(\Omega\)，"内部减少量 = 边界流出量"：</p>
+  \[-\frac{\mathrm{d}}{\mathrm{d}t}\iiint_\Omega\rho\,\mathrm{d}v=\oiint_\Sigma \boldsymbol{J}\cdot\boldsymbol{n}\,\mathrm{d}S .\]
+  <p>右端用高斯公式化为三重积分，由 \(\Omega\) 的任意性得<b>连续性方程</b></p>
+  \[\frac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}=0 .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>守恒律的<b>积分形式</b>说的是"一整块区域"里的账目平衡，而<b>微分形式</b>说的是"每一点"上的平衡.从前者推后者需要两把钥匙：一是高斯公式，把边界上的曲面积分变成体内的三重积分，使两端能放到同一个积分号下；二是"区域任意"加"被积函数连续"，逼出被积函数恒为零.</p>
+<p>设 \(\rho\) 及 \(\dfrac{\partial\rho}{\partial t}\) 连续，\(\boldsymbol{J}=(J_1,J_2,J_3)\) 有一阶连续偏导数，\(\Omega\) 是<b>不随时间变化</b>的闭区域，其边界为分片光滑闭曲面 \(\Sigma\)，取外侧，单位外法向量为 \(\boldsymbol{n}\).</p>
+<p><span class="stp">第一步：左端求导进入积分号.</span>因积分区域 \(\Omega\) 固定、\(\dfrac{\partial\rho}{\partial t}\) 连续，可在积分号下对 \(t\) 求导：</p>
+\[-\frac{\mathrm{d}}{\mathrm{d}t}\iiint_\Omega\rho\,\mathrm{d}v=-\iiint_\Omega\frac{\partial\rho}{\partial t}\,\mathrm{d}v .\]
+<p>（这一步用到了 \(\Omega\) 不动：若区域随时间变形，还会多出边界移动带来的项.）</p>
+<p><span class="stp">第二步：右端用高斯公式.</span>由定理 12.5 的第一类曲面积分形式，取 \((P,Q,R)=\boldsymbol{J}\)：</p>
+\[\oiint_\Sigma \boldsymbol{J}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_\Omega\Bigl(\frac{\partial J_1}{\partial x}+\frac{\partial J_2}{\partial y}+\frac{\partial J_3}{\partial z}\Bigr)\mathrm{d}v=\iiint_\Omega\operatorname{div}\boldsymbol{J}\,\mathrm{d}v .\]
+<p><span class="stp">第三步：合并为一个三重积分.</span>把守恒律 \(-\dfrac{\mathrm{d}}{\mathrm{d}t}\displaystyle\iiint_\Omega\rho\,\mathrm{d}v=\oiint_\Sigma \boldsymbol{J}\cdot\boldsymbol{n}\,\mathrm{d}S\) 中两端分别代以第一、二步的结果，移项得</p>
+\[\iiint_\Omega\Bigl(\frac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}\Bigr)\mathrm{d}v=0 .\]
+<p>关键在于：<b>这个等式对任意一个闭区域 \(\Omega\) 都成立</b>.</p>
+<p><span class="stp">第四步：由区域任意性推出被积函数为零.</span>记 \(F(x,y,z,t)=\dfrac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}\)，由假设 \(F\) 连续.用反证法：若在某点 \(M_0\) 及某时刻 \(t_0\) 有 \(F(M_0,t_0)
+eq0\)，不妨设 \(F(M_0,t_0)=a\gt0\).由连续函数的保号性，存在以 \(M_0\) 为心、半径 \(\delta\gt0\) 的闭球 \(B_\delta\)，使在 \(B_\delta\) 上</p>
+\[F(x,y,z,t_0)\gt\frac{a}{2}\gt0 .\]
+<p>取 \(\Omega=B_\delta\)，由三重积分的保号性</p>
+\[\iiint_{B_\delta}F\,\mathrm{d}v\ \gt\ \frac{a}{2}\cdot\frac{4}{3}\pi\delta^{3}\ \gt\ 0 ,\]
+<p>与第三步矛盾.若 \(F(M_0,t_0)\lt0\)，对 \(-F\) 重复同样论证亦得矛盾.故 \(F\) 在整个区域上恒为零，即</p>
+\[\frac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}=0 .\]
+<p><span class="stp">物理解读：</span>\(\operatorname{div}\boldsymbol{J}\) 是流密度在一点处的"发散强度"，即单位时间从该点单位体积净流出的量.方程说：某点流出得多（\(\operatorname{div}\boldsymbol{J}\gt0\)），该点的密度就必须以同样的速率下降（\(\partial\rho/\partial t\lt0\)）——既不能凭空产生，也不能凭空消失.取 \(\rho\) 为电荷密度、\(\boldsymbol{J}\) 为电流密度即得电荷守恒定律；取 \(\rho\) 为质量密度、\(\boldsymbol{J}=\rho\boldsymbol{v}\) 即得流体力学的连续性方程.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note">这一个方程统一了<b>质量守恒</b>（流体力学）、<b>电荷守恒</b>（电动力学）、<b>能量守恒</b>（传热学）和<b>概率守恒</b>（量子力学）.高斯公式在其中扮演的角色是：<b>把"边界上的账"翻译成"内部的账".</b></div>
+
+<h3>二、质量、质心与转动惯量</h3>
+<div class="def"><div class="lab"><span class="n">定义 12.7</span>曲面壳的物理量</div>
+  <p>设曲面壳 \(\Sigma\) 的面密度为 \(\mu(x,y,z)\)，则</p>
+  <p><b>质量：</b>\(\displaystyle M=\iint_\Sigma\mu\,\mathrm{d}S\)；</p>
+  <p><b>质心：</b>\(\displaystyle \bar x=\frac1M\iint_\Sigma x\mu\,\mathrm{d}S,\quad \bar y=\frac1M\iint_\Sigma y\mu\,\mathrm{d}S,\quad \bar z=\frac1M\iint_\Sigma z\mu\,\mathrm{d}S\)；</p>
+  <p><b>转动惯量（绕 \(z\) 轴）：</b>\(\displaystyle I_z=\iint_\Sigma(x^{2}+y^{2})\mu\,\mathrm{d}S\)，绕 \(x,y\) 轴同理.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.24　锥形壳的质量</div>
+  <p class="stmt">求锥面壳 \(\Sigma:z=\sqrt{x^{2}+y^{2}}\ (0\le z\le1)\) 的质量，面密度 \(\mu=z\).</p>
+  <p class="sol"><span class="mk">解</span>由例 12.2 的结果直接得</p>
+  \[M=\iint_\Sigma z\,\mathrm{d}S=\frac{2\sqrt2\,\pi}{3}\approx2.9619 .\]
+  <p>若单位取 \(\mathrm{kg/m^2}\) 与 \(\mathrm{m}\)，则该壳质量约 \(2.96\,\mathrm{kg}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.25　均匀半球壳的质心（经典）</div>
+  <p class="stmt">求均匀上半球壳 \(\Sigma:x^{2}+y^{2}+z^{2}=a^{2}\ (z\ge0)\) 的质心，面密度 \(\mu=\mu_0\) 为常数.</p>
+  <p class="sol"><span class="mk">解</span>由对称性 \(\bar x=\bar y=0\)，只需求 \(\bar z\).</p>
+  <p><b>质量：</b>\(M=\mu_0\cdot 2\pi a^{2}\)（半球面积）.</p>
+  <p><b>静矩：</b>由例 12.4 取 \(h=0\) 得 \(\displaystyle\iint_\Sigma z\,\mathrm{d}S=\pi a^{3}\)，故 \(\displaystyle\iint_\Sigma z\mu\,\mathrm{d}S=\mu_0\pi a^{3}\).</p>
+  <p>因此</p>
+  \[\bar z=\frac{\mu_0\pi a^{3}}{2\pi a^{2}\mu_0}=\boxed{\frac{a}{2}}.\]
+  <p class="muted">对比：均匀<b>实心</b>半球体的质心在 \(\bar z=\dfrac{3a}{8}=0.375a\)，比壳的 \(0.5a\) 更低——因为实心体的质量更多集中在底部附近.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.26　球壳的转动惯量（工程常用结论）</div>
+  <p class="stmt">求均匀球壳 \(\Sigma:x^{2}+y^{2}+z^{2}=a^{2}\)（面密度 \(\mu_0\)，总质量 \(M=4\pi a^{2}\mu_0\)）绕 \(z\) 轴的转动惯量.</p>
+  <p class="sol"><span class="mk">解</span>由例 12.6 已得 \(\displaystyle\oiint_\Sigma(x^{2}+y^{2})\,\mathrm{d}S=\frac{8\pi a^{4}}{3}\)，故</p>
+  \[I_z=\mu_0\cdot\frac{8\pi a^{4}}{3}=\frac{8\pi a^{4}}{3}\cdot\frac{M}{4\pi a^{2}}=\boxed{\frac{2}{3}Ma^{2}}.\]
+  <p>这就是理论力学中球壳转动惯量的标准结果（实心球为 \(\dfrac25Ma^{2}\)）.卫星的姿态控制、飞轮储能系统的能量核算 \(E=\dfrac12I\omega^{2}\)，都从这个曲面积分开始.</p>
+  <p class="muted"><b>数值示例：</b>某飞轮储能装置用碳纤维球壳，\(M=200\,\mathrm{kg}\)，\(a=0.5\,\mathrm{m}\)，转速 \(n=12000\,\mathrm{r/min}\).则 \(I_z=\dfrac23\times200\times0.25=33.33\,\mathrm{kg\cdot m^2}\)，\(\omega=\dfrac{2\pi\times12000}{60}=1256.6\,\mathrm{rad/s}\)，储能</p>
+  \[E=\frac12\times33.33\times1256.6^{2}=2.63\times10^{7}\ \mathrm{J}\approx7.3\ \mathrm{kW\cdot h}.\]
+</div>
+
+<div class="ex"><div class="lab">例 12.27　通量计算（偏心球面）</div>
+  <p class="sol"><span class="mk">解</span>\(\operatorname{div}\boldsymbol{A}=2x+2y+2z\).由高斯公式，</p>
+  \[\varPhi=\iiint_\Omega 2(x+y+z)\,\mathrm{d}v=2\iiint_\Omega x\,\mathrm{d}v+2\iiint_\Omega y\,\mathrm{d}v+2\iiint_\Omega z\,\mathrm{d}v .\]
+  <p>\(\Omega\) 是球心在 \((a,0,0)\)、半径为 \(a\) 的球体，关于 \(zOx\) 与 \(xOy\) 面对称，故后两个积分为零.第一个积分用<b>质心公式</b> \(\displaystyle\iiint_\Omega x\,\mathrm{d}v=\bar x\cdot V=a\cdot\frac43\pi a^{3}\).所以</p>
+  \[\varPhi=2\cdot a\cdot\frac{4}{3}\pi a^{3}=\boxed{\frac{8}{3}\pi a^{4}}.\]
+  <p class="muted">"三重积分 = 质心坐标 × 体积"是省时利器，凡遇 \(\displaystyle\iiint x\,\mathrm{d}v\) 一类的积分务必先想它.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.28　电磁学中的高斯定律：均匀带电球体的场强</div>
+  <p class="stmt">半径 \(R=0.05\,\mathrm{m}\) 的绝缘小球均匀带电 \(Q=1.0\times10^{-8}\,\mathrm{C}\).求球外 \(r=0.10\,\mathrm{m}\) 与球内 \(r=0.025\,\mathrm{m}\) 处的电场强度.</p>
+  <p class="sol"><span class="mk">解</span>由球对称性，电场沿径向且大小只与 \(r\) 有关.取半径为 \(r\) 的同心球面作为高斯面，则</p>
+  \[\oiint_\Sigma\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=E(r)\cdot4\pi r^{2}=\frac{q_{\text{内}}}{\varepsilon_0}.\]
+  <p><b>球外</b>（\(r\gt R\)）：\(q_{\text{内}}=Q\)，故</p>
+  \[E=\frac{Q}{4\pi\varepsilon_0 r^{2}}=\frac{8.988\times10^{9}\times1.0\times10^{-8}}{0.10^{2}}=8.99\times10^{3}\ \mathrm{V/m}.\]
+  <p><b>球内</b>（\(r\lt R\)）：\(q_{\text{内}}=Q\dfrac{r^{3}}{R^{3}}\)，故</p>
+  \[E=\frac{Q\,r}{4\pi\varepsilon_0 R^{3}}=\frac{8.988\times10^{9}\times1.0\times10^{-8}\times0.025}{0.05^{3}}=1.80\times10^{4}\ \mathrm{V/m}.\]
+  <table class="dt">
+    <tr><th>位置 \(r\)（m）</th><th>包围电荷（C）</th><th>\(E\)（V/m）</th><th>规律</th></tr>
+    <tr><td>0.025（球内）</td><td>\(1.25\times10^{-9}\)</td><td>\(1.80\times10^{4}\)</td><td>\(E\propto r\)</td></tr>
+    <tr><td>0.050（表面）</td><td>\(1.00\times10^{-8}\)</td><td>\(3.60\times10^{4}\)</td><td>峰值</td></tr>
+    <tr><td>0.100（球外）</td><td>\(1.00\times10^{-8}\)</td><td>\(8.99\times10^{3}\)</td><td>\(E\propto1/r^{2}\)</td></tr>
+  </table>
+  <p>场强在球面处达到峰值 \(3.60\times10^{4}\,\mathrm{V/m}\).这是高压绝缘设计中"曲率越大越容易击穿"的定量依据.</p>
+</div>
+
+<div class="ex"><div class="lab">例 12.29　安培环路定律的数学表述</div>
+  <p class="stmt">无限长直导线通有电流 \(I=10\,\mathrm{A}\).用安培环路定律求距导线 \(r=0.02\,\mathrm{m}\) 处的磁感应强度，并说明它与斯托克斯公式的关系.</p>
+  <p class="sol"><span class="mk">解</span>取以导线为轴、半径 \(r\) 的圆周 \(\Gamma\).由对称性 \(\boldsymbol{B}\) 沿圆周切向且大小恒定，故</p>
+  \[\oint_\Gamma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=B\cdot2\pi r=\mu_0 I\ \Longrightarrow\ B=\frac{\mu_0I}{2\pi r}=\frac{2\times10^{-7}\times10}{0.02}=1.0\times10^{-4}\ \mathrm{T}.\]
+  <p><b>与斯托克斯公式的关系：</b>取以 \(\Gamma\) 为边界的任一曲面 \(S\)，由斯托克斯公式</p>
+  \[\oint_\Gamma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\iint_S(
+abla\times\boldsymbol{B})\cdot\mathrm{d}\boldsymbol{S}=\mu_0\iint_S\boldsymbol{J}\cdot\mathrm{d}\boldsymbol{S}=\mu_0 I .\]
+  <p>即"环流量 = 旋度的通量 = \(\mu_0\times\) 穿过的电流".<b>这解释了为什么环流量与路径形状无关</b>——只要闭曲线套住同一根导线，穿过它的电流就是同一个 \(I\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 数据中心液冷冷板：一条完整的散热核算链</div>
+  <details><summary>展开查看：从散度到通量再到温升，把一块 GPU 冷板算穿</summary>
+  <div class="body">
+    <p>某 AI 训练服务器搭载 8 张 GPU，单卡设计功耗 \(700\,\mathrm{W}\)，采用冷板式液冷.我们把整条链路用曲面积分的语言走一遍.</p>
+    <p><b>第一环：芯片内部——散度给出发热总量.</b>单张 GPU 裸片体积 \(V=826\,\mathrm{mm^2}\times0.6\,\mathrm{mm}=4.96\times10^{-7}\,\mathrm{m^3}\).要释放 \(700\,\mathrm{W}\)，等效体积发热率为</p>
+    \[\operatorname{div}\boldsymbol{q}=\frac{P}{V}=\frac{700}{4.96\times10^{-7}}=1.41\times10^{9}\ \mathrm{W/m^{3}} .\]
+    <p>这个数字约为太阳核心功率密度（约 \(276\,\mathrm{W/m^3}\)）的<b>五百万倍</b>——现代芯片是人类造出的功率密度最高的物件之一.</p>
+    <p><b>第二环：冷板界面——通量必须等于发热量.</b>稳态时，穿过芯片与冷板接触面 \(\Sigma\) 的热流通量必须等于总发热：</p>
+    \[\iint_\Sigma\boldsymbol{q}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_\Omega\operatorname{div}\boldsymbol{q}\,\mathrm{d}v=700\ \mathrm{W}.\]
+    <p>接触面积 \(826\,\mathrm{mm^2}=8.26\times10^{-4}\,\mathrm{m^2}\)，平均热流密度</p>
+    \[\bar q=\frac{700}{8.26\times10^{-4}}=8.47\times10^{5}\ \mathrm{W/m^{2}}=84.7\ \mathrm{W/cm^{2}} .\]
+    <p><b>第三环：冷却液带走的热量——流量的曲面积分.</b>冷板内微通道总截面 \(A=1.2\times10^{-4}\,\mathrm{m^2}\)，冷却液（乙二醇水溶液，\(\rho=1050\,\mathrm{kg/m^3},\ c_p=3400\,\mathrm{J/(kg\cdot K)}\)）在通道内呈抛物型速度分布，中心流速 \(v_0=2.4\,\mathrm{m/s}\)，故体积流量</p>
+    \[Q=\iint_A v\,\mathrm{d}S=\frac{v_0}{2}A=1.2\times1.2\times10^{-4}=1.44\times10^{-4}\ \mathrm{m^{3}/s}=0.144\ \mathrm{L/s}.\]
+    <p><b>第四环：进出口温升.</b>8 张卡共 \(5600\,\mathrm{W}\)，若共用一条回路（总流量按 8 倍计 \(Q_{\text{tot}}=1.152\times10^{-3}\,\mathrm{m^3/s}\)）：</p>
+    \[\Delta T=\frac{P_{\text{tot}}}{\rho c_p Q_{\text{tot}}}=\frac{5600}{1050\times3400\times1.152\times10^{-3}}=1.36\ \mathrm{K}.\]
+    <table class="dt">
+      <tr><th>环节</th><th>数学工具</th><th>关键量</th><th>数值</th></tr>
+      <tr><td>芯片发热</td><td>散度</td><td>\(\operatorname{div}\boldsymbol{q}\)</td><td>\(1.41\times10^{9}\,\mathrm{W/m^3}\)</td></tr>
+      <tr><td>界面导热</td><td>第二类曲面积分</td><td>\(\bar q\)</td><td>\(84.7\,\mathrm{W/cm^2}\)</td></tr>
+      <tr><td>冷液流量</td><td>第二类曲面积分</td><td>\(Q\)</td><td>\(0.144\,\mathrm{L/s}\) 每卡</td></tr>
+      <tr><td>系统温升</td><td>连续性方程</td><td>\(\Delta T\)</td><td>\(1.36\,\mathrm{K}\)</td></tr>
+    </table>
+    <p><b>对比风冷：</b>空气的 \(\rho c_p\) 只有 \(1206\,\mathrm{J/(m^3\cdot K)}\)，而该冷却液为 \(3.57\times10^{6}\,\mathrm{J/(m^3\cdot K)}\)，相差<b>约 2960 倍</b>.要用风冷带走同样 \(5600\,\mathrm{W}\) 并只升温 \(1.36\,\mathrm{K}\)，需要 \(3.4\,\mathrm{m^3/s}\) 的风量——相当于每秒吹过一间小卧室的空气，物理上不可行.这就是 AI 数据中心全面转向液冷的量化理由.</p>
+    <p><b>回到数学：</b>整条链路上出现的每一个"总量"，都是某个场在某张曲面上的积分；每一次"守恒校核"，都是高斯公式的一次应用.曲面积分不是一个抽象符号，它是工程师核算世界的通用账本.</p>
+  </div>
+  </details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 高斯：数学王子与地磁测量的远征</summary>
+
+<p>1777 年，卡尔·弗里德里希·高斯（Carl Friedrich Gauss）生于不伦瑞克.他少年即展露天才，十九岁给出正十七边形的尺规作图，二十四岁凭「算术研究」奠定现代数论.但高斯不只是纯数学的天才——他一生都在用测量把数学「钉」进大地.19 世纪 20 年代，他主持汉诺威王国的全面土地测绘，白天扛着仪器走遍山野，晚上回到书房推导最小二乘与误差理论.正是在这份测绘工作里，他系统发展了今天所称的「高斯公式」思想：一个区域内部的总量（如位势的源）可以由其边界上的观测完全决定.</p>
+<p>更鲜为人知的是，高斯还是早期地磁学的奠基人之一.1830 年代，他与韦伯（Wilhelm Weber）在哥廷根建立了世界上第一个地磁观测站，用他自己设计的磁强计记录地磁场.高斯在 1839 年的论文《论地磁的一般理论》里，用球谐函数把地球磁场展开，并证明：只要在全球若干点测得磁场分量，就能用位势理论反演出地球内部磁源的分布——这实质上是把「闭曲面通量 = 内部源强」的高斯定律用到了磁场上（\(\oiint \boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)，因自然界无磁单极）.他甚至组织跨国测量，绘制了首张地磁等偏线图.</p>
+<p>高斯对曲面与通量的思考，直接催生了今天教材 §12.3 的高斯公式：把三维空间里「散度的体积分」与「通量的闭曲面积分」画上等号.从测绘边界推内部、从地磁观测反演磁源，到静电学里的高斯定律，同一根红线贯穿始终.一个能在泥泞田野里架起三角仪、也能在黑板前写出 \(\oiint=\iiint\) 的人，配得上「数学王子」的称号.哥廷根天文台旁至今立着他与韦伯的铜像，纪念这场数学与测量的联姻.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] M. Kline《古今数学思想》第三册，上海科学技术出版社，1980. [2] C. F. Gauss, Allgemeine Theorie des Erdmagnetismus, 1839. [3] Wikipedia 词条 “Carl Friedrich Gauss”“Gaussian law”.</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 麦克斯韦方程组：四行公式如何统一电与磁</summary>
+
+<p>1865 年，詹姆斯·克拉克·麦克斯韦（James Clerk Maxwell）在《电磁场的动力学理论》里，用区区四个方程把电、磁、光统一在同一套数学之下.其中与本章最亲近的是高斯定律 \(\oiint_{\Sigma}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=Q/\varepsilon_{0}\) 与高斯磁定律 \(\oiint_{\Sigma}\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)——两者都是<b>高斯公式</b>在不同矢量场上的特例：前者散度 \(
+abla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\)（有源），后者 \(
+abla\cdot\boldsymbol{B}=0\)（无磁单极，无源）.教材 §12.3 证明的「闭曲面积分 = 散度的体积分」，正是这两条定律的积分形式来源.</p>
+<p>麦克斯韦的天才之处在于他补上了「位移电流」一项，使安培环路定律在高斯公式的「边界–内部」框架下自洽，并由此预言电磁波存在、且波速 \(c=1/\sqrt{\mu_{0}\varepsilon_{0}}\) 恰等于已测得的光速——从而把光也纳入电磁家族.后人（尤其奥利弗·亥维赛）把方程组改写成今天的微分形式，可是一个世纪的工程实践（天线、波导、电磁兼容）仍反复回到积分形式：因为<b>积分形式直接对应「在闭合曲面上实测通量、反推内部电荷/磁源」的可操作过程</b>，这正是高斯公式的实用灵魂.</p>
+<p>换句话说，当你在 §12.2 算一片散热片上的热流通量、在 §12.3 用高斯公式验证点电荷电场时，你用的数学结构和麦克斯韦 1865 年的那四行公式是同一个.一百六十年后，5G 基站、核磁共振、无线充电无一不在求解这组方程；而它们的封闭边界条件，永远写着 \(\oiint\) 与 \(\iiint\) 的等号.数学的统一力，在这里显出了最宏伟的形状.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] J. C. Maxwell, A Dynamical Theory of the Electromagnetic Field, 1865. [2] M. Kline《古今数学思想》第四册，上海科学技术出版社，1980. [3] Wikipedia 词条 “Maxwell's equations”“Gauss's law”.</p>
+</details>
+</div>
+
+<div class="ky" id="adv12">
+<div class="ky-hd">🎯 考研选讲 · 第十二章 曲面积分</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题（数学一常考））计算 \(I=\iint_{\Sigma}(x^{3}+az^{2})\,\mathrm{d}y\,\mathrm{d}z+(y^{3}+ax^{2})\,\mathrm{d}z\,\mathrm{d}x+(z^{3}+ay^{2})\,\mathrm{d}x\,\mathrm{d}y\)，其中 \(\Sigma\) 为上半球面 \(x^{2}+y^{2}+z^{2}=a^{2}\ (z\ge0)\) 的上侧.</p>
+<p class="ky-hint"><b>思路点拨.</b> 直接在被积函数复杂的球面上投影会非常痛苦.标准套路是<b>补面法</b>：补上底面圆盘 \(\Sigma_{1}:z=0,\ x^{2}+y^{2}\le a^{2}\)（取下侧，使与球面合起来成封闭曲面外侧），用高斯公式算整体，再减去补面贡献.注意上侧对应外侧，补面要取下侧才能构成「向外」闭曲面.</p>
+<p class="sol"><span class="mk">解</span> 令 \(P=x^{3}+az^{2},\ Q=y^{3}+ax^{2},\ R=z^{3}+ay^{2}\)，则</p>
+\[\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}
+ =3x^{2}+3y^{2}+3z^{2}=3(x^{2}+y^{2}+z^{2}).\]
+<p>在球面所围半球体 \(\Omega\) 上用高斯公式：</p>
+\[\oiint_{\Sigma+\Sigma_{1}}= \iiint_{\Omega}3(x^{2}+y^{2}+z^{2})\,\mathrm{d}V
+ =3\int_{0}^{2\pi}\!\!\int_{0}^{\pi/2}\!\!\int_{0}^{a}\rho^{2}\cdot\rho^{2}\sin\varphi\,\mathrm{d}\rho\,\mathrm{d}\varphi\,\mathrm{d}\theta
+ =3\cdot2\pi\cdot1\cdot\frac{a^{5}}{5}=\frac{6\pi a^{5}}{5}.\]
+<p>在 \(\Sigma_{1}\)（\(z=0\)，取下侧，法向 \(-\boldsymbol{k}\)）上，\(\mathrm{d}z\,\mathrm{d}x=\mathrm{d}x\,\mathrm{d}y=0\) 中仅 \(R\) 项残留且因下侧取负：</p>
+\[\iint_{\Sigma_{1}}R\,\mathrm{d}x\,\mathrm{d}y=-\iint_{x^{2}+y^{2}\le a^{2}}ay^{2}\,\mathrm{d}x\,\mathrm{d}y
+ =-a\cdot\frac{\pi a^{4}}{4}=-\frac{\pi a^{5}}{4}.\]
+<p>故</p>
+\[I=\frac{6\pi a^{5}}{5}-\Bigl(-\frac{\pi a^{5}}{4}\Bigr)=\frac{29\pi a^{5}}{20}.\]
+<p class="ky-idea"><b>命题意图.</b> 考查补面法三步（补—高斯—减）与「曲面侧向 ↔ 法向符号」的对应；同时练球面/柱面坐标下的三重积分.补面后务必确认方向一致.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题（数学一常考））计算 \(I=\iint_{\Sigma}xz\,\mathrm{d}y\,\mathrm{d}z+yz\,\mathrm{d}z\,\mathrm{d}x+z^{2}\,\mathrm{d}x\,\mathrm{d}y\)，其中 \(\Sigma\) 为锥面 \(z=\sqrt{x^{2}+y^{2}}\ (0\le z\le h)\) 的下侧.</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是<b>第二类曲面积分的直接投影法</b>：把 \(\mathrm{d}y\,\mathrm{d}z\)、\(\mathrm{d}z\,\mathrm{d}x\)、\(\mathrm{d}x\,\mathrm{d}y\) 分别投影到相应坐标面.锥面用 \(z=\sqrt{x^{2}+y^{2}}\) 显式表达最方便，统一投影到 \(xy\) 平面：\(\mathrm{d}y\,\mathrm{d}z=-z_{x}\,\mathrm{d}x\,\mathrm{d}y\)，\(\mathrm{d}z\,\mathrm{d}x=-z_{y}\,\mathrm{d}x\,\mathrm{d}y\).注意「下侧」对应法向 \(z\) 分量为负，最终符号要取负.</p>
+<p class="sol"><span class="mk">解</span> \(z=\sqrt{x^{2}+y^{2}}\)，\(z_{x}=x/z,\ z_{y}=y/z\)，投影域 \(D:x^{2}+y^{2}\le h^{2}\).统一投影到 \(xy\) 面：</p>
+\[I=\iint_{D}\Bigl[xz(-z_{x})+yz(-z_{y})+z^{2}\Bigr]\mathrm{d}x\,\mathrm{d}y
+ =\iint_{D}\Bigl[-x^{2}-y^{2}+z^{2}\Bigr]\mathrm{d}x\,\mathrm{d}y.\]
+<p>因 \(z^{2}=x^{2}+y^{2}\)，括号内为 \(0\)，故</p>
+\[I=0.\]
+<p class="ky-idea"><b>命题意图.</b> 考查第二类曲面积分「投影法三合一」：\(\mathrm{d}y\,\mathrm{d}z\to-z_{x}\mathrm{d}x\,\mathrm{d}y\) 等，并用侧向定符号.本题被积式恰好抵消，提示有时直接投影比补面更简——但前提是曲面能显式写出且投影域简单.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题（数学一常考））设 \(\Sigma\) 为球面 \(x^{2}+y^{2}+z^{2}=R^{2}\) 上半部分的上侧，\(L\) 为其边界圆 \(x^{2}+y^{2}=R^{2},\ z=0\)（逆时针方向）.用斯托克斯公式求 \(\oint_{L}(y^{2}-z^{2})\,\mathrm{d}x+(z^{2}-x^{2})\,\mathrm{d}y+(x^{2}-y^{2})\,\mathrm{d}z\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是<b>斯托克斯公式化环量为曲面积分</b>：\(\oint_{L}\boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\iint_{\Sigma}(
+abla\times\boldsymbol{A})\cdot\boldsymbol{n}\,\mathrm{d}S\).先算旋度（用行列式或分量公式），再在球冠上积分.为简化，可把曲面换成同边界的平面圆盘（斯托克斯允许「以任一以 \(L\) 为边界的曲面」代替），投影到 \(xy\) 面更省事.</p>
+<p class="sol"><span class="mk">解</span> \(\boldsymbol{A}=(y^{2}-z^{2},\ z^{2}-x^{2},\ x^{2}-y^{2})\)，旋度</p>
+\[
+abla\times\boldsymbol{A}=
+\begin{vmatrix}
+\boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\
+\partial_{x}&\partial_{y}&\partial_{z}\\
+y^{2}-z^{2}&z^{2}-x^{2}&x^{2}-y^{2}
+\end{vmatrix}
+=(-2y-2z,\ -2z-2x,\ -2x-2y).\]
+<p>改取平面圆盘 \(D:x^{2}+y^{2}\le R^{2},\ z=0\)（上侧，法向 \(\boldsymbol{k}\)），则仅第三分量贡献：</p>
+\[\iint_{D}(-2x-2y)\,\mathrm{d}x\,\mathrm{d}y=0\]
+<p>因被积函数关于 \(x,y\) 为奇函数、区域对称.故环量为 \(0\).</p>
+<p class="ky-idea"><b>命题意图.</b> 考查斯托克斯公式与「换曲面」技巧（平面圆盘代替球冠可大幅化简），以及奇对称性消项.关键：\(L\) 为边界、\(\Sigma\) 任取，选最省算的那张.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题（数学一常考））设 \(\boldsymbol{F}=(x-z,\ y,\ z)\)，求穿过锥面 \(z=\sqrt{x^{2}+y^{2}}\ (0\le z\le1)\) 侧面（取外侧）的通量 \(\Phi=\iint_{\Sigma}\boldsymbol{F}\cdot\boldsymbol{n}\,\mathrm{d}S\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 锥面不封闭，可用<b>高斯公式补底法</b>：补上顶面圆盘 \(z=1,\ x^{2}+y^{2}\le1\)（上侧），使成封闭曲面，高斯公式算总通量，再减去顶面.或直接用散度 \(
+abla\cdot\boldsymbol{F}=1+1+1=3\) 在锥体体积分.注意补底后整体法向朝外.</p>
+<p class="sol"><span class="mk">解</span> \(
+abla\cdot\boldsymbol{F}=1+1+1=3\).锥体 \(\Omega\) 体积 \(V=\frac13\pi\cdot1^{2}\cdot1=\frac{\pi}{3}\).由高斯公式</p>
+\[\oiint_{\Sigma+\Sigma_{\text{顶}}}= \iiint_{\Omega}3\,\mathrm{d}V=3\cdot\frac{\pi}{3}=\pi.\]
+<p>顶面 \(\Sigma_{\text{顶}}:z=1,\ x^{2}+y^{2}\le1\)，法向 \(\boldsymbol{k}\)，\(\boldsymbol{F}\cdot\boldsymbol{n}=z=1\)，故</p>
+\[\iint_{\Sigma_{\text{顶}}}1\,\mathrm{d}x\,\mathrm{d}y=\pi\cdot1^{2}=\pi.\]
+<p>于是锥侧面通量</p>
+\[\Phi=\pi-\pi=0.\]
+<p class="ky-idea"><b>命题意图.</b> 考查高斯公式补面求「侧面通量」，以及散度为常数时体积分退化为 \(3V\).本题结果与题 2 同理：侧面通量恰好被顶面抵消，凸显「通量看总散度、看边界闭合」的高斯思想.</p>
+</div>
+
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 医学影像：CT 球面探测器的接收立体角</summary>
+<p><b>场景：</b> 锥形束 CT（CBCT）的 X 射线源在球心，探测器阵列铺在球面上某块区域.能被探测器收到的光子比例 = 探测器所张<b>立体角</b>占整个球面的比例.立体角本身是球面第二类（对面积）积分的归一化：\(\Omega=\iint_{\Sigma}\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi\).给定探测器半张角 \(\theta_{0}\)，算它张的立体角与占比；并和「小角近似下平板探测器 \(\Omega\approx A/d^{2}\)」对照.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>探测器半张角</td><td>\(\theta_{0}\)</td><td>\(30^{\circ}\)</td></tr>
+<tr><td>平板尺寸</td><td>\(A\)</td><td>\(0.04\times0.04\ \mathrm{m^{2}}\)</td></tr>
+<tr><td>源–板距离</td><td>\(d\)</td><td>\(0.50\ \mathrm{m}\)</td></tr>
+</table>
+<p class="sol"> 球冠立体角（对面积积分，\(\mathrm{d}\Omega=\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi\)）：</p>
+\[\Omega=\int_{0}^{2\pi}\int_{0}^{\theta_{0}}\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi
+ =2\pi(1-\cos\theta_{0}).\]
+<p>代入 \(\theta_{0}=30^{\circ}\)、\(\cos30^{\circ}=0.8660\)：</p>
+\[\Omega=2\pi(1-0.8660)=0.8418\ \mathrm{sr}.\]
+<p>整球 \(4\pi\approx12.566\ \mathrm{sr}\)，占比</p>
+\[\frac{\Omega}{4\pi}=\frac{0.8418}{12.566}=0.0670=6.70\%.\]
+<p>小角近似（平板）验一下：</p>
+\[\Omega\approx\frac{A}{d^{2}}=\frac{0.0016}{0.25}=0.00640\ \mathrm{sr}\]
+<p>数量级远小于球冠值，说明该平板离源近、只接收极窄锥束，与球冠模型处在不同几何 regime.</p>
+<p><b>工程结论：</b> 探测器「能看到多大立体角」直接决定 CT 的采样效率与剂量利用率.立体角计算就是<b>球面第一类曲面积分 \(\iint\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi\)</b> 除以 \(R^{2}\)；工程师用「整球 \(4\pi\)」作归一化，立刻得到光子捕获比例 \(6.7\%\).这比盲目加大管电流更省剂量——优化探测器排布（增大 \(\theta_{0}\)）比堆功率有效得多.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 半导体照明：朗伯光源的出射立体角与总光通量</summary>
+<p><b>场景：</b> LED 芯片近似为朗伯（Lambertian）面光源：辐射强度随出射角余弦衰减 \(I(\theta)=I_{0}\cos\theta\).向半球空间发射的总光通量，正是对「余弦加权立体角」的球面曲面积分 \(\Phi=\iint_{\text{半球}}I(\theta)\,\mathrm{d}\Omega=\iint I_{0}\cos\theta\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi\).给定总光通量，反推中心光强 \(I_{0}\)（单位 cd），再算进入某一接收半角锥的光通量.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>半球总光通量</td><td>\(\Phi\)</td><td>\(100\ \mathrm{lm}\)</td></tr>
+<tr><td>接收半角</td><td>\(\theta_{0}\)</td><td>\(60^{\circ}\)</td></tr>
+</table>
+<p class="sol"> 半球积分（对面积曲面积分，\(\mathrm{d}\Omega=\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi\)）：</p>
+\[\Phi=\int_{0}^{2\pi}\int_{0}^{\pi/2}I_{0}\cos\theta\sin\theta\,\mathrm{d}\theta\,\mathrm{d}\phi
+ =2\pi I_{0}\int_{0}^{\pi/2}\cos\theta\sin\theta\,\mathrm{d}\theta
+ =2\pi I_{0}\cdot\frac12=\pi I_{0}.\]
+<p>故中心光强</p>
+\[I_{0}=\frac{\Phi}{\pi}=\frac{100}{\pi}=31.83\ \mathrm{cd}.\]
+<p>进入半角 \(\theta_{0}\) 锥内的光通量：</p>
+\[\Phi(\theta_{0})=2\pi I_{0}\int_{0}^{\theta_{0}}\cos\theta\sin\theta\,\mathrm{d}\theta
+ =2\pi I_{0}\cdot\frac12\sin^{2}\theta_{0}
+ =\Phi\sin^{2}\theta_{0}.\]
+<p>代入 \(\theta_{0}=60^{\circ}\)、\(\sin60^{\circ}=0.8660\)：</p>
+\[\Phi(60^{\circ})=100\times0.8660^{2}=100\times0.75=75\ \mathrm{lm}.\]
+<p><b>工程结论：</b> 朗伯光源把总光通量均匀铺在「余弦加权立体角」上，落在任意锥内的份额是 \(\sin^{2}\theta_{0}\)——这是球面第一类曲面积分最直接的光学应用.\(75\ \mathrm{lm}\) 进 \(60^{\circ}\) 锥、其余 \(25\ \mathrm{lm}\) 散在边缘，提示<b>加透镜（把大角度光折回中心锥）能显著提升有效照明效率</b>.光学设计软件里「光通量 = 对面积分 \(L\cos\theta\,\mathrm{d}\Omega\)」是每一行追迹的底层公式.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch12-led" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>半角 θ₀ <input type="range" id="ch12-led-th" min="10" max="90" step="1" value="60" style="width:220px;accent-color:#0F6E56"> <b id="ch12-led-th-t"></b>°</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch12-led-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch12-led'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var th=+document.getElementById('ch12-led-th').value;
+      var cx=W*0.3, cy=H*0.5, sc=Math.min(W,H)*0.38;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 朗伯辐射方向图（余弦花瓣）
+      ctx.strokeStyle='rgba(148,163,184,0.5)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(cx,cy,sc,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var a=0;a<=Math.PI;a+=0.02){
+        var rr=sc*Math.abs(Math.cos(a));
+        var xx=cx+rr*Math.cos(a), yy=cy-rr*Math.sin(a);
+        a===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      // 半角锥
+      var thR=th*Math.PI/180;
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+sc*Math.sin(thR),cy-sc*Math.cos(thR));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx-sc*Math.sin(thR),cy-sc*Math.cos(thR));ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#ca8a04';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('θ₀='+th.toFixed(0)+'°',cx,cy-sc*Math.cos(thR)-8);
+      // 数值
+      var frac=Math.sin(thR)*Math.sin(thR);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('Φ(θ₀) = Φ₀·sin²θ₀ = 100×'+Math.sin(thR).toFixed(4)+'² = '+(frac*100).toFixed(0)+' lm',20,22);
+      var out=document.getElementById('ch12-led-out');
+      var tip = th<=60 ? '半角 60° 内聚集 75% 光通量——加透镜把大角度光收进锥内，照度就上去了' : '大角度发散：边缘 25 lm 浪费，需要二次光学设计';
+      out.textContent = tip;
+    }
+    document.getElementById('ch12-led-th').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC12">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq12" data-ch=12><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+</div>
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第12章 · 曲面积分</div>
+<a href="#s121">12.1 对面积的曲面积分</a>
+<a href="#s122">12.2 对坐标的曲面积分</a>
+<a href="#s123">12.3 高斯公式与斯托克斯公式</a>
+<a href="#s124">12.4 曲面积分的应用</a>
+<a href="ch12.html#adv12">考研选讲</a>
+<a href="ch12.html#cq12">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 12, "list": [["s121", "12.1 对面积的曲面积分"], ["s122", "12.2 对坐标的曲面积分"], ["s123", "12.3 高斯公式与斯托克斯公式"], ["s124", "12.4 曲面积分的应用"], ["adv12", "考研选讲"], ["cq12", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

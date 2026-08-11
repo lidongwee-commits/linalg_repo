@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第6章 · 一元函数积分学的应用</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第6章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第6章 · 一元函数积分学的应用</div>
+<a href="ch6.html">整章</a>
+<a href="ch6.html#adv6">考研选讲</a>
+<a href="ch6.html#cq6">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH6 -->
+<div class="kicker">Chapter 6</div>
+<h1 class="title">一元函数积分学的应用<span class="en">Applications of Integral Calculus</span></h1>
+<p class="lede">本章用“微元法”这一统一思想，把定积分应用于几何（面积、体积、弧长、旋转曲面）与物理（功、液体压力、质心）等领域，体会“以直代曲、无限求和”的威力.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>微元法</b> → 机器人沿轨迹累计总能耗</li>
+<li><b>几何应用</b> → 图像旋转后的面积不变性</li>
+<li><b>物理应用</b> → 机械臂变力做功 = 曲线下面积</li>
+  </ul>
+</div>
+
+    <!-- ============ §6.1 ============ -->
+<div class="labx">
+  <div class="lab">交互 · 旋转体体积（圆盘法）</div>
+  <div class="desc">曲线绕 x 轴旋转形成旋转体.拖动右端点 b，观察 V=π∫f²(x)dx 的累积过程.</div>
+  <div class="row"><canvas id="viz-solid" width="500" height="260" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">b = <b id="viz-b-val" style="color:#2dd4bf;font-size:14px">2.0</b></label>
+    <input type="range" id="viz-b" min="0.5" max="3.5" step="0.1" value="2" style="flex:1;min-width:100px;accent-color:#2dd4bf">
+    <span style="font-size:12px;color:#6b8179">V ≈ <b id="viz-vol" style="color:#fbbf24">6.28</b></span>
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-solid'),ctx=c.getContext('2d');
+  var bS=document.getElementById('viz-b'),bV=document.getElementById('viz-b-val'),vE=document.getElementById('viz-vol');
+  function f(x){return Math.sqrt(x)+0.3;}
+  function draw(){var b=parseFloat(bS.value);bV.textContent=b.toFixed(1);var W=c.width,H=c.height,a=0.3,n=24,dx=(b-a)/n,sum=0;
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/20){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/8){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.fillStyle='rgba(45,212,191,0.12)';
+    for(var i=0;i<n;i++){var x1=a+i*dx,x2=a+(i+1)*dx,m=(x1+x2)/2,r=f(m);
+      var px1=(x1-0.3)/3.4*W*0.72+W*0.12,px2=(x2-0.3)/3.4*W*0.72+W*0.12,cy=H*0.55,cr=r*H*0.2;
+      ctx.beginPath();ctx.ellipse((px1+px2)/2,cy,(px2-px1)/2,cr,0,0,6.28);ctx.fill();sum+=Math.PI*r*r*dx;}
+    ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;ctx.beginPath();
+    for(var px=0;px<=W;px+=2){var x=px/W*3.4+0.3;if(x>b||x<a)continue;var y=f(x);var py=H*0.55-y*H*0.2;ctx[px===0?'moveTo':'lineTo'](px,py);}ctx.stroke();
+    vE.textContent=sum.toFixed(2);ctx.fillStyle='#33473f';ctx.font='11px sans-serif';ctx.fillStyle='#33473f';ctx.fillText('V=π∫f²dx≈'+sum.toFixed(2),W*0.54,H*0.09);
+  }requestAnimationFrame(function(){draw();});bS.addEventListener('input',draw);
+})();
+</script>
+
+    <h2 id="s061"><span class="num">§6.1</span>定积分的微元法</h2>
+    
+<div class="ex"><div class="lab">引例一　3D 打印为什么"分层"就能造出复杂零件：切片体积的累加</div>
+  <p class="stmt">金属激光选区熔化（SLM）3D 打印航空发动机零件时，设备把三维模型沿高度方向切成成千上万个极薄的水平层，逐层铺粉、逐层熔化.工程师最关心的问题之一是：<b>这个零件到底要耗多少金属粉末？</b></p>
+  <p>设零件为一个高 \(H=100\,\mathrm{mm}\) 的回转体，距底面 \(x\,\mathrm{mm}\) 处的半径为</p>
+  \[r(x)=20-0.1x\quad(\mathrm{mm}),\qquad 0\le x\le 100,\]
+  <p>即底面半径 \(20\,\mathrm{mm}\)、顶面半径 \(10\,\mathrm{mm}\).打印机把它切成层厚 \(h\) 的水平薄片，<b>每一薄片近似看作一个圆柱</b>，于是第 \(k\) 层的体积近似为</p>
+  \[\Delta V_k\approx A(x_k)\,h=\pi r^2(x_k)\,h .\]
+  <p><b>具体模拟计算</b>（取演示层厚 \(h=0.5\,\mathrm{mm}\)，共 200 层，列出其中 5 层）：</p>
+  <table class="dt">
+    <tr><th>层号 \(k\)</th><th>高度 \(x_k\)（mm）</th><th>半径 \(r\)（mm）</th><th>截面积 \(A=\pi r^2\)（mm²）</th><th>该层体积 \(\Delta V_k\)（mm³）</th></tr>
+    <tr><td>1</td><td>0.0</td><td>20.00</td><td>1256.64</td><td>628.32</td></tr>
+    <tr><td>51</td><td>25.0</td><td>17.50</td><td>962.11</td><td>481.06</td></tr>
+    <tr><td>101</td><td>50.0</td><td>15.00</td><td>706.86</td><td>353.43</td></tr>
+    <tr><td>151</td><td>75.0</td><td>12.50</td><td>490.87</td><td>245.44</td></tr>
+    <tr><td>200</td><td>99.5</td><td>10.05</td><td>317.30</td><td>158.65</td></tr>
+  </table>
+  <p>把 200 层全部加起来得 \(\sum_k\Delta V_k\approx 73539\,\mathrm{mm}^3\).若把层厚缩小到设备的真实值 \(h=0.03\,\mathrm{mm}\)（约 3333 层），累加值将趋于</p>
+  \[V=\int_0^{100}\pi(20-0.1x)^2\,\mathrm{d}x
+   =10\pi\int_{10}^{20}u^2\,\mathrm{d}u
+   =\frac{10\pi}{3}\bigl(20^3-10^3\bigr)=\frac{70000\pi}{3}\approx 73303.8\ \mathrm{mm}^3 .\]
+  <p>即约 \(73.30\,\mathrm{cm}^3\).层厚 \(0.5\,\mathrm{mm}\) 时相对误差约 \(0.32\%\)，层厚 \(0.03\,\mathrm{mm}\) 时降至约 \(0.019\%\).</p>
+  <p><b>请注意这段推理的骨架：</b>先在一个"极小的一层"上把复杂量近似成简单量 \(A(x)\,\mathrm{d}x\)，再把所有层"加起来"取极限.3D 打印机做的是有限层的累加，数学做的是层厚趋于零的极限——这就是本节要提炼的<b>微元法</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　快充桩到底"喂"进去多少电：电荷量的微元累加</div>
+  <p class="stmt">一台 250 kW 直流快充桩给电动车充电，电流并非恒定，而是随时间衰减.实测拟合得电流</p>
+  \[I(t)=60\,\mathrm{e}^{-t/30}\quad(\mathrm{A}),\qquad t\ \text{以分钟计}.\]
+  <p>问充电 45 分钟共转移了多少电荷量（安时）？</p>
+  <p class="sol"><span class="mk">解</span>电流的定义就是"单位时间通过的电荷量"，故在极短的 \(\mathrm{d}t\) 内电流几乎不变，电荷量微元为</p>
+  \[\mathrm{d}Q=I(t)\,\mathrm{d}t .\]
+  <p>于是</p>
+  \[Q=\int_0^{45}60\,\mathrm{e}^{-t/30}\,\mathrm{d}t
+    =60\times30\bigl(1-\mathrm{e}^{-1.5}\bigr)
+    =1800\times(1-0.22313)=1398.4\ \mathrm{A\cdot min},\]
+  <p>换算为 \(1398.4/60=23.31\,\mathrm{A\cdot h}\).若电池标称容量 \(25\,\mathrm{A\cdot h}\)，则本次已充入约 \(93\%\).</p>
+  <p><b>两个引例的共同点：</b>被求的整体量（体积、电荷量）都可以先在"一小段"上写成 \(f(x)\,\mathrm{d}x\)，再积分.这个"一小段上的表达式"就是<b>微元</b>.</p>
+</div>
+
+<h3>一、从"四步法"到"微元法"</h3>
+<p>回顾第 5 章定积分的建立过程，求曲边梯形面积用了四个步骤：<b>分割 → 近似 → 求和 → 取极限</b>.即</p>
+\[A=\lim_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i)\,\Delta x_i=\int_a^b f(x)\,\mathrm{d}x .\]
+<p>每次遇到新问题都重复这四步，既冗长又容易在"求和"一环卡住.仔细观察会发现：真正含有信息量的只有<b>第二步"近似"</b>——一旦写出 \(\Delta A_i\approx f(\xi_i)\Delta x_i\)，后面的求和与取极限就是机械的、必然导向定积分的.于是我们把这一步单独提炼出来，形成一种简洁的记法.</p>
+
+<div class="def"><div class="lab"><span class="n">定义 6.1</span>微元（元素）与微元法</div>
+  <p>设所求量 \(U\) 与区间 \([a,b]\) 上的变量 \(x\) 有关.若在 \([a,b]\) 内任取一个<b>代表性小区间</b> \([x,x+\mathrm{d}x]\)，相应的部分量 \(\Delta U\) 可以近似表示为</p>
+  \[\Delta U=f(x)\,\mathrm{d}x+o(\mathrm{d}x)\qquad(\mathrm{d}x\to0),\]
+  <p>则称 \(\mathrm{d}U=f(x)\,\mathrm{d}x\) 为量 \(U\) 的<b>微元</b>（也称<b>元素</b>），并有</p>
+  \[U=\int_a^b \mathrm{d}U=\int_a^b f(x)\,\mathrm{d}x .\]
+  <p>这种"先写微元、后作积分"的方法，称为<b>微元法</b>（元素法）.</p>
+</div>
+
+<div class="note"><b>微元法的两条准则（缺一不可）：</b><br>
+① <b>可加性准则</b>：整体量 \(U\) 关于区间具有可加性，即把 \([a,b]\) 分成若干小段后，\(U\) 等于各小段上部分量之和 \(U=\sum\Delta U_i\).<br>
+② <b>高阶无穷小准则</b>：部分量与微元之差是 \(\mathrm{d}x\) 的<b>高阶无穷小</b>，即 \(\Delta U-f(x)\,\mathrm{d}x=o(\mathrm{d}x)\).<br>
+准则①决定"能不能积"，准则②决定"积得对不对".<b>初学者的错误几乎全部出在准则②上</b>——近似做得太粗，误差不是 \(o(\mathrm{d}x)\) 而是与 \(\mathrm{d}x\) 同阶，求和后误差不消失.</div>
+
+<div class="def"><div class="lab"><span class="n">定理 6.1</span>微元法的合理性</div>
+  <p>设 \(U\) 满足可加性准则，且存在 \([a,b]\) 上的连续函数 \(f\)，使得对任意 \([x,x+\Delta x]\subseteq[a,b]\) 有 \(\Delta U=f(x)\Delta x+o(\Delta x)\)，则</p>
+  \[U=\int_a^b f(x)\,\mathrm{d}x .\]
+<details class="prf prf-idea"><summary>证明思路（严格证明需一致连续性与可积性理论，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：分割，用可加性拆开整体量.</span>在 \([a,b]\) 中插入分点</p>
+\[a=x_0\lt x_1\lt \cdots\lt x_n=b,\qquad \Delta x_i=x_i-x_{i-1},\quad \lambda=\max_{1\le i\le n}\Delta x_i .\]
+<p>记 \(\Delta U_i\) 为量 \(U\) 分布在小区间 \([x_{i-1},x_i]\) 上的那一部分.由可加性准则，</p>
+\[U=\sum_{i=1}^{n}\Delta U_i .\]
+<p><span class="stp">第二步：把每个 \(\Delta U_i\) 换成 \(f(x_{i-1})\Delta x_i\).</span>由假设 \(\Delta U_i=f(x_{i-1})\Delta x_i+o(\Delta x_i)\)，记误差 \(r_i=\Delta U_i-f(x_{i-1})\Delta x_i\)，则</p>
+\[U-\sum_{i=1}^{n}f(x_{i-1})\Delta x_i=\sum_{i=1}^{n}r_i .\]
+<p><span class="stp">第三步：控制误差的<b>总和</b>.</span>这是全部要害.假若误差是"一致地"高阶小，即存在与位置 \(x\) 无关的函数 \(\varepsilon(\lambda)\)，满足 \(\varepsilon(\lambda)\to0\ (\lambda\to0)\) 且 \(|r_i|\le\varepsilon(\lambda)\Delta x_i\) 对一切 \(i\) 成立，那么</p>
+\[\left|\sum_{i=1}^{n}r_i\right|\le\varepsilon(\lambda)\sum_{i=1}^{n}\Delta x_i=\varepsilon(\lambda)(b-a)\longrightarrow0\quad(\lambda\to0).\]
+<p><span class="stp">第四步：取极限.</span>\(f\) 在 \([a,b]\) 上连续故可积，而 \(\sum f(x_{i-1})\Delta x_i\) 正是它的一个黎曼和，\(\lambda\to0\) 时趋于 \(\displaystyle\int_a^b f(x)\,\mathrm{d}x\).等式左端的 \(U\) 是与分割无关的定数，令 \(\lambda\to0\) 即得</p>
+\[U=\int_a^b f(x)\,\mathrm{d}x .\]
+<div class="bey"><b>为什么说"超纲"：</b>困难全在第三步的"一致"二字.条件中的 \(o(\Delta x)\) 是<b>对每个固定的 \(x\)</b> 而言的，它只说误差比 \(\Delta x\) 更快地趋于零，却没有保证"趋零的速度对区间上所有位置一样快".而分割产生的 \(n\) 个小区间散布在整个 \([a,b]\) 上，必须把这 \(n\) 个各自的 \(o(\Delta x)\) 用<b>同一把尺子</b>一起压住，求和后才不会失控.要把"逐点的 \(o(\Delta x)\)"升级为"一致的 \(o(\Delta x)\)"，就要用到闭区间上连续函数的<b>一致连续性</b>（Cantor 定理）——它说的是：在闭区间上，函数值的波动幅度只取决于自变量间隔的大小，与间隔所处的位置无关.这条定理与"连续函数必可积"一样，根子都扎在实数的完备性上，属《数学分析》的内容.好在实际问题中出现的量（面积、体积、弧长、功、压力、引力等）都自动具备这种一致性，所以工科教材中可以放心地"由微元法得".</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 定理 6.1 的证明思路</div>
+  <details><summary>展开查看：为什么"高阶无穷小"是关键</summary>
+  <div class="body">
+    <p>把 \([a,b]\) 作 \(n\) 等分，记 \(\Delta x=\dfrac{b-a}{n}\)，分点为 \(x_0=a\lt x_1\lt\cdots\lt x_n=b\).由可加性</p>
+    \[U=\sum_{i=0}^{n-1}\Delta U_i=\sum_{i=0}^{n-1}f(x_i)\Delta x+\sum_{i=0}^{n-1}\varepsilon_i\Delta x,\]
+    <p>其中 \(\varepsilon_i\Delta x=o(\Delta x)\) 表示第 \(i\) 段的误差，故 \(\varepsilon_i\to0\)（当 \(\Delta x\to0\)）.第一个和式是 \(f\) 的黎曼和，当 \(n\to\infty\) 时趋于 \(\displaystyle\int_a^b f(x)\,\mathrm{d}x\).</p>
+    <p>关键在第二个和式.记 \(\varepsilon=\max_i|\varepsilon_i|\)，则</p>
+    \[\Bigl|\sum_{i=0}^{n-1}\varepsilon_i\Delta x\Bigr|\le \varepsilon\cdot n\Delta x=\varepsilon\,(b-a)\to0 .\]
+    <p><b>请体会这里的分寸感：</b>单个误差是 \(o(\Delta x)\)，但要加 \(n\approx\dfrac{b-a}{\Delta x}\) 项.只有当每项误差比 \(\Delta x\) 更高阶时，"误差乘以项数"才仍趋于零.若某段的误差是 \(c\,\Delta x\)（同阶而非高阶），求和后就变成 \(c(b-a)\)——<b>一个不会消失的常数误差</b>，答案必错.这正是准则②不可放松的原因，例 6.3 会给出一个惊心动魄的反例.</p>
+  </div>
+  </details>
+</div>
+
+<h3>二、用微元法重述面积问题</h3>
+<div class="ex"><div class="lab">例 6.1　曲边梯形的面积微元</div>
+  <p class="stmt">用微元法重新推导：由 \(y=f(x)\ (f\ge0)\)、\(x=a\)、\(x=b\) 及 \(x\) 轴围成的曲边梯形面积.</p>
+  <p class="sol"><span class="mk">解</span>面积显然关于区间可加（把图形竖着切开，面积相加），准则①满足.</p>
+  <p>在 \([a,b]\) 上任取小区间 \([x,x+\mathrm{d}x]\)，这一窄条是"曲边"的.用<b>矩形</b>近似它：高取左端函数值 \(f(x)\)，宽取 \(\mathrm{d}x\)，得</p>
+  \[\mathrm{d}A=f(x)\,\mathrm{d}x .\]
+  <p>验证准则②：窄条真实面积介于 \(m\,\mathrm{d}x\) 与 \(M\,\mathrm{d}x\) 之间（\(m,M\) 为 \(f\) 在该窄条上的最小、最大值），由 \(f\) 连续知 \(M-m\to0\)，故 \(\Delta A-f(x)\mathrm{d}x=o(\mathrm{d}x)\).于是</p>
+  \[A=\int_a^b f(x)\,\mathrm{d}x .\]
+  <p class="muted">整个推导只有两行，比"分割—近似—求和—取极限"简洁得多，而严格性由定理 6.1 兜底.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.2　无人机垂直起飞的爬升高度</div>
+  <p class="stmt">某测绘无人机垂直起飞，速度 \(v(t)=6t-0.5t^2\ (\mathrm{m/s})\)，\(0\le t\le 8\,\mathrm{s}\).求 8 秒内爬升的高度，并求这段时间的平均速度.</p>
+  <p class="sol"><span class="mk">解</span>路程关于时间区间可加.在 \([t,t+\mathrm{d}t]\) 内速度几乎不变，故<b>路程微元</b></p>
+  \[\mathrm{d}s=v(t)\,\mathrm{d}t=(6t-0.5t^2)\,\mathrm{d}t .\]
+  <p>积分得</p>
+  \[s=\int_0^{8}(6t-0.5t^2)\,\mathrm{d}t=\Bigl[3t^2-\frac{t^3}{6}\Bigr]_0^{8}=192-\frac{512}{6}=192-85.33=106.67\ \mathrm{m}.\]
+  <p>平均速度 \(\bar v=\dfrac{106.67}{8}=13.33\,\mathrm{m/s}\).而最大速度出现在 \(v'(t)=6-t=0\) 即 \(t=6\,\mathrm{s}\) 处，\(v(6)=18\,\mathrm{m/s}\).</p>
+  <p class="muted">若误把速度当作常数（例如取平均值 \(13.33\)）去做，只是巧合地得到同一个答案；但若问"前 3 秒爬升多少"，常数近似就会大错.微元法的价值正在于<b>允许被积量在区间上变化</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.3　微元法的陷阱：为什么旋转曲面面积不能用 \(2\pi y\,\mathrm{d}x\)</div>
+  <p class="stmt">求直线 \(y=x\ (0\le x\le1)\) 绕 \(x\) 轴旋转所得圆锥的侧面积.有同学写出"侧面积微元 \(\mathrm{d}S=2\pi y\,\mathrm{d}x\)"，对吗？</p>
+  <p class="sol"><span class="mk">解</span>先看正确答案：这是底半径 \(R=1\)、母线长 \(l=\sqrt2\) 的圆锥，由初等几何 \(S=\pi R l=\sqrt2\,\pi\approx4.443\).</p>
+  <p>再看那位同学的算法：</p>
+  \[S_{\text{错}}=\int_0^1 2\pi x\,\mathrm{d}x=\pi\approx3.142 .\]
+  <p><b>错了整整 \(29.3\%\)，而且无论把 \(\mathrm{d}x\) 取多小都不会改善.</b></p>
+  <p>错因分析：把窄条侧面近似成"圆柱面"（母线水平，长 \(\mathrm{d}x\)），但实际母线是斜的，长为 \(\mathrm{d}s=\sqrt{1+y'^2}\,\mathrm{d}x=\sqrt2\,\mathrm{d}x\).两者之差</p>
+  \[\Delta S-2\pi y\,\mathrm{d}x\approx 2\pi y(\sqrt2-1)\,\mathrm{d}x,\]
+  <p>是 \(\mathrm{d}x\) 的<b>同阶</b>无穷小而非高阶，违反准则②.正确的微元应以弧长为准：</p>
+  \[\mathrm{d}S=2\pi y\,\mathrm{d}s=2\pi x\sqrt2\,\mathrm{d}x
+   \;\Longrightarrow\;S=\sqrt2\,\pi\int_0^1 2x\,\mathrm{d}x=\sqrt2\,\pi .\]
+  <p class="muted">对照：求<b>体积</b>时用圆柱片 \(\mathrm{d}V=\pi y^2\mathrm{d}x\) 却是<b>正确</b>的，因为斜边带来的体积差是 \((\mathrm{d}x)^2\) 量级，确属高阶.<b>同一个近似，在体积里合法、在面积里非法</b>——准则②必须逐题验证.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.4　极坐标下的面积微元</div>
+  <p class="stmt">设曲线的极坐标方程为 \(\rho=\rho(\theta)\ (\alpha\le\theta\le\beta)\)，用微元法导出曲边扇形的面积公式.</p>
+  <p class="sol"><span class="mk">解</span>取角度 \(\theta\) 为积分变量.在 \([\theta,\theta+\mathrm{d}\theta]\) 上，\(\rho\) 变化极微，故这一小片近似为<b>半径 \(\rho(\theta)\)、圆心角 \(\mathrm{d}\theta\) 的圆扇形</b>.由扇形面积公式 \(\dfrac12 R^2\varphi\) 得</p>
+  \[\mathrm{d}A=\frac12\rho^2(\theta)\,\mathrm{d}\theta
+   \;\Longrightarrow\;A=\frac12\int_{\alpha}^{\beta}\rho^2(\theta)\,\mathrm{d}\theta .\]
+  <p>验证：取 \(\rho=R\)（圆），\(\alpha=0,\beta=2\pi\)，得 \(A=\dfrac12R^2\cdot2\pi=\pi R^2\)，与已知一致.</p>
+  <p class="muted">这里若把小片近似成"三角形"（底 \(\rho\,\mathrm{d}\theta\)、高 \(\rho\)），面积同样是 \(\dfrac12\rho^2\mathrm{d}\theta\)，两种近似的差是 \((\mathrm{d}\theta)^3\) 量级，都合法.<b>微元不唯一，但主部必须一致.</b></p>
+</div>
+
+<h3>三、定积分与平均值</h3>
+<div class="def"><div class="lab"><span class="n">定义 6.2</span>函数在区间上的平均值</div>
+  <p>设 \(f\) 在 \([a,b]\) 上连续，称</p>
+  \[\bar f=\frac{1}{b-a}\int_a^b f(x)\,\mathrm{d}x\]
+  <p>为 \(f\) 在 \([a,b]\) 上的<b>平均值</b>.由积分中值定理，存在 \(\xi\in[a,b]\) 使 \(\bar f=f(\xi)\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.5　AI 推理芯片的日均功耗与耗电量</div>
+  <p class="stmt">某数据中心 AI 推理卡在一个 12 小时的业务波峰段内，功耗随时间变化为</p>
+  \[P(t)=45+25\sin\frac{\pi t}{12}\quad(\mathrm{W}),\qquad 0\le t\le 12\ (\text{小时}).\]
+  <p>求这 12 小时的总耗电量与平均功耗.</p>
+  <p class="sol"><span class="mk">解</span>功率是"单位时间的能量"，故<b>能量微元</b> \(\mathrm{d}W=P(t)\,\mathrm{d}t\).</p>
+  \[W=\int_0^{12}\Bigl(45+25\sin\frac{\pi t}{12}\Bigr)\mathrm{d}t
+   =45\times12+25\Bigl[-\frac{12}{\pi}\cos\frac{\pi t}{12}\Bigr]_0^{12}.\]
+  <p>由于 \(\cos\pi-\cos0=-2\)，第二项为 \(25\times\dfrac{12}{\pi}\times2=\dfrac{600}{\pi}=190.99\).故</p>
+  \[W=540+190.99=730.99\ \mathrm{W\cdot h}\approx 0.731\ \mathrm{kW\cdot h},\]
+  <p>平均功耗 \(\bar P=\dfrac{730.99}{12}=60.92\,\mathrm{W}\).</p>
+  <p class="muted">注意 \(\bar P=60.92\,\mathrm{W}\) 明显高于基线 \(45\,\mathrm{W}\)：正弦项在 \([0,12]\) 上恰好是<b>半个周期全为正</b>，其平均值为 \(\dfrac{2}{\pi}\times25=15.92\,\mathrm{W}\).若业务窗口取一个<b>完整</b>周期 \([0,24]\)，正弦项平均值为 0，平均功耗回落到 \(45\,\mathrm{W}\).<b>"平均"依赖于区间</b>，这是机房容量规划中极易被忽略的一点.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.6　变密度轻量化件的质量核算</div>
+  <p class="stmt">某铝合金（\(
+ho_0=2700\ \mathrm{kg/m^3}\)）结构件为截面积 \(A=1.6	\times10^{-3}\ \mathrm{m^2}\)、高 \(0.1\ \mathrm{m}\) 的实心圆柱.为减重，设计成"相对密度随高度线性增大"的渐变结构：\(\varphi(x)=0.25+2.5x\)（\(0\le x\le0.1\)，\(\varphi\) 无量纲）.求构件质量，并与实心件比较，计算减重百分比.</p>
+  <p class="sol"><span class="mk">解</span>质量关于高度区间可加.在 \([x,x+\mathrm{d}x]\) 内相对密度近似为常数 \(\varphi(x)\)，故<b>质量微元</b></p>
+  \[\mathrm{d}m=\rho_0\,\varphi(x)\,A\,\mathrm{d}x=2700\times(0.25+2.5x)\times1.6\times10^{-3}\,\mathrm{d}x=4.32\,(0.25+2.5x)\,\mathrm{d}x .\]
+  <p>于是</p>
+  \[m=4.32\int_0^{0.1}(0.25+2.5x)\,\mathrm{d}x
+    =4.32\Bigl[0.25x+1.25x^2\Bigr]_0^{0.1}
+    =4.32\,(0.025+0.0125)=4.32\times0.0375=0.162\ \mathrm{kg}.\]
+  <p>实心件质量为 \(2700\times1.6\times10^{-3}\times0.1=0.432\,\mathrm{kg}\).<b>减重 \(\dfrac{0.432-0.162}{0.432}=62.5\%\)</b>，而顶端（受力较大处）仍保留 \(50\%\) 实体率.</p>
+  <p class="muted">"密度随位置变化"的量无法用初等公式一步算出，但只要在微小段上把它<b>冻结成常数</b>，就回到了初等公式.这就是微元法的思维精髓：<b>局部以简代繁，整体积分求和</b>.</p>
+</div>
+
+<div class="note"><b>微元法三步口诀：</b>① <b>选变量定范围</b>——挑一个自变量 \(x\)，写出积分区间 \([a,b]\)；② <b>取小段写微元</b>——在 \([x,x+\mathrm{d}x]\) 上用初等公式（矩形、圆柱、扇形、直线段）写出 \(\mathrm{d}U=f(x)\mathrm{d}x\)，并检查误差是否高阶；③ <b>积分得整体</b>——\(U=\displaystyle\int_a^b f(x)\mathrm{d}x\).<br>
+本章后面所有公式，无一例外都是这三步的产物.<b>不要死记公式，要记住怎么现推.</b></div>
+
+    <!-- ============ §6.2 ============ -->
+<div class="labx">
+  <div class="lab">旋转体体积 · 圆盘法</div>
+  <div class="desc">以 x 轴为轴旋转 (\(y=\sqrt{x}\)) 得旋转体；n 个圆盘体积之和逼近总体积.</div>
+  <canvas id="cv_p62" width="720" height="320"></canvas>
+  <div class="ctrl"><label>矩形数 n = <span id="vo_p62">6</span></label>
+  <input type="range" id="rg_p62" min="1" max="40" step="1" value="6"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p62'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p62');
+    var vo=document.getElementById('vo_p62');
+    var W=cv.width,H=cv.height;
+    var xmin=0,xmax=4,ymin=-0.2,ymax=2.2;
+    function f(x){ return Math.sqrt(x); }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var n=parseInt(rg.value,10); if(vo)vo.textContent=n;
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(15,110,86,.08)';ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv++){if(gxv===0)continue;ctx.beginPath();ctx.moveTo(X(gxv),0);ctx.lineTo(X(gxv),H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv++){if(gyv===0)continue;ctx.beginPath();ctx.moveTo(0,Y(gyv));ctx.lineTo(W,Y(gyv));ctx.stroke();}
+      ctx.strokeStyle='rgba(15,110,86,.25)';ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.moveTo(X(0),0);ctx.lineTo(X(0),H);ctx.moveTo(0,Y(0));ctx.lineTo(W,Y(0));ctx.stroke();
+      var dx=(xmax-xmin)/n;
+      ctx.fillStyle='rgba(94,234,212,.18)';ctx.strokeStyle='rgba(94,234,212,.7)';ctx.lineWidth=1.5;
+      for(var i=0;i<n;i++){var xa=xmin+i*dx, ya=f(xa);
+        if(!isFinite(ya))continue;
+        var yb=Math.max(0,ya);
+        var wpx=Math.max(1,X(xa+dx)-X(xa)-1);
+        ctx.fillRect(X(xa),Y(yb),wpx,Y(0)-Y(yb));
+        ctx.strokeRect(X(xa),Y(yb),wpx,Y(0)-Y(yb));
+      }
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();var fi=true;
+      for(var px=0;px<=W;px++){var x=xmin+px/W*(xmax-xmin);var y=f(x);
+        if(!isFinite(y)){fi=true;continue;} var py=Y(y);
+        if(fi){ctx.moveTo(px,py);fi=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 无人驾驶轮胎接地印痕的压力分布与合力</summary>
+<p><b>场景：</b> 雨夜，一辆 \(2100\ \mathrm{kg}\) 的 L4 无人驾驶物流车驶上湿滑匝道，2 秒后就要全力制动.此刻系统最想算清一个看不见的量：轮胎接地印痕里哪一点压强最大——算错一点，刹车响应就慢半拍.接触力学给出的答案是，压力并不均匀，而是呈抛物线（赫兹型）分布</p>
+\[p(x)=p_{\max}\Bigl(1-\frac{x^{2}}{a^{2}}\Bigr),\qquad -a\le x\le a .\]
+<p>线控制动系统需要知道 \(p_{\max}\)——因为峰值压力决定了胎面磨损速率与可用附着力上限.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>整车质量</td><td>\(M\)</td><td>2100 kg</td></tr>
+<tr><td>单轮垂直载荷</td><td>\(F\)</td><td>\(2100\times9.8/4=5145\ \mathrm{N}\)</td></tr>
+<tr><td>印痕半长</td><td>\(a\)</td><td>0.08 m</td></tr>
+<tr><td>印痕宽度</td><td>\(b\)</td><td>0.19 m</td></tr>
+</table>
+<p class="sol"> 在 \([x,x+\mathrm{d}x]\) 上压强近似为常数，该窄条面积 \(b\,\mathrm{d}x\)，故<b>压力微元</b> \(\mathrm{d}F=p(x)\,b\,\mathrm{d}x\).累加得</p>
+\[F=b\,p_{\max}\int_{-a}^{a}\Bigl(1-\frac{x^{2}}{a^{2}}\Bigr)\mathrm{d}x
+ =b\,p_{\max}\Bigl(2a-\frac{2a}{3}\Bigr)=\frac{4}{3}ab\,p_{\max}.\]
+<p>反解并代入数据：</p>
+\[p_{\max}=\frac{3F}{4ab}=\frac{3\times5145}{4\times0.08\times0.19}
+ =\frac{15435}{0.0608}=2.539\times10^{5}\ \mathrm{Pa}=0.254\ \mathrm{MPa}.\]
+<p>而若错误地按均匀分布估算，\(p_{\text{均}}=\dfrac{F}{2ab}=\dfrac{5145}{0.0304}=1.692\times10^{5}\ \mathrm{Pa}=0.169\ \mathrm{MPa}\)，恰好只有峰值的 \(2/3\).</p>
+<p><b>工程结论：</b> 峰值压力比平均压力高出 \(50\%\)，且恰与该车推荐冷态胎压 \(0.25\ \mathrm{MPa}\) 吻合——这就是"胎压 = 接地峰值压强"这一经验法则的积分依据.无人驾驶车的附着力估计器若沿用均匀分布假设，会系统性低估中心区域的滑移趋势，在湿滑路面上导致 ABS 介入滞后.工程上因此在胎内布置 5 点式压电传感阵列，用离散采样值反算 \(p_{\max}\)，本质上就是在做一次数值积分的逆问题.</p>
+<p class="cn-point">抛物线积分给出"峰值是平均的 \(\dfrac32\) 倍"，ABS 按 \(0.254\ \mathrm{MPa}\) 而非 \(0.169\ \mathrm{MPa}\) 估附着力上限——多出的这 50% 就是雨天刹停距离里留给安全的余量.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch6-tire" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>车轮载荷 F <input type="range" id="ch6-tire-f" min="3000" max="7000" step="50" value="5145" style="width:220px;accent-color:#0F6E56"> <b id="ch6-tire-f-t"></b> N</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch6-tire-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch6-tire'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var a=0.08, b=0.19; // 半长 0.08m, 横向宽 0.19m
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=58,mR=14,mT=24,mB=36,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var F=+document.getElementById('ch6-tire-f').value;
+      var pMax=3*F/(4*a*b), pAvg=F/(2*a*b); // Pa
+      function X(x){ return mL + (x+a)/(2*a)*pW; }
+      function Y(p){ return mT+pH - p/1.2e6*pH; }
+      // 网格
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 压力分布填充
+      ctx.fillStyle='rgba(15,110,86,0.25)';
+      ctx.beginPath();ctx.moveTo(X(-a),Y(0));
+      for(var x=-a;x<=a;x+=a/60) ctx.lineTo(X(x),Y(pMax*(1-x*x/(a*a))));
+      ctx.lineTo(X(a),Y(0));ctx.closePath();ctx.fill();
+      // 平均压力虚线
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(mL,Y(pAvg));ctx.lineTo(W-mR,Y(pAvg));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#0e7c7c';ctx.font='bold 10px sans-serif';ctx.textAlign='left';
+      ctx.fillText('平均压力 p_avg',mL+4,Y(pAvg)-4);
+      // 曲线
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var x2=-a;x2<=a;x2+=a/120){ var xx=X(x2),yy=Y(pMax*(1-x2*x2/(a*a))); x2===-a?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('1.2',mL-6,Y(1.2e6)); ctx.fillText('0',mL-6,Y(0));
+      ctx.textAlign='center';ctx.fillText('-a',X(-a),mT+pH+15); ctx.fillText('+a',X(a),mT+pH+15);
+      ctx.fillText('x（滚动方向）',W-mR+14,mT+pH+15);
+      ctx.save();ctx.translate(14,(mT+pH)/2);ctx.rotate(-Math.PI/2);
+      ctx.textAlign='center';ctx.fillText('p(x) / MPa',0,0);ctx.restore();
+      // 数值
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('F = '+(F/1000).toFixed(1)+' kN   峰值 '+(pMax/1e6).toFixed(3)+' MPa   平均 '+(pAvg/1e6).toFixed(3)+' MPa',mL,mT+13);
+      var out=document.getElementById('ch6-tire-out');
+      out.textContent = '峰值/平均 = '+(pMax/pAvg).toFixed(2)+'（恰为 3/2，抛物线分布的积分结果）| '+(F<=4200?'轻载：胎压低，印痕面积需扩大':'重载：峰值逼近胎压上限，附着力估计需按峰值修正');
+    }
+    document.getElementById('ch6-tire-f').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 光刻胶旋涂：从径向厚度分布算出成膜用量</summary>
+<p><b>场景：</b> 无尘车间里，机械手把一片 12 英寸晶圆送上匀胶机，旋涂头几秒内就把 \(2\ \mathrm{mL}\) 光刻胶甩遍全片——可工程师盯着膜厚仪皱起眉头：为什么边缘总比中心厚一圈？离心力沿半径越甩越强、黏性阻力又跟不上，固化后的膜厚便沿半径缓缓爬升，实测拟合为</p>
+\[h(r)=h_{0}\Bigl(1+0.12\,\frac{r^{2}}{R^{2}}\Bigr),\qquad h_{0}=80\ \mathrm{nm}.\]
+<p>需要回答两个问题：整片晶圆真正成膜的胶量是多少？膜厚均匀性是否满足 EUV 工艺要求？</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>晶圆半径</td><td>\(R\)</td><td>0.15 m</td></tr>
+<tr><td>中心膜厚</td><td>\(h_0\)</td><td>80 nm</td></tr>
+<tr><td>边缘增厚系数</td><td>—</td><td>0.12</td></tr>
+<tr><td>单次滴胶量</td><td>\(V_0\)</td><td>2.0 mL</td></tr>
+</table>
+<p class="sol"> 膜厚只依赖半径，故取<b>圆环微元</b>：半径 \(r\)、宽 \(\mathrm{d}r\) 的细环面积为 \(2\pi r\,\mathrm{d}r\)，其上厚度近似为常数 \(h(r)\)，于是体积微元</p>
+\[\mathrm{d}V=h(r)\cdot 2\pi r\,\mathrm{d}r .\]
+\[V=2\pi h_{0}\int_{0}^{R}\Bigl(r+\frac{0.12\,r^{3}}{R^{2}}\Bigr)\mathrm{d}r
+ =2\pi h_{0}\Bigl(\frac{R^{2}}{2}+\frac{0.12R^{2}}{4}\Bigr)=2\pi h_{0}R^{2}\times0.53 .\]
+<p>代入 \(h_0=8\times10^{-8}\ \mathrm{m}\)、\(R^2=0.0225\ \mathrm{m^2}\)：</p>
+\[V=2\pi\times8\times10^{-8}\times0.0225\times0.53=5.99\times10^{-9}\ \mathrm{m^3}=5.99\ \mathrm{\mu L}.\]
+<p>平均膜厚 \(\bar h=\dfrac{V}{\pi R^{2}}=\dfrac{5.99\times10^{-9}}{0.070686}=8.48\times10^{-8}\ \mathrm{m}=84.8\ \mathrm{nm}\)，与直接对面积加权的结果 \(h_0(1+0.12/2)=84.8\ \mathrm{nm}\) 完全一致.边缘最厚处 \(89.6\ \mathrm{nm}\)，非均匀度</p>
+\[\frac{89.6-80.0}{84.8}=11.3\% .\]
+<p><b>工程结论：</b> 一次滴胶 \(2\ \mathrm{mL}\)，最终成膜仅 \(6\ \mathrm{\mu L}\)，利用率只有 \(0.3\%\)——其余全被甩出并回收，这是光刻工序耗材成本的主要来源.更关键的是 \(11.3\%\) 的厚度不均：EUV 光刻要求膜厚波动小于 \(\pm1\%\)，故必须通过多段变速旋涂（先低速铺展、再高速甩薄、末段回速整平）把二次项系数从 \(0.12\) 压到 \(0.01\) 以下.<b>注意本例的关键抉择：由于厚度只随 \(r\) 变化，选"圆环"而非"方格"作微元，一个一元积分就解决了本该是二重积分的问题.</b>选对微元的形状，往往比会算积分更重要.</p>
+<p class="cn-point">一个圆环微元 \(2\pi r\,\mathrm{d}r\) 把本该二重积分的问题降成一行一元积分，算出的 \(11.3\%\) 厚度偏差直指 EUV 光刻 \(\pm1\%\) 的工艺红线——匀胶那几秒里算得准不准，最后都落在国产芯片的良率上.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch6-resist" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>中心膜厚 h₀ <input type="range" id="ch6-resist-h0" min="60" max="110" step="1" value="80" style="width:140px;accent-color:#0F6E56"> <b id="ch6-resist-h0-t"></b> nm</label>
+<label>不均系数 k <input type="range" id="ch6-resist-k" min="0" max="0.3" step="0.01" value="0.12" style="width:140px;accent-color:#0F6E56"> <b id="ch6-resist-k-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch6-resist-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch6-resist'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var R=0.15;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=58,mR=14,mT=24,mB=36,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var h0=+document.getElementById('ch6-resist-h0').value; // nm
+      var k=+document.getElementById('ch6-resist-k').value;
+      function h(r){ return h0*(1+k*r*r/(R*R)); }
+      // 环微元示意：一条竖直的细条填充（径向截面）
+      ctx.fillStyle='rgba(15,110,86,0.22)';
+      ctx.beginPath();ctx.moveTo(mL,Y(0));
+      for(var r=0;r<=R;r+=R/100) ctx.lineTo(X(r),Y(h(r)));
+      ctx.lineTo(X(R),Y(0));ctx.closePath();ctx.fill();
+      // 均匀厚度参考线
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(mL,Y(h0));ctx.lineTo(W-mR,Y(h0));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#0e7c7c';ctx.font='bold 10px sans-serif';ctx.textAlign='left';
+      ctx.fillText('均匀假设 h₀',mL+4,Y(h0)-4);
+      // 曲线
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var r2=0;r2<=R;r2+=R/150){ var xx=X(r2),yy=Y(h(r2)); r2===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('h₀',mL-6,Y(h0)); ctx.fillText('0',mL-6,Y(0));
+      ctx.textAlign='center';ctx.fillText('R=0.15 m',X(R),mT+pH+15);
+      ctx.fillText('r',W-mR+10,mT+pH+15);
+      ctx.save();ctx.translate(14,(mT+pH)/2);ctx.rotate(-Math.PI/2);
+      ctx.textAlign='center';ctx.fillText('膜厚 h(r) / nm',0,0);ctx.restore();
+      // 数值：V = π h0 R² (1+k/2)
+      var V=Math.PI*h0*1e-9*R*R*(1+k/2)*1e6; // μL
+      var V0=Math.PI*h0*1e-9*R*R*1e6;
+      var dev=(V-V0)/V0*100;
+      var hEdge=h(R);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('h₀ = '+h0.toFixed(0)+' nm   k = '+k.toFixed(2)+'   成膜量 V = '+V.toFixed(2)+' μL',mL,mT+13);
+      var out=document.getElementById('ch6-resist-out');
+      out.textContent = '比均匀假设多 '+(dev).toFixed(1)+'%  |  边缘膜厚 '+hEdge.toFixed(1)+' nm，中心 '+h0.toFixed(0)+' nm，不均 '+((hEdge-h0)/h0*100).toFixed(1)+'%'+(k>0.12?'——EUV 要求 <±1%，必须多段变速旋涂':'');
+    }
+    document.getElementById('ch6-resist-h0').addEventListener('input', draw);
+    document.getElementById('ch6-resist-k').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s061" data-ch="6" data-n="5"></div>
+<h2 id="s062"><span class="num">§6.2</span>几何学中的应用</h2>
+    
+<div class="ex"><div class="lab">引例一　载人飞船返回舱能装多大：旋转体体积的工程计算</div>
+  <p class="stmt">载人飞船返回舱是典型的"钟形"回转体.设某型返回舱的外形可近似为：以对称轴为 \(x\) 轴，从大底（\(x=0\)）到舱顶（\(x=2.0\,\mathrm{m}\)），母线为直线</p>
+  \[r(x)=1.25-0.25x\quad(\mathrm{m}),\qquad 0\le x\le 2.0,\]
+  <p>即大底半径 \(1.25\,\mathrm{m}\)（直径 \(2.5\,\mathrm{m}\)）、顶部半径 \(0.75\,\mathrm{m}\).舱顶再加一个底半径 \(0.75\,\mathrm{m}\)、高 \(0.30\,\mathrm{m}\) 的球冠盖.求返回舱外形总容积.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：主体（旋转体）.</b>垂直于 \(x\) 轴用平面切开，截面是半径 \(r(x)\) 的圆，故体积微元为一个<b>圆盘</b></p>
+  \[\mathrm{d}V=\pi r^2(x)\,\mathrm{d}x=\pi(1.25-0.25x)^2\,\mathrm{d}x .\]
+  <p>令 \(u=1.25-0.25x\)，则 \(\mathrm{d}x=-4\,\mathrm{d}u\)，当 \(x:0\to2\) 时 \(u:1.25\to0.75\).于是</p>
+  \[V_1=4\pi\int_{0.75}^{1.25}u^2\,\mathrm{d}u=\frac{4\pi}{3}\bigl(1.25^3-0.75^3\bigr)
+   =\frac{4\pi}{3}(1.953125-0.421875)=\frac{4\pi}{3}\times1.53125=6.414\ \mathrm{m}^3 .\]
+  <p><b>第二步：球冠盖.</b>球冠体积 \(V_2=\dfrac{\pi h}{6}(3a^2+h^2)\)，代入 \(a=0.75,\ h=0.30\)：</p>
+  \[V_2=\frac{\pi\times0.30}{6}\bigl(3\times0.5625+0.09\bigr)=0.05\pi\times1.7775=0.279\ \mathrm{m}^3 .\]
+  <p><b>总容积</b> \(V=6.414+0.279=6.693\,\mathrm{m}^3\).</p>
+  <p><b>数值校核（中矩形法，4 段）</b>：</p>
+  <table class="dt">
+    <tr><th>子区间</th><th>中点 \(x_i^*\)</th><th>\(r(x_i^*)\)（m）</th><th>\(A=\pi r^2\)（m²）</th><th>\(A\cdot\Delta x\)（m³）</th></tr>
+    <tr><td>[0, 0.5]</td><td>0.25</td><td>1.1875</td><td>4.4297</td><td>2.2148</td></tr>
+    <tr><td>[0.5, 1.0]</td><td>0.75</td><td>1.0625</td><td>3.5464</td><td>1.7732</td></tr>
+    <tr><td>[1.0, 1.5]</td><td>1.25</td><td>0.9375</td><td>2.7612</td><td>1.3806</td></tr>
+    <tr><td>[1.5, 2.0]</td><td>1.75</td><td>0.8125</td><td>2.0739</td><td>1.0370</td></tr>
+    <tr><td colspan="4">合计（近似值）</td><td>6.4056</td></tr>
+  </table>
+  <p>与精确值 \(6.4139\,\mathrm{m}^3\) 相比，仅 4 段中矩形的相对误差已只有 \(0.13\%\).扣除防热层、座椅与设备后，实际乘员舱可用容积约 \(6\,\mathrm{m}^3\)，与"三人乘组"的工程指标吻合.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　晶圆抛光要磨掉多大面积：旋转曲面侧面积初探</div>
+  <p class="stmt">12 英寸硅晶圆直径 \(300\,\mathrm{mm}\)，边缘需倒成圆弧形以防崩边.设倒角截面为四分之一圆弧，半径 \(\rho=0.3\,\mathrm{mm}\)，绕晶圆中心轴（距轴 \(R_0=149.7\,\mathrm{mm}\) 处）旋转一周形成环面带.求该倒角带的表面积.</p>
+  <p class="sol"><span class="mk">解</span>由后面的定理 6.6，旋转曲面侧面积微元为 \(\mathrm{d}S=2\pi\,y\,\mathrm{d}s\)，其中 \(y\) 是到旋转轴的距离，\(\mathrm{d}s\) 是母线弧长微元.由于 \(\rho\ll R_0\)，可取 \(y\approx R_0\) 为常数，于是</p>
+  \[S\approx 2\pi R_0\int \mathrm{d}s=2\pi R_0\cdot\frac{\pi\rho}{2}
+   =2\pi\times149.7\times\frac{\pi\times0.3}{2}=2\pi\times149.7\times0.4712=443.2\ \mathrm{mm}^2 .\]
+  <p>相比晶圆单面面积 \(\pi\times150^2=70686\,\mathrm{mm}^2\)，倒角带仅占 \(0.63\%\)，却是抛光工艺中缺陷率最高的区域.</p>
+  <p>本节将系统建立<b>面积、体积、弧长、旋转曲面面积</b>四类几何量的微元公式.</p>
+</div>
+
+<h3>一、平面图形的面积</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.2</span>平面图形面积的三种形式</div>
+  <p><b>（1）直角坐标（X 型区域）</b>：由 \(y=f(x)\)（上）、\(y=g(x)\)（下）及 \(x=a,x=b\) 围成</p>
+  \[\mathrm{d}A=\bigl[f(x)-g(x)\bigr]\mathrm{d}x,\qquad
+    A=\int_a^b\bigl[f(x)-g(x)\bigr]\mathrm{d}x .\]
+  <p><b>（Y 型区域）</b>：由 \(x=\varphi(y)\)（右）、\(x=\psi(y)\)（左）及 \(y=c,y=d\) 围成</p>
+  \[A=\int_c^d\bigl[\varphi(y)-\psi(y)\bigr]\mathrm{d}y .\]
+  <p><b>（2）参数方程</b>：曲边 \(x=x(t),\,y=y(t)\)，当 \(t\) 从 \(\alpha\) 到 \(\beta\) 时点沿曲线扫过图形，则由 \(\mathrm{d}x=x'(t)\,\mathrm{d}t\) 得</p>
+  \[A=\Bigl|\int_{\alpha}^{\beta}y(t)\,x'(t)\,\mathrm{d}t\Bigr| .\]
+  <p><b>（3）极坐标</b>：曲边扇形 \(\rho=\rho(\theta),\,\alpha\le\theta\le\beta\)</p>
+  \[\mathrm{d}A=\frac12\rho^2(\theta)\,\mathrm{d}\theta,\qquad
+    A=\frac12\int_{\alpha}^{\beta}\rho^2(\theta)\,\mathrm{d}\theta .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>三个公式用的是同一套路——在小区间上把待求的量<b>夹在两个标准图形之间</b>（矩形或圆扇形），再用被积函数的连续性说明这条"夹缝"是 \(o(\Delta x)\)，最后由定理 6.1 化为积分.关键是"夹逼"这一步是<b>精确的不等式</b>，而不是含糊的"近似等于".</p>
+<p><span class="stp">（1）直角坐标 X 型区域.</span>记 \(h(x)=f(x)-g(x)\ge0\)，它在 \([a,b]\) 上连续.面积对区间显然可加：把图形沿铅直线切开，两块面积之和等于整块.</p>
+<p>取 \([x,x+\Delta x]\subseteq[a,b]\)，设 \(\Delta A\) 为这一窄条的面积.由于 \(h\) 连续，它在闭区间 \([x,x+\Delta x]\) 上取得最小值 \(m\) 与最大值 \(M\)（定理 2.20）.窄条<b>包含</b>宽 \(\Delta x\)、高 \(m\) 的矩形，又<b>被</b>宽 \(\Delta x\)、高 \(M\) 的矩形所包含，故</p>
+\[m\,\Delta x\le\Delta A\le M\,\Delta x .\]
+<p>于是</p>
+\[\bigl|\Delta A-h(x)\Delta x\bigr|\le(M-m)\Delta x .\]
+<p>由 \(h\) 在 \(x\) 处连续，\(\Delta x\to0\) 时 \(m\) 与 \(M\) 都趋于 \(h(x)\)，故 \(M-m\to0\)，从而 \(\Delta A-h(x)\Delta x=o(\Delta x)\).这正说明"把窄条看成矩形"所犯的错误是比 \(\Delta x\) 更高阶的无穷小.于是面积微元 \(\mathrm{d}A=[f(x)-g(x)]\mathrm{d}x\)，由定理 6.1，</p>
+\[A=\int_a^b\bigl[f(x)-g(x)\bigr]\mathrm{d}x .\]
+<p>Y 型区域只需把 \(x,y\) 的角色互换，逐字重复上面的论证.</p>
+<p><b>符号问题：</b>若图形有部分位于 \(x\) 轴下方，把整个图形向上平移 \(c\) 个单位（\(c\) 充分大使 \(g+c\ge0\)）.平移不改变面积，而 \((f+c)-(g+c)=f-g\) 也没变，故公式对 \(f,g\) 的正负号没有限制.</p>
+<p><span class="stp">（2）参数方程.</span>设当 \(t\) 从 \(\alpha\) 变到 \(\beta\) 时，点 \(\bigl(x(t),y(t)\bigr)\) 沿曲线扫过图形，此时 \(x=x(t)\) 单调地从 \(x(\alpha)\) 变到 \(x(\beta)\).由（1），以该曲边为顶的曲边梯形面积为 \(\Bigl|\displaystyle\int_{x(\alpha)}^{x(\beta)}y\,\mathrm{d}x\Bigr|\).在这个定积分中作换元 \(x=x(t)\)（\(x(t)\) 有连续导数，第 5 章定积分换元法），有 \(\mathrm{d}x=x'(t)\,\mathrm{d}t\)，积分限相应换成 \(\alpha,\beta\)，即</p>
+\[A=\left|\int_{\alpha}^{\beta}y(t)\,x'(t)\,\mathrm{d}t\right| .\]
+<p>绝对值是为了照顾 \(t\) 增大时 \(x\) 反而减小（积分带负号）的情形.</p>
+<p><span class="stp">（3）极坐标曲边扇形.</span>取角度 \([\theta,\theta+\Delta\theta]\)，设 \(\rho\) 在其上的最小值、最大值为 \(m,M\).这一小块曲边扇形<b>包含</b>半径为 \(m\) 的圆扇形，又<b>被</b>半径为 \(M\) 的圆扇形所包含.圆扇形面积为 \(\dfrac12 r^{2}\Delta\theta\)，故</p>
+\[\frac12 m^{2}\Delta\theta\le\Delta A\le\frac12 M^{2}\Delta\theta .\]
+<p>于是</p>
+\[\left|\Delta A-\frac12\rho^{2}(\theta)\Delta\theta\right|\le\frac12\bigl(M^{2}-m^{2}\bigr)\Delta\theta .\]
+<p>\(\rho\) 连续，故 \(\Delta\theta\to0\) 时 \(m,M\) 都趋于 \(\rho(\theta)\)，\(M^{2}-m^{2}\to0\)，误差是 \(o(\Delta\theta)\).于是 \(\mathrm{d}A=\dfrac12\rho^{2}(\theta)\,\mathrm{d}\theta\)，由定理 6.1，</p>
+\[A=\frac12\int_{\alpha}^{\beta}\rho^{2}(\theta)\,\mathrm{d}\theta .\]
+<p><b>注</b>　这里必须拿"圆扇形"而不是"三角形"去夹：只有圆扇形才能给出上面那一对<b>精确</b>的包含关系，从而使误差估计干净利落.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>选 \(x\) 还是选 \(y\)？</b>看"竖直切"与"水平切"哪个只需<b>一个</b>积分式.若竖直切时上边界或下边界中途换了函数，就改用水平切（见例 6.8）.这一步选对，计算量往往相差数倍.</div>
+
+<div class="ex"><div class="lab">例 6.7　基础题：抛物线与直线围成的面积</div>
+  <p class="stmt">求 \(y=x^2\) 与 \(y=x\) 所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>解 \(x^2=x\) 得交点 \(x=0,1\).在 \((0,1)\) 内 \(x\gt x^2\)，故直线在上.面积微元 \(\mathrm{d}A=(x-x^2)\mathrm{d}x\)，</p>
+  \[A=\int_0^1(x-x^2)\,\mathrm{d}x=\Bigl[\frac{x^2}{2}-\frac{x^3}{3}\Bigr]_0^1=\frac12-\frac13=\frac16 .\]
+</div>
+
+<div class="ex"><div class="lab">例 6.8　考研经典：选对积分变量可省去分段</div>
+  <p class="stmt">求抛物线 \(y^2=2x\) 与直线 \(y=x-4\) 所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>联立 \(y^2=2(y+4)\)，即 \(y^2-2y-8=0\)，得 \(y=4\) 或 \(y=-2\)，对应交点 \((8,4)\) 与 \((2,-2)\).</p>
+  <p><b>若选 \(x\) 为积分变量</b>：当 \(0\le x\le2\) 时上下边界都是抛物线的两支 \(y=\pm\sqrt{2x}\)；当 \(2\le x\le8\) 时下边界换成直线 \(y=x-4\).必须<b>分两段</b>积分，麻烦.</p>
+  <p><b>改选 \(y\) 为积分变量</b>：水平切开，右边界恒为直线 \(x=y+4\)，左边界恒为抛物线 \(x=\dfrac{y^2}{2}\)，一段搞定.面积微元</p>
+  \[\mathrm{d}A=\Bigl[(y+4)-\frac{y^2}{2}\Bigr]\mathrm{d}y,\]
+  \[A=\int_{-2}^{4}\Bigl(y+4-\frac{y^2}{2}\Bigr)\mathrm{d}y
+   =\Bigl[\frac{y^2}{2}+4y-\frac{y^3}{6}\Bigr]_{-2}^{4}
+   =\Bigl(8+16-\frac{64}{6}\Bigr)-\Bigl(2-8+\frac{-8}{6}\Bigr).\]
+  <p>即 \(A=\Bigl(24-\dfrac{32}{3}\Bigr)-\Bigl(-6+\dfrac{4}{3}\Bigr)=\dfrac{40}{3}+\dfrac{14}{3}=18\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.9　摆线一拱下的面积</div>
+  <p class="stmt">求摆线 \(x=a(t-\sin t),\ y=a(1-\cos t)\ (a\gt0)\) 的一拱（\(0\le t\le2\pi\)）与 \(x\) 轴所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>摆线是半径 \(a\) 的圆沿直线滚动时圆周上一点的轨迹，一拱对应 \(x\) 从 \(0\) 到 \(2\pi a\).由 \(\mathrm{d}x=a(1-\cos t)\,\mathrm{d}t\)，面积微元</p>
+  \[\mathrm{d}A=y\,\mathrm{d}x=a(1-\cos t)\cdot a(1-\cos t)\,\mathrm{d}t=a^2(1-\cos t)^2\,\mathrm{d}t .\]
+  <p>展开 \((1-\cos t)^2=1-2\cos t+\cos^2 t\)，在 \([0,2\pi]\) 上分别积分：\(\displaystyle\int_0^{2\pi}1\,\mathrm{d}t=2\pi\)，\(\displaystyle\int_0^{2\pi}\cos t\,\mathrm{d}t=0\)，\(\displaystyle\int_0^{2\pi}\cos^2 t\,\mathrm{d}t=\pi\).故</p>
+  \[A=a^2(2\pi-0+\pi)=3\pi a^2 .\]
+  <p class="muted"><b>漂亮的结论：</b>摆线一拱下的面积恰为滚动圆面积 \(\pi a^2\) 的 <b>3 倍</b>.伽利略曾用称重法猜测这个比值，直到微积分诞生才被严格证明.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.10　心形线围成的面积</div>
+  <p class="stmt">求心形线 \(\rho=a(1+\cos\theta)\ (a\gt0)\) 所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>心形线关于极轴对称，故只算上半部分（\(0\le\theta\le\pi\)）再乘 2：</p>
+  \[A=2\times\frac12\int_0^{\pi}a^2(1+\cos\theta)^2\,\mathrm{d}\theta
+   =a^2\int_0^{\pi}\bigl(1+2\cos\theta+\cos^2\theta\bigr)\mathrm{d}\theta .\]
+  <p>逐项：\(\displaystyle\int_0^{\pi}\mathrm{d}\theta=\pi\)，\(\displaystyle\int_0^{\pi}2\cos\theta\,\mathrm{d}\theta=0\)，\(\displaystyle\int_0^{\pi}\cos^2\theta\,\mathrm{d}\theta=\frac{\pi}{2}\).故</p>
+  \[A=a^2\Bigl(\pi+0+\frac{\pi}{2}\Bigr)=\frac{3\pi a^2}{2}.\]
+  <p class="muted">心形线是雷达天线"心形方向图"的数学原型：单指向性麦克风的拾音范围也常用 \(\rho=a(1+\cos\theta)\) 描述，此面积正比于其有效拾音区域.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.11　星形线（内摆线）围成的面积</div>
+  <p class="stmt">求星形线 \(x=a\cos^3 t,\ y=a\sin^3 t\ (0\le t\le2\pi)\) 所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>图形关于两坐标轴都对称，取第一象限部分乘 4.第一象限对应 \(t\) 从 \(\dfrac{\pi}{2}\) 到 \(0\)（此时 \(x\) 从 0 增到 \(a\)）.由 \(\mathrm{d}x=-3a\cos^2 t\sin t\,\mathrm{d}t\)，</p>
+  \[A=4\int_{\pi/2}^{0}a\sin^3 t\cdot\bigl(-3a\cos^2 t\sin t\bigr)\mathrm{d}t
+   =12a^2\int_0^{\pi/2}\sin^4 t\cos^2 t\,\mathrm{d}t .\]
+  <p>由华里士（Wallis）公式 \(\displaystyle\int_0^{\pi/2}\sin^4 t\cos^2 t\,\mathrm{d}t=\frac{3\cdot1\cdot1}{6\cdot4\cdot2}\cdot\frac{\pi}{2}=\frac{\pi}{32}\)，故</p>
+  \[A=12a^2\cdot\frac{\pi}{32}=\frac{3\pi a^2}{8}.\]
+  <p class="muted">星形线是"直线段两端沿两垂直轴滑动"时的包络线，机械上是十字滑块联轴器的运动包络，数控加工的刀具补偿要用到它.</p>
+</div>
+
+<h3>二、体积</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.3</span>三类体积公式</div>
+  <p><b>（1）已知平行截面面积</b>：设立体夹在 \(x=a,x=b\) 之间，垂直于 \(x\) 轴的截面面积为连续函数 \(A(x)\)，则</p>
+  \[\mathrm{d}V=A(x)\,\mathrm{d}x,\qquad V=\int_a^b A(x)\,\mathrm{d}x .\]
+  <p><b>（2）圆盘法 / 垫圈法</b>（绕 \(x\) 轴）：曲边梯形 \(0\le g(x)\le y\le f(x)\) 绕 \(x\) 轴旋转，截面为圆环</p>
+  \[\mathrm{d}V=\pi\bigl[f^2(x)-g^2(x)\bigr]\mathrm{d}x .\]
+  <p><b>（3）柱壳法</b>（绕 \(y\) 轴）：区域 \(a\le x\le b,\ g(x)\le y\le f(x)\ (a\ge0)\) 绕 \(y\) 轴旋转.取 \([x,x+\mathrm{d}x]\) 上的窄条绕轴旋转，得一个<b>薄圆柱壳</b>：周长 \(2\pi x\)、高 \(f(x)-g(x)\)、厚 \(\mathrm{d}x\)，故</p>
+  \[\mathrm{d}V=2\pi x\bigl[f(x)-g(x)\bigr]\mathrm{d}x,\qquad
+    V=2\pi\int_a^b x\bigl[f(x)-g(x)\bigr]\mathrm{d}x .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>与面积一样，把薄片（或薄壳）的体积<b>夹在两个标准立体之间</b>——切片法用圆柱体夹，柱壳法用圆环柱夹——再用连续性说明夹缝是 \(o(\Delta x)\).</p>
+<p><span class="stp">（1）已知平行截面面积.</span>体积对区间可加：用垂直于 \(x\) 轴的平面把立体切开，两块体积之和等于整体.取薄片 \([x,x+\Delta x]\)，设 \(A\) 在其上的最小值、最大值为 \(m,M\).若薄片被夹在"以最小截面为底、高 \(\Delta x\) 的柱体"与"以最大截面为底、高 \(\Delta x\) 的柱体"之间（对旋转体、柱体，以及截面随 \(x\) 单调地"套进套出"的立体，这一夹逼都成立），则</p>
+\[m\,\Delta x\le\Delta V\le M\,\Delta x,\qquad\text{从而}\qquad \bigl|\Delta V-A(x)\Delta x\bigr|\le(M-m)\Delta x .\]
+<p>\(A\) 连续，故 \(\Delta x\to0\) 时 \(M-m\to0\)，即 \(\Delta V-A(x)\Delta x=o(\Delta x)\).由定理 6.1，</p>
+\[V=\int_a^b A(x)\,\mathrm{d}x .\]
+<p><b>注</b>　对截面形状变化毫无规律的一般立体，上述夹逼未必成立，那时 \(V=\displaystyle\int_a^b A(x)\mathrm{d}x\) 要靠重积分中"先切片、后累加"的富比尼定理来证明，属下册内容.工科常见的旋转体与柱体都在（2）（3）的范围内，夹逼是严格的.</p>
+<p><span class="stp">（2）圆盘法／垫圈法.</span>此时截面恰是圆环，</p>
+\[A(x)=\pi\bigl[f^{2}(x)-g^{2}(x)\bigr]\]
+<p>连续；而且夹逼确实成立：薄片包含"外半径 \(\min f\)、内半径 \(\max g\)"的圆环柱，被"外半径 \(\max f\)、内半径 \(\min g\)"的圆环柱所包含.代入（1）即得</p>
+\[\mathrm{d}V=\pi\bigl[f^{2}(x)-g^{2}(x)\bigr]\mathrm{d}x,\qquad V=\pi\int_a^b\bigl[f^{2}(x)-g^{2}(x)\bigr]\mathrm{d}x .\]
+<p><span class="stp">（3）柱壳法.</span>这一次不切片，而是把区域按 \(x\) 分成竖直窄条，窄条绕 \(y\) 轴旋转成一个薄圆柱壳.记 \(h=f-g\)，设它在 \([x,x+\Delta x]\) 上的最小值、最大值为 \(m,M\).这个壳包含"内半径 \(x\)、外半径 \(x+\Delta x\)、高 \(m\)"的圆环柱，被同样内外半径、高 \(M\) 的圆环柱所包含.圆环柱体积等于底面圆环面积乘高，而</p>
+\[\pi\bigl[(x+\Delta x)^{2}-x^{2}\bigr]=2\pi x\,\Delta x+\pi(\Delta x)^{2},\]
+<p>故</p>
+\[\bigl[2\pi x\Delta x+\pi(\Delta x)^{2}\bigr]m\le\Delta V\le\bigl[2\pi x\Delta x+\pi(\Delta x)^{2}\bigr]M .\]
+<p>由 \(h\) 连续得 \(m,M\to h(x)\)，又 \(\pi(\Delta x)^{2}=o(\Delta x)\)，于是</p>
+\[\Delta V=2\pi x\,h(x)\,\Delta x+o(\Delta x),\qquad \mathrm{d}V=2\pi x\bigl[f(x)-g(x)\bigr]\mathrm{d}x .\]
+<p>由定理 6.1，</p>
+\[V=2\pi\int_a^b x\bigl[f(x)-g(x)\bigr]\mathrm{d}x .\]
+<p><b>注</b>　柱壳法的价值在于：绕 \(y\) 轴旋转本"应该"对 \(y\) 积分，那就必须把 \(y=f(x)\) 反解成 \(x=\varphi(y)\)；柱壳法换个切法，直接对 \(x\) 积分，绕开了反解这道难关.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>圆盘法与柱壳法怎么选？</b>口诀：<b>切法要与旋转轴"配对"</b>.<br>
+· 绕 \(x\) 轴旋转 → 优先<b>垂直于 \(x\) 轴</b>切（圆盘法，积 \(\mathrm{d}x\)）；<br>
+· 绕 \(y\) 轴旋转 → 优先<b>平行于 \(y\) 轴</b>切（柱壳法，仍积 \(\mathrm{d}x\)，不必反解 \(x=x(y)\)）.<br>
+当曲线难以反解（如 \(y=x\mathrm{e}^{x}\)）时，<b>柱壳法几乎是唯一可行路径</b>，这是考研的高频考点.</div>
+
+<div class="ex"><div class="lab">例 6.12　椭球的体积</div>
+  <p class="stmt">求椭圆 \(\dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=1\) 绕 \(x\) 轴旋转所成旋转椭球的体积.</p>
+  <p class="sol"><span class="mk">解</span>由椭圆方程得 \(y^2=b^2\Bigl(1-\dfrac{x^2}{a^2}\Bigr)\).用圆盘法，</p>
+  \[V=\pi\int_{-a}^{a}b^2\Bigl(1-\frac{x^2}{a^2}\Bigr)\mathrm{d}x
+   =\pi b^2\Bigl[x-\frac{x^3}{3a^2}\Bigr]_{-a}^{a}
+   =\pi b^2\Bigl(2a-\frac{2a}{3}\Bigr)=\frac{4}{3}\pi a b^2 .\]
+  <p>当 \(a=b=R\) 时退化为球体积 \(\dfrac43\pi R^3\)，验证正确.</p>
+  <p class="muted">地球是一个 \(a=b=6378\,\mathrm{km}\)（赤道半径）、极半径 \(c=6357\,\mathrm{km}\) 的<b>扁旋转椭球</b>，其体积 \(\dfrac43\pi a^2c=1.0832\times10^{12}\,\mathrm{km}^3\).GPS 定位使用的 WGS-84 坐标系正是建立在这个椭球上的.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.13　考研经典：柱壳法与垫圈法互验</div>
+  <p class="stmt">求由 \(y=x^2\) 与 \(y=2x\) 所围区域绕 \(y\) 轴旋转所成立体的体积.</p>
+  <p class="sol"><span class="mk">解</span>交点：\(x^2=2x\Rightarrow x=0,2\)，对应 \(y=0,4\).在 \((0,2)\) 内 \(2x\gt x^2\).</p>
+  <p><b>解法一（柱壳法）</b>.取 \([x,x+\mathrm{d}x]\) 上的窄条，高为 \(2x-x^2\)，绕 \(y\) 轴转成薄壳：</p>
+  \[\mathrm{d}V=2\pi x\,(2x-x^2)\,\mathrm{d}x=2\pi(2x^2-x^3)\,\mathrm{d}x,\]
+  \[V=2\pi\int_0^2(2x^2-x^3)\,\mathrm{d}x
+   =2\pi\Bigl[\frac{2x^3}{3}-\frac{x^4}{4}\Bigr]_0^2
+   =2\pi\Bigl(\frac{16}{3}-4\Bigr)=2\pi\cdot\frac43=\frac{8\pi}{3}.\]
+  <p><b>解法二（垫圈法）</b>.水平切，对 \(y\in[0,4]\)，外半径为抛物线 \(x=\sqrt y\)，内半径为直线 \(x=\dfrac y2\)：</p>
+  \[V=\pi\int_0^4\Bigl[(\sqrt y)^2-\Bigl(\frac y2\Bigr)^2\Bigr]\mathrm{d}y
+   =\pi\int_0^4\Bigl(y-\frac{y^2}{4}\Bigr)\mathrm{d}y
+   =\pi\Bigl[\frac{y^2}{2}-\frac{y^3}{12}\Bigr]_0^4=\pi\Bigl(8-\frac{16}{3}\Bigr)=\frac{8\pi}{3}.\]
+  <p>两法结果一致.</p>
+  <p class="muted"><b>为什么必须掌握柱壳法？</b>把本题的 \(y=x^2\) 换成 \(y=x\mathrm{e}^{x}\)，垫圈法要求解出 \(x=x(y)\)（不可能用初等函数表示），而柱壳法照写不误：\(V=2\pi\displaystyle\int_0^1 x\cdot x\mathrm{e}^{x}\mathrm{d}x\)，分部积分即可.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.14　摆线一拱绕 \(x\) 轴的旋转体体积</div>
+  <p class="stmt">求摆线 \(x=a(t-\sin t),\ y=a(1-\cos t)\ (0\le t\le2\pi)\) 的一拱与 \(x\) 轴所围图形绕 \(x\) 轴旋转所成立体的体积.</p>
+  <p class="sol"><span class="mk">解</span>用圆盘法，\(V=\pi\displaystyle\int_0^{2\pi a}y^2\,\mathrm{d}x\).换为参数：\(y^2=a^2(1-\cos t)^2\)，\(\mathrm{d}x=a(1-\cos t)\mathrm{d}t\)，故</p>
+  \[V=\pi a^3\int_0^{2\pi}(1-\cos t)^3\,\mathrm{d}t .\]
+  <p>展开 \((1-\cos t)^3=1-3\cos t+3\cos^2 t-\cos^3 t\).在 \([0,2\pi]\) 上：</p>
+  \[\int_0^{2\pi}1\,\mathrm{d}t=2\pi,\quad
+    \int_0^{2\pi}\cos t\,\mathrm{d}t=0,\quad
+    \int_0^{2\pi}\cos^2 t\,\mathrm{d}t=\pi,\quad
+    \int_0^{2\pi}\cos^3 t\,\mathrm{d}t=0 .\]
+  <p>（后一个为零：\(\cos^3\) 在整周期上的积分因奇对称抵消.）于是</p>
+  \[V=\pi a^3(2\pi+3\pi)=5\pi^2 a^3 .\]
+</div>
+
+<div class="ex"><div class="lab">例 6.15　平行截面法：底为圆、截面为等边三角形的立体</div>
+  <p class="stmt">一立体以圆 \(x^2+y^2=a^2\) 为底，垂直于 \(x\) 轴的每个截面都是<b>等边三角形</b>.求其体积.</p>
+  <p class="sol"><span class="mk">解</span>这不是旋转体，必须用平行截面法.在 \(x\) 处，底边长为圆的竖直弦长 \(2y=2\sqrt{a^2-x^2}\).等边三角形面积为 \(\dfrac{\sqrt3}{4}(\text{边长})^2\)，故</p>
+  \[A(x)=\frac{\sqrt3}{4}\bigl(2\sqrt{a^2-x^2}\bigr)^2=\sqrt3\,(a^2-x^2).\]
+  <p>体积微元 \(\mathrm{d}V=A(x)\,\mathrm{d}x\)，积分</p>
+  \[V=\sqrt3\int_{-a}^{a}(a^2-x^2)\,\mathrm{d}x
+   =\sqrt3\Bigl[a^2x-\frac{x^3}{3}\Bigr]_{-a}^{a}
+   =\sqrt3\Bigl(2a^3-\frac{2a^3}{3}\Bigr)=\frac{4\sqrt3}{3}a^3 .\]
+  <p class="muted"><b>本题的意义：</b>只要能写出 \(A(x)\)，任何形状的立体都能求体积——旋转体只是 \(A(x)=\pi y^2\) 的特例.CT 断层扫描重建器官体积用的正是这个原理：每一张断层图算出面积 \(A_i\)，乘层厚累加.</p>
+</div>
+
+<h3>三、平面曲线的弧长</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.4</span>弧长的三种公式</div>
+  <p>弧长微元（也称<b>弧微分</b>）的统一形式为 \(\mathrm{d}s=\sqrt{(\mathrm{d}x)^2+(\mathrm{d}y)^2}\).据此：</p>
+  <p><b>（1）直角坐标</b> \(y=f(x),\ a\le x\le b\)，\(f\) 有连续导数：</p>
+  \[\mathrm{d}s=\sqrt{1+y'^2}\,\mathrm{d}x,\qquad s=\int_a^b\sqrt{1+f'^2(x)}\,\mathrm{d}x .\]
+  <p><b>（2）参数方程</b> \(x=x(t),y=y(t),\ \alpha\le t\le\beta\)：</p>
+  \[\mathrm{d}s=\sqrt{x'^2(t)+y'^2(t)}\,\mathrm{d}t,\qquad
+    s=\int_{\alpha}^{\beta}\sqrt{x'^2(t)+y'^2(t)}\,\mathrm{d}t .\]
+  <p><b>（3）极坐标</b> \(\rho=\rho(\theta),\ \alpha\le\theta\le\beta\)：由 \(x=\rho\cos\theta,\,y=\rho\sin\theta\) 化为参数式，可得</p>
+  \[\mathrm{d}s=\sqrt{\rho^2(\theta)+\rho'^2(\theta)}\,\mathrm{d}\theta,\qquad
+    s=\int_{\alpha}^{\beta}\sqrt{\rho^2+\rho'^2}\,\mathrm{d}\theta .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">先说清"弧长"是什么.</span>在曲线上依次取分点连成<b>内接折线</b>；当最长的一段弦趋于零时，若折线总长有极限，就称曲线可求长，并把这个极限定义为弧长 \(s\).所以下面的"证明"就是把这个极限老老实实算出来.</p>
+<p><span class="stp">（1）直角坐标 \(y=f(x)\).</span></p>
+<p><span class="stp">第一步：分割求弦长.</span>取 \(a=x_0\lt x_1\lt \cdots\lt x_n=b\)，\(\lambda=\max\Delta x_i\)，对应分点 \(M_i\bigl(x_i,f(x_i)\bigr)\).由两点间距离公式，第 \(i\) 段弦长为</p>
+\[|M_{i-1}M_i|=\sqrt{(\Delta x_i)^{2}+(\Delta y_i)^{2}},\qquad \Delta y_i=f(x_i)-f(x_{i-1}).\]
+<p><span class="stp">第二步：用拉格朗日中值定理消掉 \(\Delta y\).</span>\(f\) 在 \([x_{i-1},x_i]\) 上连续、内部可导，故存在 \(\xi_i\in(x_{i-1},x_i)\) 使 \(\Delta y_i=f'(\xi_i)\Delta x_i\).代入并把 \(\Delta x_i\gt0\) 提出根号：</p>
+\[|M_{i-1}M_i|=\sqrt{1+f'^{2}(\xi_i)}\;\Delta x_i .\]
+<p><span class="stp">第三步：认出这是黎曼和.</span>折线总长</p>
+\[L_n=\sum_{i=1}^{n}\sqrt{1+f'^{2}(\xi_i)}\,\Delta x_i\]
+<p>恰是连续函数 \(\sqrt{1+f'^{2}(x)}\) 在 \([a,b]\) 上以 \(\xi_i\) 为标志点的一个黎曼和.因 \(f'\) 连续，被积函数连续故可积，而可积函数的黎曼和极限与标志点的取法无关，故 \(\lambda\to0\) 时 \(L_n\) 收敛，且</p>
+\[s=\lim_{\lambda\to0}L_n=\int_a^b\sqrt{1+f'^{2}(x)}\,\mathrm{d}x .\]
+<p>（这里 \(\lambda\to0\) 与"最长弦长 \(\to0\)"是一回事：记 \(K=\max|f'|\)，则 \(\Delta x_i\le|M_{i-1}M_i|\le\sqrt{1+K^{2}}\,\Delta x_i\).）写成微分形式即 \(\mathrm{d}s=\sqrt{1+y'^{2}}\,\mathrm{d}x\).</p>
+<p><span class="stp">（2）参数方程.</span>同样分割 \(\alpha=t_0\lt \cdots\lt t_n=\beta\).这一次要对 \(x(t)\) 与 \(y(t)\) <b>各用一次</b>拉格朗日中值定理：</p>
+\[\Delta x_i=x'(\xi_i)\Delta t_i,\qquad \Delta y_i=y'(\eta_i)\Delta t_i,\qquad \xi_i,\eta_i\in(t_{i-1},t_i),\]
+<p>注意 \(\xi_i\) 与 \(\eta_i\) <b>一般不相等</b>，所以</p>
+\[L_n=\sum_{i=1}^{n}\sqrt{x'^{2}(\xi_i)+y'^{2}(\eta_i)}\,\Delta t_i\]
+<p>还不是标准的黎曼和.把它与真正的黎曼和 \(S_n=\sum\sqrt{x'^{2}(\xi_i)+y'^{2}(\xi_i)}\,\Delta t_i\) 相比，利用初等不等式 \(\bigl|\sqrt{u^{2}+v^{2}}-\sqrt{u^{2}+w^{2}}\bigr|\le|v-w|\)，得</p>
+\[|L_n-S_n|\le\sum_{i=1}^{n}\bigl|y'(\eta_i)-y'(\xi_i)\bigr|\Delta t_i\le\omega(\lambda)\,(\beta-\alpha),\]
+<p>其中 \(\omega(\lambda)\) 表示 \(y'\) 在长度不超过 \(\lambda\) 的任何小区间上的最大波动.\(y'\) 在闭区间 \([\alpha,\beta]\) 上连续，从而<b>一致连续</b>（Cantor 定理，《数学分析》结论，直观含义是"间隔小则函数值差别小，且与位置无关"），故 \(\lambda\to0\) 时 \(\omega(\lambda)\to0\).于是 \(L_n\) 与 \(S_n\) 有相同的极限：</p>
+\[s=\int_{\alpha}^{\beta}\sqrt{x'^{2}(t)+y'^{2}(t)}\,\mathrm{d}t .\]
+<p><span class="stp">（3）极坐标.</span>以 \(\theta\) 为参数，\(x=\rho(\theta)\cos\theta,\ y=\rho(\theta)\sin\theta\).求导：</p>
+\[x'=\rho'\cos\theta-\rho\sin\theta,\qquad y'=\rho'\sin\theta+\rho\cos\theta .\]
+<p>平方相加，两个交叉项 \(\mp2\rho\rho'\sin\theta\cos\theta\) 恰好抵消：</p>
+\[x'^{2}+y'^{2}=\rho'^{2}(\cos^{2}\theta+\sin^{2}\theta)+\rho^{2}(\sin^{2}\theta+\cos^{2}\theta)=\rho^{2}+\rho'^{2}.\]
+<p>代入（2）即得 \(\mathrm{d}s=\sqrt{\rho^{2}+\rho'^{2}}\,\mathrm{d}\theta\) 及</p>
+\[s=\int_{\alpha}^{\beta}\sqrt{\rho^{2}(\theta)+\rho'^{2}(\theta)}\,\mathrm{d}\theta .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>弧微分的几何直观：</b>把曲线上一小段"拉直"成直角三角形的斜边，两条直角边分别是 \(\mathrm{d}x\) 与 \(\mathrm{d}y\)，勾股定理立即给出 \(\mathrm{d}s=\sqrt{(\mathrm{d}x)^2+(\mathrm{d}y)^2}\).<b>这是"以直代曲"最纯粹的体现</b>，其误差为 \((\mathrm{d}x)^3\) 量级，远高于一阶，故合法.</div>
+
+<div class="ex"><div class="lab">例 6.16　悬链线的弧长（输电线、缆索的基本曲线）</div>
+  <p class="stmt">求悬链线 \(y=a\cosh\dfrac{x}{a}\) 从 \(x=0\) 到 \(x=b\) 的弧长.</p>
+  <p class="sol"><span class="mk">解</span>\(y'=\sinh\dfrac{x}{a}\).利用双曲恒等式 \(1+\sinh^2 u=\cosh^2 u\)：</p>
+  \[\sqrt{1+y'^2}=\sqrt{1+\sinh^2\frac{x}{a}}=\cosh\frac{x}{a}.\]
+  <p>（因 \(\cosh\ge1\gt0\)，开方取正.）于是</p>
+  \[s=\int_0^b\cosh\frac{x}{a}\,\mathrm{d}x=\Bigl[a\sinh\frac{x}{a}\Bigr]_0^b=a\sinh\frac{b}{a}.\]
+  <p><b>工程数值</b>：某 \(500\,\mathrm{kV}\) 输电线档距 \(400\,\mathrm{m}\)（即 \(b=200\,\mathrm{m}\) 取半档），特征长度 \(a=H/w=1818.2\,\mathrm{m}\).则半档弧长</p>
+  \[s=1818.2\sinh(0.11)=1818.2\times0.110222=200.40\ \mathrm{m}.\]
+  <p>全档弧长 \(400.80\,\mathrm{m}\)，比直线档距长 \(0.80\,\mathrm{m}\).这 \(0.8\,\mathrm{m}\) 就是放线施工必须预留的余量.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.17　摆线一拱的弧长</div>
+  <p class="stmt">求摆线 \(x=a(t-\sin t),\ y=a(1-\cos t)\) 一拱的弧长.</p>
+  <p class="sol"><span class="mk">解</span>\(x'(t)=a(1-\cos t),\ y'(t)=a\sin t\).故</p>
+  \[x'^2+y'^2=a^2\bigl[(1-\cos t)^2+\sin^2 t\bigr]=a^2(2-2\cos t)=4a^2\sin^2\frac{t}{2}.\]
+  <p>在 \([0,2\pi]\) 上 \(\sin\dfrac t2\ge0\)，故 \(\mathrm{d}s=2a\sin\dfrac t2\,\mathrm{d}t\)，</p>
+  \[s=\int_0^{2\pi}2a\sin\frac t2\,\mathrm{d}t=2a\Bigl[-2\cos\frac t2\Bigr]_0^{2\pi}=2a(2+2)=8a .\]
+  <p class="muted"><b>又一个漂亮结论：</b>摆线一拱长恰为滚动圆直径 \(2a\) 的 <b>4 倍</b>.摆线还是著名的<b>最速降线</b>与<b>等时曲线</b>，现代过山车与滑雪台的入弯段常按摆线设计.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.18　心形线的周长</div>
+  <p class="stmt">求心形线 \(\rho=a(1+\cos\theta)\) 的全长.</p>
+  <p class="sol"><span class="mk">解</span>\(\rho'=-a\sin\theta\)，故</p>
+  \[\rho^2+\rho'^2=a^2\bigl[(1+\cos\theta)^2+\sin^2\theta\bigr]=a^2(2+2\cos\theta)=4a^2\cos^2\frac{\theta}{2}.\]
+  <p>利用对称性只算 \(\theta\in[0,\pi]\) 再乘 2，此时 \(\cos\dfrac{\theta}{2}\ge0\)：</p>
+  \[s=2\int_0^{\pi}2a\cos\frac{\theta}{2}\,\mathrm{d}\theta
+   =4a\Bigl[2\sin\frac{\theta}{2}\Bigr]_0^{\pi}=8a .\]
+</div>
+
+<div class="ex"><div class="lab">例 6.19　星形线的全长</div>
+  <p class="stmt">求星形线 \(x=a\cos^3 t,\ y=a\sin^3 t\) 的全长.</p>
+  <p class="sol"><span class="mk">解</span>\(x'=-3a\cos^2 t\sin t,\ y'=3a\sin^2 t\cos t\)，故</p>
+  \[x'^2+y'^2=9a^2\sin^2 t\cos^2 t(\cos^2 t+\sin^2 t)=9a^2\sin^2 t\cos^2 t .\]
+  <p>由四象限对称性，取第一象限 \(t\in\Bigl[0,\dfrac{\pi}{2}\Bigr]\)（此时 \(\sin t\cos t\ge0\)）乘 4：</p>
+  \[s=4\int_0^{\pi/2}3a\sin t\cos t\,\mathrm{d}t=12a\Bigl[\frac{\sin^2 t}{2}\Bigr]_0^{\pi/2}=12a\cdot\frac12=6a .\]
+  <p class="muted"><b>易错提醒：</b>开方时务必判断被开方式的符号.若不加区间限制直接写 \(\sqrt{9a^2\sin^2t\cos^2t}=3a\sin t\cos t\) 并在 \([0,2\pi]\) 上积分，会得到 \(0\)——因为 \(\sin t\cos t\) 在整周期上正负抵消.<b>弧长必为正，必须加绝对值或分象限.</b></p>
+</div>
+
+<h3>四、旋转曲面的侧面积</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.5</span>旋转曲面侧面积</div>
+  <p>设光滑曲线 \(C\) 位于 \(x\) 轴上方，绕 \(x\) 轴旋转一周得旋转曲面.取弧长微元 \(\mathrm{d}s\)，它绕轴旋转扫出一个<b>圆台侧面</b>（近似为圆锥台，母线长 \(\mathrm{d}s\)，平均半径 \(y\)），故</p>
+  \[\mathrm{d}S=2\pi y\,\mathrm{d}s,\qquad S=2\pi\int y\,\mathrm{d}s .\]
+  <p>具体地：\(y=f(x)\) 时 \(S=2\pi\displaystyle\int_a^b f(x)\sqrt{1+f'^2(x)}\,\mathrm{d}x\)；参数式时 \(S=2\pi\displaystyle\int_{\alpha}^{\beta}y(t)\sqrt{x'^2+y'^2}\,\mathrm{d}t\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">先说清"侧面积"是什么.</span>与弧长类似，用<b>内接圆台</b>去逼近：把曲线分段，每段用弦代替，弦绕 \(x\) 轴旋转得到一个圆台侧面；所有圆台侧面积之和的极限，就定义为旋转曲面的侧面积.</p>
+<p><span class="stp">思路（为什么非用圆台不可）：</span>曲面面积比弧长微妙得多——著名的"施瓦茨灯笼"反例表明，若用任意内接三角形去拼一个圆柱面，拼出的面积可以不收敛甚至趋于无穷.所以逼近的方式必须选定为"绕同一根轴旋转出的圆台"，这样每一片近似曲面与真曲面才是"贴着"的.</p>
+<p>设 \(y=f(x)\ge0\) 在 \([a,b]\) 上有连续导数.</p>
+<p><span class="stp">第一步：分割与圆台侧面积.</span>取分割 \(a=x_0\lt \cdots\lt x_n=b\)，\(\lambda=\max\Delta x_i\).第 \(i\) 段弦绕 \(x\) 轴旋转成圆台，上下底半径为 \(f(x_{i-1}),f(x_i)\)，母线长即弦长 \(l_i\).由圆台侧面积公式（\(\pi\times\)（上底半径 + 下底半径）\(\times\) 母线长）</p>
+\[\Delta S_i=\pi\bigl[f(x_{i-1})+f(x_i)\bigr]l_i=2\pi\cdot\frac{f(x_{i-1})+f(x_i)}{2}\cdot l_i .\]
+<p><span class="stp">第二步：分别处理两个因子.</span>由定理 6.4 证明的第二步，</p>
+\[l_i=\sqrt{1+f'^{2}(\xi_i)}\;\Delta x_i,\qquad \xi_i\in(x_{i-1},x_i).\]
+<p>另一方面，\(\dfrac{f(x_{i-1})+f(x_i)}{2}\) 是两个函数值的算术平均，必介于二者之间；由介值定理，存在 \(\eta_i\in[x_{i-1},x_i]\) 使它等于 \(f(\eta_i)\).于是</p>
+\[\sum_{i=1}^{n}\Delta S_i=\sum_{i=1}^{n}2\pi f(\eta_i)\sqrt{1+f'^{2}(\xi_i)}\,\Delta x_i .\]
+<p><span class="stp">第三步：把 \(\eta_i\) 换成 \(\xi_i\).</span>与真正的黎曼和 \(S_n=\sum 2\pi f(\xi_i)\sqrt{1+f'^{2}(\xi_i)}\Delta x_i\) 相比，记 \(K=\max\limits_{[a,b]}|f'|\)，则</p>
+\[\left|\sum_{i=1}^{n}\Delta S_i-S_n\right|\le 2\pi\sqrt{1+K^{2}}\sum_{i=1}^{n}\bigl|f(\eta_i)-f(\xi_i)\bigr|\Delta x_i\le 2\pi\sqrt{1+K^{2}}\;\omega(\lambda)(b-a),\]
+<p>其中 \(\omega(\lambda)\) 是 \(f\) 在长度不超过 \(\lambda\) 的小区间上的最大波动.\(f\) 在闭区间上连续故一致连续（Cantor 定理），\(\lambda\to0\) 时 \(\omega(\lambda)\to0\)，故两者极限相同.</p>
+<p><span class="stp">第四步：取极限.</span>\(2\pi f(x)\sqrt{1+f'^{2}(x)}\) 连续故可积，\(S_n\) 收敛于其积分，于是</p>
+\[S=\lim_{\lambda\to0}\sum_{i=1}^{n}\Delta S_i=2\pi\int_a^b f(x)\sqrt{1+f'^{2}(x)}\,\mathrm{d}x=2\pi\int y\,\mathrm{d}s .\]
+<p>参数式情形只需把 \(\mathrm{d}s\) 换成 \(\sqrt{x'^{2}+y'^{2}}\,\mathrm{d}t\)，论证逐字平行，得 \(S=2\pi\displaystyle\int_{\alpha}^{\beta}y(t)\sqrt{x'^{2}+y'^{2}}\,\mathrm{d}t\).</p>
+<p><b>注</b>　结论可以记成 \(\mathrm{d}S=2\pi y\,\mathrm{d}s\)，即"周长 \(\times\) 弧微元".<b>切不可</b>写成 \(\mathrm{d}S=2\pi y\,\mathrm{d}x\)：那等于把圆台换成了圆柱，丢掉了母线的倾斜，算出来的结果是错的.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>务必用 \(\mathrm{d}s\)，不可用 \(\mathrm{d}x\)！</b>这是例 6.3 已经用数字警示过的陷阱.记忆法：<b>体积用"厚度" \(\mathrm{d}x\)，面积用"母线" \(\mathrm{d}s\)</b>.</div>
+
+<div class="ex"><div class="lab">例 6.20　球带面积（阿基米德定理）</div>
+  <p class="stmt">求球面 \(x^2+y^2+z^2=R^2\) 被两平行平面 \(x=c\) 与 \(x=c+h\ (\,-R\le c,\ c+h\le R)\) 截得的<b>球带</b>面积.</p>
+  <p class="sol"><span class="mk">解</span>球面由半圆 \(y=\sqrt{R^2-x^2}\) 绕 \(x\) 轴旋转而成.求导 \(y'=\dfrac{-x}{\sqrt{R^2-x^2}}\)，故</p>
+  \[1+y'^2=1+\frac{x^2}{R^2-x^2}=\frac{R^2}{R^2-x^2},\qquad
+    \mathrm{d}s=\frac{R}{\sqrt{R^2-x^2}}\,\mathrm{d}x .\]
+  <p>关键的化简出现了：</p>
+  \[\mathrm{d}S=2\pi y\,\mathrm{d}s=2\pi\sqrt{R^2-x^2}\cdot\frac{R}{\sqrt{R^2-x^2}}\,\mathrm{d}x=2\pi R\,\mathrm{d}x .\]
+  <p>被积函数竟然是<b>常数</b>！于是</p>
+  \[S=\int_c^{c+h}2\pi R\,\mathrm{d}x=2\pi R h .\]
+  <p class="muted"><b>阿基米德定理：</b>球带面积只取决于带宽 \(h\)，与它在球上的位置无关.取 \(h=2R\) 即得整个球面积 \(4\pi R^2\).这一性质是<b>等积圆柱投影</b>（地图学）与卫星均匀布点算法的理论基础：把球面点云投影到外切圆柱上，面积不失真.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.21　摆线一拱绕 \(x\) 轴的旋转曲面面积</div>
+  <p class="stmt">求摆线一拱 \(x=a(t-\sin t),\ y=a(1-\cos t)\ (0\le t\le2\pi)\) 绕 \(x\) 轴旋转所得曲面的面积.</p>
+  <p class="sol"><span class="mk">解</span>由例 6.17 已得 \(\mathrm{d}s=2a\sin\dfrac t2\,\mathrm{d}t\).又用半角公式 \(y=a(1-\cos t)=2a\sin^2\dfrac t2\)，故</p>
+  \[\mathrm{d}S=2\pi y\,\mathrm{d}s=2\pi\cdot2a\sin^2\frac t2\cdot 2a\sin\frac t2\,\mathrm{d}t=8\pi a^2\sin^3\frac t2\,\mathrm{d}t .\]
+  <p>令 \(u=\dfrac t2\)，\(\mathrm{d}t=2\,\mathrm{d}u\)，\(t:0\to2\pi\) 时 \(u:0\to\pi\)：</p>
+  \[S=8\pi a^2\int_0^{\pi}\sin^3 u\cdot 2\,\mathrm{d}u=16\pi a^2\int_0^{\pi}\sin^3 u\,\mathrm{d}u .\]
+  <p>而 \(\displaystyle\int_0^{\pi}\sin^3u\,\mathrm{d}u=2\int_0^{\pi/2}\sin^3u\,\mathrm{d}u=2\cdot\frac{2}{3}=\frac43\)，故</p>
+  \[S=16\pi a^2\cdot\frac43=\frac{64\pi a^2}{3}.\]
+</div>
+
+<div class="ex"><div class="lab">例 6.22　星形线绕 \(x\) 轴的旋转曲面面积</div>
+  <p class="stmt">求星形线 \(x=a\cos^3 t,\ y=a\sin^3 t\) 绕 \(x\) 轴旋转所得曲面（纺锤形）的面积.</p>
+  <p class="sol"><span class="mk">解</span>由例 6.19，第一象限内 \(\mathrm{d}s=3a\sin t\cos t\,\mathrm{d}t\).曲面关于 \(y\) 轴对称，故先算 \(x\ge0\) 部分（对应 \(t\in\Bigl[0,\dfrac{\pi}{2}\Bigr]\)）再乘 2：</p>
+  \[S=2\times2\pi\int_0^{\pi/2}a\sin^3 t\cdot3a\sin t\cos t\,\mathrm{d}t
+   =12\pi a^2\int_0^{\pi/2}\sin^4 t\cos t\,\mathrm{d}t .\]
+  <p>令 \(w=\sin t\)：\(\displaystyle\int_0^{\pi/2}\sin^4t\cos t\,\mathrm{d}t=\int_0^1 w^4\,\mathrm{d}w=\frac15\).故</p>
+  \[S=12\pi a^2\cdot\frac15=\frac{12\pi a^2}{5}.\]
+</div>
+
+<div class="case"><div class="lab">应用探微 · 用微元法给"猎鹰"整流罩做全套几何核算</div>
+  <details><summary>展开查看：从母线方程到体积、表面积、复合材料用量的完整计算链</summary>
+  <div class="body">
+    <p><b>场景：</b> 总装车间里，工人正把两瓣碳纤维整流罩扣合到卫星上方——单瓣重 \(176.8\ \mathrm{kg}\)，每多一公斤材料，火箭就少带一公斤有效载荷.设计团队必须在这 \(6\ \mathrm{m}\) 高的外壳上敲定三个数字：<b>内部可用容积</b>（决定能装多大的卫星）、<b>外表面积</b>（决定材料用量与防热涂层质量）、<b>母线长度</b>（决定铺层裁片尺寸）.</p>
+    <p><b>模型：</b>取整流罩为回转体，对称轴为 \(x\) 轴，从底端 \(x=0\)（半径 \(2.6\,\mathrm{m}\)）到顶端 \(x=6\,\mathrm{m}\)（收成尖端）.母线取抛物线</p>
+    \[y=r(x)=2.6\sqrt{1-\frac{x}{6}},\qquad 0\le x\le 6\ (\mathrm{m}).\]
+    <p><b>一、内部容积（圆盘法）.</b>注意 \(y^2=6.76\Bigl(1-\dfrac x6\Bigr)\) 是 \(x\) 的一次函数，积分极简：</p>
+    \[V=\pi\int_0^{6}6.76\Bigl(1-\frac x6\Bigr)\mathrm{d}x
+      =6.76\pi\Bigl[x-\frac{x^2}{12}\Bigr]_0^{6}=6.76\pi(6-3)=20.28\pi=63.71\ \mathrm{m}^3 .\]
+    <p>扣除铺层厚度与内部支架，可用容积约 \(58\,\mathrm{m}^3\)——足以装下一颗展开前的通信卫星.</p>
+    <p><b>二、母线长度（弧长）.</b>由 \(y=2.6\sqrt{1-x/6}\) 得</p>
+    \[y'=2.6\cdot\frac{-1/6}{2\sqrt{1-x/6}}=\frac{-0.216667}{\sqrt{1-x/6}} .\]
+    <p>该导数在 \(x\to6\) 时趋于无穷（尖端处母线竖直），属反常积分.作换元 \(u=\sqrt{1-x/6}\)，则 \(x=6(1-u^2)\)，\(\mathrm{d}x=-12u\,\mathrm{d}u\)，且</p>
+    \[\sqrt{1+y'^2}=\frac{\sqrt{u^2+0.046944}}{u},\]
+    <p>于是</p>
+    \[s=\int_0^1\frac{\sqrt{u^2+0.046944}}{u}\cdot12u\,\mathrm{d}u=12\int_0^1\sqrt{u^2+0.046944}\,\mathrm{d}u .\]
+    <p>反常性被换元自动消除.用公式 \(\displaystyle\int\sqrt{u^2+k^2}\,\mathrm{d}u=\frac{u}{2}\sqrt{u^2+k^2}+\frac{k^2}{2}\ln\bigl(u+\sqrt{u^2+k^2}\bigr)\)，取 \(k^2=0.046944\ (k=0.21667)\)：</p>
+    \[s=12\Bigl[\frac{1}{2}\sqrt{1.046944}+\frac{0.046944}{2}\ln\frac{1+\sqrt{1.046944}}{0.21667}\Bigr].\]
+    <p>算得 \(\sqrt{1.046944}=1.023203\)，\(\ln\dfrac{2.023203}{0.21667}=\ln 9.3378=2.234\).故</p>
+    \[s=12\bigl(0.511601+0.023472\times2.234\bigr)=12\times0.564036=6.768\ \mathrm{m}.\]
+    <p><b>三、外表面积.</b>\(\mathrm{d}S=2\pi y\,\mathrm{d}s\).沿用同一换元，\(y=2.6u\)，\(\mathrm{d}s=\dfrac{\sqrt{u^2+k^2}}{u}\cdot12u\,\mathrm{d}u\)，故</p>
+    \[S=2\pi\int_0^1 2.6u\cdot12\sqrt{u^2+k^2}\,\mathrm{d}u
+      =62.4\pi\int_0^1 u\sqrt{u^2+0.046944}\,\mathrm{d}u .\]
+    <p>令 \(w=u^2+0.046944\)：积分 \(=\dfrac{1}{3}\bigl(1.046944^{3/2}-0.046944^{3/2}\bigr)=\dfrac13(1.07123-0.010170)=0.353687\).故</p>
+    \[S=62.4\pi\times0.353687=69.33\ \mathrm{m}^2 .\]
+    <p><b>四、工程结论.</b>整流罩为两瓣对开，单瓣外表面积 \(34.7\,\mathrm{m}^2\).若碳纤维层合板面密度 \(4.2\,\mathrm{kg/m^2}\)、防热涂层 \(0.9\,\mathrm{kg/m^2}\)，则整流罩结构质量约</p>
+    <p class="cn-point">三次积分换来 \(63.71\ \mathrm{m^3}\) 容积与 \(69.33\ \mathrm{m^2}\) 外表，最终读成一句"减重 1 公斤、运力 +1 公斤"——中国长征火箭把整流罩一次次做轻做薄，靠的正是先把每片曲面的面积算到小数点后两位.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch6-fairing" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>母线系数 A <input type="range" id="ch6-fairing-a" min="2.0" max="3.2" step="0.05" value="2.6" style="width:220px;accent-color:#0F6E56"> <b id="ch6-fairing-a-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch6-fairing-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch6-fairing'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=58,mR=14,mT=24,mB=36,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var A=+document.getElementById('ch6-fairing-a').value, L=6;
+      function y(x){ return A*Math.sqrt(1-x/L); }
+      function X(x){ return mL+x/L*pW; }
+      function Yv(v){ return mT+pH - v/4*pH; }
+      // 旋转体轮廓（上下镜像）
+      ctx.fillStyle='rgba(15,110,86,0.18)';
+      ctx.beginPath();
+      for(var x=0;x<=L;x+=L/60){ ctx.lineTo(X(x),Yv(-y(x))); }
+      for(var x2=L;x2>=0;x2-=L/60){ ctx.lineTo(X(x2),Yv(y(x2))); }
+      ctx.closePath();ctx.fill();
+      // 母线
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var x3=0;x3<=L;x3+=L/120){ var xx=X(x3),yy=Yv(y(x3)); x3===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 轴线
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(mL,Yv(0));ctx.lineTo(W-mR,Yv(0));ctx.stroke();ctx.setLineDash([]);
+      // 数值：V=πA²L/2；S 数值积分
+      function S_surf(){ var s=0,steps=4000; for(var i=0;i<steps;i++){ var x=L*(i+0.5)/steps; var dx=L/steps; var yv=y(x); var dy=(y(x+dx)-y(x-dx))/(2*dx)||0; s+=2*Math.PI*yv*Math.sqrt(1+dy*dy)*dx; } return s; }
+      var V=Math.PI*A*A*L/2, S=S_surf(), m=S*5.1;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('母线 y = '+A.toFixed(1)+'√(1-x/6)   体积 '+V.toFixed(1)+' m³   面积 '+S.toFixed(1)+' m²',mL,mT+13);
+      var out=document.getElementById('ch6-fairing-out');
+      out.textContent = '单瓣面积 '+(S/2).toFixed(1)+' m² | 结构质量 m = S×(4.2+0.9) = '+m.toFixed(0)+' kg'+(A>2.9?'——母线越胖，面积与质量涨得比体积快，整流罩减重关键在压低母线系数':'');
+    }
+    document.getElementById('ch6-fairing-a').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+    \[m=69.33\times(4.2+0.9)=353.6\ \mathrm{kg}.\]
+    <p>而火箭每减重 \(1\,\mathrm{kg}\)，近地轨道运力约可增加 \(1\,\mathrm{kg}\) 有效载荷.<b>三个几何量、三次积分，直接换算成了运力指标</b>——这就是微元法在真实工程中的分量.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §6.3 ============ -->
+<div class="labx">
+  <div class="lab">弧长 · 曲线</div>
+  <div class="desc">曲线 (\(y=\sin(2x)\)) 的弧长随区间增长；绿色曲线即被度量的对象.</div>
+  <canvas id="cv_p63" width="720" height="320"></canvas>
+  
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p63'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p63');
+    var vo=document.getElementById('vo_p63');
+    var W=cv.width,H=cv.height;
+    var xmin=-1,xmax=4,ymin=-1.4,ymax=1.4;
+    var p=1;
+    function fx(x){ return Math.sin(2*x); }
+    function gx(x){  }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.12)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv+=2){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv+=2){var yy=Y(gyv)*H;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
+      // axes
+      var y0=Y(0)*H, x0=X(0)*W;
+      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x0,0);ctx.lineTo(x0,H);ctx.moveTo(0,y0);ctx.lineTo(W,y0);ctx.stroke();
+      // f(x)=x*sin x
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.8; ctx.lineCap='round'; ctx.beginPath();
+      var f1=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fx(x);
+        if(!isFinite(y)){f1=true;continue;}var py=Y(y);
+        if(py<0||py>1){f1=true;continue;}var sx=px,sy=py*H;
+        if(f1){ctx.moveTo(sx,sy);f1=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // f'(x)=sin x+x*cos x
+      ctx.strokeStyle='#D97706'; ctx.lineWidth=2.2; ctx.beginPath();
+      var f2=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fpx(x);
+        if(!isFinite(y)){f2=true;continue;}var py=Y(y);
+        if(py<0||py>1){f2=true;continue;}var sx=px,sy=py*H;
+        if(f2){ctx.moveTo(sx,sy);f2=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // legend
+      ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#0F6E56'; ctx.fillRect(W-145,10,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=x\u00b7sin x', W-125,16);
+      ctx.fillStyle='#D97706'; ctx.fillRect(W-145,26,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText("f\u2032(x)=sin x+x\u00b7cos x", W-125,32);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 光刻机投影物镜：非球面镜坯的体积与质量核算</summary>
+<p><b>场景：</b> EUV 光刻机的投影物镜由多片超精密反射镜组成，镜坯用零膨胀微晶玻璃（ULE）加工.设某片凹面镜坯是一个回转体：外形为直径 \(300\ \mathrm{mm}\)、中心厚 \(60\ \mathrm{mm}\) 的圆柱，正面被挖去一块曲率半径 \(R_{c}=1200\ \mathrm{mm}\) 的球面凹坑.设计阶段必须先算出镜坯质量——它直接决定支撑结构的刚度需求与热惯性.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>镜坯半径</td><td>\(a\)</td><td>0.15 m</td></tr>
+<tr><td>中心厚度</td><td>\(H\)</td><td>0.060 m</td></tr>
+<tr><td>凹面曲率半径</td><td>\(R_c\)</td><td>1.200 m</td></tr>
+<tr><td>ULE 密度</td><td>\(\rho\)</td><td>2210 kg/m³</td></tr>
+</table>
+<p class="sol"> 镜坯体积 = 圆柱体积 − 凹坑（球冠）体积.凹坑<b>矢高</b>为</p>
+\[s=R_{c}-\sqrt{R_{c}^{2}-a^{2}}=1.2-\sqrt{1.44-0.0225}=1.2-1.190588=9.412\times10^{-3}\ \mathrm{m}.\]
+<p>球冠体积用平行截面法现推：以凹坑顶点为原点，深度 \(x\) 处截面半径 \(r^{2}=2R_{c}x-x^{2}\)，故</p>
+\[V_{2}=\pi\int_{0}^{s}\bigl(2R_{c}x-x^{2}\bigr)\mathrm{d}x
+ =\pi\Bigl(R_{c}s^{2}-\frac{s^{3}}{3}\Bigr)=\frac{\pi s^{2}}{3}\bigl(3R_{c}-s\bigr).\]
+\[V_{2}=\frac{\pi\times8.8586\times10^{-5}}{3}\times(3.6-0.009412)=3.331\times10^{-4}\ \mathrm{m^3}=333.1\ \mathrm{cm^3}.\]
+<p>圆柱部分 \(V_{1}=\pi a^{2}H=\pi\times0.0225\times0.06=4.2412\times10^{-3}\ \mathrm{m^3}=4241.2\ \mathrm{cm^3}\).故</p>
+\[V=4241.2-333.1=3908.1\ \mathrm{cm^3},\qquad
+  m=2.210\times3908.1=8636\ \mathrm{g}=8.64\ \mathrm{kg}.\]
+<p><b>工程结论：</b> 镜坯净重 \(8.64\ \mathrm{kg}\)，凹坑仅占毛坯体积的 \(7.9\%\)——这意味着粗磨阶段要磨掉 \(333\ \mathrm{cm^3}\) 的超硬玻璃，是加工周期最长的一环.更要紧的是，\(8.64\ \mathrm{kg}\) 的自重会让镜面在重力下产生纳米级变形，因此实际镜坯背面还要挖成蜂窝减重结构，把质量压到 \(5\ \mathrm{kg}\) 以内，同时保持面形精度优于 \(0.3\ \mathrm{nm}\ \mathrm{RMS}\).<b>一次体积积分，串起了材料成本、加工工时与光学面形三条设计主线.</b></p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 3D 打印螺旋路径的弧长与耗材估算</summary>
+<p><b>场景：</b> 用连续纤维增强 FDM 工艺打印一段圆管形机器人连杆：外径 \(60\ \mathrm{mm}\)（打印路径半径 \(R=0.030\ \mathrm{m}\)），高 \(120\ \mathrm{mm}\)，层高 \(p=0.2\ \mathrm{mm}\)，采用<b>连续螺旋</b>路径（不逐层抬刀，Z 轴匀速上升）.切片软件要报出三个数：路径总长、耗丝长度、打印时间.</p>
+<p>螺旋线的参数方程为</p>
+\[x=R\cos t,\qquad y=R\sin t,\qquad z=\frac{p}{2\pi}\,t,\qquad 0\le t\le T .\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>路径半径</td><td>\(R\)</td><td>0.030 m</td></tr>
+<tr><td>层高（螺距）</td><td>\(p\)</td><td>\(2.0\times10^{-4}\) m</td></tr>
+<tr><td>总圈数</td><td>\(N\)</td><td>\(120/0.2=600\)</td></tr>
+<tr><td>挤出丝截面</td><td>\(A_e\)</td><td>0.4 mm × 0.2 mm = 0.08 mm²</td></tr>
+<tr><td>喷头线速度</td><td>\(v\)</td><td>60 mm/s</td></tr>
+</table>
+<p class="sol"> 由弧长微元 \(\mathrm{d}s=\sqrt{x'^{2}+y'^{2}+z'^{2}}\,\mathrm{d}t\)，而 \(x'=-R\sin t,\ y'=R\cos t,\ z'=\dfrac{p}{2\pi}\)，故被开方式是<b>常数</b>：</p>
+\[\mathrm{d}s=\sqrt{R^{2}+\Bigl(\frac{p}{2\pi}\Bigr)^{2}}\,\mathrm{d}t
+ \;\Longrightarrow\; s=\sqrt{R^{2}+\Bigl(\frac{p}{2\pi}\Bigr)^{2}}\;T,\qquad T=2\pi N .\]
+<p>代入 \(\dfrac{p}{2\pi}=3.183\times10^{-5}\ \mathrm{m}\)，\(T=600\times2\pi=3769.9\ \mathrm{rad}\)：</p>
+\[s=\sqrt{9.000\times10^{-4}+1.013\times10^{-9}}\times3769.9=0.0300000\times3769.9=113.10\ \mathrm{m}.\]
+<p>耗材体积 \(V=A_{e}s=0.08\ \mathrm{mm^2}\times1.131\times10^{5}\ \mathrm{mm}=9048\ \mathrm{mm^3}=9.05\ \mathrm{cm^3}\)；折算 \(1.75\ \mathrm{mm}\) 丝料长度</p>
+\[L_{\text{丝}}=\frac{9048}{\pi\times0.875^{2}}=\frac{9048}{2.405}=3762\ \mathrm{mm}=3.76\ \mathrm{m}.\]
+<p>打印时间 \(t=\dfrac{113100}{60}=1885\ \mathrm{s}=31.4\ \mathrm{min}\).</p>
+<p><b>工程结论：</b> 螺距 \(0.2\ \mathrm{mm}\) 相对半径 \(30\ \mathrm{mm}\) 极小，螺旋修正项 \((p/2\pi)^{2}\) 只带来 \(1.7\times10^{-6}\) 的相对增量——工程上完全可以用"周长 × 圈数"估算，误差不到 \(0.2\ \mathrm{mm}\).<b>但这个结论必须由积分来"授权"，而不能靠感觉.</b>如果换成大螺距的螺旋钻杆（\(p\) 与 \(R\) 同量级），忽略 \(z'\) 会低估长度 \(30\%\) 以上.这正是 §6.2 弧长公式的价值：它同时告诉我们"何时可以偷懒"和"何时绝不能偷懒".</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch6-3d" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>打印半径 R <input type="range" id="ch6-3d-r" min="15" max="45" step="1" value="30" style="width:140px;accent-color:#0F6E56"> <b id="ch6-3d-r-t"></b> mm</label>
+<label>层高 p <input type="range" id="ch6-3d-p" min="0.1" max="0.6" step="0.02" value="0.2" style="width:140px;accent-color:#0F6E56"> <b id="ch6-3d-p-t"></b> mm</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch6-3d-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch6-3d'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var cx0=W*0.30, cy0=H*0.52, rad=Math.min(W,H)*0.16, Hc=H*0.30;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var R=+document.getElementById('ch6-3d-r').value/1000; // m
+      var p=+document.getElementById('ch6-3d-p').value/1000; // m
+      var hgt=0.120; // m
+      var turns=hgt/p;
+      var T=turns*2*Math.PI;
+      // 螺旋线（3D 斜投影）
+      ctx.strokeStyle='rgba(148,163,184,0.35)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.ellipse(cx0,cy0,rad,rad*0.32,0,0,2*Math.PI);ctx.stroke(); // 底面圆
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;
+      ctx.beginPath();
+      var steps=400;
+      for(var i=0;i<=steps;i++){
+        var t=T*i/steps;
+        var xx=cx0+rad*Math.cos(t), zz=cy0+rad*0.32*Math.sin(t), yy=cy0-Hc/2+Hc*i/steps;
+        var px=xx, py=zz+ (yy-cy0)*0.0 + (yy-(cy0-Hc/2))*(-0.35)*0;
+        // 斜投影：x 平面 + y 向上
+        var sx=xx + (yy-cy0)*0.0, sy=yy + (zz-cy0)*0.9;
+        i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+      }
+      ctx.stroke();
+      // 高度标注
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(cx0+rad+14,cy0-Hc/2);ctx.lineTo(cx0+rad+14,cy0+Hc/2);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='left';
+      ctx.fillText('高 120 mm',cx0+rad+18,(cy0+Hc/2+cy0-Hc/2)/2);
+      // 右侧信息
+      var sLen=Math.sqrt(R*R+(p/(2*Math.PI))*(p/(2*Math.PI)))*T;
+      var rel=(p/(2*Math.PI))*(p/(2*Math.PI))/(R*R);
+      var Vmat=sLen*0.08e-6; // m³ (0.08 mm² 截面)
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('R = '+(R*1000).toFixed(0)+' mm   p = '+(p*1000).toFixed(2)+' mm   n = '+turns.toFixed(0)+' 圈',cx0+rad+30,cy0-Hc/2+40);
+      ctx.font='bold 12px -apple-system,"Microsoft YaHei",sans-serif';
+      ctx.fillStyle='#0F6E56';
+      ctx.fillText('弧长 s = '+sLen.toFixed(2)+' m',cx0+rad+30,cy0-Hc/2+62);
+      ctx.fillStyle='#334155';
+      ctx.fillText('周长×圈数 ≈ '+(2*Math.PI*R*turns).toFixed(2)+' m',cx0+rad+30,cy0-Hc/2+82);
+      ctx.fillText('螺旋修正 '+(rel*1e6).toFixed(1)+'×10⁻⁶',cx0+rad+30,cy0-Hc/2+102);
+      var out=document.getElementById('ch6-3d-out');
+      out.textContent = '耗材 '+(Vmat*1e6).toFixed(1)+' cm³，折 1.75mm 丝料 '+(Vmat/(Math.PI*0.875e-3*0.875e-3)).toFixed(2)+' m | 工程估算用"周长×圈数"误差不到 0.2 mm';
+    }
+    document.getElementById('ch6-3d-r').addEventListener('input', draw);
+    document.getElementById('ch6-3d-p').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s062" data-ch="6" data-n="5"></div>
+<h2 id="s063"><span class="num">§6.3</span>物理学中的应用</h2>
+    
+<div class="ex"><div class="lab">引例一　一次快充到底"充进"多少能量：变功率的能量积分</div>
+  <p class="stmt">某 \(800\,\mathrm{V}\) 平台电动车在超充桩上充电，采用"恒流—恒压"两阶段策略：</p>
+  <p>· <b>恒流阶段</b>（\(0\le t\le1800\,\mathrm{s}\)）：电流恒为 \(I=150\,\mathrm{A}\)，端电压从 \(320\,\mathrm{V}\) 线性升到 \(400\,\mathrm{V}\)，即 \(U(t)=320+\dfrac{80}{1800}t\)；</p>
+  <p>· <b>恒压阶段</b>（\(1800\le t\le3000\,\mathrm{s}\)）：电压恒为 \(U=400\,\mathrm{V}\)，电流按 \(I(t)=150\,\mathrm{e}^{-(t-1800)/600}\) 衰减.</p>
+  <p>求全程充入的电能（以 \(\mathrm{kW\cdot h}\) 计）.</p>
+  <p class="sol"><span class="mk">解</span>瞬时功率 \(P=UI\) 是变化的，不能用"功率乘时间".但在极短的 \(\mathrm{d}t\) 内功率几乎不变，故<b>能量微元</b></p>
+  \[\mathrm{d}W=P(t)\,\mathrm{d}t=U(t)I(t)\,\mathrm{d}t .\]
+  <p><b>恒流阶段</b>：</p>
+  \[W_1=\int_0^{1800}150\Bigl(320+\frac{80}{1800}t\Bigr)\mathrm{d}t
+   =150\Bigl[320t+\frac{80}{3600}t^2\Bigr]_0^{1800}
+   =150\,(576000+72000)=9.72\times10^{7}\ \mathrm{J}.\]
+  <p>即 \(97.2\,\mathrm{MJ}=27.00\,\mathrm{kW\cdot h}\).</p>
+  <p><b>恒压阶段</b>：</p>
+  \[W_2=\int_{1800}^{3000}400\times150\,\mathrm{e}^{-(t-1800)/600}\,\mathrm{d}t
+   =60000\times600\bigl(1-\mathrm{e}^{-2}\bigr)=3.6\times10^{7}\times0.86466=3.113\times10^{7}\ \mathrm{J},\]
+  <p>即 \(8.65\,\mathrm{kW\cdot h}\).<b>总计 \(W=27.00+8.65=35.65\,\mathrm{kW\cdot h}\).</b></p>
+  <table class="dt">
+    <tr><th>时刻 \(t\)（s）</th><th>阶段</th><th>\(U\)（V）</th><th>\(I\)（A）</th><th>瞬时功率 \(P=UI\)（kW）</th></tr>
+    <tr><td>0</td><td>恒流</td><td>320.0</td><td>150.0</td><td>48.0</td></tr>
+    <tr><td>900</td><td>恒流</td><td>360.0</td><td>150.0</td><td>54.0</td></tr>
+    <tr><td>1800</td><td>切换点</td><td>400.0</td><td>150.0</td><td>60.0</td></tr>
+    <tr><td>2400</td><td>恒压</td><td>400.0</td><td>55.2</td><td>22.1</td></tr>
+    <tr><td>3000</td><td>恒压</td><td>400.0</td><td>20.3</td><td>8.1</td></tr>
+  </table>
+  <p>可见峰值功率 \(60\,\mathrm{kW}\)、末端仅 \(8\,\mathrm{kW}\)——<b>如果按峰值功率估算能量将高估近一倍</b>.真实的答案只能由积分给出.本节要把这种"微元累加"的思路，系统用到功、压力、引力、质心与转动惯量五类物理量上.</p>
+</div>
+
+<h3>一、变力沿直线做功</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.6</span>变力做功公式</div>
+  <p>物体沿 \(x\) 轴从 \(a\) 移到 \(b\)，受与运动方向一致的变力 \(F(x)\).在 \([x,x+\mathrm{d}x]\) 上力近似为常数，由"功 = 力 × 位移"得<b>功微元</b></p>
+  \[\mathrm{d}W=F(x)\,\mathrm{d}x,\qquad W=\int_a^b F(x)\,\mathrm{d}x .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">物理前提：</span>（i）<b>恒</b>力沿运动方向做的功等于"力 \(\times\) 位移"；（ii）功对路程可加：分两段走的总功等于两段功之和；（iii）位移相同时，力越大做功越多.这三条是下面数学推导的出发点.</p>
+<p><span class="stp">第一步：取小区间.</span>设 \(F\) 在 \([a,b]\) 上连续.取 \([x,x+\Delta x]\subseteq[a,b]\)，记 \(\Delta W\) 为物体在这一小段上所做的功.</p>
+<p><span class="stp">第二步：夹逼.</span>\(F\) 连续，故在 \([x,x+\Delta x]\) 上取得最小值 \(m\) 与最大值 \(M\).由物理前提（iii），若把这一小段上的力统统换成恒力 \(m\)，做功不会更多；换成恒力 \(M\)，做功不会更少.再由（i）算出这两个恒力的功，得到<b>精确的不等式</b></p>
+\[m\,\Delta x\le\Delta W\le M\,\Delta x .\]
+<p><span class="stp">第三步：误差是高阶无穷小.</span>由上式，</p>
+\[\bigl|\Delta W-F(x)\Delta x\bigr|\le(M-m)\Delta x .\]
+<p>由 \(F\) 在 \(x\) 处连续，\(\Delta x\to0\) 时 \(m,M\) 都趋于 \(F(x)\)，故 \(M-m\to0\)，从而</p>
+\[\Delta W=F(x)\Delta x+o(\Delta x).\]
+<p>这一步才是微元法的实质：它<b>定量地</b>说明了"在小区间上把变力当成恒力"所犯的错误比 \(\Delta x\) 高一阶，因而求和后不会积累起来.</p>
+<p><span class="stp">第四步：化为积分.</span>功对路程可加，\(F\) 连续，由定理 6.1，</p>
+\[\mathrm{d}W=F(x)\,\mathrm{d}x,\qquad W=\int_a^b F(x)\,\mathrm{d}x .\]
+<p><b>注</b>　若力的方向与位移方向成夹角 \(\theta\)，只需把公式中的 \(F(x)\) 换成沿运动方向的分量 \(F(x)\cos\theta\)；若是抽水、提链条一类问题，则应先把"位移"选作积分变量，再写出对应的 \(\mathrm{d}W\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 6.23　精密弹簧的储能</div>
+  <p class="stmt">某工业机器人末端的力控弹簧劲度系数 \(k=1200\,\mathrm{N/m}\).求：(1) 从自然长度拉伸 \(5\,\mathrm{cm}\) 所做的功；(2) 再从 \(5\,\mathrm{cm}\) 拉伸到 \(8\,\mathrm{cm}\) 所做的功.</p>
+  <p class="sol"><span class="mk">解</span>由胡克定律 \(F(x)=kx\)（\(x\) 为伸长量），功微元 \(\mathrm{d}W=kx\,\mathrm{d}x\).</p>
+  <p>(1) \(W_1=\displaystyle\int_0^{0.05}1200x\,\mathrm{d}x=600x^2\Big|_0^{0.05}=600\times0.0025=1.50\ \mathrm{J}\).</p>
+  <p>(2) \(W_2=\displaystyle\int_{0.05}^{0.08}1200x\,\mathrm{d}x=600(0.0064-0.0025)=600\times0.0039=2.34\ \mathrm{J}\).</p>
+  <p class="muted"><b>注意 \(W_2\gt W_1\) 虽然位移只有 \(3\,\mathrm{cm}\)（少于 \(5\,\mathrm{cm}\)）.</b>原因是力随伸长线性增大，后段"贵"得多.弹性势能 \(\dfrac12kx^2\) 与位移的<b>平方</b>成正比，这正是力控装置行程设计的依据.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.24　数据中心冷却水塔的抽水功</div>
+  <p class="stmt">某数据中心的冷却水储罐为圆柱形，底半径 \(R=2\,\mathrm{m}\)、高 \(H=5\,\mathrm{m}\)，装满水.现要把罐内的水全部抽到罐顶排出.求所需最小功（水的密度 \(\rho=1000\,\mathrm{kg/m^3}\)，\(g=9.8\,\mathrm{m/s^2}\)）.</p>
+  <p class="sol"><span class="mk">解</span><b>关键在于选对变量</b>：不同深度的水要被提升的高度不同.取 \(x\) 为<b>距罐顶的深度</b>，\(0\le x\le 5\).</p>
+  <p>在 \([x,x+\mathrm{d}x]\) 处取一薄层水，它是半径 \(R\)、厚 \(\mathrm{d}x\) 的圆柱片：</p>
+  <p>· 体积 \(\mathrm{d}V=\pi R^2\,\mathrm{d}x=4\pi\,\mathrm{d}x\)；</p>
+  <p>· 质量 \(\mathrm{d}m=\rho\,\mathrm{d}V=4000\pi\,\mathrm{d}x\)；</p>
+  <p>· 需提升的高度恰为 \(x\).</p>
+  <p>故<b>功微元</b></p>
+  \[\mathrm{d}W=g\,\mathrm{d}m\cdot x=9.8\times4000\pi\,x\,\mathrm{d}x=39200\pi\,x\,\mathrm{d}x .\]
+  \[W=39200\pi\int_0^{5}x\,\mathrm{d}x=39200\pi\times\frac{25}{2}=490000\pi\approx1.539\times10^{6}\ \mathrm{J}.\]
+  <p>即约 \(1.54\,\mathrm{MJ}=0.428\,\mathrm{kW\cdot h}\).若水泵效率 \(70\%\)、耗时 \(10\) 分钟，则所需电功率</p>
+  \[P=\frac{1.539\times10^{6}}{0.70\times600}=3664\ \mathrm{W}\approx3.7\ \mathrm{kW}.\]
+  <p class="muted"><b>捷径校核：</b>整罐水质量 \(m=\rho\pi R^2H=1000\times4\pi\times5=62832\,\mathrm{kg}\)，质心在中部（距顶 \(2.5\,\mathrm{m}\)），故 \(W=mg\bar h=62832\times9.8\times2.5=1.539\times10^{6}\,\mathrm{J}\)，一致.<b>但这个捷径只在截面积恒定时成立</b>——若储罐是锥形或球形，必须老老实实积分.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.25　把卫星送上同步轨道要克服多少引力功</div>
+  <p class="stmt">把质量 \(m=1000\,\mathrm{kg}\) 的通信卫星从地面送到地球同步轨道（离地高度 \(h=3.6\times10^{7}\,\mathrm{m}\)），求克服地球引力所做的功.已知地球引力常数 \(GM=3.986\times10^{14}\,\mathrm{m^3/s^2}\)，地球半径 \(R=6.371\times10^{6}\,\mathrm{m}\).</p>
+  <p class="sol"><span class="mk">解</span>由万有引力定律，距地心 \(r\) 处引力大小 \(F(r)=\dfrac{GMm}{r^2}\)，<b>随高度按平方反比衰减</b>，是典型变力.功微元</p>
+  \[\mathrm{d}W=F(r)\,\mathrm{d}r=\frac{GMm}{r^2}\,\mathrm{d}r .\]
+  <p>从 \(r=R\) 积到 \(r=R+h\)：</p>
+  \[W=GMm\int_{R}^{R+h}\frac{\mathrm{d}r}{r^2}
+    =GMm\Bigl[-\frac1r\Bigr]_{R}^{R+h}
+    =GMm\Bigl(\frac{1}{R}-\frac{1}{R+h}\Bigr).\]
+  <p>代入数据：\(R+h=4.2371\times10^{7}\,\mathrm{m}\)，</p>
+  \[\frac{1}{R}=1.5696\times10^{-7},\qquad \frac{1}{R+h}=2.3601\times10^{-8},\qquad \text{差}=1.3336\times10^{-7}.\]
+  \[W=3.986\times10^{14}\times1000\times1.3336\times10^{-7}=5.316\times10^{10}\ \mathrm{J}.\]
+  <p>即约 \(5.32\times10^{10}\,\mathrm{J}\)，折合 \(14766\,\mathrm{kW\cdot h}\)（约合一个三口之家 4 年的用电量），或相当于完全燃烧约 \(1.2\,\mathrm{t}\) 航空煤油释放的热量.</p>
+  <p class="muted">这只是<b>势能差</b>，还不含入轨所需的巨大动能（同步轨道速度 \(3.07\,\mathrm{km/s}\)，动能 \(4.7\times10^{9}\,\mathrm{J}\)）以及火箭自身的结构与推进剂质量.这就是为什么把 \(1\,\mathrm{kg}\) 送上同步轨道的成本高达数万元.</p>
+</div>
+
+<h3>二、液体的静压力</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.7</span>液体侧压力公式</div>
+  <p>竖直放置的平板浸在密度为 \(\rho\) 的液体中.取 \(x\) 为距液面的深度，该深度处压强为 \(p=\rho g x\)（帕斯卡定律）.设深度 \(x\) 处平板的<b>水平宽度</b>为 \(b(x)\)，则在 \([x,x+\mathrm{d}x]\) 上压强近似为常数，<b>压力微元</b></p>
+  \[\mathrm{d}P=\rho g x\cdot b(x)\,\mathrm{d}x,\qquad
+    P=\rho g\int_{a}^{b}x\,b(x)\,\mathrm{d}x .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">物理前提：</span>（i）帕斯卡定律——深度 \(x\) 处的压强为 \(p=\rho g x\)，且同一深度处各方向压强相同；（ii）压强为常数 \(p\) 的平面区域所受压力等于 \(p\times\)（面积）；（iii）压力对区域可加.</p>
+<p><span class="stp">思路：</span>压强随深度变化，所以要<b>横着切</b>——把平板按深度切成水平窄条，每条上各点深度相差不超过 \(\Delta x\)，压强的变化因而被牢牢控制住.</p>
+<p><span class="stp">第一步：分割.</span>设平板占据深度区间 \([a,b]\)（\(a\) 为最浅处深度），宽度函数 \(b(x)\) 连续.取深度小区间 \([x,x+\Delta x]\)，记该水平窄条的面积为 \(\Delta A\)、所受压力为 \(\Delta P\).</p>
+<p><span class="stp">第二步：先估面积.</span>设 \(b\) 在 \([x,x+\Delta x]\) 上的最小值、最大值为 \(m_b,M_b\)，则窄条夹在两个矩形之间：</p>
+\[m_b\,\Delta x\le\Delta A\le M_b\,\Delta x .\]
+<p>由 \(b\) 连续得 \(m_b,M_b\to b(x)\)，故</p>
+\[\Delta A=b(x)\Delta x+o(\Delta x).\]
+<p><span class="stp">第三步：再夹压力.</span>窄条上各点的深度都介于 \(x\) 与 \(x+\Delta x\) 之间，故其压强介于 \(\rho g x\) 与 \(\rho g(x+\Delta x)\) 之间.由物理前提（ii）（iii），</p>
+\[\rho g x\cdot\Delta A\le\Delta P\le\rho g(x+\Delta x)\cdot\Delta A .\]
+<p><span class="stp">第四步：合并，看误差的阶.</span>把第二步的 \(\Delta A\) 代入第三步两端.左端为 \(\rho g x\,b(x)\Delta x+o(\Delta x)\)；右端为</p>
+\[\rho g x\,b(x)\Delta x+\underbrace{\rho g\,b(x)(\Delta x)^{2}}_{o(\Delta x)}+o(\Delta x).\]
+<p>两端与 \(\rho g x\,b(x)\Delta x\) 的差都是 \(o(\Delta x)\)，被夹在中间的 \(\Delta P\) 自然也满足</p>
+\[\Delta P=\rho g x\,b(x)\Delta x+o(\Delta x),\qquad\text{即}\qquad \mathrm{d}P=\rho g x\,b(x)\,\mathrm{d}x .\]
+<p><span class="stp">第五步：化为积分.</span>由定理 6.1，</p>
+\[P=\rho g\int_a^b x\,b(x)\,\mathrm{d}x .\]
+<p><b>注</b>　公式这么简洁的前提是平板<b>竖直</b>放置——此时"深度增量"与"板面上的长度增量"恰好相等.若平板倾斜，二者相差一个因子 \(\dfrac{1}{\sin\theta}\)，需要先作换算再积分.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>压强与压力是两回事.</b>压强 \(p=\rho gx\) 只与深度有关，是标量场；压力 \(P\) 是压强在面积上的积分.<b>竖直板</b>的压强沿高度变化，必须积分；<b>水平板</b>各点深度相同，直接 \(P=\rho ghA\) 即可.</div>
+
+<div class="ex"><div class="lab">例 6.26　万米深潜器观察窗承受多大压力</div>
+  <p class="stmt">全海深载人潜水器下潜至 \(H=10000\,\mathrm{m}\)，其圆形观察窗半径 \(r=0.15\,\mathrm{m}\)，窗中心恰位于该深度.求窗面所受海水总压力（海水密度取 \(\rho=1025\,\mathrm{kg/m^3}\)）.</p>
+  <p class="sol"><span class="mk">解</span>以窗中心为原点，向下为 \(y\) 正向.深度 \(y\) 处（相对窗中心）的绝对深度为 \(H+y\)，该处圆窗的水平弦长为 \(b(y)=2\sqrt{r^2-y^2}\).压力微元</p>
+  \[\mathrm{d}P=\rho g(H+y)\cdot2\sqrt{r^2-y^2}\,\mathrm{d}y .\]
+  <p>积分区间 \([-r,r]\)，拆成两部分：</p>
+  \[P=\rho gH\int_{-r}^{r}2\sqrt{r^2-y^2}\,\mathrm{d}y
+     +\rho g\int_{-r}^{r}2y\sqrt{r^2-y^2}\,\mathrm{d}y .\]
+  <p>第一个积分是<b>半径 \(r\) 的圆面积</b> \(\pi r^2\)；第二个积分的被积函数是<b>奇函数</b>，在对称区间上为 \(0\).故</p>
+  \[P=\rho g H\pi r^2 .\]
+  <p>代入：\(\rho gH=1025\times9.8\times10000=1.0045\times10^{8}\,\mathrm{Pa}\)（约 \(1005\) 个大气压），\(\pi r^2=\pi\times0.0225=0.070686\,\mathrm{m^2}\)，</p>
+  \[P=1.0045\times10^{8}\times0.070686=7.100\times10^{6}\ \mathrm{N}.\]
+  <p>即约 \(710\,\mathrm{万}\,\mathrm{N}\)，相当于 \(725\) 吨重物压在这块直径 \(30\,\mathrm{cm}\) 的窗户上.</p>
+  <p class="muted"><b>数学给出的洞见：</b>结果恰为"中心深度压强 × 面积"，因为深度不均带来的修正项是奇函数、自动抵消.<b>对任何关于水平中心线对称的平面板，此结论都成立</b>.这也解释了为什么深潜器观察窗做成正圆锥台形状——它把这 710 万牛顿转化为纯压应力，而不是让玻璃承受弯矩.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.27　梯形闸门所受水压力</div>
+  <p class="stmt">某水电站泄水闸门为等腰梯形，上底 \(6\,\mathrm{m}\)（与水面齐平）、下底 \(4\,\mathrm{m}\)、高 \(4\,\mathrm{m}\)，竖直放置且顶边恰在水面.求闸门一侧所受水压力.</p>
+  <p class="sol"><span class="mk">解</span>取 \(x\) 为水深，\(0\le x\le4\).宽度从 \(6\) 线性减到 \(4\)，故</p>
+  \[b(x)=6-\frac{6-4}{4}x=6-0.5x .\]
+  <p>压力微元 \(\mathrm{d}P=\rho g x\,b(x)\,\mathrm{d}x=9800\,x(6-0.5x)\,\mathrm{d}x\)，于是</p>
+  \[P=9800\int_0^{4}(6x-0.5x^2)\,\mathrm{d}x
+   =9800\Bigl[3x^2-\frac{x^3}{6}\Bigr]_0^{4}
+   =9800\Bigl(48-\frac{64}{6}\Bigr)=9800\times37.333=3.659\times10^{5}\ \mathrm{N}.\]
+  <p>约 \(366\,\mathrm{kN}\)，相当于 \(37.3\) 吨重.</p>
+  <p class="muted"><b>易错点：</b>不能用"平均深度 \(2\,\mathrm{m}\) × 面积 \(20\,\mathrm{m^2}\)"来算（那样得 \(392\,\mathrm{kN}\)，偏大 \(7\%\)）.因为闸门下部虽然水更深，但宽度更窄，两个因素的"加权"必须由积分完成.</p>
+</div>
+
+<h3>三、引力</h3>
+<div class="def"><div class="lab"><span class="n">定理 6.8</span>细棒对质点的引力</div>
+  <p>设长为 \(2l\)、线密度为 \(\mu\) 的均匀细棒放在 \(y\) 轴上（从 \(-l\) 到 \(l\)），质量为 \(m\) 的质点位于 \(x\) 轴上距棒中点 \(a\) 处.取棒上 \([y,y+\mathrm{d}y]\) 的一段，质量 \(\mathrm{d}M=\mu\,\mathrm{d}y\)，它对质点的引力微元大小为</p>
+  \[\mathrm{d}F=\frac{Gm\mu\,\mathrm{d}y}{a^2+y^2}.\]
+  <p>由对称性，沿 \(y\) 方向的分量两两抵消，只需累加沿 \(x\) 方向（指向棒中点）的分量.注意方向余弦 \(\cos\alpha=\dfrac{a}{\sqrt{a^2+y^2}}\)，故</p>
+  \[\mathrm{d}F_x=\frac{Gm\mu a\,\mathrm{d}y}{(a^2+y^2)^{3/2}},\qquad
+    F_x=Gm\mu a\int_{-l}^{l}\frac{\mathrm{d}y}{(a^2+y^2)^{3/2}}
+    =\frac{2Gm\mu l}{a\sqrt{a^2+l^2}}.\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">物理前提：</span>（i）两质点间的万有引力大小为 \(F=\dfrac{Gm_1m_2}{r^{2}}\)，方向沿两点连线；（ii）力是矢量，多个源产生的引力按矢量叠加（因而对棒可加）.</p>
+<p><span class="stp">思路：</span>棒不是质点，不能直接套公式.办法是把棒切成许多小段，每一小段"几乎"就是一个质点；再说明这个"几乎"带来的误差是 \(o(\mathrm{d}y)\)，然后把各段的引力<b>按分量</b>累加.之所以要分解成分量，是因为不同小段对质点的引力方向各不相同，不能把大小直接相加.</p>
+<p><span class="stp">第一步：建立坐标并分割.</span>棒占据 \(y\) 轴上的 \([-l,l]\)，质点 \(P\) 位于 \((a,0)\)，\(a\gt0\).取小段 \([y,y+\Delta y]\)，其质量 \(\Delta M=\mu\,\Delta y\).</p>
+<p><span class="stp">第二步：说明"当成质点"的误差是高阶小.</span>小段上各点到 \(P\) 的距离都介于 \(r_{\min}\) 与 \(r_{\max}\) 之间，其中 \(r(y)=\sqrt{a^{2}+y^{2}}\) 连续，故 \(\Delta y\to0\) 时 \(r_{\max}-r_{\min}\to0\)；同理各点到 \(P\) 的连线与 \(x\) 轴夹角的差也趋于零.于是这一小段的引力（及其各分量）被夹在把全部质量分别集中于最近点、最远点所得的两个值之间，而这两个值与</p>
+\[\frac{Gm\mu\,\Delta y}{a^{2}+y^{2}}\]
+<p>之差都是 \(o(\Delta y)\).这正是可以写成引力微元 \(\mathrm{d}F=\dfrac{Gm\mu\,\mathrm{d}y}{a^{2}+y^{2}}\) 的根据.</p>
+<p><span class="stp">第三步：分解方向.</span>引力方向由 \(P(a,0)\) 指向小段 \((0,y)\).设该方向与 \(x\) 轴（指向棒中点 \(O\) 的方向）的夹角为 \(\alpha\)，则</p>
+\[\cos\alpha=\frac{a}{\sqrt{a^{2}+y^{2}}},\qquad \sin\alpha=\frac{y}{\sqrt{a^{2}+y^{2}}} .\]
+<p>于是两个分量的微元为</p>
+\[\mathrm{d}F_x=\mathrm{d}F\cos\alpha=\frac{Gm\mu a\,\mathrm{d}y}{(a^{2}+y^{2})^{3/2}},\qquad
+\mathrm{d}F_y=\frac{Gm\mu y\,\mathrm{d}y}{(a^{2}+y^{2})^{3/2}} .\]
+<p><span class="stp">第四步：用对称性处理 \(y\) 分量.</span>\(\mathrm{d}F_y\) 的被积函数是 \(y\) 的<b>奇函数</b>，而积分区间 \([-l,l]\) 关于原点对称，故</p>
+\[F_y=Gm\mu\int_{-l}^{l}\frac{y\,\mathrm{d}y}{(a^{2}+y^{2})^{3/2}}=0 .\]
+<p>这与直观一致：位于 \(y\) 与 \(-y\) 的两小段，其纵向分力大小相等、方向相反，正好抵消.所以合力沿 \(x\) 轴指向棒的中点.</p>
+<p><span class="stp">第五步：累加 \(x\) 分量.</span>由定理 6.1，</p>
+\[F_x=Gm\mu a\int_{-l}^{l}\frac{\mathrm{d}y}{(a^{2}+y^{2})^{3/2}} .\]
+<p><span class="stp">第六步：算这个积分.</span>作三角代换 \(y=a\tan t\)，则 \(\mathrm{d}y=a\sec^{2}t\,\mathrm{d}t\)，\((a^{2}+y^{2})^{3/2}=a^{3}\sec^{3}t\)，于是</p>
+\[\int\frac{\mathrm{d}y}{(a^{2}+y^{2})^{3/2}}=\int\frac{a\sec^{2}t}{a^{3}\sec^{3}t}\,\mathrm{d}t=\frac{1}{a^{2}}\int\cos t\,\mathrm{d}t=\frac{\sin t}{a^{2}}+C=\frac{y}{a^{2}\sqrt{a^{2}+y^{2}}}+C .\]
+<p>代入上下限：</p>
+\[\int_{-l}^{l}\frac{\mathrm{d}y}{(a^{2}+y^{2})^{3/2}}=\left[\frac{y}{a^{2}\sqrt{a^{2}+y^{2}}}\right]_{-l}^{l}=\frac{2l}{a^{2}\sqrt{a^{2}+l^{2}}} .\]
+<p><span class="stp">第七步：结论.</span></p>
+\[F_x=Gm\mu a\cdot\frac{2l}{a^{2}\sqrt{a^{2}+l^{2}}}=\frac{2Gm\mu l}{a\sqrt{a^{2}+l^{2}}} .\]
+<p><b>注</b>　两个极限情形可以检验公式的合理性：当 \(a\) 远大于 \(l\) 时 \(\sqrt{a^{2}+l^{2}}\approx a\)，得 \(F_x\approx\dfrac{Gm(2l\mu)}{a^{2}}=\dfrac{GmM}{a^{2}}\)，即远处看棒就是一个质点；当 \(l\to+\infty\) 时 \(F_x\to\dfrac{2Gm\mu}{a}\)，即无限长细棒的引力与距离成<b>反比</b>而非平方反比.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>矢量的微元必须先分解再积分.</b>把 \(\mathrm{d}F\) 直接积分是错误的——那相当于把方向不同的力当作同向相加，结果偏大.这是物理应用题中最典型的失分点.</div>
+
+<div class="ex"><div class="lab">例 6.28　空间站桁架对相邻载荷的微引力</div>
+  <p class="stmt">空间站上一根长 \(2l=20\,\mathrm{m}\) 的均匀桁架，线密度 \(\mu=8\,\mathrm{kg/m}\)（总质量 \(160\,\mathrm{kg}\)）.一台质量 \(m=1\,\mathrm{kg}\) 的精密仪器位于桁架中垂线上 \(a=5\,\mathrm{m}\) 处.求桁架对它的引力（\(G=6.674\times10^{-11}\,\mathrm{N\cdot m^2/kg^2}\)）.</p>
+  <p class="sol"><span class="mk">解</span>先完成定理 6.8 中的积分.令 \(y=a\tan\theta\)，则 \(\mathrm{d}y=a\sec^2\theta\,\mathrm{d}\theta\)，\((a^2+y^2)^{3/2}=a^3\sec^3\theta\)，</p>
+  \[\int\frac{\mathrm{d}y}{(a^2+y^2)^{3/2}}=\frac{1}{a^2}\int\cos\theta\,\mathrm{d}\theta=\frac{\sin\theta}{a^2}=\frac{y}{a^2\sqrt{a^2+y^2}}.\]
+  <p>代入上下限得</p>
+  \[F=Gm\mu a\cdot\frac{2l}{a^2\sqrt{a^2+l^2}}=\frac{2Gm\mu l}{a\sqrt{a^2+l^2}}.\]
+  <p>代入数据：\(2Gm\mu l=2\times6.674\times10^{-11}\times1\times8\times10=1.0678\times10^{-8}\)，分母 \(a\sqrt{a^2+l^2}=5\sqrt{125}=55.902\)，</p>
+  \[F=\frac{1.0678\times10^{-8}}{55.902}=1.910\times10^{-10}\ \mathrm{N}.\]
+  <p class="muted">这个力只有 \(0.19\) 纳牛，看似可忽略.但在<b>空间引力波探测</b>与<b>微重力科学实验</b>中，探测器需要分辨 \(10^{-15}\,\mathrm{N}\) 量级的力，此时舱内每一根桁架、每一块电池的引力都必须逐一积分建模并补偿——这正是"太极""天琴"等计划中"无拖曳控制"要解决的核心问题.</p>
+</div>
+
+<h3>四、质心与形心</h3>
+<div class="def"><div class="lab"><span class="n">定义 6.3</span>质心与形心</div>
+  <p><b>（1）变密度细棒</b>：细棒占据 \([a,b]\)，线密度 \(\rho(x)\).质量微元 \(\mathrm{d}m=\rho(x)\mathrm{d}x\)，静矩微元 \(\mathrm{d}M_y=x\rho(x)\mathrm{d}x\)，故质心横坐标</p>
+  \[\bar x=\frac{\displaystyle\int_a^b x\rho(x)\,\mathrm{d}x}{\displaystyle\int_a^b\rho(x)\,\mathrm{d}x}.\]
+  <p><b>（2）均匀平面薄片</b>（曲边梯形 \(0\le y\le f(x),\,a\le x\le b\)）：竖直窄条的质心在其中点 \(\Bigl(x,\dfrac{f(x)}{2}\Bigr)\)，面积 \(f(x)\mathrm{d}x\)，故</p>
+  \[\bar x=\frac{\displaystyle\int_a^b x f(x)\,\mathrm{d}x}{\displaystyle\int_a^b f(x)\,\mathrm{d}x},\qquad
+    \bar y=\frac{\displaystyle\int_a^b \frac{1}{2}f^2(x)\,\mathrm{d}x}{\displaystyle\int_a^b f(x)\,\mathrm{d}x}.\]
+  <p>均匀薄片的质心与密度无关，只由形状决定，故又称<b>形心</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.29　半圆形薄片的形心</div>
+  <p class="stmt">求半径为 \(R\) 的均匀半圆形薄片（\(y\ge0\) 部分）的形心.</p>
+  <p class="sol"><span class="mk">解</span>由对称性 \(\bar x=0\).面积 \(A=\dfrac{\pi R^2}{2}\).取 \(f(x)=\sqrt{R^2-x^2}\)，则</p>
+  \[\int_{-R}^{R}\frac12 f^2(x)\,\mathrm{d}x=\frac12\int_{-R}^{R}(R^2-x^2)\,\mathrm{d}x
+   =\frac12\Bigl(2R^3-\frac{2R^3}{3}\Bigr)=\frac{2R^3}{3}.\]
+  <p>故</p>
+  \[\bar y=\frac{2R^3/3}{\pi R^2/2}=\frac{4R}{3\pi}\approx0.4244R .\]
+  <p class="muted">形心在半径的 \(42.4\%\) 处，比"半径中点 \(0.5R\)"更靠近圆心——因为靠近直径边的部分更宽、权重更大.这个 \(\dfrac{4R}{3\pi}\) 是结构力学中半圆形截面惯性矩计算的起点.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.30　无人机碳纤维机臂的质心位置</div>
+  <p class="stmt">某四旋翼无人机的碳纤维机臂长 \(L=0.5\,\mathrm{m}\)，为兼顾根部强度与末端轻量，采用变壁厚设计，线密度 \(\rho(x)=0.12+0.30x\ (\mathrm{kg/m})\)，\(x\) 从根部量起.求机臂质量与质心位置.</p>
+  <p class="sol"><span class="mk">解</span>质量</p>
+  \[m=\int_0^{0.5}(0.12+0.30x)\,\mathrm{d}x=\Bigl[0.12x+0.15x^2\Bigr]_0^{0.5}=0.060+0.0375=0.0975\ \mathrm{kg}.\]
+  <p>静矩</p>
+  \[M=\int_0^{0.5}x(0.12+0.30x)\,\mathrm{d}x=\Bigl[0.06x^2+0.10x^3\Bigr]_0^{0.5}=0.015+0.0125=0.0275\ \mathrm{kg\cdot m}.\]
+  <p>故</p>
+  \[\bar x=\frac{0.0275}{0.0975}=0.2821\ \mathrm{m}.\]
+  <p>质心在距根部 \(28.21\,\mathrm{cm}\) 处，即全长的 \(56.4\%\)——比均匀杆的 \(50\%\) 更靠外，因为本设计末端反而更重（\(\rho\) 递增）.</p>
+  <p class="muted"><b>工程含义：</b>飞控算法需要精确的质心位置来计算姿态动力学.若把质心误当成几何中点，四臂的力矩估计将系统性偏小 \(12.8\%\)，在快速机动时导致明显的姿态超调.</p>
+</div>
+
+<h3>五、转动惯量</h3>
+<div class="def"><div class="lab"><span class="n">定义 6.4</span>转动惯量</div>
+  <p>质点绕轴转动的<b>转动惯量</b>为 \(I=mr^2\)（\(r\) 为到轴的距离）.对连续分布的物体，取质量微元 \(\mathrm{d}m\)，其到轴距离为 \(r\)，则</p>
+  \[\mathrm{d}I=r^2\,\mathrm{d}m,\qquad I=\int r^2\,\mathrm{d}m .\]
+  <p>转动惯量是转动中的"惯性"，与角加速度的关系为 \(M=I\alpha\)（转动定律），其中 \(M\) 为力矩.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.31　机器人手臂的转动惯量与驱动力矩</div>
+  <p class="stmt">某协作机器人的一节手臂长 \(L=0.8\,\mathrm{m}\)、质量 \(m=3\,\mathrm{kg}\)，绕根部关节转动.</p>
+  <p>(1) 若为<b>均匀</b>杆，求转动惯量与产生 \(\alpha=10\,\mathrm{rad/s^2}\) 角加速度所需的力矩；</p>
+  <p>(2) 若改为<b>锥形变截面</b>设计，线密度 \(\rho(x)=\rho_0\Bigl(1-\dfrac{0.6x}{L}\Bigr)\)（末端密度只有根部的 \(40\%\)），总质量仍为 \(3\,\mathrm{kg}\)，重新计算并比较.</p>
+  <p class="sol"><span class="mk">解</span><b>(1) 均匀杆.</b>线密度 \(\rho=\dfrac{m}{L}=3.75\,\mathrm{kg/m}\)，\(\mathrm{d}m=\rho\,\mathrm{d}x\)，</p>
+  \[I_1=\int_0^{L}x^2\rho\,\mathrm{d}x=\rho\frac{L^3}{3}=\frac{mL^2}{3}=\frac{3\times0.64}{3}=0.640\ \mathrm{kg\cdot m^2}.\]
+  \[M_1=I_1\alpha=0.640\times10=6.40\ \mathrm{N\cdot m}.\]
+  <p><b>(2) 变截面杆.</b>由 \(L=0.8\) 得 \(\dfrac{0.6}{L}=0.75\)，即 \(\rho(x)=\rho_0(1-0.75x)\).先由总质量定 \(\rho_0\)：</p>
+  \[\int_0^{0.8}\rho_0(1-0.75x)\,\mathrm{d}x=\rho_0\Bigl[x-0.375x^2\Bigr]_0^{0.8}=\rho_0(0.8-0.24)=0.56\rho_0=3,\]
+  <p>故 \(\rho_0=5.3571\,\mathrm{kg/m}\).再算转动惯量：</p>
+  \[I_2=\rho_0\int_0^{0.8}x^2(1-0.75x)\,\mathrm{d}x
+   =\rho_0\Bigl[\frac{x^3}{3}-\frac{0.75x^4}{4}\Bigr]_0^{0.8}
+   =\rho_0(0.170667-0.076800)=\rho_0\times0.093867 .\]
+  \[I_2=5.3571\times0.093867=0.5029\ \mathrm{kg\cdot m^2},\qquad M_2=5.03\ \mathrm{N\cdot m}.\]
+  <p><b>比较</b>：质量完全相同，仅仅把材料从末端"挪"向根部，转动惯量就下降了</p>
+  \[\frac{0.640-0.5029}{0.640}=21.4\%,\]
+  <p>驱动力矩同比下降 \(21.4\%\).</p>
+  <table class="dt">
+    <tr><th>方案</th><th>质量（kg）</th><th>转动惯量 \(I\)（kg·m²）</th><th>\(\alpha=10\) 所需力矩（N·m）</th><th>相对节省</th></tr>
+    <tr><td>均匀杆</td><td>3.00</td><td>0.6400</td><td>6.40</td><td>—</td></tr>
+    <tr><td>锥形变截面</td><td>3.00</td><td>0.5029</td><td>5.03</td><td>21.4%</td></tr>
+  </table>
+  <p class="muted"><b>为什么效果这么明显？</b>因为转动惯量对距离是<b>平方</b>加权（\(r^2\mathrm{d}m\)），末端每减 \(1\) 克的效果远大于根部减 \(1\) 克.这就是所有机器人手臂、机床主轴、无人机桨叶都做成"根粗末细"的数学原因；同理，花样滑冰运动员收臂能急剧加快旋转.</p>
+</div>
+
+<div class="ex"><div class="lab">例 6.32　均匀圆盘绕中心轴的转动惯量（飞轮储能）</div>
+  <p class="stmt">半径 \(R\)、质量 \(m\) 的均匀薄圆盘绕过中心且垂直于盘面的轴转动，求转动惯量.并计算：某飞轮储能装置 \(R=0.5\,\mathrm{m}\)、\(m=200\,\mathrm{kg}\)，转速 \(12000\,\mathrm{r/min}\) 时储存多少能量.</p>
+  <p class="sol"><span class="mk">解</span>面密度 \(\sigma=\dfrac{m}{\pi R^2}\).<b>选取环形微元</b>：半径 \(r\)、宽 \(\mathrm{d}r\) 的细圆环，其上各点到轴距离都是 \(r\)，面积 \(2\pi r\,\mathrm{d}r\)，故</p>
+  \[\mathrm{d}m=\sigma\cdot2\pi r\,\mathrm{d}r,\qquad
+    \mathrm{d}I=r^2\,\mathrm{d}m=2\pi\sigma r^3\,\mathrm{d}r .\]
+  \[I=2\pi\sigma\int_0^{R}r^3\,\mathrm{d}r=2\pi\sigma\frac{R^4}{4}=\frac{\pi\sigma R^4}{2}=\frac{1}{2}mR^2 .\]
+  <p>代入 \(m=200,R=0.5\)：\(I=\dfrac12\times200\times0.25=25\,\mathrm{kg\cdot m^2}\).角速度</p>
+  \[\omega=\frac{2\pi\times12000}{60}=1256.6\ \mathrm{rad/s},\]
+  <p>转动动能</p>
+  \[E=\frac12 I\omega^2=\frac12\times25\times1256.6^2=1.974\times10^{7}\ \mathrm{J}=5.48\ \mathrm{kW\cdot h}.\]
+  <p class="muted">飞轮储能的优势在于<b>功率密度</b>极高（可在秒级内充放），常用于电网调频与地铁能量回收.注意能量正比于 \(\omega^2\)：转速翻倍，储能变 4 倍——这也是飞轮材料要用碳纤维（承受巨大离心应力）的原因.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从"变力做功"推出第二宇宙速度</div>
+  <details><summary>展开查看：11.2 km/s 这个数字是怎么算出来的</summary>
+  <div class="body">
+    <p>"逃逸速度"是指：从地面以多大初速度竖直上抛，物体才能<b>永不返回</b>（飞到无穷远处速度恰好降为零）.这是引力做功积分最经典的应用.</p>
+    <p><b>第一步：算把物体送到无穷远需要多少功.</b>沿用例 6.25 的思路，令 \(h\to+\infty\)：</p>
+    \[W_{\infty}=GMm\int_{R}^{+\infty}\frac{\mathrm{d}r}{r^2}
+      =GMm\lim_{b\to+\infty}\Bigl(\frac1R-\frac1b\Bigr)=\frac{GMm}{R}.\]
+    <p>这是一个<b>反常积分收敛</b>的绝佳实例：引力虽然作用到无穷远，但衰减足够快（\(r^{-2}\)），累计做功是<b>有限</b>的.若引力按 \(r^{-1}\) 衰减，积分将发散，任何物体都无法逃离——宇宙将完全是另一副模样.</p>
+    <p><b>第二步：由能量守恒定初速度.</b>全部初动能恰好用于克服引力：</p>
+    \[\frac12 m v_2^2=\frac{GMm}{R}\;\Longrightarrow\;v_2=\sqrt{\frac{2GM}{R}}.\]
+    <p><b>第三步：代入数值.</b>\(GM=3.986\times10^{14}\,\mathrm{m^3/s^2}\)，\(R=6.371\times10^{6}\,\mathrm{m}\)：</p>
+    \[\frac{2GM}{R}=\frac{7.972\times10^{14}}{6.371\times10^{6}}=1.2513\times10^{8},\qquad
+      v_2=\sqrt{1.2513\times10^{8}}=1.1186\times10^{4}\ \mathrm{m/s}.\]
+    <p>即 <b>\(v_2\approx11.2\,\mathrm{km/s}\)</b>——教科书上那个著名的数字，就是这样一个反常积分加一次开方得来的.</p>
+    <p><b>延伸对照表</b>（同一公式换天体参数）：</p>
+    <table class="dt">
+      <tr><th>天体</th><th>\(GM\)（m³/s²）</th><th>半径 \(R\)（m）</th><th>逃逸速度（km/s）</th></tr>
+      <tr><td>月球</td><td>\(4.905\times10^{12}\)</td><td>\(1.737\times10^{6}\)</td><td>2.38</td></tr>
+      <tr><td>火星</td><td>\(4.283\times10^{13}\)</td><td>\(3.390\times10^{6}\)</td><td>5.03</td></tr>
+      <tr><td>地球</td><td>\(3.986\times10^{14}\)</td><td>\(6.371\times10^{6}\)</td><td>11.19</td></tr>
+      <tr><td>木星</td><td>\(1.267\times10^{17}\)</td><td>\(6.991\times10^{7}\)</td><td>59.5</td></tr>
+    </table>
+    <p>月球逃逸速度只有地球的 \(21\%\)，这就是"月球基地作为深空跳板"构想的物理依据：从月面发射所需能量仅为地面的 \(4.5\%\).<b>一个微元、一个反常积分，撑起了整个航天任务的能量预算表.</b></p>
+  </div>
+  </details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 卡瓦列里原理与祖暅之：东西方不谋而合的体积智慧</summary>
+
+<p>公元三世纪，魏晋数学家刘徽在为《九章算术》作注时，碰到了一道让他寝食难安的题目：球的体积.当时流传的公式 \(V=\dfrac{9}{16}D^{3}\) 明显不准，刘徽敏锐地意识到问题出在哪里——古人错误地认为"球与其外切圆柱的体积之比"等于"圆与其外切正方形的面积之比".他构造了一个精巧的立体来纠正这一点：取两个半径相同、轴线互相垂直的圆柱，它们相贯的公共部分形如两把方形雨伞扣合，刘徽给它取名<b>牟合方盖</b>.</p>
+<p>刘徽严格证明了球与牟合方盖的体积之比恰为 \(\pi:4\).可惜的是，牟合方盖本身的体积他算不出来.这位一生以严谨著称的数学家在注中留下了一句坦率而动人的话：<b>"敢不阙疑，以俟能言者."</b>——我不敢强作解人，且把这个疑问留给后来的明白人吧.</p>
+<p>这一等，就是两百年.到了南北朝，祖冲之的儿子<b>祖暅之</b>接过了这道题.他提出的原理，用今天的话说只有一句：<b>"幂势既同，则积不容异."</b>其中"幂"指截面面积，"势"指高度位置——两个立体，如果在每一个等高处的截面面积都相等，那么它们的体积必然相等.凭着这一条，祖暅之把八分之一的牟合方盖与一个"小方锥"配对，通过巧妙的补形算出牟合方盖体积为 \(\dfrac{16}{3}R^{3}\)，进而得到</p>
+\[V_{\text{球}}=\frac{\pi}{4}\times\frac{16}{3}R^{3}=\frac{4}{3}\pi R^{3}.\]
+<p>这是中国古代数学的一座高峰.遗憾的是，祖暅之的著作《缀术》后来失传，我们今天能读到这段推理，全靠唐代李淳风为《九章算术》作注时的引述.</p>
+<p>时间跳到 1635 年的意大利.伽利略的学生<b>博纳文图拉·卡瓦列里</b>出版了《用新方法推进的连续体不可分量几何学》，提出了他的"不可分量原理"：把面看成无数条线的集合、把体看成无数个面的集合；若两个立体被平行平面所截得的截面面积处处相等，则二者体积相等.这与祖暅之的表述几乎一字不差，而两人相隔一千一百年、相距一万公里，彼此从未听说过对方.今天西方教科书称之为<b>卡瓦列里原理</b>，中国教科书称之为<b>祖暅原理</b>，都是对的.</p>
+<p>卡瓦列里当年遭到了猛烈抨击.耶稣会数学家古尔丁（Paul Guldin）质问他：一条线没有宽度，无数条没有宽度的线怎么可能拼出有面积的图形？这个诘难在逻辑上完全正确，卡瓦列里也确实答不上来.真正化解它，要等到两百多年后柯西和魏尔斯特拉斯建立 \(\varepsilon\)-\(\delta\) 语言，把"不可分量"替换成"厚度趋于零的薄片的极限".</p>
+<p>而这，正是本章第一节所讲的<b>微元法</b>.当我们写下 \(\mathrm{d}V=A(x)\,\mathrm{d}x\) 时，我们既继承了祖暅之与卡瓦列里的几何直觉，也享受着极限理论提供的严格保障.定理 6.3(1) 的公式 \(V=\displaystyle\int_{a}^{b}A(x)\,\mathrm{d}x\) 更是把祖暅原理变成了一句显然的推论：若 \(A_{1}(x)\equiv A_{2}(x)\)，则两个积分自然相等.</p>
+<p>这个古老的原理至今仍在最前沿的技术中运转.医学 CT 把人体扫成数百张断层，每张算出面积再乘层厚累加，得到肿瘤体积；金属 3D 打印机把零件切成上万层，逐层熔化——本章引例一算的就是这件事；计算机图形学中的体渲染、地质勘探中的储量估算，用的都是同一句话.<b>"幂势既同，则积不容异"</b>，一千五百年过去，它依然是我们理解三维世界最锋利的那把刀.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] 李文林《数学史概论》，高等教育出版社；[2] M. Kline《古今数学思想》，上海科学技术出版社；[3] B. Cavalieri, <i>Geometria indivisibilibus continuorum nova quadam ratione promota</i>, 1635；[4] Wikipedia 词条 "Cavalieri's principle".</p>
+</details>
+</div>
+
+<div class="ky" id="adv6">
+<div class="ky-hd">🎯 考研选讲 · 第六章 一元函数积分学的应用</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题，数学一、二常考）设平面区域 \(D\) 由曲线 \(y=x\mathrm{e}^{x}\)、直线 \(x=1\) 及 \(x\) 轴围成，求 \(D\) 绕 \(y\) 轴旋转一周所成旋转体的体积.</p>
+<p class="ky-hint"><b>思路点拨.</b> 绕 \(y\) 轴旋转，第一反应往往是垫圈法——但那需要把 \(y=x\mathrm{e}^{x}\) 反解为 \(x=x(y)\)，而这个反函数无法用初等函数表示（它是 Lambert W 函数）.此题就是为<b>柱壳法</b>量身定做的：绕 \(y\) 轴转，却仍以 \(x\) 为积分变量.</p>
+<p class="sol"><span class="mk">解</span> 在 \([x,x+\mathrm{d}x]\ (0\le x\le1)\) 上取窄条，高为 \(x\mathrm{e}^{x}\)，绕 \(y\) 轴旋转得薄圆柱壳，其周长 \(2\pi x\)、厚 \(\mathrm{d}x\)，故</p>
+\[\mathrm{d}V=2\pi x\cdot x\mathrm{e}^{x}\,\mathrm{d}x=2\pi x^{2}\mathrm{e}^{x}\,\mathrm{d}x .\]
+<p>两次分部积分（或直接用 \(\displaystyle\int x^{2}\mathrm{e}^{x}\mathrm{d}x=\mathrm{e}^{x}(x^{2}-2x+2)\)）：</p>
+\[V=2\pi\int_{0}^{1}x^{2}\mathrm{e}^{x}\,\mathrm{d}x
+ =2\pi\Bigl[\mathrm{e}^{x}\bigl(x^{2}-2x+2\bigr)\Bigr]_{0}^{1}
+ =2\pi\bigl(\mathrm{e}-2\bigr)\approx4.513 .\]
+<p class="ky-idea"><b>命题意图.</b> 考查"旋转轴与切法配对"的选择能力.凡是绕 \(y\) 轴旋转且曲线难以反解，柱壳法几乎是唯一出路；同时顺带检验 \(\displaystyle\int x^{2}\mathrm{e}^{x}\mathrm{d}x\) 的分部积分熟练度.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题，数学一、二常考）求曲线 \(y=\displaystyle\int_{0}^{x}\sqrt{\sin t}\,\mathrm{d}t\ (0\le x\le\pi)\) 的弧长.</p>
+<p class="ky-hint"><b>思路点拨.</b> 变限积分求导给出 \(y'=\sqrt{\sin x}\)，于是 \(1+y'^{2}=1+\sin x\).<b>陷阱在开方</b>：必须把 \(1+\sin x\) 凑成完全平方 \(\bigl(\sin\frac x2+\cos\frac x2\bigr)^{2}\)，再判断该式在 \([0,\pi]\) 上的符号，否则去绝对值会出错.</p>
+<p class="sol"><span class="mk">解</span> 由变限积分求导定理 \(y'=\sqrt{\sin x}\)，故</p>
+\[1+y'^{2}=1+\sin x=\sin^{2}\frac x2+\cos^{2}\frac x2+2\sin\frac x2\cos\frac x2=\Bigl(\sin\frac x2+\cos\frac x2\Bigr)^{2}.\]
+<p>当 \(0\le x\le\pi\) 时 \(0\le\dfrac x2\le\dfrac{\pi}{2}\)，故 \(\sin\dfrac x2+\cos\dfrac x2\gt0\)，开方可去绝对值：</p>
+\[s=\int_{0}^{\pi}\Bigl(\sin\frac x2+\cos\frac x2\Bigr)\mathrm{d}x
+ =\Bigl[-2\cos\frac x2+2\sin\frac x2\Bigr]_{0}^{\pi}=(0+2)-(-2+0)=4 .\]
+<p class="ky-idea"><b>命题意图.</b> 三个考点串联：变限积分求导、三角凑完全平方、根式化简时的符号讨论.答案是漂亮的整数 4，说明命题人刻意设计了可积结构——考场上若算出一堆根式，多半是配方错了.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题，数学一常考）求由 \(y=\sin x\ (0\le x\le\pi)\) 与 \(x\) 轴围成的平面图形的形心坐标，并据此用古尔丁（Pappus）定理求该图形绕 \(x\) 轴旋转所成立体的体积.</p>
+<p class="ky-hint"><b>思路点拨.</b> \(\bar x\) 由对称性直接写出，不必积分.求 \(\bar y\) 时要牢记竖直窄条的质心在其<b>中点</b>，故分子是 \(\displaystyle\int\frac12 f^{2}(x)\,\mathrm{d}x\) 而不是 \(\displaystyle\int f(x)\,\mathrm{d}x\)——这是形心公式最常记错的地方.</p>
+<p class="sol"><span class="mk">解</span> 面积 \(A=\displaystyle\int_{0}^{\pi}\sin x\,\mathrm{d}x=2\).由图形关于 \(x=\dfrac{\pi}{2}\) 对称，得 \(\bar x=\dfrac{\pi}{2}\).又</p>
+\[\int_{0}^{\pi}\frac12\sin^{2}x\,\mathrm{d}x=\frac12\cdot\frac{\pi}{2}=\frac{\pi}{4}
+ \;\Longrightarrow\;\bar y=\frac{\pi/4}{2}=\frac{\pi}{8}\approx0.3927 .\]
+<p>古尔丁定理：平面图形绕与其不相交的轴旋转，所得体积等于图形面积乘以形心所走圆周长，即 \(V=2\pi\bar yA\).故</p>
+\[V=2\pi\times\frac{\pi}{8}\times2=\frac{\pi^{2}}{2}.\]
+<p>直接用圆盘法校核：\(V=\pi\displaystyle\int_{0}^{\pi}\sin^{2}x\,\mathrm{d}x=\pi\cdot\dfrac{\pi}{2}=\dfrac{\pi^{2}}{2}\)，一致.</p>
+<p class="ky-idea"><b>命题意图.</b> 把形心与旋转体体积打通.古尔丁定理本身不是必考公式，但"\(V=2\pi\bar yA\)"提供了一条极快的校验通道；反过来，已知体积也可反求形心，这是近年选择题的新花样.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题，数学一、二常考）一倒置圆锥形储液罐，深 \(H=5\ \mathrm{m}\)，顶面（罐口）半径 \(R=2\ \mathrm{m}\)，顶点朝下，罐内盛满水.求把罐内的水全部抽到罐口所需做的功（水密度 \(\rho=1000\ \mathrm{kg/m^3}\)，\(g=9.8\ \mathrm{m/s^2}\)）.</p>
+<p class="ky-hint"><b>思路点拨.</b> 两处易错：① 取"距罐口的深度 \(x\)"为变量，则提升高度恰为 \(x\)，最省事；② 圆锥截面半径随深度<b>线性变化</b>，\(r=\dfrac{R(H-x)}{H}\)，不能当成常数——这正是例 6.24 中"捷径"失效的情形，必须老实积分.</p>
+<p class="sol"><span class="mk">解</span> 取 \(x\) 为距罐口的深度，\(0\le x\le5\).该深度处截面半径 \(r=\dfrac{2(5-x)}{5}\)，薄层水的体积 \(\pi r^{2}\mathrm{d}x\)，需提升的高度为 \(x\)，故<b>功微元</b></p>
+\[\mathrm{d}W=\rho g\pi r^{2}x\,\mathrm{d}x
+ =9800\pi\cdot\frac{4(5-x)^{2}}{25}\,x\,\mathrm{d}x=1568\pi\,x(5-x)^{2}\,\mathrm{d}x .\]
+<p>展开 \(x(25-10x+x^{2})=25x-10x^{2}+x^{3}\)，积分</p>
+\[\int_{0}^{5}\bigl(25x-10x^{2}+x^{3}\bigr)\mathrm{d}x
+ =\frac{25\times25}{2}-\frac{10\times125}{3}+\frac{625}{4}
+ =312.5-416.667+156.25=52.083 .\]
+\[W=1568\pi\times52.083=2.566\times10^{5}\ \mathrm{J}\approx0.0713\ \mathrm{kW\cdot h}.\]
+<p class="ky-idea"><b>命题意图.</b> 抽水做功是变力（准确说是变质量分布）做功的标准模型.命题人用"倒圆锥"专门堵死"总质量乘质心提升高度"的捷径思维——只有截面积恒定时捷径才成立.能否正确写出 \(r(x)\) 并保持 \(x\) 与 \((5-x)\) 不混淆，是本题的分水岭.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 5】</b>（考研典型题，数学一常考）求阿基米德螺线 \(\rho=a\theta\ (a\gt0,\ 0\le\theta\le2\pi)\) 与极轴所围图形的面积，并求该螺线第一圈的弧长.</p>
+<p class="ky-hint"><b>思路点拨.</b> 面积套极坐标公式 \(A=\dfrac12\displaystyle\int_{\alpha}^{\beta}\rho^{2}\mathrm{d}\theta\)，几乎是送分；弧长要用 \(\mathrm{d}s=\sqrt{\rho^{2}+\rho'^{2}}\,\mathrm{d}\theta\)，会出现 \(\displaystyle\int\sqrt{1+\theta^{2}}\,\mathrm{d}\theta\)——务必记住这个基本积分的结果，不要在考场上现凑.</p>
+<p class="sol"><span class="mk">解</span> <b>（1）面积.</b>由 \(\mathrm{d}A=\dfrac12\rho^{2}\mathrm{d}\theta\)，</p>
+\[A=\frac12\int_{0}^{2\pi}a^{2}\theta^{2}\,\mathrm{d}\theta
+ =\frac{a^{2}}{2}\cdot\frac{(2\pi)^{3}}{3}=\frac{4\pi^{3}a^{2}}{3}.\]
+<p><b>（2）弧长.</b>\(\rho'=a\)，故 \(\sqrt{\rho^{2}+\rho'^{2}}=a\sqrt{1+\theta^{2}}\).利用</p>
+\[\int\sqrt{1+\theta^{2}}\,\mathrm{d}\theta=\frac{\theta}{2}\sqrt{1+\theta^{2}}+\frac12\ln\bigl(\theta+\sqrt{1+\theta^{2}}\bigr),\]
+<p>代入上下限 \(0\) 与 \(2\pi\)（记 \(k=2\pi=6.2832,\ \sqrt{1+k^{2}}=6.3623\)）：</p>
+\[s=a\Bigl[\frac{6.2832\times6.3623}{2}+\frac12\ln(6.2832+6.3623)\Bigr]
+ =a\bigl(19.988+1.269\bigr)=21.26\,a .\]
+<p class="ky-idea"><b>命题意图.</b> 一题两考：极坐标面积微元 \(\frac12\rho^{2}\mathrm{d}\theta\)（不要错写成 \(\rho\,\mathrm{d}\theta\)）与极坐标弧长微元 \(\sqrt{\rho^{2}+\rho'^{2}}\,\mathrm{d}\theta\)（不要漏掉 \(\rho^{2}\) 项）.阿基米德螺线还是雷达匀速扫描、硬盘磁道与 3D 打印同心填充路径的数学原型，工程意味十足.</p>
+</div>
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 霍尔电推进变轨：变质量系统的推力做功</summary>
+<p><b>场景：</b> 某 \(3\ \mathrm{t}\) 级通信卫星采用霍尔电推进从超同步转移轨道自主爬升到 GEO.电推力极小但比冲极高，整个过程中卫星质量持续减小、速度持续增大，推力所做的功必须逐微元累加.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>比冲</td><td>\(I_{sp}\)</td><td>1800 s</td></tr>
+<tr><td>推力</td><td>\(F\)</td><td>0.20 N</td></tr>
+<tr><td>初始质量</td><td>\(m_0\)</td><td>3000 kg</td></tr>
+<tr><td>携带推进剂</td><td>\(m_p\)</td><td>300 kg</td></tr>
+<tr><td>推进效率</td><td>\(\eta\)</td><td>0.50</td></tr>
+</table>
+<p class="sol"> <b>第一步：排气速度与流率.</b></p>
+\[u=I_{sp}g_{0}=1800\times9.80665=1.7652\times10^{4}\ \mathrm{m/s},\qquad
+  \dot m=\frac{F}{u}=\frac{0.20}{17652}=1.133\times10^{-5}\ \mathrm{kg/s}.\]
+<p>工作时长 \(T=\dfrac{300}{1.133\times10^{-5}}=2.648\times10^{7}\ \mathrm{s}=306.5\ \mathrm{天}\).</p>
+<p><b>第二步：速度增量.</b>由齐奥尔科夫斯基公式</p>
+\[\Delta v=u\ln\frac{m_{0}}{m_{0}-m_{p}}=17652\times\ln\frac{3000}{2700}=17652\times0.105361=1859.8\ \mathrm{m/s}.\]
+<p><b>第三步：推力做功.</b>推力恒定但位移速率 \(v(t)=u\ln\dfrac{m_{0}}{m_{0}-\dot mt}\) 不断变化，故<b>功微元</b> \(\mathrm{d}W=F\,\mathrm{d}s=Fv(t)\,\mathrm{d}t\).令 \(\mu=\dot mt\) 换元：</p>
+\[W=Fu\int_{0}^{T}\ln\frac{m_{0}}{m_{0}-\dot mt}\,\mathrm{d}t
+ =\frac{Fu}{\dot m}\int_{0}^{m_{p}}\Bigl(-\ln\bigl(1-\tfrac{\mu}{m_{0}}\bigr)\Bigr)\mathrm{d}\mu .\]
+<p>利用 \(\displaystyle\int_{0}^{X}-\ln(1-x)\,\mathrm{d}x=(1-X)\ln(1-X)+X\)，取 \(X=m_p/m_0=0.1\)：</p>
+\[\int_{0}^{m_p}(\cdots)\mathrm{d}\mu=m_{0}\bigl[0.9\ln0.9+0.1\bigr]=3000\times0.0051755=15.527\ \mathrm{kg}.\]
+\[W=\frac{0.20\times17652}{1.133\times10^{-5}}\times15.527=3.114\times10^{8}\times15.527=4.84\times10^{9}\ \mathrm{J}.\]
+<p><b>第四步：功率校核.</b>射流功率 \(P_{j}=\dfrac12\dot mu^{2}=0.5\times1.133\times10^{-5}\times3.116\times10^{8}=1765\ \mathrm{W}\)，故所需电功率 \(P=P_{j}/\eta=3.53\ \mathrm{kW}\).</p>
+<p><b>工程结论：</b> 推力对卫星做功 \(4.84\ \mathrm{GJ}\)，全部由太阳翼提供，需持续输出 \(3.5\ \mathrm{kW}\) 电力——这正是现代 GEO 平台太阳翼动辄 \(10\ \mathrm{kW}\) 量级的原因.作为对比，若改用 \(I_{sp}=300\ \mathrm{s}\) 的化学推进（\(u=2942\ \mathrm{m/s}\)）实现同样的 \(\Delta v\)，需推进剂</p>
+\[m_{p}'=m_{0}\bigl(1-\mathrm{e}^{-\Delta v/u}\bigr)=3000\times(1-\mathrm{e}^{-0.6322})=3000\times0.4685=1406\ \mathrm{kg}.\]
+<p>电推方案省下 \(1106\ \mathrm{kg}\)，可全部换成有效载荷或延寿燃料，代价是变轨要花 \(306\) 天而非几小时.<b>"用时间换质量"这笔账，就是靠这一组积分算出来的.</b></p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 机器人柔性臂：形心、转动惯量与"负载自重比"真相</summary>
+<p><b>场景：</b> 某协作机器人的末端连杆做成等厚碳纤维层合薄板，长 \(L=0.60\ \mathrm{m}\)，宽度沿轴线性收缩：根部 \(80\ \mathrm{mm}\)、末端 \(40\ \mathrm{mm}\)，即</p>
+\[b(x)=0.08\Bigl(1-\frac{x}{2L}\Bigr)\ \mathrm{m},\qquad 0\le x\le0.6 .\]
+<p>板厚 \(2\ \mathrm{mm}\)、材料密度 \(1600\ \mathrm{kg/m^3}\)，故面密度 \(\sigma=3.2\ \mathrm{kg/m^2}\).关节电机需要知道：连杆质心在哪、绕关节的转动惯量多大、以及末端抓手的影响有多大.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>连杆长度</td><td>\(L\)</td><td>0.60 m</td></tr>
+<tr><td>面密度</td><td>\(\sigma\)</td><td>3.2 kg/m²</td></tr>
+<tr><td>末端抓手质量</td><td>\(m_g\)</td><td>0.50 kg</td></tr>
+<tr><td>目标角加速度</td><td>\(\alpha\)</td><td>20 rad/s²</td></tr>
+</table>
+<p class="sol"> 取 \([x,x+\mathrm{d}x]\) 上的窄条，质量微元 \(\mathrm{d}m=\sigma b(x)\,\mathrm{d}x=0.256\,(1-0.8333x)\,\mathrm{d}x\).</p>
+<p><b>质量：</b></p>
+\[m=0.256\int_{0}^{0.6}(1-0.8333x)\,\mathrm{d}x=0.256\bigl[0.6-0.41667\times0.36\bigr]=0.256\times0.45=0.1152\ \mathrm{kg}.\]
+<p><b>形心（静矩比质量）：</b></p>
+\[\bar x=\frac{\displaystyle\int_{0}^{0.6}x(1-0.8333x)\,\mathrm{d}x}{0.45}
+ =\frac{0.18-0.27778\times0.216}{0.45}=\frac{0.12}{0.45}=0.2667\ \mathrm{m}.\]
+<p>即质心位于全长的 \(44.4\%\) 处，比等宽板的 \(50\%\) 更靠近根部.</p>
+<p><b>转动惯量（绕根部关节）：</b>\(\mathrm{d}I=x^{2}\,\mathrm{d}m\)，</p>
+\[I_{\text{锥}}=0.256\int_{0}^{0.6}x^{2}(1-0.8333x)\,\mathrm{d}x
+ =0.256\bigl[0.072-0.20833\times0.1296\bigr]=0.256\times0.045=0.01152\ \mathrm{kg\cdot m^2}.\]
+<p>作<b>等质量</b>对比：一根质量同为 \(0.1152\ \mathrm{kg}\) 的等宽板，\(I_{\text{等}}=\dfrac{mL^{2}}{3}=\dfrac{0.1152\times0.36}{3}=0.01382\ \mathrm{kg\cdot m^2}\).收缩式设计使转动惯量下降</p>
+\[\frac{0.01382-0.01152}{0.01382}=16.7\% .\]
+<p><b>但把抓手算上：</b>\(I_{\text{总}}=0.01152+m_{g}L^{2}=0.01152+0.5\times0.36=0.19152\ \mathrm{kg\cdot m^2}\).所需驱动力矩 \(M=I_{\text{总}}\alpha=3.83\ \mathrm{N\cdot m}\).</p>
+<p><b>工程结论：</b> 连杆自身仅贡献 \(0.0115/0.1915=6.0\%\) 的转动惯量，末端 \(0.5\ \mathrm{kg}\) 抓手却贡献了 \(94\%\)——因为转动惯量按距离<b>平方</b>加权，而抓手全部质量都集中在 \(x=L\) 处.这意味着：把连杆再减重 \(30\%\)，总惯量只降 \(1.8\%\)，几乎白费功夫；而把抓手轻量化 \(30\%\)，总惯量直降 \(28\%\).<b>这就是协作机器人行业为何以"负载自重比"而非"结构减重率"作为核心指标</b>，也是本节"形心—转动惯量"两个积分给出的最有价值的判断.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch6-arm" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>宽度收缩率 λ <input type="range" id="ch6-arm-lam" min="0" max="0.8" step="0.02" value="0.667" style="width:220px;accent-color:#0F6E56"> <b id="ch6-arm-lam-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch6-arm-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch6-arm'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var L=0.6, t=0.008, rho=1600; // 厚 8mm, 碳纤维密度
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=60,mR=14,mT=24,mB=36,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var lam=+document.getElementById('ch6-arm-lam').value; // 末端/根部宽度比
+      var b0=0.08, b1=0.04;
+      function bw(x){ return b0*(1-lam*x/L); }
+      function X(x){ return mL+x/L*pW; }
+      function Yv(v){ return mT+pH - v/0.09*pH; }
+      // 臂轮廓（梯形，沿 x）
+      ctx.fillStyle='rgba(15,110,86,0.22)';
+      ctx.beginPath();
+      for(var x=0;x<=L;x+=L/60){ ctx.lineTo(X(x),Yv(-bw(x)/2)); }
+      for(var x2=L;x2>=0;x2-=L/60){ ctx.lineTo(X(x2),Yv(bw(x2)/2)); }
+      ctx.closePath();ctx.fill();
+      // 轴线
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(mL,Yv(0));ctx.lineTo(W-mR,Yv(0));ctx.stroke();ctx.setLineDash([]);
+      // 数值积分
+      var N=400, m=0, m1=0, m2=0, A=0;
+      for(var i=0;i<N;i++){
+        var xc=L*(i+0.5)/N, dx=L/N;
+        var dm=t*rho*bw(xc)*dx; m+=dm; m1+=xc*dm; m2+=xc*xc*dm; A+=bw(xc)*dx;
+      }
+      var xbar=m1/m;
+      // 形心位置
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(X(xbar),mT);ctx.lineTo(X(xbar),mT+pH);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#ca8a04';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('形心 x̄='+xbar.toFixed(3),X(xbar),mT+12);
+      // 轴标注
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('80 mm',mL-6,Yv(0.08));
+      ctx.textAlign='center';ctx.fillText('x',W-mR+10,mT+pH+15);
+      ctx.fillText('L=0.6 m',X(L),mT+pH+15);
+      // 数值
+      var mGram=m*1000;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('质量 '+mGram.toFixed(0)+' g   形心 x̄ = '+xbar.toFixed(3)+' m   绕根惯量 '+m2.toFixed(5)+' kg·m²',mL,mT+13);
+      var out=document.getElementById('ch6-arm-out');
+      out.textContent = '末端 0.5kg 抓手惯量 0.5×0.6²='+((0.5*L*L)).toFixed(3)+' kg·m²，是连杆的 '+(0.5*L*L/m2).toFixed(0)+' 倍——减重连杆 30% 对总惯量几乎无感';
+    }
+    document.getElementById('ch6-arm-lam').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC6">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq6" data-ch=6><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+</div>
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第6章 · 一元函数积分学的应用</div>
+<a href="#s061">6.1 定积分的微元法</a>
+<a href="#s062">6.2 几何学中的应用</a>
+<a href="#s063">6.3 物理学中的应用</a>
+<a href="ch6.html#adv6">考研选讲</a>
+<a href="ch6.html#cq6">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 6, "list": [["s061", "6.1 定积分的微元法"], ["s062", "6.2 几何学中的应用"], ["s063", "6.3 物理学中的应用"], ["adv6", "考研选讲"], ["cq6", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性代数 · 第1章 行列式</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="tower.css">
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><b>线性代数 · 数字教材</b><span>第1章 行列式</span><span class="topbar-slot" id="eb-slot-m"></span></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#fff;text-decoration:none">线性代数</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<a href="index.html" style="background:#1b3547;color:#fff">← 教材目录</a>
+</aside>
+  <div class="page"><div class="col">
+<div class="kicker">Chapter One</div>
+    <h1 class="title">行列式<span class="en">Determinant</span></h1>
+    <p class="lede">行列式不仅是一套便捷的计算记号，更是刻画"面积与体积""线性相关性"与"方程组可解性"的核心工具.本章从解线性方程组的实际背景入手，以<b>按第一行展开</b>的递归方式定义 \(n\) 阶行列式，系统建立它的性质与展开定理，并由此导出克拉默法则；随后给出面积计算、组合恒等式等应用实例，配以若干可以亲手操作的交互程序.行列式理论从萌芽到成熟历经一个半世纪、数代数学家接力打磨，本章末尾的拓展阅读将带你走近这段历史.</p>
+
+    <!-- ============ §1.1 ============ -->
+    <h2 id="s11"><span class="num">§1.1</span>行列式的概念</h2>
+<div class="ex"><div class="lab">引例　协作机械臂的"奇异形位"：一个行列式决定它会不会卡死</div>
+  <p class="stmt">现代<b>协作机器人</b>有 6 个关节，末端的位置与姿态由这 6 个关节角决定.从"关节角"到"末端位姿"是一个非线性映射，它在某一姿态附近的局部变化，由一个叫<b>雅可比矩阵</b> \(J\) 的方阵描述.关键的判据是：当 \(\det J=0\) 时，机械臂进入<b>奇异形位</b>——某个方向的运动能力瞬间"消失"（就像人的胳膊完全伸直时，再也无法沿手臂方向推东西）.</p>
+  <p>行列式最朴素的物理含义就在这里：它衡量一组向量（这里是各关节能提供的运动方向）是否"撑满"了整个空间；一旦这组向量<b>线性相关</b>，行列式塌缩为 \(0\)，方向就少了一个.所以工程师在运动规划前，先用行列式排查奇异形位——这正是我们整章要学的工具.</p>
+  <p><b>探索：</b>先用你已有的知识算两个 \(2\times2\) 行列式：
+  \(\begin{vmatrix}2&1\\1&3\end{vmatrix}=5\neq0\)（不奇异，六向都能动）；
+  而 \(\begin{vmatrix}1&2\\2&4\end{vmatrix}=0\)（奇异，沿某方向卡死）.
+  学完本节，你就能对任意阶行列式做同样的判定——甚至直接判断一台真实机械臂是否会"卡死".</p>
+</div>
+
+    <h3>一、从解方程组到二阶、三阶行列式</h3>
+    <p>考虑二元一次线性方程组
+    \[\begin{cases}a_{11}x_1+a_{12}x_2=b_1,\\ a_{21}x_1+a_{22}x_2=b_2.\end{cases}\]
+    用消元法，当 \(a_{11}a_{22}-a_{12}a_{21}\neq0\) 时可解得唯一解
+    \[x_1=\frac{b_1a_{22}-b_2a_{12}}{a_{11}a_{22}-a_{12}a_{21}},\qquad
+      x_2=\frac{a_{11}b_2-a_{21}b_1}{a_{11}a_{22}-a_{12}a_{21}}.\]
+    分母 \(a_{11}a_{22}-a_{12}a_{21}\) 决定了解是否存在且唯一.为了把这类表达式写得简洁、算得有章法，引入下面的记号.</p>
+
+    <div class="def"><div class="lab"><span class="n">定义 1.1</span>二阶行列式</div>
+      <p>将四个数 \(a_{11},a_{12},a_{21},a_{22}\) 排成两行两列，称算式
+      \[\begin{vmatrix}a_{11}&a_{12}\\ a_{21}&a_{22}\end{vmatrix}=a_{11}a_{22}-a_{12}a_{21}\]
+      为<b>二阶行列式</b>，其中每个数称为行列式的<b>元素</b>.它等于<b>主对角线</b>元素之积减去<b>次对角线</b>元素之积.</p>
+    </div>
+    <p>于是二元方程组的解可以写成整齐的商式
+    \[x_1=\frac{\begin{vmatrix}b_1&a_{12}\\ b_2&a_{22}\end{vmatrix}}{\begin{vmatrix}a_{11}&a_{12}\\ a_{21}&a_{22}\end{vmatrix}},\qquad
+      x_2=\frac{\begin{vmatrix}a_{11}&b_1\\ a_{21}&b_2\end{vmatrix}}{\begin{vmatrix}a_{11}&a_{12}\\ a_{21}&a_{22}\end{vmatrix}}.\]
+    记号带来的秩序感与规律性，正是行列式被创造出来的原动力.</p>
+
+    <p class="cn-point">协作机械臂逼近「奇异形位」时，其雅可比矩阵行列式趋于 0——末端瞬间丧失某个方向的运动能力，轻则轨迹抖动，重则「别死」电机.这正是国产协作机器人（节卡、遨博、越疆）出厂前逐台做奇异点标定的数学根由：行列式是否非零，是机构「能不能动」的一票否决.</p><div class="ex"><div class="lab">例 1.1</div>
+      <p class="stmt">计算二阶行列式 \(D=\begin{vmatrix}3&1\\5&2\end{vmatrix}\)，并解方程组 \(\begin{cases}3x_1+x_2=5,\\ 5x_1+2x_2=9.\end{cases}\)</p>
+      <p class="sol"><span class="mk">解</span>\(D=3\times2-1\times5=1\neq0\)，故方程组有唯一解：
+      \[x_1=\frac{\begin{vmatrix}5&1\\9&2\end{vmatrix}}{D}=\frac{10-9}{1}=1,\qquad
+        x_2=\frac{\begin{vmatrix}3&5\\5&9\end{vmatrix}}{D}=\frac{27-25}{1}=2.\]</p>
+    </div>
+
+    <p>类似地，解三元一次方程组时出现的分母，是由 9 个数排成三行三列的算式，称为<b>三阶行列式</b>：
+    \[\begin{vmatrix}a_{11}&a_{12}&a_{13}\\ a_{21}&a_{22}&a_{23}\\ a_{31}&a_{32}&a_{33}\end{vmatrix}
+    =a_{11}a_{22}a_{33}+a_{12}a_{23}a_{31}+a_{13}a_{21}a_{32}-a_{13}a_{22}a_{31}-a_{12}a_{21}a_{33}-a_{11}a_{23}a_{32}.\]
+    右端六项可以用<b>沙路法（对角线法则）</b>记忆：主对角线方向的三个乘积取正号，次对角线方向的三个乘积取负号.需要注意，对角线法则只适用于二阶与三阶行列式.</p>
+
+    <figure style="margin:1.2em 0;text-align:center;">
+      <svg viewBox="0 0 700 260" style="max-width:760px;width:98%;height:auto;">
+        <defs>
+          <marker id="apos" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#1e5aa8"/></marker>
+          <marker id="aneg" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#dc2626"/></marker>
+        </defs>
+
+        <!-- 背景面板 -->
+        <rect x="95" y="35" width="245" height="170" fill="#f8fafc" stroke="#1e5aa8" stroke-width="1.5" stroke-opacity="0.25" rx="3"/>
+        <rect x="340" y="35" width="170" height="170" fill="#f0fdfa" stroke="#1e5aa8" stroke-width="1.5" stroke-dasharray="7,6" stroke-opacity="0.35" rx="3"/>
+
+        <!-- 竖直网格线 -->
+        <line x1="150" y1="35" x2="150" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+        <line x1="220" y1="35" x2="220" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+        <line x1="290" y1="35" x2="290" y2="205" stroke="#cbd5e1" stroke-width="1"/>
+        <line x1="360" y1="35" x2="360" y2="205" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="430" y1="35" x2="430" y2="205" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,3"/>
+
+        <!-- 水平网格线 -->
+        <line x1="95" y1="85" x2="510" y2="85" stroke="#cbd5e1" stroke-width="1"/>
+        <line x1="95" y1="135" x2="510" y2="135" stroke="#cbd5e1" stroke-width="1"/>
+
+        <!-- 标签 -->
+        <text x="217" y="30" font-size="13" fill="#475569" text-anchor="middle" font-family="-apple-system,'Microsoft YaHei',sans-serif">原 3×3 行列式</text>
+        <text x="425" y="30" font-size="13" fill="#475569" text-anchor="middle" font-family="-apple-system,'Microsoft YaHei',sans-serif">复制前两列</text>
+
+        <!-- 正项对角线（青，左上→右下） -->
+        <g stroke="#1e5aa8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#apos)" opacity="0.9">
+          <path d="M150,60 L220,110 L290,160"/>
+          <path d="M220,60 L290,110 L360,160"/>
+          <path d="M290,60 L360,110 L430,160"/>
+        </g>
+
+        <!-- 负项对角线（红，右上→左下） -->
+        <g stroke="#dc2626" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#aneg)" opacity="0.9">
+          <path d="M290,60 L220,110 L150,160"/>
+          <path d="M360,60 L290,110 L220,160"/>
+          <path d="M430,60 L360,110 L290,160"/>
+        </g>
+
+        <!-- 矩阵元素（Unicode 下标，避免 SVG 内嵌 KaTeX） -->
+        <g font-size="20" fill="#0f172a" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,'Times New Roman','Noto Serif SC',serif">
+          <text x="150" y="60">a₁₁</text><text x="220" y="60">a₁₂</text><text x="290" y="60">a₁₃</text><text x="360" y="60">a₁₁</text><text x="430" y="60">a₁₂</text>
+          <text x="150" y="110">a₂₁</text><text x="220" y="110">a₂₂</text><text x="290" y="110">a₂₃</text><text x="360" y="110">a₂₁</text><text x="430" y="110">a₂₂</text>
+          <text x="150" y="160">a₃₁</text><text x="220" y="160">a₃₂</text><text x="290" y="160">a₃₃</text><text x="360" y="160">a₃₁</text><text x="430" y="160">a₃₂</text>
+        </g>
+
+        <!-- 图例 -->
+        <g font-family="-apple-system,'Microsoft YaHei',sans-serif">
+          <text x="130" y="215" font-size="13" fill="#1e5aa8" font-weight="600">主对角线方向：三项取正</text>
+          <text x="400" y="215" font-size="13" fill="#dc2626" font-weight="600">次对角线方向：三项取负</text>
+          <text x="130" y="237" font-size="12" fill="#1e5aa8" font-family="Georgia,'Times New Roman',serif">+a₁₁a₂₂a₃₃ + a₁₂a₂₃a₃₁ + a₁₃a₂₁a₃₂</text>
+          <text x="400" y="237" font-size="12" fill="#dc2626" font-family="Georgia,'Times New Roman',serif">−a₁₃a₂₂a₃₁ − a₁₂a₂₁a₃₃ − a₁₁a₂₃a₃₂</text>
+        </g>
+      </svg>
+      <figcaption style="font-size:.85em;color:#64748b;margin-top:.3em;">图 1.1　沙路法（对角线法则）：把前两项复制到右侧，沿主对角线方向的三个乘积取正，沿次对角线方向的三个乘积取负.</figcaption>
+    </figure>
+
+    <div class="ex"><div class="lab">例 1.2</div>
+      <p class="stmt">计算三阶行列式 \(D=\begin{vmatrix}1&2&-1\\3&0&2\\-2&1&4\end{vmatrix}\).</p>
+      <p class="sol"><span class="mk">解</span>由对角线法则，
+      \[D=1\cdot0\cdot4+2\cdot2\cdot(-2)+(-1)\cdot3\cdot1-(-1)\cdot0\cdot(-2)-2\cdot3\cdot4-1\cdot2\cdot1
+      =0-8-3-0-24-2=-37.\]</p>
+    </div>
+
+    <h3>二、余子式：把三阶"降"为二阶</h3>
+    <p>把三阶行列式的六项按第一行的元素 \(a_{11},a_{12},a_{13}\) 分组提取，可以发现三阶行列式能够<b>转化为二阶行列式的组合</b>来计算——这正是通向 \(n\) 阶定义的桥梁.先给出两个基本概念.</p>
+    <div class="def"><div class="lab"><span class="n">定义 1.2</span>余子式与代数余子式</div>
+      <p>在行列式中划去元素 \(a_{ij}\) 所在的第 \(i\) 行、第 \(j\) 列，余下元素按原来的相对位置构成的低一阶行列式，称为 \(a_{ij}\) 的<b>余子式</b>，记作 \(M_{ij}\)；称
+      \[A_{ij}=(-1)^{i+j}M_{ij}\]
+      为 \(a_{ij}\) 的<b>代数余子式</b>.</p>
+    </div>
+
+    <div class="ex"><div class="lab">补例（余子式与代数余子式）</div>
+      <p class="stmt">设 \(D=\begin{vmatrix}1&2&3\\ 4&5&6\\ 7&8&10\end{vmatrix}\)，求 \(M_{23},A_{23},M_{12},A_{12}\).</p>
+      <p class="sol"><span class="mk">解</span>划去第 2 行、第 3 列，得
+      \(M_{23}=\begin{vmatrix}1&2\\ 7&8\end{vmatrix}=8-14=-6\)，
+      故 \(A_{23}=(-1)^{2+3}M_{23}=(-1)^5(-6)=6\).<br>
+      划去第 1 行、第 2 列，得
+      \(M_{12}=\begin{vmatrix}4&6\\ 7&10\end{vmatrix}=40-42=-2\)，
+      故 \(A_{12}=(-1)^{1+2}M_{12}=(-1)^3(-2)=2\).</p>
+    </div>
+
+    <p>直接验证可知，三阶行列式按第一行的三个元素整理，恰好等于
+    \[\begin{vmatrix}a_{11}&a_{12}&a_{13}\\ a_{21}&a_{22}&a_{23}\\ a_{31}&a_{32}&a_{33}\end{vmatrix}
+    =a_{11}A_{11}+a_{12}A_{12}+a_{13}A_{13}.\]
+    三阶行列式的计算就这样被"降阶"为二阶行列式的组合.</p>
+
+    <h3>三、\(n\) 阶行列式的定义</h3>
+    <p>受此启发，我们用<b>递归（降阶）</b>的方法一举定义任意阶的行列式.</p>
+    <div class="def"><div class="lab"><span class="n">定义 1.3</span>\(n\) 阶行列式</div>
+      <p>由 \(n^2\) 个数 \(a_{ij}\;(i,j=1,2,\dots,n)\) 排成 \(n\) 行 \(n\) 列的算式称为 \(n\) 阶行列式，记作 \(D=|a_{ij}|\) 或 \(\det(a_{ij})\).其值规定为：</p>
+      <p>　(1)　当 \(n=1\) 时，\(D=|a_{11}|=a_{11}\)；</p>
+      <p>　(2)　当 \(n\ge 2\) 时，<b>按第一行展开</b>：
+      \[D=a_{11}A_{11}+a_{12}A_{12}+\cdots+a_{1n}A_{1n}=\sum_{j=1}^{n}a_{1j}A_{1j},\]
+      其中 \(A_{1j}=(-1)^{1+j}M_{1j}\)，而每个余子式 \(M_{1j}\) 又是一个 \(n-1\) 阶行列式——如此逐层降阶，最终归结为一阶行列式.</p>
+    </div>
+    <div class="note"><b>关于这个定义的两点说明.</b>其一，递归定义把"高阶"层层归约为"低阶"，与我们从二阶、三阶一路推上来的认知路径完全一致，并且天然给出一个可执行的算法（下方交互程序②演示的正是它）.其二，定义中指定了"按第一行"，这只是一个约定——§1.3 的展开定理将证明：按<b>任意一行或任意一列</b>展开，结果都相同.</div>
+
+    <div class="def"><div class="lab"><span class="n">特例</span>三角形行列式与对角行列式</div>
+      <p>主对角线以上元素全为零的行列式称为<b>下三角行列式</b>，以下全为零的称为<b>上三角行列式</b>，两侧都为零的称为<b>对角行列式</b>.三者的值都等于<b>主对角线元素之积</b>：
+      \[\begin{vmatrix}a_{11}&&&\\ a_{21}&a_{22}&&\\ \vdots&\vdots&\ddots&\\ a_{n1}&a_{n2}&\cdots&a_{nn}\end{vmatrix}
+      =\begin{vmatrix}a_{11}&a_{12}&\cdots&a_{1n}\\ &a_{22}&\cdots&a_{2n}\\ &&\ddots&\vdots\\ &&&a_{nn}\end{vmatrix}
+      =a_{11}a_{22}\cdots a_{nn}.\]</p>
+    </div>
+    <details><summary>三角形行列式求值公式的证明</summary>
+      <div class="body">
+        <p><b>下三角情形.</b>对阶数用数学归纳法.\(n=1\) 时显然.设结论对 \(n-1\) 阶成立，对 \(n\) 阶下三角行列式，第一行只有 \(a_{11}\) 可能非零，按定义（第一行展开）得 \(D=a_{11}M_{11}\)，而 \(M_{11}\) 是 \(n-1\) 阶下三角行列式，由归纳假设 \(M_{11}=a_{22}\cdots a_{nn}\)，故 \(D=a_{11}a_{22}\cdots a_{nn}\).</p>
+        <p><b>上三角情形.</b>同样按第一行展开：\(D=\sum_j a_{1j}A_{1j}\).注意划去第一行、第 \(j\) 列后，当 \(j\ge2\) 时余子式 \(M_{1j}\) 的第一列全为零（原来的 \(a_{21},\dots\) 位于对角线下方），由归纳假设可证这些项均为零，只剩 \(j=1\) 的一项 \(a_{11}M_{11}\)，归纳即得结论.对角行列式是上、下三角的特例.</p>
+      </div>
+    </details>
+
+    <div class="ex"><div class="lab">例 1.3</div>
+      <p class="stmt">计算行列式 \(D=\begin{vmatrix}1&2&0&0\\ 3&4&0&0\\ 0&0&5&6\\ 0&0&7&8\end{vmatrix}\).</p>
+      <p class="sol"><span class="mk">解</span>按第一行展开，只有前两个元素非零：
+      \[D=1\cdot A_{11}+2\cdot A_{12}
+        =\begin{vmatrix}4&0&0\\0&5&6\\0&7&8\end{vmatrix}
+        -2\begin{vmatrix}3&0&0\\0&5&6\\0&7&8\end{vmatrix}.\]
+      两个三阶行列式再按第一行展开（各自只有首元素非零），得
+      \[D=4(40-42)-2\cdot3(40-42)=-8+12=4.\]
+      本题呈"分块对角"形状，结果恰为两个对角块行列式之积 \((-2)\times(-2)=4\)——这一规律将在第二章分块矩阵中一般化.</p>
+    </div>
+
+    <div class="labx">
+      <div class="lab">交互 ①　二阶行列式 = 平行四边形的有向面积</div>
+      <div class="desc">修改矩阵元素，观察单位正方形如何被"拉"成平行四边形；输出实时显示行列式的值（即有向面积）.</div>
+      <div class="row">
+        <div class="ctrls">
+          <div class="matrix-in m2">
+            <input id="a" value="2" type="number" step="0.5"><input id="b" value="1" type="number" step="0.5">
+            <input id="c" value="1" type="number" step="0.5"><input id="d" value="3" type="number" step="0.5">
+          </div>
+          <button class="btn" onclick="playTransform()">▶ 播放变换</button>
+          <button class="btn ghost" onclick="resetM()">重置</button>
+          <div class="out" id="detOut">det = 2×3 − 1×1 = <b>5</b>　（面积 = 5）</div>
+        </div>
+        <canvas id="cv" width="300" height="300"></canvas>
+      </div>
+    </div>
+    <div class="labx">
+      <div class="lab">交互 ②　三阶行列式：按第一行展开（降阶）</div>
+      <div class="desc">输入任意 3×3 矩阵，程序按定义 1.3 逐项降阶计算，并写出完整过程.</div>
+      <div class="matrix-in m3" id="m3">
+        <input value="1" type="number"><input value="2" type="number"><input value="3" type="number">
+        <input value="0" type="number"><input value="1" type="number"><input value="4" type="number">
+        <input value="5" type="number"><input value="6" type="number"><input value="0" type="number">
+      </div>
+      <button class="btn" onclick="calcDet3()">按第一行展开计算</button>
+      <div class="out" id="det3Out">输入矩阵后点击计算.</div>
+    </div>
+
+                    <div class="case"><div class="lab">应用探微 · 有向面积如何驱动一帧游戏画面（计算机图形学）</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+      <p>二阶行列式的几何意义——有向面积——是实时渲染管线中每秒被计算<b>数十亿次</b>的基本量.GPU 把三维模型拆成三角形后，至少在两处依赖它.今天<b>高端制造</b>的"数字孪生"把物理工厂、机床、机器人映射成可交互的三维模型，同样靠三角剖分与有向面积实时渲染——你看到的每帧工业仿真，背后都是行列式.</p>
+      <p><b>为什么一定是三角形？</b>任意三个不共线的点唯一确定一个平面，而三角形正是<b>不可再分的最小平面的</b>：四边形、五边形等多边形可能是弯曲的（如一张皱褶的曲面），无法直接套用平面公式.于是 GPU 把模型的表面统一剖分为三角形网格（称为<b>三角剖分，triangulation</b>），每个三角形只用三个顶点存储，就能独立、并行地处理每一片.一旦这些三角形投影到屏幕，问题便退化到二维平面，下面两个基于二阶行列式的判定才得以派上用场.</p>
+      <p><b>其一，背面剔除.</b>三角形 \(P_1P_2P_3\) 的<b>有向面积</b>
+      \[S=\frac12\begin{vmatrix}x_2-x_1&y_2-y_1\\ x_3-x_1&y_3-y_1\end{vmatrix}\]
+      的<b>符号</b>由顶点的绕行方向决定：逆时针为正、顺时针为负.约定模型正面的三角形逆时针编号，则投影后 \(S\lt 0\) 的三角形必然背对观察者，可直接跳过，不必渲染——通常一半的三角形因此被免于计算.</p>
+      <figure style="margin:14px 0;text-align:center">
+        <svg viewBox="0 0 600 230" width="100%" style="max-width:560px;height:auto" font-family="-apple-system,'Microsoft YaHei',sans-serif">
+          <defs>
+            <marker id="ah" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1e5aa8"/></marker>
+            <marker id="ahr" markerWidth="9" markerHeight="9" refX="5.5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c0392b"/></marker>
+          </defs>
+          <g>
+            <polygon points="70,172 230,172 150,52" fill="rgba(30,90,168,.07)" stroke="#1e5aa8" stroke-width="2"/>
+            <line x1="70" y1="172" x2="230" y2="172" stroke="#1e5aa8" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="230" y1="172" x2="150" y2="52" stroke="#1e5aa8" stroke-width="2" marker-end="url(#ah)"/>
+            <line x1="150" y1="52" x2="70" y2="172" stroke="#1e5aa8" stroke-width="2" marker-end="url(#ah)"/>
+            <text x="58" y="194" fill="#1e5aa8" font-size="14">P₁</text>
+            <text x="224" y="194" fill="#1e5aa8" font-size="14">P₂</text>
+            <text x="142" y="46" fill="#1e5aa8" font-size="14">P₃</text>
+            <text x="96" y="218" fill="#1e5aa8" font-size="14" font-weight="700">逆时针绕行 ⇒ det &gt; 0（正面渲染）</text>
+          </g>
+          <g transform="translate(300,0)">
+            <polygon points="70,172 230,172 150,52" fill="rgba(192,57,43,.07)" stroke="#c0392b" stroke-width="2"/>
+            <line x1="70" y1="172" x2="150" y2="52" stroke="#c0392b" stroke-width="2" marker-end="url(#ahr)"/>
+            <line x1="150" y1="52" x2="230" y2="172" stroke="#c0392b" stroke-width="2" marker-end="url(#ahr)"/>
+            <line x1="230" y1="172" x2="70" y2="172" stroke="#c0392b" stroke-width="2" marker-end="url(#ahr)"/>
+            <text x="58" y="194" fill="#c0392b" font-size="14">P₁</text>
+            <text x="224" y="194" fill="#c0392b" font-size="14">P₂</text>
+            <text x="142" y="46" fill="#c0392b" font-size="14">P₃</text>
+            <text x="94" y="218" fill="#c0392b" font-size="14" font-weight="700">顺时针绕行 ⇒ det &lt; 0（背面剔除）</text>
+          </g>
+        </svg>
+        <figcaption style="font-size:13px;color:#5b6b7b;margin-top:4px">图　同一组顶点，绕行方向不同 ⇒ 有向面积符号相反.这正是背面剔除的依据：约定正面逆时针编号，则投影后 det&lt;0 的三角形必背对观察者.</figcaption>
+      </figure>
+      <p><b>其二，判断像素是否落在三角形内.</b>屏幕上每个候选像素 \(P\)，分别与三条边构成三个二阶行列式（图形学中称边函数）：\(E_i=\det(P_{i+1}-P_i,\;P-P_i)\).<b>三个 \(E_i\) 同号 \(\iff P\) 在三角形内部</b>——这就是光栅化的核心判据.</p>
+      <details><summary>算例：像素 \(P(2,2)\) 在三角形 \(A(0,0),B(5,0),C(0,4)\) 内吗</summary>
+        <div class="body">
+          <p>\[E_1=\begin{vmatrix}5&0\\2&2\end{vmatrix}=10,\qquad
+             E_2=\begin{vmatrix}-5&4\\-3&2\end{vmatrix}=2,\qquad
+             E_3=\begin{vmatrix}0&-4\\2&-2\end{vmatrix}=8.\]
+          （\(E_1\) 用边 \(AB\) 与向量 \(AP\)，\(E_2\) 用边 \(BC\) 与向量 \(BP\)，\(E_3\) 用边 \(CA\) 与向量 \(CP\).）三个值同为正，故 \(P\) 在内部，该像素应被着色.若把 \(P\) 换成 \((4,3)\)，则 \(E_2=\begin{vmatrix}-5&4\\-1&3\end{vmatrix}=-11\lt 0\)，符号不一致，像素在三角形外.GPU 对屏幕上每个像素并行地做这三个二阶行列式判断——你看到的每一帧画面，都是它们的工作成果.</p>
+        </div>
+      </details>
+
+  </div>
+</details></div>
+
+
+
+
+
+<!-- ============ §1.2 ============ -->
+    
+<div class="sec-quiz" data-sec="s11" data-ch="1" data-n="44"></div>
+<h2 id="s12"><span class="num">§1.2</span>行列式的性质</h2>
+    <p>直接按定义递归计算 \(n\) 阶行列式，运算量随阶数急剧增长——完全展开共有 \(n!\) 项.要让行列式真正可用，必须建立一批化简性质，"以巧破力".先引入一个概念：将 \(D\) 的第 \(i\) 行依次改写为第 \(i\) 列，所得行列式称为 \(D\) 的<b>转置行列式</b>，记作 \(D^{T}\).</p>
+    <div class="def"><div class="lab"><span class="n">性质 1 — 性质 5</span></div>
+      <p><b>性质 1</b>　\(D=D^{T}\).行与列的地位对等——凡对行成立的结论，对列同样成立.<br>
+      <b>性质 2</b>　互换两行（列），行列式变号.<br>
+      <span class="muted">　推论　若有两行（列）完全相同，则 \(D=0\).</span><br>
+      <b>性质 3</b>　某一行（列）的所有元素同乘数 \(k\)，等于用 \(k\) 乘该行列式.<br>
+      <span class="muted">　推论　整行（列）的公因子可提到行列式记号之外；某行（列）全为零时 \(D=0\)；两行（列）对应成比例时 \(D=0\).</span><br>
+      <b>性质 4</b>　若某行（列）的元素都是两数之和，则行列式可按该行（列）拆成两个行列式之和.<br>
+      <b>性质 5</b>　把某行（列）的 \(k\) 倍加到另一行（列）上，行列式的值不变.</p>
+    </div>
+    <p class="muted">以下折叠块基于 §1.1 的递归定义给出性质 1—5 的证明（"摊平"论证 + 数学归纳法）；其后另配四条<b>三阶数值验证</b>，供读者建立具体感受.</p>
+    <details class="prf"><summary>性质 1—5 的证明</summary>
+      <div class="body">
+        <p><b>预备：把递归定义"摊平".</b>对 \(D\) 按第一行逐层递归展开，最终得到 \(n!\) 个"每行每列各取一个元素"的乘积之和，且每一项的符号恰为该乘积诸因子所在列构成的排列的逆序数的奇偶性，即
+        \[|D|=\sum_{\sigma\in S_n}(-1)^{\tau(\sigma)}\,a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)},\]
+        其中 \(\tau(\sigma)\) 是排列 \(\sigma=(\sigma(1),\dots,\sigma(n))\) 的逆序数.这一点可用归纳法验证：按第一行展开时，第 \(j\) 项乘以 \((-1)^{1+j}\) 后，再把余子式 \(M_{1j}\) 中的因子按行列次序接在 \(a_{1j}\) 之后，恰好把 \(j\) 与其前各数之间的逆序关系逐层累积成 \(\tau(\sigma)\).以下性质均以此式为基础.</p>
+        <p><b>性质 1（转置不变）.</b>对 \(D^{T}\) 同样摊平，其第 \(i\) 行第 \(j\) 列元素是 \(a_{ji}\)，故
+        \[|D^{T}|=\sum_{\sigma\in S_n}(-1)^{\tau(\sigma)}\,a_{\sigma(1),1}a_{\sigma(2),2}\cdots a_{\sigma(n),n}.\]
+        令 \(\rho=\sigma^{-1}\)（把因子下标 \(\sigma(i)\) 与 \(i\) 对调）：\(a_{\sigma(i),i}=a_{\sigma(i),(\sigma^{-1}\circ\sigma)(i)}=a_{\rho(\sigma(i)),\sigma(i)}\)，于是乘积恰为 \(a_{1\rho(1)}a_{2\rho(2)}\cdots a_{n\rho(n)}\)，且取逆不改变逆序数（\(\tau(\sigma^{-1})=\tau(\sigma)\)，因逆序对一一对应）.故
+        \[|D^{T}|=\sum_{\rho\in S_n}(-1)^{\tau(\rho)}\,a_{1\rho(1)}a_{2\rho(2)}\cdots a_{n\rho(n)}=|D|.\]
+        由此，"凡对行成立的结论，对列同样成立"即可直接沿用.</p>
+        <p><b>性质 2（互换两行变号）.</b>先看<b>相邻</b>两行：交换第 \(i\) 与第 \(i+1\) 行后，摊平式中每一项的因子顺序相当于被对换 \((i\ i+1)\) 打乱——新排列 \(\rho=\sigma\circ(i\ i+1)\) 恰比 \(\sigma\) 多一次对换，逆序数奇偶性改变，故每一项都变号，整个行列式变号.一般情形：把第 \(i\) 行移到第 \(j\) 行，等价于第 \(i\) 行先逐个越过中间各行（\(|i-j|\) 次相邻互换），再让原第 \(j\) 行反向逐个越过（\(|i-j|-1\) 次），共 \(2|i-j|-1\) 次相邻互换，是<b>奇数</b>，故仍变号.</p>
+        <p><span class="muted">推论（两行相同则零）：</span>交换这两行，行列式本身没有任何变化，但由性质 2 又应变号，故 \(D=-D\)，即 \(D=0\).</p>
+        <p><b>性质 3（某行同乘 \(k\)）.</b>摊平式中每一项恰含第 \(i\) 行的一个因子 \(a_{i\sigma(i)}\)；把第 \(i\) 行全体元素乘 \(k\)，即每个这样的因子都乘 \(k\)，于是每一项都乘 \(k\)，整体提出 \(k\) 即可.</p>
+        <p><span class="muted">推论：</span>整行（列）的公因子可提到行列式记号之外；某行（列）全为零即提出公因子 \(0\)，故 \(D=0\)；两行（列）对应成比例 \(a_{j\sigma(j)}=k\,a_{i\sigma(j)}\;(\forall j)\) 时，提出 \(k\) 后两行（列）相同，由性质 2 的推论得 \(D=0\).</p>
+        <p><b>性质 4（按行拆分）.</b>若第 \(i\) 行元素 \(a_{ij}=b_{ij}+c_{ij}\)，则摊平式中每一项的因子 \(a_{i\sigma(i)}\) 都拆成 \(b_{i\sigma(i)}+c_{i\sigma(i)}\)，展开后所有含 \(b\) 因子的项恰好组成"以 \(b_{ij}\) 为第 \(i\) 行"的行列式，含 \(c\) 因子的项组成"以 \(c_{ij}\) 为第 \(i\) 行"的行列式，故原行列式等于二者之和.</p>
+        <p><b>性质 5（倍加不变）.</b>把第 \(j\) 行的 \(k\) 倍加到第 \(i\) 行上，由性质 4 可拆成两个行列式之和：前者即原行列式，后者是"第 \(i\) 行恰为第 \(j\) 行的 \(k\) 倍"的行列式；由性质 3 提出 \(k\) 后两行相同，由性质 2 的推论其为 0.故行列式的值不变.□</p>
+      </div>
+    </details>
+
+    <details class="demo"><summary>数值验证 · 性质 1：\(D=D^{T}\)</summary>
+      <div class="body">
+        <p>取 \(D=\begin{vmatrix}1&2&3\\4&5&6\\7&8&10\end{vmatrix}\).按第一行展开：
+        \[D=1\begin{vmatrix}5&6\\8&10\end{vmatrix}-2\begin{vmatrix}4&6\\7&10\end{vmatrix}+3\begin{vmatrix}4&5\\7&8\end{vmatrix}=1(2)-2(-2)+3(-3)=-3.\]
+        其转置 \(D^{T}=\begin{vmatrix}1&4&7\\2&5&8\\3&6&10\end{vmatrix}=1(2)-4(-4)+7(-3)=2+16-21=-3\).两者相等.</p>
+      </div>
+    </details>
+    <details class="demo"><summary>数值验证 · 性质 2：互换两行，行列式变号</summary>
+      <div class="body">
+        <p>仍取上面的 \(D=-3\).交换第 1、2 行：
+        \[\begin{vmatrix}4&5&6\\1&2&3\\7&8&10\end{vmatrix}=4\begin{vmatrix}2&3\\8&10\end{vmatrix}-5\begin{vmatrix}1&3\\7&10\end{vmatrix}+6\begin{vmatrix}1&2\\7&8\end{vmatrix}=4(-4)-5(-11)+6(-6)=3=-D.\]
+        结果恰为 \(-D\).由此也可看出推论的道理：两行相同的行列式，互换这两行后应当不变、又必须变号，于是只能为零.</p>
+      </div>
+    </details>
+    <details class="demo"><summary>数值验证 · 性质 3：某行同乘 \(k=2\)</summary>
+      <div class="body">
+        <p>把 \(D=-3\) 的第 1 行同乘 2：
+        \[\begin{vmatrix}2&4&6\\4&5&6\\7&8&10\end{vmatrix}=2\begin{vmatrix}5&6\\8&10\end{vmatrix}-4\begin{vmatrix}4&6\\7&10\end{vmatrix}+6\begin{vmatrix}4&5\\7&8\end{vmatrix}=2(2)-4(-2)+6(-3)=-6=2D.\]
+        整行公因子 2 被提出到行列式之外.</p>
+      </div>
+    </details>
+    <details class="demo"><summary>数值验证 · 性质 5：倍加变换（\(r_2-4r_1\)）不改变值</summary>
+      <div class="body">
+        <p>把 \(D=-3\) 的第 1 行乘 \(-4\) 加到第 2 行，第 2 行变为 \((0,-3,-6)\)：
+        \[\begin{vmatrix}1&2&3\\0&-3&-6\\7&8&10\end{vmatrix}=1\begin{vmatrix}-3&-6\\8&10\end{vmatrix}-2\begin{vmatrix}0&-6\\7&10\end{vmatrix}+3\begin{vmatrix}0&-3\\7&8\end{vmatrix}=18-84+63=-3=D.\]
+        值不变.倍加变换正是把行列式"消成三角形"从而快速求值的主力工具，可在交互③中反复实验.</p>
+      </div>
+    </details>
+
+    <p class="cn-point">一帧 3D 画面里，三角形面的朝向由两条边叉积的符号（即二阶有向面积）决定——正面还是背面，显卡靠它做「背面剔除」少画近半像素.你手机里每一帧游戏，背后都是成千上万个行列式在判定「该不该画」.</p><div class="ex"><div class="lab">例 1.4　化三角形法</div>
+      <p class="stmt">计算行列式 \(D=\begin{vmatrix}2&1&3\\4&1&5\\2&3&4\end{vmatrix}\).</p>
+      <p class="sol"><span class="mk">解</span>用性质 5 逐步造零、化为上三角：
+      \[D\xlongequal{r_2-2r_1,\;r_3-r_1}\begin{vmatrix}2&1&3\\0&-1&-1\\0&2&1\end{vmatrix}
+      \xlongequal{r_3+2r_2}\begin{vmatrix}2&1&3\\0&-1&-1\\0&0&-1\end{vmatrix}=2\times(-1)\times(-1)=2.\]</p>
+    </div>
+    <div class="ex"><div class="lab">例 1.5　利用性质快速判零</div>
+      <p class="stmt">证明：\(D=\begin{vmatrix}1&2&3\\2&4&6\\7&8&10\end{vmatrix}=0\).</p>
+      <p class="sol"><span class="mk">证</span>第 2 行是第 1 行的 2 倍，两行对应成比例，由性质 3 的推论得 \(D=0\).这类"零判定"在讨论方程组是否有唯一解时极为常用.□</p>
+    </div>
+
+    <div class="labx">
+      <div class="lab">交互 ③　行列式性质探索器</div>
+      <div class="desc">下方 3×3 矩阵的 det 实时显示.点击按钮执行行变换，亲手验证性质 2（交换变号）与性质 5（倍加不变）.</div>
+      <div class="matrix-in m3" id="mP">
+        <input value="2" type="number"><input value="1" type="number"><input value="0" type="number">
+        <input value="1" type="number"><input value="3" type="number"><input value="1" type="number">
+        <input value="0" type="number"><input value="2" type="number"><input value="1" type="number">
+      </div>
+      <button class="btn" onclick="swapRows()">交换第1、2行（性质2）</button>
+      <button class="btn ghost" onclick="addRow()">第2行 + 2×第1行（性质5）</button>
+      <button class="btn ghost" onclick="resetP()">重置</button>
+      <div class="out" id="propOut">当前 det = <b>?</b></div>
+    </div>
+
+    <div class="case"><div class="lab">应用探微 · 高端制造 CAE 仿真：为什么靠"化三角形"算行列式</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+      <p>在高铁车体、航空发动机叶片、新能源汽车电池包的<b>高端制造</b>中，工程师用 <b>CAE（计算机辅助工程）仿真</b>在造出实物前就预测结构强度.核心一步是把连续结构离散成"有限元网格"，每个节点受力满足一个巨大的线性方程组 \(Kx=f\)，其中 \(K\) 是<b>刚度矩阵</b>.判断结构是否会"机构化"（出现刚体自由运动、数值上称为<b>奇异</b>）就看 \(\det K\) 是否为零；而对十万阶的 \(K\)，求行列式或解方程靠的正是本节的性质 5.</p>
+      <p>按定义完全展开一个 \(n\) 阶行列式共有 \(n!\) 项.\(n=20\) 时 \(20!\approx 2.4\times10^{18}\)：一台每秒执行 \(10^{9}\) 次乘法的计算机，算完需要<b>七十多年</b>.而"化三角形法"（性质 2 + 性质 5 组成的消元过程，即 LU 分解）只需约 \(\tfrac{n^3}{3}\) 次乘除——<b>不到十微秒</b>.同样一个数学对象，选对性质，计算量相差十七个数量级.MATLAB 的 <code>det</code>、Python 的 <code>numpy.linalg.det</code>，内部执行的正是这套消元：把矩阵化为上三角，行列式即对角元之积（配合性质 2 记录换行次数）.</p>
+      <details><summary>算例：三弹簧机构的刚度矩阵是否奇异</summary>
+        <div class="body">
+          <p>某<b>协作机器人</b>简化成一个三段弹簧串联结构，其 \(3\times3\) 刚度矩阵为
+          \[K=\begin{pmatrix}2&-1&0\\-1&2&-1\\0&-1&1\end{pmatrix}.\]
+          用"化三角形法"（性质 5）把它变成上三角：先把第 1 行的 \(\tfrac12\) 倍加到第 2 行，再把第 2 行（新）的 \(\tfrac23\) 倍加到第 3 行，得到
+          \[\begin{pmatrix}2&-1&0\\0&\tfrac32&-1\\0&0&\tfrac13\end{pmatrix}.\]
+          行列式等于对角元之积：\(|K|=2\cdot\tfrac32\cdot\tfrac13=1\neq0\).于是该构型<b>稳定</b>（没有零主元，不会发生刚体坍塌）.若某个设计让某一行消元后出现全零行，则 \(|K|=0\)，仿真会立刻报警——你写的"化三角形"，正是工业仿真软件的底层算法.</p>
+        </div>
+      </details>
+
+  </div>
+</details></div>
+
+    <!-- ============ §1.3 ============ -->
+    
+<div class="sec-quiz" data-sec="s12" data-ch="1" data-n="29"></div>
+<h2 id="s13"><span class="num">§1.3</span>行列式的展开定理</h2>
+    <p>定义 1.3 规定按第一行展开.事实上，行列式可以按<b>任意一行或任意一列</b>展开，结果不变——这一结论使我们能够灵活选取"零最多"的行或列来降阶，是行列式计算的枢纽.</p>
+    <div class="def"><div class="lab"><span class="n">定理 1.1</span>行列式按行（列）展开定理</div>
+      <p>\(n\) 阶行列式等于它的任意一行（列）的各元素与其对应的代数余子式乘积之和：
+      \[D=a_{i1}A_{i1}+a_{i2}A_{i2}+\cdots+a_{in}A_{in}=\sum_{k=1}^n a_{ik}A_{ik}\qquad(i=1,2,\dots,n),\]
+      \[D=a_{1j}A_{1j}+a_{2j}A_{2j}+\cdots+a_{nj}A_{nj}=\sum_{k=1}^n a_{kj}A_{kj}\qquad(j=1,2,\dots,n).\]</p>
+    </div>
+    <details><summary>定理 1.1 的证明思路</summary>
+      <div class="body">
+        <p><b>按第 \(i\) 行展开.</b>将第 \(i\) 行经 \(i-1\) 次相邻互换移至第一行（其余各行相对次序不变），由性质 2，行列式变为 \((-1)^{i-1}D'\)，其中 \(D'\) 以原第 \(i\) 行为首行.对 \(D'\) 按定义（第一行）展开，注意 \(D'\) 中首行元素 \(a_{ij}\) 的余子式恰是原行列式的 \(M_{ij}\)，整理符号 \((-1)^{i-1}(-1)^{1+j}=(-1)^{i+j}\)，即得按第 \(i\) 行的展开式.</p>
+        <p><b>按列展开.</b>由性质 1（\(D=D^{T}\)），对 \(D^{T}\) 用按行展开的结论即可.</p>
+        <p><b>具体演示.</b>以上三角行列式 \(D=\begin{vmatrix}1&2&3\\0&4&5\\0&0&6\end{vmatrix}=1\cdot4\cdot6=24\) 为例.
+        按第 1 行展开：
+        \[D=1\cdot\begin{vmatrix}4&5\\0&6\end{vmatrix}-2\cdot\begin{vmatrix}0&5\\0&6\end{vmatrix}+3\cdot\begin{vmatrix}0&4\\0&0\end{vmatrix}=24+0+0=24.\]
+        按第 2 行展开：
+        \[D=0\cdot A_{21}+4\cdot\begin{vmatrix}1&3\\0&6\end{vmatrix}-5\cdot\begin{vmatrix}1&2\\0&0\end{vmatrix}=0+24+0=24.\]
+        两种展开结果一致——定理 1.1 保证的正是这件事.□</p>
+      </div>
+    </details>
+    <div class="def"><div class="lab"><span class="n">推论</span>异乘变零定理</div>
+      <p>行列式某一行（列）的元素与<b>另一</b>行（列）对应元素的代数余子式乘积之和恒为零：
+      \[\sum_{k=1}^n a_{jk}A_{ik}=0\qquad(i\neq j).\]</p>
+    </div>
+    <details><summary>推论的证明</summary>
+      <div class="body">
+        <p><b>第 1 步：构造一个新行列式.</b>把原行列式 \(D\) 的第 \(i\) 行替换为第 \(j\) 行的元素（其余行保持原样），得到辅助行列式 \(\widetilde D\).</p>
+        <p><b>第 2 步：新行列式有两行相同，故值为 0.</b>因为 \(\widetilde D\) 的第 \(i\) 行与第 \(j\) 行完全相同（我们把第 \(i\) 行换成了第 \(j\) 行），由性质 2 的推论（两行相同则行列式为 0），有 \(\widetilde D=0\).</p>
+        <p><b>第 3 步：把 \(\widetilde D\) 按第 \(i\) 行展开.</b>\(\widetilde D\) 的第 \(i\) 行元素现在是 \(a_{j1},a_{j2},\dots,a_{jn}\)，而按第 \(i\) 行展开得
+        \[\widetilde D=a_{j1}A_{i1}+a_{j2}A_{i2}+\cdots+a_{jn}A_{in}=\sum_{k=1}^n a_{jk}A_{ik}.\]
+        注意：这里的代数余子式 \(A_{ik}\) 与 \(D\) 的完全相同——因为划去第 \(i\) 行后，\(\widetilde D\) 剩下的元素与 \(D\) 划去第 \(i\) 行后剩下的元素一样.</p>
+        <p><b>第 4 步：两相比较即得结论.</b>第 2 步给出 \(\widetilde D=0\)，第 3 步给出 \(\widetilde D=\sum_{k=1}^n a_{jk}A_{ik}\)，因此
+        \[\sum_{k=1}^n a_{jk}A_{ik}=0\qquad(i\neq j).\]</p>
+        <p><b>具体演示.</b>仍以 \(D=\begin{vmatrix}1&2&3\\0&4&5\\0&0&6\end{vmatrix}=24\) 为例，取 \(i=1,j=2\).把第 1 行换成第 2 行，得到
+        \[\widetilde D=\begin{vmatrix}0&4&5\\0&4&5\\0&0&6\end{vmatrix}.\]
+        它前两行相同，故 \(\widetilde D=0\).另一方面，把 \(\widetilde D\) 按第 1 行展开，其第 1 行元素恰为第 2 行元素 \(0,4,5\)，于是
+        \[\widetilde D=0\cdot A_{11}+4\cdot A_{12}+5\cdot A_{13}.\]
+        其中 \(A_{12}=(-1)^{1+2}\begin{vmatrix}0&5\\0&6\end{vmatrix}=0\)，\(A_{13}=(-1)^{1+3}\begin{vmatrix}0&4\\0&0\end{vmatrix}=0\)，所以 \(\widetilde D=0+0+0=0\).构造出的新行列式为 0，与展开式为 0，两件事一致——这正是异乘变零定理的内容.□</p>
+      </div>
+    </details>
+
+    <p class="cn-point">高端制造用 CAE（计算机辅助工程）算应力，刚度矩阵往往上万阶，直接求行列式不可能.工程师改成先「化三角形」再取对角积——这正是国产工业软件（华为、中科院超算团队）把大矩阵消成上三角再判收敛的底层账本：行列式性质是仿真的记账规则.</p>
+      <p class="stmt">计算行列式 \(D=\begin{vmatrix}3&0&0\\1&4&5\\2&0&6\end{vmatrix}\).</p>
+      <p class="sol"><span class="mk">解</span>第二列只有一个非零元素 \(a_{22}=4\)，按第二列展开最为经济：
+      \[D=4\,A_{22}=4\,(-1)^{2+2}\begin{vmatrix}3&0\\2&6\end{vmatrix}=4\times18=72.\]</p>
+    
+
+    <div class="ex"><div class="lab">例 1.7　先造零，再展开</div>
+      <p class="stmt">计算行列式 \(D=\begin{vmatrix}3&1&-1&2\\-5&1&3&-4\\2&0&1&-1\\1&-5&3&-3\end{vmatrix}\).</p>
+      <p class="sol"><span class="mk">解</span>第三行已有一个零，用性质 5 在第三行再造两个零（对<b>列</b>作倍加变换）：
+      \[D\xlongequal{c_1-2c_3,\;c_4+c_3}\begin{vmatrix}5&1&-1&1\\-11&1&3&-1\\0&0&1&0\\-5&-5&3&0\end{vmatrix}.\]
+      按第三行展开（只剩 \(a_{33}=1\)）：
+      \[D=(-1)^{3+3}\begin{vmatrix}5&1&1\\-11&1&-1\\-5&-5&0\end{vmatrix}
+      \xlongequal{r_2+r_1}\begin{vmatrix}5&1&1\\-6&2&0\\-5&-5&0\end{vmatrix}
+      =1\cdot(-1)^{1+3}\begin{vmatrix}-6&2\\-5&-5\end{vmatrix}=30+10=40.\]
+      "造零—展开"交替进行，是高阶行列式手算的标准套路.</p>
+    </div>
+
+    <div class="def"><div class="lab"><span class="n">定理 1.2</span>范德蒙德（Vandermonde）行列式</div>
+      <p>\[V_n=\begin{vmatrix}1&1&\cdots&1\\ x_1&x_2&\cdots&x_n\\ x_1^2&x_2^2&\cdots&x_n^2\\ \vdots&\vdots&&\vdots\\ x_1^{n-1}&x_2^{n-1}&\cdots&x_n^{n-1}\end{vmatrix}
+      =\prod_{1\le j\lt i\le n}(x_i-x_j).\]
+      特别地，\(V_n\neq0\) 当且仅当 \(x_1,x_2,\dots,x_n\) 两两不同.</p>
+    </div>
+    <details><summary>定理 1.2 的证明（数学归纳法）</summary>
+      <div class="body">
+        <p>对 \(n\) 归纳.\(n=2\) 时 \(V_2=x_2-x_1\)，成立.设结论对 \(n-1\) 成立.对 \(V_n\)，自下而上地作行变换 \(r_i-x_1r_{i-1}\;(i=n,n-1,\dots,2)\)，第一列除首元素外全部化零：
+        \[V_n=\begin{vmatrix}1&1&\cdots&1\\ 0&x_2-x_1&\cdots&x_n-x_1\\ 0&x_2(x_2-x_1)&\cdots&x_n(x_n-x_1)\\ \vdots&\vdots&&\vdots\\ 0&x_2^{n-2}(x_2-x_1)&\cdots&x_n^{n-2}(x_n-x_1)\end{vmatrix}.\]
+        按第一列展开后，第 \(k\) 列（对应 \(x_{k+1}\)）有公因子 \(x_{k+1}-x_1\)，全部提出，剩下的恰是 \(n-1\) 阶范德蒙德行列式 \(V_{n-1}(x_2,\dots,x_n)\)：
+        \[V_n=\Big[\prod_{i=2}^{n}(x_i-x_1)\Big]\,V_{n-1}(x_2,\dots,x_n).\]
+        由归纳假设即得 \(V_n=\prod_{1\le j\lt i\le n}(x_i-x_j)\).□</p>
+      </div>
+    </details>
+    <div class="ex"><div class="lab">例 1.8</div>
+      <p class="stmt">计算行列式 \(D=\begin{vmatrix}1&1&1&1\\ 2&3&4&5\\ 4&9&16&25\\ 8&27&64&125\end{vmatrix}\).</p>
+      <p class="sol"><span class="mk">解</span>这是 \(x_1=2,\,x_2=3,\,x_3=4,\,x_4=5\) 的四阶范德蒙德行列式，由定理 1.2，
+      \[D=(3-2)(4-2)(5-2)\cdot(4-3)(5-3)\cdot(5-4)=1\cdot2\cdot3\cdot1\cdot2\cdot1=12.\]</p>
+    </div>
+
+    <div class="ex"><div class="lab">例 1.9　代数余子式的组合</div>
+      <p class="stmt">设 \(D=\begin{vmatrix}1&2&3\\4&5&6\\7&8&10\end{vmatrix}\)，求 \(A_{11}+A_{21}+A_{31}\).</p>
+      <p class="sol"><span class="mk">解</span>关键在于识别：代数余子式的线性组合 \(\sum_i c_iA_{i1}\)，恰等于"把 \(D\) 的第 1 列替换为 \((c_1,c_2,c_3)^{T}\)"所得的行列式（按第 1 列展开即见）.故
+      \[A_{11}+A_{21}+A_{31}=\begin{vmatrix}1&2&3\\1&5&6\\1&8&10\end{vmatrix}
+      \xlongequal{r_2-r_1,\;r_3-r_1}\begin{vmatrix}1&2&3\\0&3&3\\0&6&7\end{vmatrix}
+      =\begin{vmatrix}3&3\\6&7\end{vmatrix}=3.\]
+      "替换一列（行）"是处理代数余子式组合问题的通用方法，考研中反复出现.</p>
+    </div>
+
+    <div class="ex"><div class="lab">例 1.10　奇数阶反对称行列式</div>
+      <p class="stmt">设 \(n\) 阶行列式 \(D=|a_{ij}|\) 满足 \(a_{ij}=-a_{ji}\)（称为反对称行列式，主对角元必为零）.证明：当 \(n\) 为奇数时 \(D=0\).</p>
+      <p class="sol"><span class="mk">证</span>由 \(a_{ij}=-a_{ji}\) 知 \(D^{T}\) 的每一行都是 \(D\) 对应行的 \(-1\) 倍，由性质 3 逐行提出公因子 \(-1\)（共 \(n\) 次）得 \(D^{T}=(-1)^nD\).又由性质 1 有 \(D^{T}=D\)，故 \((-1)^nD=D\).当 \(n\) 为奇数时 \((-1)^n=-1\)，得 \(-D=D\)，即 \(D=0\).□</p>
+    </div>
+
+    <div class="case"><div class="lab">应用探微 · 范德蒙德行列式与二维码的纠错能力</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+      <p>手机镜头脏了、二维码缺了一角，为什么仍能"扫得出来"？答案的代数核心正是定理 1.2.更前沿地说，<b>自动驾驶</b>中激光雷达与相机的时间同步、<b>高端制造</b>里三坐标测量机（CMM）的标定，都要用"多项式插值"还原传感器读数——而插值的唯一性同样由范德蒙德行列式保证.我们分两步说清它.</p>
+      <p><b>第一步：两点确定一条直线，为什么？</b>给定平面上两点 \((x_1,y_1),(x_2,y_2)\)，设过它们的直线为 \(y=c_0+c_1x\).把两点坐标代入，得
+      \[\begin{cases}c_0+c_1x_1=y_1,\\c_0+c_1x_2=y_2.\end{cases}\]
+      它的系数行列式是二阶范德蒙德行列式
+      \(\begin{vmatrix}1&x_1\\1&x_2\end{vmatrix}=x_2-x_1.\)
+      只要 \(x_1\neq x_2\)（两点不在同一竖线上），行列式就不为零，于是 \(c_0,c_1\) 有唯一解——这正是"两点确定一条直线".把"两点"换成"\(n\) 个横坐标互不相同的点"，要找的就是次数不超过 \(n-1\) 的多项式 \(p(x)=c_0+c_1x+\cdots+c_{n-1}x^{n-1}\) 穿过它们；把 \(p(x_i)=y_i\) 逐条写出，得到关于系数 \(c_0,\dots,c_{n-1}\) 的方程组，其系数行列式恰为 \(V_n\).由定理 1.2，各 \(x_i\) 两两不同 \(\Rightarrow V_n\neq0\Rightarrow\) 解存在且唯一.一句话：范德蒙德行列式非零，保证了"给定点能唯一确定那条多项式曲线".</p>
+      <p><b>第二步：冗余纠错.</b>里德–所罗门（Reed–Solomon）编码把要传的 \(k\) 个数据看作一个 \(k-1\) 次多项式的系数，然后在 \(n>k\) 个点上算出函数值一起发送.接收端即使弄丢了其中 \(n-k\) 个值，只要剩下的完好值不少于 \(k\) 个，就能凭"任意 \(k\) 个互异点唯一确定该多项式"，完整还原全部数据.一个生活化的类比：你记朋友的手机号只记后四位"6789"，连同"这是 138 开头的 11 位号码"这一规则，别人只要听到其中任意四位数字，就能反推出整个号码——多记的几位就是"冗余"，正是它们扛住了误听.二维码、光盘、卫星通信、固态硬盘的纠错，用的都是这一族编码，而它的数学根基，就是范德蒙德行列式.</p>
+
+  </div>
+</details></div>
+
+    <!-- ============ §1.4 ============ -->
+    
+<div class="sec-quiz" data-sec="s13" data-ch="1" data-n="9"></div>
+<h2 id="s14"><span class="num">§1.4</span>克拉默（Cramer）法则</h2>
+    <p>行列式最初就是为解线性方程组而生的.对"方程个数 = 未知量个数"的线性方程组，克拉默法则给出了用行列式表示解的一般公式，并回答了"何时有唯一解".</p>
+    <div class="def"><div class="lab"><span class="n">定理 1.3</span>克拉默法则</div>
+      <p>设 \(n\) 元线性方程组
+      \[\begin{cases}a_{11}x_1+a_{12}x_2+\cdots+a_{1n}x_n=b_1,\\ \quad\cdots\cdots\\ a_{n1}x_1+a_{n2}x_2+\cdots+a_{nn}x_n=b_n\end{cases}\]
+      的系数行列式 \(D=|a_{ij}|\neq0\)，则方程组有<b>唯一解</b>
+      \[x_j=\frac{D_j}{D}\qquad(j=1,2,\dots,n),\]
+      其中 \(D_j\) 是把 \(D\) 的第 \(j\) 列换成常数项列 \((b_1,b_2,\dots,b_n)^{T}\) 所得的行列式.</p>
+    </div>
+    <details><summary>定理 1.3 的证明</summary>
+      <div class="body">
+        <p><b>(1) 所给公式确为解.</b>将 \(x_j=D_j/D\) 代入第 \(i\) 个方程的左端：
+        \[\sum_{j=1}^n a_{ij}\frac{D_j}{D}=\frac1D\sum_{j=1}^n a_{ij}D_j.\]
+        把每个 \(D_j\) 按第 \(j\) 列（即常数列）展开：\(D_j=\sum_{k}b_kA_{kj}\)，代入并交换求和次序：
+        \[\sum_j a_{ij}D_j=\sum_k b_k\Big(\sum_j a_{ij}A_{kj}\Big).\]
+        由展开定理及异乘变零定理，括号内当 \(k=i\) 时为 \(D\)、当 \(k\neq i\) 时为 \(0\)，故总和 \(=b_iD\)，左端 \(=b_i\)，方程成立.</p>
+        <p><b>(2) 唯一性.</b>设 \((x_1,\dots,x_n)\) 是任一解.用 \(D\) 的第 \(j\) 列各元素的代数余子式 \(A_{1j},\dots,A_{nj}\) 分别乘方程组的第 \(1,\dots,n\) 个方程后相加，左端由展开定理与异乘变零定理化为 \(Dx_j\)，右端为 \(\sum_k b_kA_{kj}=D_j\)，故 \(Dx_j=D_j\)，即 \(x_j=D_j/D\) 被唯一确定.□</p>
+      </div>
+    </details>
+    <div class="def"><div class="lab"><span class="n">推论</span>齐次方程组的非零解判别</div>
+      <p>常数项全为零的方程组称为<b>齐次线性方程组</b>，它必有零解 \(x_1=\cdots=x_n=0\).当系数行列式 \(D\neq0\) 时，齐次方程组<b>只有零解</b>；因此若齐次方程组存在非零解，则必有 \(D=0\).（其逆命题也成立，将在第四章借助秩的理论证明.）</p>
+    </div>
+
+    <p class="cn-point">二维码脏了、缺一角仍能扫，靠的是 Reed–Solomon 纠错码，其核心是一个范德蒙德行列式非零——只要采样点互不相同，方程组必有唯一解，缺失信息就能补回.微信支付、共享单车每天的扫码，用的就是这条两三百年前的行列式结论.</p><div class="ex"><div class="lab">例 1.11</div>
+      <p class="stmt">问 \(a,b\) 满足什么条件时，方程组 \(\begin{cases}x+ay=1,\\ bx+y=2\end{cases}\) 有唯一解？并求出该解.</p>
+      <p class="sol"><span class="mk">解</span>系数行列式 \(D=\begin{vmatrix}1&a\\b&1\end{vmatrix}=1-ab\).当 \(ab\neq1\) 时 \(D\neq0\)，由克拉默法则得唯一解
+      \[x=\frac{\begin{vmatrix}1&a\\2&1\end{vmatrix}}{1-ab}=\frac{1-2a}{1-ab},\qquad
+        y=\frac{\begin{vmatrix}1&1\\b&2\end{vmatrix}}{1-ab}=\frac{2-b}{1-ab}.\]</p>
+    </div>
+    <div class="ex"><div class="lab">例 1.12　齐次方程组的参数讨论</div>
+      <p class="stmt">当 \(\lambda\) 取何值时，齐次方程组 \(\begin{cases}\lambda x_1+x_2+x_3=0,\\ x_1+\lambda x_2+x_3=0,\\ x_1+x_2+\lambda x_3=0\end{cases}\) 有非零解？</p>
+      <p class="sol"><span class="mk">解</span>有非零解的必要条件是系数行列式为零.把各行都加到第一行（性质 5），提出公因子：
+      \[D=\begin{vmatrix}\lambda&1&1\\1&\lambda&1\\1&1&\lambda\end{vmatrix}
+      =(\lambda+2)\begin{vmatrix}1&1&1\\1&\lambda&1\\1&1&\lambda\end{vmatrix}
+      \xlongequal{r_2-r_1,\;r_3-r_1}(\lambda+2)\begin{vmatrix}1&1&1\\0&\lambda-1&0\\0&0&\lambda-1\end{vmatrix}
+      =(\lambda+2)(\lambda-1)^2.\]
+      令 \(D=0\)，得 \(\lambda=1\) 或 \(\lambda=-2\).经验证，这两个值下方程组确有非零解（例如 \(\lambda=1\) 时三个方程重合）.这类"参数使行列式为零"的讨论，正是第五章特征值问题的雏形.</p>
+    </div>
+
+    <div class="case"><div class="lab">应用探微 · 协作机器人关节力矩分配（克拉默法则）</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+      <p><b>协作机器人</b>双臂搬运工件时，末端受到的外力会"分配"到各个关节.考虑一个简化的两关节机构：两个关节驱动力 \(\tau_1,\tau_2\) 通过一根共享的柔性连杆（刚度 \(k_3\)）耦合，外加负载 \((F_1,F_2)\) 由力平衡给出方程组
+      \[\begin{cases}(k_1+k_3)\,\tau_1-k_3\,\tau_2=F_1,\\ -k_3\,\tau_1+(k_2+k_3)\,\tau_2=F_2\end{cases}\]
+      ——这与电路网孔方程同构，只是未知量换成了关节力矩.只要系数行列式非零，每个关节该出多少力都有解析表达式，这正是克拉默法则.</p>
+      <details><summary>算例：\(k_1=1,\;k_2=1,\;k_3=2,\;F_1=5,\;F_2=0\)</summary>
+        <div class="body">
+          <p>方程组为 \(\begin{cases}3\tau_1-2\tau_2=5,\\ -2\tau_1+3\tau_2=0.\end{cases}\)　系数行列式 \(D=\begin{vmatrix}3&-2\\-2&3\end{vmatrix}=5\neq0\)，
+          \[\tau_1=\frac{\begin{vmatrix}5&-2\\0&3\end{vmatrix}}{5}=3,\qquad
+            \tau_2=\frac{\begin{vmatrix}3&5\\-2&0\end{vmatrix}}{5}=2.\]
+          即关节 1 出 \(3\) 单位力、关节 2 出 \(2\) 单位力，合力恰好平衡外载.工业机器人控制器对六七个关节、成千上万个自由度建立的正是这类线性方程组；规模大时改用消元法，但"系数行列式非零 \(\iff\) 机构有唯一确定的受力状态"这一判据，始终是克拉默法则的陈述.<b>高端制造</b>中每一次运动规划与力控仿真，都在默默使用本节的定理.</p>
+        </div>
+      </details>
+
+  </div>
+</details></div>
+
+    <div class="labx">
+      <div class="lab">交互 ④　克拉默法则求解器</div>
+      <div class="desc">输入 3×3 系数矩阵与常数列，自动计算 \(D\) 与各 \(D_j\)，给出唯一解.</div>
+      <div class="row"><div class="ctrls">
+        <div style="font-size:12.5px;color:#9fb1c0;margin-bottom:4px">系数矩阵（每行 3 个数，空格分隔）</div>
+        <input id="c1" value="2 1 1" style="width:100%;height:34px;margin-bottom:6px;border:1px solid #2a3a48;background:#13202c;color:#e6f0f5;border-radius:6px;padding:0 8px;font-size:13px">
+        <input id="c2" value="1 3 1" style="width:100%;height:34px;margin-bottom:6px;border:1px solid #2a3a48;background:#13202c;color:#e6f0f5;border-radius:6px;padding:0 8px;font-size:13px">
+        <input id="c3" value="1 1 2" style="width:100%;height:34px;margin-bottom:6px;border:1px solid #2a3a48;background:#13202c;color:#e6f0f5;border-radius:6px;padding:0 8px;font-size:13px">
+        <div style="font-size:12.5px;color:#9fb1c0;margin:6px 0 4px">常数列</div>
+        <input id="cb" value="4 5 3" style="width:100%;height:34px;border:1px solid #2a3a48;background:#13202c;color:#e6f0f5;border-radius:6px;padding:0 8px;font-size:13px">
+        <button class="btn" onclick="cramer()">求解</button>
+        <div class="out" id="cramerOut">输入后点击求解.</div>
+      </div></div>
+    </div>
+
+    <!-- ============ §1.5 ============ -->
+    <p class="cn-point">六轴协作机器人给末端一个力，反算各关节该出多大扭矩，本质是解一个线性方程组——克拉默法则把「每个关节的力」写成「总行列式分之某个余子式行列式」.国产协作机器人做力控示教时，这一步每毫秒跑一次.</p><div class="labx">
+  <div class="lab">交互 · 二阶行列式 = 有向面积</div>
+  <div class="desc">拖动滑块改变向量 \(\mathbf u=(a,b)\)、\(\mathbf v=(c,d)\)，平行四边形有向面积正是 \(\det\begin{pmatrix}a&amp;c\\ b&amp;d\end{pmatrix}=ad-bc\).面积为正（绿）表示 \((\mathbf u,\mathbf v)\) 成右手系，为负（红）表示左手系，为 0 表示两向量共线（退化，平行四边形塌成线段）.不妨动手演练：① 交换两向量顺序，看面积符号如何翻转——这正是「交换两行、行列式变号」；② 把某一向量拉长 \(k\) 倍，看面积如何同步放大 \(k\) 倍——对应「某行乘 \(k\)、行列式也乘 \(k\)」；③ 拖到两向量共线，面积塌为 0——对应行列式为 0、矩阵不可逆.</div>
+  <canvas id="cv_det2" width="720" height="360"></canvas>
+  <div class="ctrls">
+    <label>a <input type="range" id="det_a" min="-3" max="3" step="0.1" value="2"></label>
+    <label>b <input type="range" id="det_b" min="-3" max="3" step="0.1" value="1"></label>
+    <label>c <input type="range" id="det_c" min="-3" max="3" step="0.1" value="0.5"></label>
+    <label>d <input type="range" id="det_d" min="-3" max="3" step="0.1" value="2.5"></label>
+    <span id="det_val" style="font-weight:700;color:#0F6E56"></span>
+  </div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_det2'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||720, LH=+cv.getAttribute('height')||360;
+    function setup(){var r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;
+      var W=r.width||LW,H=LH;cv.width=W*d;cv.height=H*d;
+      var ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0);return{ctx:ctx,W:W,H:H};}
+    var s=null;
+    var A=document.getElementById('det_a'),B=document.getElementById('det_b'),C=document.getElementById('det_c'),D=document.getElementById('det_d'),OUT=document.getElementById('det_val');
+    /* 坐标映射：动态计算包围盒 */
+    var pad=50;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var a=+A.value,b=+B.value,c=+C.value,d=+D.value;
+      var det=a*d-b*c;
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#1a2332';ctx.fillRect(0,0,W,H);
+      var pts=[[0,0],[a,b],[c,d],[a+c,b+d]];
+      var xs=pts.map(function(p){return p[0]}), ys=pts.map(function(p){return p[1]});
+      var mx=Math.max.apply(null,xs.map(Math.abs)), my=Math.max.apply(null,ys.map(Math.abs));
+      var rng=Math.max(mx,my,1)*1.25;
+      var x0=pad, y0=H-pad, x1=W-pad, y1=pad;
+      function P(x,y){return [x0+(x+rng)/(2*rng)*(x1-x0), y0-(y+rng)/(2*rng)*(y0-y1)];}
+      var O=P(0,0),U=P(a,b),V=P(c,d),UV=P(a+c,b+d);
+      ctx.strokeStyle='rgba(148,163,184,.2)';ctx.lineWidth=1;
+      for(var ii=-Math.floor(rng);ii<=Math.floor(rng);ii++){
+        var px=x0+(ii+rng)/(2*rng)*(x1-x0), py=y0-(ii+rng)/(2*rng)*(y0-y1);
+        if(px>x0&&px<x1){ctx.beginPath();ctx.moveTo(px,0);ctx.lineTo(px,H);ctx.stroke();}
+        if(py>y1&&py<y0){ctx.beginPath();ctx.moveTo(0,py);ctx.lineTo(W,py);ctx.stroke();}
+      }
+      ctx.strokeStyle='rgba(148,163,184,.5)';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(O[0],0);ctx.lineTo(O[0],H);ctx.moveTo(0,O[1]);ctx.lineTo(W,O[1]);ctx.stroke();
+      var sP=P(1,1);
+      ctx.fillStyle='rgba(15,110,86,.12)';ctx.fillRect(O[0],sP[1],sP[0]-O[0],O[1]-sP[1]);
+      ctx.fillStyle = det>0?'rgba(15,110,86,.22)':(det<0?'rgba(230,126,136,.22)':'rgba(148,163,184,.2)');
+      ctx.strokeStyle = det>0?'#0F6E56':(det<0?'#e67e88':'#94a3b8');
+      ctx.lineWidth=2;ctx.beginPath();
+      ctx.moveTo(O[0],O[1]);ctx.lineTo(U[0],U[1]);ctx.lineTo(UV[0],UV[1]);ctx.lineTo(V[0],V[1]);ctx.closePath();
+      ctx.fill();ctx.stroke();
+      (function arr(x1,y1,x2,y2,col){
+        ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=2.5;
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+        var ang=Math.atan2(y2-y1,x2-x1);
+        ctx.beginPath();ctx.moveTo(x2,y2);
+        ctx.lineTo(x2-9*Math.cos(ang-0.4),y2-9*Math.sin(ang-0.4));
+        ctx.lineTo(x2-9*Math.cos(ang+0.4),y2-9*Math.sin(ang+0.4));ctx.closePath();ctx.fill();
+      })(O[0],O[1],U[0],U[1],'#fbbf24');
+      (function arr(x1,y1,x2,y2,col){
+        ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=2.5;
+        ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+        var ang=Math.atan2(y2-y1,x2-x1);
+        ctx.beginPath();ctx.moveTo(x2,y2);
+        ctx.lineTo(x2-9*Math.cos(ang-0.4),y2-9*Math.sin(ang-0.4));
+        ctx.lineTo(x2-9*Math.cos(ang+0.4),y2-9*Math.sin(ang+0.4));ctx.closePath();ctx.fill();
+      })(O[0],O[1],V[0],V[1],'#f472b6');
+      ctx.fillStyle='#94a3b8';ctx.font='13px sans-serif';
+      ctx.fillText('u',U[0]+4,U[1]-4);ctx.fillText('v',V[0]+4,V[1]+14);
+      if(OUT)OUT.textContent='det = '+det.toFixed(2)+(det===0?'  (退化·共线)':(det>0?'  (右手系)':'  (左手系)'));
+    }    [A,B,C,D].forEach(function(el){el.addEventListener('input',draw);});
+    requestAnimationFrame(draw);
+  })();
+  </script>
+</div>
+<div class="sec-quiz" data-sec="s14" data-ch="1" data-n="4"></div>
+<h2 id="s15"><span class="num">§1.5</span>应用实例</h2>
+
+    <h3>一、三角形面积公式</h3>
+    <div class="def"><div class="lab"><span class="n">定理 1.4</span>三角形面积的行列式表示</div>
+      <p>平面上三点 \(A(x_1,y_1),\,B(x_2,y_2),\,C(x_3,y_3)\) 构成的三角形面积为
+      \[S_{\triangle ABC}=\frac12\,\Bigg|\begin{vmatrix}x_2-x_1&y_2-y_1\\ x_3-x_1&y_3-y_1\end{vmatrix}\Bigg|.\]
+      特别地，三点共线 \(\iff\) 上述二阶行列式为零.</p>
+    </div>
+    <details><summary>定理 1.4 的证明</summary>
+      <div class="body">
+        <p>平移不改变面积，故不妨将 \(A\) 移到原点，记 \(u=(a,b)=(x_2-x_1,\,y_2-y_1)\)，\(v=(c,d)=(x_3-x_1,\,y_3-y_1)\).只需证：以 \(u,v\) 为邻边的平行四边形面积为 \(|ad-bc|\)（三角形取其一半）.</p>
+        <p>先设 \(a,b,c,d>0\) 且 \(v\) 在 \(u\) 的逆时针一侧.用<b>割补法</b>：把平行四边形装进以 \((a+c,\,b+d)\) 为对角顶点的大矩形，矩形面积 \((a+c)(b+d)\)；从中减去两个直角边为 \(a,b\) 的三角形、两个直角边为 \(c,d\) 的三角形、以及两个边长 \(c\times b\) 的小矩形.</p>
+
+        <figure style="margin:1em 0;text-align:center;">
+          <svg viewBox="0 0 220 260" style="max-width:340px;width:92%;height:auto;">
+            <!-- 外框大矩形 -->
+            <rect x="20" y="20" width="180" height="220" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+            <!-- 平行四边形 O(20,240) P(90,190) Q(200,20) R(130,70) -->
+            <polygon points="20,240 90,190 200,20 130,70" fill="#ffffff" stroke="#0e5a5a" stroke-width="2.5"/>
+            <!-- 边长标注 a,b,c,d（纯文本：SVG 内不渲染 KaTeX） -->
+            <text x="55" y="252" font-size="13" fill="#0f172a" text-anchor="middle">a</text>
+            <text x="8" y="215" font-size="13" fill="#0f172a" text-anchor="end">b</text>
+            <text x="155" y="14" font-size="13" fill="#0f172a" text-anchor="middle">c</text>
+            <text x="212" y="45" font-size="13" fill="#0f172a" text-anchor="start">d</text>
+            <!-- 四个角面积标注 -->
+            <text x="58" y="225" font-size="12" fill="#64748b" font-style="italic">ab/2</text>
+            <text x="155" y="45" font-size="12" fill="#64748b" font-style="italic">cd/2</text>
+            <text x="45" y="70" font-size="12" fill="#64748b" font-style="italic">cd/2</text>
+            <text x="155" y="190" font-size="12" fill="#64748b" font-style="italic">ab/2</text>
+            <!-- 中心面积 -->
+            <text x="115" y="145" font-size="13" fill="#0e5a5a" font-weight="600" text-anchor="middle">|ad-bc|</text>
+          </svg>
+          <figcaption style="font-size:.85em;color:#64748b;margin-top:.3em;">图 1.2　割补法：大矩形面积 \((a+c)(b+d)\) 减去四个角，余下平行四边形面积 \(|ad-bc|\).</figcaption>
+        </figure>
+
+        <p>代数上：
+        \[(a+c)(b+d)-2\cdot\tfrac{ab}2-2\cdot\tfrac{cd}2-2bc=ad-bc.\]
+        一般情形（分量有负、方向相反等）可经关于坐标轴的对称与向量次序交换化归为上述情形，每次操作至多改变行列式的符号而不改变绝对值，故面积恒为 \(|ad-bc|\).□</p>
+        <p class="muted">拓展：同样的思想在三维成立——以三个向量为棱的平行六面体体积等于相应三阶行列式的绝对值（四面体为其六分之一）.严格推导需要空间向量工具，感兴趣的读者可在学习向量代数后回看，此处只需建立"行列式度量体积"的直观.</p>
+      </div>
+    </details>
+    <div class="ex"><div class="lab">例 1.13</div>
+      <p class="stmt">求以 \(A(1,1),\,B(4,2),\,C(2,5)\) 为顶点的三角形面积.</p>
+      <p class="sol"><span class="mk">解</span>由定理 1.4，
+      \[S=\frac12\,\Bigg|\begin{vmatrix}4-1&2-1\\ 2-1&5-1\end{vmatrix}\Bigg|
+       =\frac12\,\bigl|3\times4-1\times1\bigr|=\frac{11}2.\]</p>
+    </div>
+
+    <h3>二、"杨辉三角形"中的行列式</h3>
+    <p>将杨辉三角（二项式系数表）中的数按行按列取出组成 \(n\) 阶行列式
+    \[D_n=\begin{vmatrix}\binom00&\binom10&\binom20&\cdots\\[2pt] \binom01&\binom11&\binom21&\cdots\\[2pt] \binom02&\binom12&\binom22&\cdots\\ \vdots&\vdots&\vdots&\ddots\end{vmatrix},\]
+    则无论 \(n\) 取多大，恒有 \(D_n=1\).行列式与组合数学在此不期而遇.</p>
+    <details><summary>结论 \(D_n=1\) 的证明</summary>
+      <div class="body">
+        <p>先把 \(D_n\) 的"第 \(i\) 行、第 \(j\) 列"元素写清楚：它是 \(\binom{j}{i}\)（行、列均从 \(0\) 算起），并约定 \(i>j\) 时 \(\binom{j}{i}=0\).</p>
+        <p><b>具体看 \(n=3\).</b>把每个二项式系数算出来：
+        \[D_3=\begin{vmatrix}\binom00&\binom10&\binom20\\[3pt]\binom01&\binom11&\binom21\\[3pt]\binom02&\binom12&\binom22\end{vmatrix}
+        =\begin{vmatrix}1&1&1\\0&1&2\\0&0&1\end{vmatrix}.\]
+        它是一个<b>上三角行列式</b>（主对角线下方全为 \(0\)），而主对角元 \(\binom00,\binom11,\binom22\) 都等于 \(1\)，故 \(D_3=1\cdot1\cdot1=1\).</p>
+        <p><b>一般情形.</b>对一般的 \(n\)，矩阵第 \(i\) 行、第 \(j\) 列元素为 \(\binom{j}{i}\).当 \(i>j\) 时（主对角线下方）\(\binom{j}{i}=0\)；当 \(i=j\) 时（主对角线上）\(\binom{i}{i}=1\).因此 \(D_n\) 始终是上三角行列式，且对角元全是 \(1\)，于是 \(D_n=1\).</p>
+        <p><b>另一种看法（归纳法）.</b>把第 \(i\) 行减去第 \(i-1\) 行（\(i=n-1,n-2,\dots,1\)），行列式不变.利用帕斯卡恒等式 \(\binom{j}{i}-\binom{j}{i-1}=\binom{j-1}{i-1}\)，第一列除首元 \(\binom00=1\) 外全部化零；按第一列展开后，余下恰为与 \(D_{n-1}\) 同型的行列式，于是 \(D_n=D_{n-1}=\cdots=D_1=1\).两种看法一致.□</p>
+      </div>
+    </details>
+
+    <div class="case"><div class="lab">应用探微 · 鞋带公式：自动驾驶高精地图与工业视觉中的面积</div>
+  <details><summary>展开查看</summary>
+  <div class="body">
+
+      <p>定理 1.4 告诉我们，<em>三角形</em>的面积等于一个二阶行列式绝对值的一半.<b>自动驾驶</b>的高精地图里，车道边界、路口可行驶区都是多边形；<b>工业机器视觉</b>检测零件轮廓也要算面积.对任意（顶点按逆时针排列的）多边形，其面积等于一串二阶行列式之和的一半——这就是地理信息系统与机器视觉中常用的<b>鞋带公式（shoelace formula）</b>.</p>
+      <p>设多边形顶点依次为 \((x_1,y_1),(x_2,y_2),\dots,(x_n,y_n)\)，并约定 \((x_{n+1},y_{n+1})=(x_1,y_1)\)，则
+      \[S=\frac12\left|\sum_{i=1}^{n}\bigl(x_i y_{i+1}-x_{i+1}y_i\bigr)\right|
+      =\frac12\left|\sum_{i=1}^{n}\begin{vmatrix}x_i&y_i\\ x_{i+1}&y_{i+1}\end{vmatrix}\right|.\]
+      每一项 \(x_i y_{i+1}-x_{i+1}y_i\) 正是定理 1.4 里那个二阶行列式——它度量相邻两条边张成的有向小平行四边形.把所有小平行四边形拼起来，重叠部分相互抵消，剩下的刚好是整块面积.<b>行列式度量面积</b>这个朴素想法，就这样延伸到了任意形状.</p>
+      <p><b>算例.</b><b>自动驾驶高精地图</b>中一个 L 形路口的可行驶区域（单位：米），顶点按逆时针取为
+      \((0,0),(40,0),(40,20),(20,20),(20,40),(0,40)\).逐项计算
+      \[\begin{aligned}\text{和}&=(0\cdot0-40\cdot0)+(40\cdot20-40\cdot0)+(40\cdot20-20\cdot20)\\
+      &\quad+(20\cdot40-20\cdot20)+(20\cdot40-0\cdot40)+(0\cdot0-0\cdot40)\\
+      &=0+800+400+400+800+0=2400,\end{aligned}\]
+      故 \(S=\tfrac12|2400|=1200\ \text{m}^2\).用同样的办法，感知算法能在瞬间算出车道、路口或任意检测到的轮廓面积——<b>高端制造</b>中的零件瑕疵检测也用同一公式.行列式度量面积，在智能汽车与智能工厂里每天被计算亿万次.</p>
+
+  <div class="sv-demo" id="svDemo">
+    <div class="sv-bar">
+      <button type="button" id="svPlay">▶ 播放感知算法</button>
+      <button type="button" id="svReset">重置顶点</button>
+      <label class="sv-scene">场景：
+        <select id="svScene">
+          <option value="L">L 形路口可行驶区（自动驾驶高精地图）</option>
+          <option value="part">零件轮廓（工业机器视觉）</option>
+        </select>
+      </label>
+    </div>
+    <canvas class="sv-canvas" id="svCanvas" width="680" height="430"></canvas>
+    <div class="sv-readout">
+      <div>当前项：<span id="svTerm">—</span></div>
+      <div>累计 Σ = <span id="svSum">0</span></div>
+      <div>面积 S = ½|Σ| = <b id="svArea">0</b> m²</div>
+    </div>
+    <p class="sv-hint">这就是高精地图 / 感知模块的真实计算：雷达与相机给出轮廓顶点（单位：米），算法逐项累加 xᵢyᵢ₊₁ − xᵢ₊₁yᵢ（绿=正、红=负），最后除以 2 即得面积.可直接拖动任意顶点改变轮廓，面积实时更新.</p>
+  </div>
+  <script src="shoelace.js"></script>
+
+  </div>
+</details></div>
+
+    <!-- ============ §1.6 ============ -->
+    
+<div class="sec-quiz" data-sec="s15" data-ch="1" data-n="1"></div>
+<h2 id="s16"><span class="num">§1.6</span>用软件计算行列式</h2>
+<div class="ex"><div class="lab">引例　一行 det() 背后：十万阶刚度矩阵与你的"化三角形"</div>
+  <p class="stmt">§1.1 的 CAE 案例里，高铁车体的刚度矩阵可能有<b>十万阶</b>.工程师在 Python 里写一行 <code>numpy.linalg.det(K)</code> 就得出结果——但软件内部用的，正是你在本章学的"化三角形"（LU 分解）：把矩阵消成上三角，行列式即对角元之积.手算训练的降阶与消元思想，和工业算法一脉相承.</p>
+  <p><b>探索：</b>用手算"化三角形"验证本章 CAE 案例中的刚度矩阵
+  \(K=\begin{pmatrix}2&-1&0\\-1&2&-1\\0&-1&1\end{pmatrix}\)：
+  把第 1 行的 \(\frac12\) 倍加到第 2 行，再把第 2 行（新）的 \(\frac23\) 倍加到第 3 行，得
+  \(\begin{pmatrix}2&-1&0\\0&\frac32&-1\\0&0&\frac13\end{pmatrix}\)，
+  故 \(|K|=2\cdot\frac32\cdot\frac13=1\).你算的每一步，正是 <code>det()</code> 内部做的事——理解原理，才不会被"黑箱"裹挟.</p>
+</div>
+    <p>当阶数较高或元素为小数时，宜用软件计算.MATLAB 以矩阵为基本运算对象：输入 <code>A=[3,-2,0,5;1,4,-2,3;7,-1,5,4;0,5,8,6]</code>，再调用 <code>det(A)</code>，即得结果 <code>1658</code>.Python 中等价的写法是 <code>numpy.linalg.det(A)</code>.如 §1.2 应用探微所述，这些函数内部执行的是基于性质 5 的三角分解，而非按定义展开——手算训练的"化三角形"，与工业算法一脉相承.</p>
+
+    <!-- ============ 考研选讲 ============ -->
+    <h2 id="adv">考研选讲</h2>
+    <p class="muted">本栏目选取历年考研真题，展示行列式技巧的综合运用.建议先独立思考，再展开解答.</p>
+
+    <div class="ex"><div class="lab">选讲 1　（2014 · 考研数学一）</div>
+      <p class="stmt">求行列式 \(D=\begin{vmatrix}0&a&b&0\\ a&0&0&b\\ 0&c&d&0\\ c&0&0&d\end{vmatrix}\) 的值.</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　按第一列展开，非零元素只有 \(a_{21}=a\) 与 \(a_{41}=c\)：
+          \[D=a\,(-1)^{2+1}\begin{vmatrix}a&b&0\\ c&d&0\\ 0&0&d\end{vmatrix}
+             +c\,(-1)^{4+1}\begin{vmatrix}a&b&0\\ 0&0&b\\ c&d&0\end{vmatrix}.\]
+          第一个三阶行列式按第三行展开得 \(d\,(ad-bc)\)；第二个按第二行展开得 \(b\,(-1)^{2+3}(ad-bc)=-b\,(ad-bc)\).代回：
+          \[D=-a\cdot d\,(ad-bc)-c\cdot\bigl[-b\,(ad-bc)\bigr]=(ad-bc)(-ad+bc)=-(ad-bc)^2.\]
+          本题的教益：面对稀疏行列式，<b>选零最多的行或列展开</b>，再对低阶行列式重复同一策略，步步为营即可稳妥求解.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 2　（2016 · 考研数学一）</div>
+      <p class="stmt">求行列式 \(D=\begin{vmatrix}\lambda&-1&0&0\\ 0&\lambda&-1&0\\ 0&0&\lambda&-1\\ 4&3&2&\lambda+1\end{vmatrix}\)（结果表示为 \(\lambda\) 的多项式）.</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　按第四行展开.四个代数余子式对应的余子式都是三角形或近似三角形行列式：
+          \[M_{41}=\begin{vmatrix}-1&0&0\\ \lambda&-1&0\\ 0&\lambda&-1\end{vmatrix}=-1,\quad
+            M_{42}=\begin{vmatrix}\lambda&0&0\\ 0&-1&0\\ 0&\lambda&-1\end{vmatrix}=\lambda,\quad
+            M_{43}=\begin{vmatrix}\lambda&-1&0\\ 0&\lambda&0\\ 0&0&-1\end{vmatrix}=-\lambda^2,\quad
+            M_{44}=\begin{vmatrix}\lambda&-1&0\\ 0&\lambda&-1\\ 0&0&\lambda\end{vmatrix}=\lambda^3.\]
+          于是
+          \[D=4(-1)^{4+1}(-1)+3(-1)^{4+2}\lambda+2(-1)^{4+3}(-\lambda^2)+(\lambda+1)(-1)^{4+4}\lambda^3
+            =\lambda^4+\lambda^3+2\lambda^2+3\lambda+4.\]
+          这类"友矩阵型"行列式也可按第一列展开建立递推公式 \(D_n=\lambda D_{n-1}+\text{常数}\)，两种路径殊途同归.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 3　用行列式做因式分解</div>
+      <p class="stmt">分解因式：\(f=a^2c+ab^2+bc^2-ac^2-b^2c-a^2b\).</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　<b>第一步：数一数项数.</b>把 \(f\) 的六项连同符号一字排开：
+          \[f=\underbrace{+\,a^2c\;+\;ab^2\;+\;bc^2}_{\text{三项正}}\;\underbrace{-\;ac^2\;-\;b^2c\;-\;a^2b}_{\text{三项负}}.\]
+          <b>第二步：联想到三阶行列式.</b>三阶行列式按沙路法展开，恰好也是<em>三项正、三项负、共六项</em>——这是所有三阶行列式的共同结构.既然 \(f\) 的"项数形状"与三阶行列式一模一样，不妨<em>猜测</em>：\(f\) 本身就是某个三阶行列式的值.</p>
+          <p><b>第三步：猜出行列式.</b>观察每项的"配方"：正项 \(a^2c\) 含 \(a^2\) 与 \(c\)，\(ab^2\) 含 \(b^2\)，\(bc^2\) 含 \(c^2\).可见三个"平方项" \(a^2,b^2,c^2\) 应该分处三行，而每一项又都只含一次方的 \(a,b,c\) 各一次——这正是范德蒙德行列式的特征.于是试取
+          \[f\overset{?}{=}\begin{vmatrix}1&1&1\\ a&b&c\\ a^2&b^2&c^2\end{vmatrix}.\]</p>
+          <p><b>第四步：用沙路法验证.</b>主对角线三项取正、次对角线三项取负：
+          \[\begin{vmatrix}1&1&1\\ a&b&c\\ a^2&b^2&c^2\end{vmatrix}
+          =1\cdot b\cdot c^2+1\cdot c\cdot a^2+1\cdot a\cdot b^2
+          -1\cdot c\cdot b^2-1\cdot a\cdot c^2-1\cdot b\cdot a^2
+          =bc^2+ca^2+ab^2-cb^2-ac^2-ba^2.\]
+          与 \(f\) 的六项逐一比对，完全一致——猜测成立，\(f\) 确为该范德蒙德行列式.</p>
+          <p><b>第五步：套用定理 1.2 读出结果.</b>由范德蒙德公式（取 \(x_1=a,x_2=b,x_3=c\)）：
+          \[f=(b-a)(c-a)(c-b).\]
+          先"从项数结构看出像行列式"，再"用沙路法确认"，最后"用定理 1.2 收尾"——这是处理"类交错多项式"的通用思路，比死记硬背因式分解套路要可靠得多.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 4　爪形行列式</div>
+      <p class="stmt">计算行列式 \(D=\begin{vmatrix}1&1&1&1\\ 1&2&0&0\\ 1&0&3&0\\ 1&0&0&4\end{vmatrix}\).</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　这类"第一行、第一列与对角线之外全为零"的行列式称为爪形（箭形）行列式，标准手法是<b>用对角元消去第一列</b>：作列变换 \(c_1-\tfrac12c_2-\tfrac13c_3-\tfrac14c_4\)（性质 5），第一列变为 \(\bigl(1-\tfrac12-\tfrac13-\tfrac14,\,0,\,0,\,0\bigr)^{T}\)，行列式化为上三角：
+          \[D=\Bigl(1-\frac12-\frac13-\frac14\Bigr)\times2\times3\times4
+             =\Bigl(-\frac1{12}\Bigr)\times24=-2.\]
+          一般地，\(\begin{vmatrix}a_0&1&\cdots&1\\ 1&a_1&&\\ \vdots&&\ddots&\\ 1&&&a_n\end{vmatrix}=a_1\cdots a_n\Bigl(a_0-\sum_{i=1}^n\frac1{a_i}\Bigr)\)（各 \(a_i\neq0\)）.记住手法比记住公式更重要.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ex"><div class="lab">选讲 5　三对角行列式与递推法</div>
+      <p class="stmt">计算 \(n\) 阶三对角行列式 \(D_n=\begin{vmatrix}2&1&&\\ 1&2&\ddots&\\ &\ddots&\ddots&1\\ &&1&2\end{vmatrix}\).</p>
+      <details><summary>解答</summary>
+        <div class="body">
+          <p><span style="font-weight:700">解</span>　按第一行展开：\(D_n=2D_{n-1}-1\cdot\begin{vmatrix}1&1&&\\ 0&2&\ddots&\\ &\ddots&\ddots&1\\ &&1&2\end{vmatrix}\)，后一个行列式再按第一列展开得 \(D_{n-2}\)，于是有递推公式
+          \[D_n=2D_{n-1}-D_{n-2},\qquad D_1=2,\;D_2=3.\]
+          变形为 \(D_n-D_{n-1}=D_{n-1}-D_{n-2}=\cdots=D_2-D_1=1\)，即 \(\{D_n\}\) 是公差为 1 的等差数列，故 \(D_n=n+1\)."降阶得递推、递推出通项"，是处理规律型 \(n\) 阶行列式的三板斧之一（另两板斧：各行加到一行提公因子、化爪形）.</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- ============ 简史 ============ -->
+    <div class="hist" id="hist">
+      <div class="lab">拓展阅读 · 数学家与行列式</div>
+      <p style="font-size:15px">行列式从萌芽到成为系统理论，历时约一百六十年，跨越东西方.值得注意的是：它的诞生早于矩阵——数学史上"先有行列式、后有矩阵"，与今天教材的讲述顺序恰好相反.下面这些名字缀成了这条时间线，点开可读每个人的故事.</p>
+      <details><summary>关孝和（约1642 – 1708）：和算的巅峰，早于欧洲的发现</summary>
+        <div class="body"><p>关孝和出身日本武士家庭，自幼由一位家臣启蒙数学，此后终身自学.他在 1683 年的《解伏题之法》中，为消去多元高次方程组的未知数，给出了三阶、四阶"行列式"的展开法则——比莱布尼茨的信件还早十年.他发明的"点窜术"（一套竖式代数记号）使日本和算能处理欧洲当时同水平的问题.关孝和终身未获官学职位，靠武士俸禄维持研究，去世后弟子建部贤弘整理其遗稿方使成果传世.一个远离欧洲学术中心的人，凭一己之力把行列式推算到了时代前沿——独立思考的分量，在他身上体现得淋漓尽致.</p></div>
+      </details>
+      <details><summary>莱布尼茨（1646 – 1716）与克莱姆（1704 – 1752）：记号与法则</summary>
+        <div class="body"><p>1693 年，莱布尼茨在写给洛必达的信中用双下标记号 \(a_{ij}\) 表示方程组系数，并给出了"系数行列式为零则方程组退化"的条件——这封信直到 1850 年才发表，以致行列式在欧洲的"官方"起点被推迟了半个多世纪.莱布尼茨毕生痴迷于设计优良记号（微积分的 \(\mathrm dx\)、\(\int\) 也出自他手），他相信好记号能"替思维省力"，本章行列式竖线记号的便利恰是这一信条的注脚.瑞士人克莱姆在 1750 年《代数曲线分析引论》的附录中系统给出了用系数行列式解方程组的公式——即本章的克拉默法则.有趣的是，克莱姆本人非常谦逊，明确注明该思想源于同胞马克劳林等人的工作；后世仍以他的名字命名，因为是他第一次把法则表述得完整、清晰、可用.清晰的表达本身就是学术贡献.</p></div>
+      </details>
+      <details><summary>范德蒙德（1735 – 1796）：让行列式独立成学的人</summary>
+        <div class="body"><p>范德蒙德的前半生是职业小提琴手，三十五岁才转向数学，一生只发表了四篇数学论文——但仅凭这四篇，他被后世称为"行列式理论的奠基人".1772 年的论文首次把行列式从"解方程组的副产品"中剥离出来，作为独立对象研究其自身规律.耐人寻味的是，今天以他命名的"范德蒙德行列式"在他的文章中并未明确出现，命名源于后人对其符号的误读——数学史上的命名常有这样的错位，而这丝毫不减他的真实贡献：<b>把一个工具升格为一门理论</b>，眼光比技巧更稀有.</p></div>
+      </details>
+      <details><summary>柯西（1789 – 1857）与雅可比（1804 – 1851）：命名者与集大成者</summary>
+        <div class="body"><p>1815 年，柯西在一篇长文中首次以"déterminant（行列式）"命名这一对象，证明了乘法定理，给出双下标方阵排布与今天几乎一致的处理.柯西一生发表论文约 800 篇，数量居史上前列；更重要的是他为分析学立下"先定义、再证明"的严格标准——本章"由定义逐层推出性质"的写法，正是柯西式风格的遗产.普鲁士数学家雅可比则在 1841 年发表《论行列式的形成与性质》，把散落各处的结果整理成首尾一贯的理论体系，行列式理论自此定型；他把行列式用于多重积分换元（今称雅可比行列式），使其从代数走向分析.雅可比还是现代"研讨班"教学模式的开创者——他坚持让学生在讨论中自己推导而非听讲照抄.他有句常被引用的话：问"为什么"比记"是什么"更接近数学.1841 年，英国人凯莱引入了沿用至今的竖线记号 \(|\cdot|\)；十七年后他创立矩阵论——行列式的"容器"这才姗姗来迟.</p></div>
+      </details>
+      <p style="font-size:14.5px" class="muted">从关孝和到雅可比，没有谁"一夜发明"了行列式：它在一代代人手中被提出、被遗忘、被重新发现、被命名、被系统化.严谨与坚持，本身即是治学的范本.</p>
+    </div>
+
+    <!-- ============ 习题 ============ -->
+    <div class="rule"></div>
+    <div class="hw" id="hw">
+      <h4>习题一</h4>
+
+      <div class="grp">一、选择题</div>
+      <ol>
+        <li>设 \(\begin{vmatrix}a&b\\c&d\end{vmatrix}=m\)，则 \(\begin{vmatrix}a&2b\\c&2d\end{vmatrix}=\)（　）
+          <div class="qopts"><span>(A) \(2m\)</span><span>(B) \(m\)</span><span>(C) \(-2m\)</span><span>(D) \(4m\)</span></div></li>
+        <li>设 \(A_{ij}\) 为 \(n\) 阶行列式 \(D=|a_{ij}|\) 中元素 \(a_{ij}\) 的代数余子式，则下列各式中<b>错误</b>的是（　）
+          <div class="qopts"><span>(A) \(\displaystyle\sum_{k=1}^n a_{ik}A_{ik}=D\)</span><span>(B) \(\displaystyle\sum_{k=1}^n a_{ik}A_{jk}=0\;(i\neq j)\)</span><span>(C) \(\displaystyle\sum_{k=1}^n a_{kj}A_{kj}=D\)</span><span>(D) \(\displaystyle\sum_{k=1}^n a_{ik}A_{jk}=D\;(i\neq j)\)</span></div></li>
+        <li>把 \(n\) 阶行列式 \(D\) 的每个元素都乘以 \(-1\)，所得行列式等于（　）
+          <div class="qopts"><span>(A) \(-D\)</span><span>(B) \(D\)</span><span>(C) \((-1)^nD\)</span><span>(D) \(0\)</span></div></li>
+        <li>方程 \(\begin{vmatrix}x&1&1\\1&x&1\\1&1&x\end{vmatrix}=0\) 的互异实根的个数为（　）
+          <div class="qopts"><span>(A) 1</span><span>(B) 2</span><span>(C) 3</span><span>(D) 0</span></div></li>
+      </ol>
+
+      <div class="grp">二、填空题</div>
+      <ol start="5">
+        <li>\(\begin{vmatrix}1&2\\3&4\end{vmatrix}=\) ________.</li>
+        <li>\(\begin{vmatrix}1&1&1\\1&2&3\\1&4&9\end{vmatrix}=\) ________.</li>
+        <li>上三角行列式 \(\begin{vmatrix}2&7&5\\0&3&9\\0&0&4\end{vmatrix}=\) ________.</li>
+        <li>设三阶行列式 \(D=3\).先把 \(D\) 的第 2 行乘以 \(2\)，再交换第 1、3 行，所得行列式的值为 ________.</li>
+      </ol>
+
+      <div class="grp">三、计算题</div>
+      <ol start="9">
+        <li>用化三角形法计算 \(\begin{vmatrix}1&2&3\\2&3&1\\3&1&2\end{vmatrix}\).</li>
+        <li>计算 \(\begin{vmatrix}1&1&1&1\\ 1&2&3&4\\ 1&4&9&16\\ 1&8&27&64\end{vmatrix}\).</li>
+        <li>设 \(D=\begin{vmatrix}1&2&3\\4&5&6\\7&8&10\end{vmatrix}\)，求 \(A_{31}+A_{32}+A_{33}\).</li>
+        <li>计算 \(n\) 阶行列式 \(D_n=\begin{vmatrix}x&a&\cdots&a\\[6pt] a&x&\cdots&a\\[6pt] \vdots&\vdots&\ddots&\vdots\\[6pt] a&a&\cdots&x\end{vmatrix}\)（每行元素之和相同）.</li>
+        <li>当 \(k\) 取何值时，齐次方程组 \(\begin{cases}kx_1+x_2-x_3=0,\\ x_1+kx_2-x_3=0,\\ 2x_1-x_2+x_3=0\end{cases}\) 可能有非零解？</li>
+      </ol>
+
+      <div class="grp">四、证明题</div>
+      <ol start="14">
+        <li>证明：\(\begin{vmatrix}a&b\\ c+e&d+f\end{vmatrix}=\begin{vmatrix}a&b\\ c&d\end{vmatrix}+\begin{vmatrix}a&b\\ e&f\end{vmatrix}\).</li>
+        <li>证明：只有次对角线（自右上至左下）上元素 \(a_{1n},a_{2,n-1},\dots,a_{n1}\) 可能非零的 \(n\) 阶行列式，其值为 \((-1)^{\frac{n(n-1)}2}\,a_{1n}a_{2,n-1}\cdots a_{n1}\).</li>
+        <li>设 \(a,b,c\) 互不相同，证明：三点 \((a,a^2),(b,b^2),(c,c^2)\) 不共线.</li>
+      </ol>
+    </div>
+    <details>
+      <summary>习题一 · 详细解答</summary>
+      <div class="body">
+        <p><b>1.（A）</b>第二列有公因子 2，由性质 3 提出，得 \(2m\).</p>
+        <p><b>2.（D）</b>由展开定理，(A)(C) 分别是按行、按列展开，正确；由异乘变零定理，(B) 正确；(D) 中 \(i\neq j\) 时该和应为 \(0\) 而非 \(D\)，错误.</p>
+        <p><b>3.（C）</b>每一行都有公因子 \(-1\)，共 \(n\) 行，由性质 3 提出 \(n\) 次，得 \((-1)^nD\).注意不是 \(-D\)：只有恰提一行时才是 \(-D\).</p>
+        <p><b>4.（B）</b>各行加到第一行提出 \((x+2)\)，再作 \(r_2-r_1,\;r_3-r_1\)（此处 \(r_1\) 已是全 1 行）：行列式 \(=(x+2)(x-1)^2\).根为 \(x=-2\) 与 \(x=1\)（二重），互异实根共 <b>2</b> 个.</p>
+        <p><b>5.</b>\(1\times4-2\times3=-2\).</p>
+        <p><b>6.</b>这是 \(x_1=1,x_2=2,x_3=3\) 的范德蒙德行列式（第 \(i\) 行为 \(x^{\,i-1}\)）：\((2-1)(3-1)(3-2)=2\).</p>
+        <p><b>7.</b>上三角行列式等于对角元之积：\(2\times3\times4=24\).</p>
+        <p><b>8.</b>某行乘 2 使行列式变为 \(2D=6\)（性质 3）；再交换两行变号（性质 2），得 \(-6\).</p>
+        <p><b>9.</b>\[\begin{vmatrix}1&2&3\\2&3&1\\3&1&2\end{vmatrix}
+        \xlongequal{r_2-2r_1,\;r_3-3r_1}\begin{vmatrix}1&2&3\\0&-1&-5\\0&-5&-7\end{vmatrix}
+        \xlongequal{r_3-5r_2}\begin{vmatrix}1&2&3\\0&-1&-5\\0&0&18\end{vmatrix}=1\times(-1)\times18=-18.\]</p>
+        <p><b>10.</b>这是 \(x_i=1,2,3,4\) 的范德蒙德行列式：
+        \[(2-1)(3-1)(4-1)\cdot(3-2)(4-2)\cdot(4-3)=1\cdot2\cdot3\cdot1\cdot2\cdot1=12.\]</p>
+        <p><b>11.</b>\(A_{31}+A_{32}+A_{33}\) 等于把 \(D\) 的第 3 行替换为 \((1,1,1)\) 所得的行列式：
+        \[\begin{vmatrix}1&2&3\\4&5&6\\1&1&1\end{vmatrix}
+        \xlongequal{r_1-r_3,\;r_2-4r_3}\begin{vmatrix}0&1&2\\0&1&2\\1&1&1\end{vmatrix}=0\]
+        （前两行相同）.故所求为 \(0\).</p>
+        <p><b>12.</b>每行元素之和均为 \(x+(n-1)a\).把第 \(2,\dots,n\) 列都加到第 1 列（性质 5），提出公因子后再作 \(r_i-r_1\)：
+        \[D_n=\bigl[x+(n-1)a\bigr]\begin{vmatrix}1&a&\cdots&a\\[6pt] 1&x&\cdots&a\\[6pt] \vdots&&\ddots&\\[6pt] 1&a&\cdots&x\end{vmatrix}
+        =\bigl[x+(n-1)a\bigr]\begin{vmatrix}1&a&\cdots&a\\[6pt] 0&x-a&&\\[6pt] \vdots&&\ddots&\\[6pt] 0&&&x-a\end{vmatrix}
+        =\bigl[x+(n-1)a\bigr](x-a)^{n-1}.\]</p>
+        <p><b>13.</b>非零解要求系数行列式为零：
+        \[\begin{vmatrix}k&1&-1\\1&k&-1\\2&-1&1\end{vmatrix}
+        \xlongequal{r_1+r_3,\;r_2+r_3}\begin{vmatrix}k+2&0&0\\3&k-1&0\\2&-1&1\end{vmatrix}=(k+2)(k-1).\]
+        令其为零得 \(k=-2\) 或 \(k=1\).</p>
+        <p><b>14.</b>左端行列式的第二行元素均为两数之和，由性质 4 按第二行拆开，即得右端两个行列式之和.□</p>
+        <p><b>15.</b>把第 \(n\) 行依次与上方相邻行交换，经 \(n-1\) 次互换移到第一行；再把（新的）第 \(n\) 行经 \(n-2\) 次互换移到第二行……共 \((n-1)+(n-2)+\cdots+1=\frac{n(n-1)}2\) 次互换后化为下三角（对角元为 \(a_{n1},a_{n-1,2},\dots,a_{1n}\)）.每次互换变号一次（性质 2），故原行列式 \(=(-1)^{\frac{n(n-1)}2}a_{1n}a_{2,n-1}\cdots a_{n1}\).□</p>
+        <p><b>16.</b>由定理 1.4，三点共线当且仅当 \(\begin{vmatrix}b-a&b^2-a^2\\ c-a&c^2-a^2\end{vmatrix}=0\).提出公因子：
+        \[\begin{vmatrix}b-a&b^2-a^2\\ c-a&c^2-a^2\end{vmatrix}=(b-a)(c-a)\begin{vmatrix}1&b+a\\ 1&c+a\end{vmatrix}=(b-a)(c-a)(c-b).\]
+        因 \(a,b,c\) 互不相同，此值非零，故三点不共线.（这正是"抛物线上任意三点不共线"的行列式证明.）□</p>
+      </div>
+    </details>
+
+    <section class="self-test" style="margin:30px 0;padding:22px 24px;border-radius:14px;background:linear-gradient(135deg,#eef4ff,#f7faff);border:1px solid #d6e4ff;">
+  <h3 style="margin:0 0 8px;font-size:1.18rem;color:#13386b;">本章自测</h3>
+  <p style="margin:0 0 16px;color:#33415c;line-height:1.75;">学完本章，打开<strong>限定本章</strong>的智能组卷：系统从本题库中随机抽取题目、自动判分，答错的题自动进入错题本，并生成你的章节掌握度.你也可以自由调整各题型题量后再生成试卷.</p>
+  <a href="exam.html?ch=1" style="display:inline-block;padding:11px 24px;border-radius:10px;background:#2563eb;color:#fff;font-weight:600;text-decoration:none;box-shadow:0 2px 10px rgba(37,99,235,.25);">开始本章自测 ▶</a>
+</section>
+
+
+    
+    <div class="rule"></div>
+
+    <!-- ============ 第二章 矩阵及其运算 ============ -->
+
+    <footer class="site-footer">
+      <div class="wm">线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用　线性代数数字教材 · 仅供学习使用</div>
+      <div class="cp">线性代数数字教材 · 仅供学习使用；转载请告知，欢迎交流探讨<br>交流联系：<a href="mailto:ldwmath@163.com">ldwmath@163.com</a></div>
+    </footer>
+  </div></div>
+</div>
+<script>window.TOWER_BOOK='linalg';</script>
+<script>window.TOWER_SECS={"ch": 1, "list": [["s11", "行列式的概念"], ["s12", "行列式的性质"], ["s13", "行列式的展开定理"], ["s14", "克拉默（Cramer）法则"], ["s15", "应用实例"], ["s16", "用软件计算行列式"], ["adv", "考研选讲"], ["hw", "习题"]]};</script>
+<script src="tower.js" defer></script>
+<script src="lastread.js"></script>
+<script src="app.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+<script src="energy_bar.js"></script>
+<script src="section_quiz.js"></script>
+<script src="msgboard.js"></script>
+<script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+<script src="ux-enhancer.js"></script>
+</body>
+</html>

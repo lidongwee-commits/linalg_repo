@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第11章 · 曲线积分</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第11章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第11章 · 曲线积分</div>
+<a href="ch11.html">整章</a>
+<a href="ch11.html#adv11">考研选讲</a>
+<a href="ch11.html#cq11">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH11 -->
+<div class="kicker">Chapter 11</div>
+<h1 class="title">曲线积分<span class="en">Line Integrals</span></h1>
+<p class="lede">沿着曲线积分是多元积分的重要类型.本章建立对弧长与对坐标两类曲线积分，通过格林公式把平面曲线积分与二重积分联系起来，并讨论积分与路径无关的条件及其物理应用.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>对弧长积分</b> → 路径长度即运动代价</li>
+<li><b>对坐标积分</b> → 力场做功 = 行驶能耗</li>
+<li><b>格林公式</b> → 旋度总量 = 环量，判保守场</li>
+<li><b>路径无关</b> → 存在势函数 ⇒ 能耗与路线无关</li>
+<li><b>应用</b> → 自动驾驶最优能耗轨迹</li>
+  </ul>
+</div>
+
+     data-fp="-y" data-fq="x" data-flow="1"
+     data-xr="-2,2" data-yr="-2,2"
+
+    <!-- ============ §11.1 ============ -->
+<div class="labx">
+  <div class="lab">第一类曲线积分 · 弧长微元</div>
+  <div class="desc">沿平面曲线 (\(y=\sin x\)) 的弧长微元 (\(\mathrm{d}s=\sqrt{1+f\'^{2}}\,\mathrm{d}x\)).</div>
+  <canvas id="cv_p111" width="720" height="320"></canvas>
+  
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p111'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p111');
+    var vo=document.getElementById('vo_p111');
+    var W=cv.width,H=cv.height;
+    var xmin=-1,xmax=6,ymin=-1.4,ymax=1.4;
+    var p=1;
+    function fx(x){ return Math.sin(x); }
+    function gx(x){  }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.12)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv+=2){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv+=2){var yy=Y(gyv)*H;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
+      // axes
+      var y0=Y(0)*H, x0=X(0)*W;
+      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x0,0);ctx.lineTo(x0,H);ctx.moveTo(0,y0);ctx.lineTo(W,y0);ctx.stroke();
+      // f(x)=x*sin x
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.8; ctx.lineCap='round'; ctx.beginPath();
+      var f1=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fx(x);
+        if(!isFinite(y)){f1=true;continue;}var py=Y(y);
+        if(py<0||py>1){f1=true;continue;}var sx=px,sy=py*H;
+        if(f1){ctx.moveTo(sx,sy);f1=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // f'(x)=sin x+x*cos x
+      ctx.strokeStyle='#D97706'; ctx.lineWidth=2.2; ctx.beginPath();
+      var f2=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fpx(x);
+        if(!isFinite(y)){f2=true;continue;}var py=Y(y);
+        if(py<0||py>1){f2=true;continue;}var sx=px,sy=py*H;
+        if(f2){ctx.moveTo(sx,sy);f2=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // legend
+      ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#0F6E56'; ctx.fillRect(W-145,10,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=x\u00b7sin x', W-125,16);
+      ctx.fillStyle='#D97706'; ctx.fillRect(W-145,26,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText("f\u2032(x)=sin x+x\u00b7cos x", W-125,32);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    <h2 id="s111"><span class="num">§11.1</span>对弧长的曲线积分</h2>
+    
+<div class="ex"><div class="lab">引例一　特高压输电线的覆冰有多重：沿一条曲线"累加"质量</div>
+  <p class="stmt">±800 kV 特高压直流输电线路跨越山谷，一个耐张段的<b>档距</b>（两塔之间的水平距离）为 \(400\,\mathrm{m}\).导线在自重作用下自然下垂，其形状是<b>悬链线</b>.冬季寒潮来袭，导线开始覆冰，而覆冰厚度并不均匀——离地越高、越靠近塔顶，风速越大、水汽输送越强，单位长度上挂的冰就越多.电网调度中心必须回答一个问题：<b>这一档导线上一共挂了多少千克的冰？</b>超过设计荷载就要立刻启动直流融冰.</p>
+  <p>以档距中点（导线最低点）正下方为原点、水平方向为 \(x\) 轴建立坐标系，导线形状为</p>
+  \[y=a\cosh\frac{x}{a}-a,\qquad a=1000\ \mathrm{m},\quad -200\le x\le 200\ (\mathrm{m}).\]
+  <p>此时最低点在原点，塔侧挂点高度（即<b>弧垂</b>）为 \(y(200)=1000\bigl(\cosh 0.2-1\bigr)=20.07\,\mathrm{m}\).实测覆冰线密度随高度线性增大：</p>
+  \[\rho(x,y)=\rho_0+\kappa y,\qquad \rho_0=1.2\ \mathrm{kg/m},\quad \kappa=0.02\ \mathrm{kg/m^2}.\]
+  <p>如果线密度是常数，总质量就是"密度 \(\times\) 线长"一句乘法.可现在 \(\rho\) 沿着导线不断变化，唯一的出路仍然是<b>分割—近似—求和—取极限</b>：把导线分成许多小段，每小段上密度近似不变，用"密度 \(\times\) 小段弧长"估计该段冰重，再全部相加.</p>
+  <p>关键在于：小段的长度不是 \(\Delta x\)，而是<b>弧长</b> \(\Delta s\).由弧微分公式，\(y'=\sinh\dfrac{x}{a}\)，于是</p>
+  \[\mathrm{d}s=\sqrt{1+y'^2}\,\mathrm{d}x=\sqrt{1+\sinh^2\frac{x}{a}}\,\mathrm{d}x=\cosh\frac{x}{a}\,\mathrm{d}x.\]
+  <p><b>具体模拟计算</b>（先算半档 \(0\le x\le 200\)，四等分，取每段中点为代表点）：</p>
+  <table class="dt">
+    <tr><th>子段 \([x_i,x_{i+1}]\)</th><th>中点 \(x^*\)</th><th>高度 \(y^*\)（m）</th><th>线密度 \(\rho^*\)（kg/m）</th><th>弧长 \(\Delta s\)（m）</th><th>\(\Delta m=\rho^*\Delta s\)（kg）</th></tr>
+    <tr><td>\([0,50]\)</td><td>25</td><td>0.3125</td><td>1.20625</td><td>50.0156</td><td>60.331</td></tr>
+    <tr><td>\([50,100]\)</td><td>75</td><td>2.8138</td><td>1.25628</td><td>50.1407</td><td>62.991</td></tr>
+    <tr><td>\([100,150]\)</td><td>125</td><td>7.8227</td><td>1.35645</td><td>50.3911</td><td>68.353</td></tr>
+    <tr><td>\([150,200]\)</td><td>175</td><td>15.3525</td><td>1.50705</td><td>50.7676</td><td>76.509</td></tr>
+    <tr><td colspan="5"><b>半档合计</b></td><td><b>268.18</b></td></tr>
+    <tr><td colspan="5"><b>全档（对称加倍）</b></td><td><b>536.37</b></td></tr>
+  </table>
+  <p>当分割无限加细时，和式的极限就是精确值.注意到 \(\kappa y=20\cosh\dfrac{x}{a}-20\)，被积表达式化为 \(\bigl(-18.8+20\cosh\frac{x}{a}\bigr)\cosh\frac{x}{a}\)，再用 \(\cosh^2u=\frac{1+\cosh 2u}{2}\) 得</p>
+  \[M=\int_{-200}^{200}\Bigl(-18.8\cosh\frac{x}{1000}+20\cosh^2\frac{x}{1000}\Bigr)\mathrm{d}x
+    =-18.8\times402.672+20\times405.376=537.29\ \mathrm{kg}.\]
+  <p>四等分的粗糙估计 \(536.37\,\mathrm{kg}\) 与精确值只差 \(0.17\%\)，这说明和式确实在收敛.作为对照，该型导线自重约 \(1.35\,\mathrm{kg/m}\)，全档自重 \(543.6\,\mathrm{kg}\)——<b>覆冰几乎让荷载翻了一倍</b>，已逼近杆塔设计裕度，必须立即融冰.</p>
+  <p>这个"沿一条曲线把变化的量累加起来"的极限，就是本节要定义的<b>对弧长的曲线积分</b>，记作 \(\displaystyle\int_L\rho(x,y)\,\mathrm{d}s\).</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　5G 毫米波螺旋振子的质量：空间曲线上的累加</div>
+  <p>螺旋线的参数方程为</p>
+  \[x=0.05\cos t,\quad y=0.05\sin t,\quad z=0.008\,t,\qquad 0\le t\le 6\pi\ (\text{共 3 圈，单位 m}),\]
+  <p>线密度 \(\rho(z)=8+40z\ (\mathrm{g/m})\).空间曲线的弧微分为</p>
+  \[\mathrm{d}s=\sqrt{x'^2(t)+y'^2(t)+z'^2(t)}\,\mathrm{d}t=\sqrt{0.05^2+0.008^2}\,\mathrm{d}t=0.0506360\,\mathrm{d}t.\]
+  <p>于是总长 \(s=0.0506360\times 6\pi=0.9545\,\mathrm{m}\)，总质量</p>
+  \[M=\int_\Gamma\rho\,\mathrm{d}s=0.0506360\int_0^{6\pi}\bigl(8+0.32t\bigr)\mathrm{d}t
+   =0.0506360\bigl[8t+0.16t^2\bigr]_0^{6\pi}=10.514\ \mathrm{g}.\]
+  <p><b>逐圈分解</b>（把积分区间按圈拆开，这用到了积分的"路径可加性"）：</p>
+  <table class="dt">
+    <tr><th>圈次</th><th>\(t\) 范围</th><th>高度 \(z\) 范围（m）</th><th>该圈线密度范围（g/m）</th><th>该圈质量（g）</th></tr>
+    <tr><td>第 1 圈</td><td>\([0,2\pi]\)</td><td>\(0\sim0.0503\)</td><td>\(8.00\sim10.01\)</td><td>2.865</td></tr>
+    <tr><td>第 2 圈</td><td>\([2\pi,4\pi]\)</td><td>\(0.0503\sim0.1005\)</td><td>\(10.01\sim12.02\)</td><td>3.505</td></tr>
+    <tr><td>第 3 圈</td><td>\([4\pi,6\pi]\)</td><td>\(0.1005\sim0.1508\)</td><td>\(12.02\sim14.03\)</td><td>4.144</td></tr>
+    <tr><td colspan="4"><b>合计</b></td><td><b>10.514</b></td></tr>
+  </table>
+  <p class="muted">请注意：引例一求的是平面曲线上的质量，引例二求的是空间曲线上的质量，物理背景不同，<b>数学结构完全一样</b>——都是"函数值 \(\times\) 小弧长"求和再取极限.数学的任务，就是把这个共同结构抽象出来.</p>
+</div>
+
+<h3>一、对弧长的曲线积分的概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 11.1</span>对弧长的曲线积分（第一类曲线积分）</div>
+  <p>设 \(L\) 为 \(xOy\) 面内一条<b>可求长</b>的曲线弧，函数 \(f(x,y)\) 在 \(L\) 上有界.用 \(L\) 上的点 \(M_1,M_2,\dots,M_{n-1}\) 把 \(L\) 任意分成 \(n\) 个小段，第 \(i\) 个小段的长度记为 \(\Delta s_i\).在第 \(i\) 个小段上任取一点 \((\xi_i,\eta_i)\)，作乘积 \(f(\xi_i,\eta_i)\Delta s_i\) 并求和，得<b>积分和</b></p>
+  \[S_n=\sum_{i=1}^{n}f(\xi_i,\eta_i)\,\Delta s_i .\]
+  <p>记 \(\lambda=\max\limits_{1\le i\le n}\Delta s_i\).若当 \(\lambda\to0\) 时该和的极限总存在（与 \(L\) 的分法及点 \((\xi_i,\eta_i)\) 的取法均无关），则称此极限为函数 \(f(x,y)\) 在曲线弧 \(L\) 上<b>对弧长的曲线积分</b>，也称<b>第一类曲线积分</b>，记作</p>
+  \[\int_{L}f(x,y)\,\mathrm{d}s=\lim_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i,\eta_i)\,\Delta s_i .\]
+  <p>其中 \(f(x,y)\) 称为<b>被积函数</b>，\(L\) 称为<b>积分弧段</b>，\(\mathrm{d}s\) 称为<b>弧长元素</b>.若 \(L\) 为<b>闭曲线</b>，则记作 \(\displaystyle\oint_L f(x,y)\,\mathrm{d}s\).</p>
+  <p>对空间曲线弧 \(\Gamma\) 与三元函数 \(f(x,y,z)\)，完全类似地定义</p>
+  \[\int_{\Gamma}f(x,y,z)\,\mathrm{d}s=\lim_{\lambda\to0}\sum_{i=1}^{n}f(\xi_i,\eta_i,\zeta_i)\,\Delta s_i .\]
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 11.1</span>可积的充分条件</div>
+  <p>若 \(L\) 是<b>光滑</b>或<b>分段光滑</b>的曲线弧，且 \(f(x,y)\) 在 \(L\) 上<b>连续</b>，则 \(\displaystyle\int_L f(x,y)\,\mathrm{d}s\) 必定存在.</p>
+  <p class="muted">所谓 \(L\) 光滑，是指它有连续转动的切线，用参数式表述即 \(x=\varphi(t),\ y=\psi(t)\) 具有连续导数且 \(\varphi'^2(t)+\psi'^2(t)
+eq0\).工程中的导线、导轨、天线丝都满足这一条件，因此以下讨论若不特别声明，均设 \(L\) 光滑（或分段光滑）、\(f\) 连续.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需一致连续性与达布理论，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：把曲线积分"拉直"成一元函数的积分.</span>设 \(L\) 的光滑参数式为 \(x=\varphi(t),\ y=\psi(t)\ (\alpha\le t\le\beta)\)，记 \(L\) 的全长为 \(\ell\).弧长函数</p>
+\[s(t)=\int_{\alpha}^{t}\sqrt{\varphi'^2(u)+\psi'^2(u)}\,\mathrm{d}u\]
+<p>连续可导，且 \(s'(t)=\sqrt{\varphi'^2(t)+\psi'^2(t)}\gt 0\)，故 \(t\mapsto s\) 是 \([\alpha,\beta]\) 到 \([0,\ell]\) 的严格递增连续双射.于是"\(L\) 上的分割 + 代表点"与"\([0,\ell]\) 上的分割 + 代表点"一一对应，积分和 \(\sum f(\xi_i,\eta_i)\Delta s_i\) 恰好就是一元函数</p>
+\[g(s)=f\bigl(x(s),\,y(s)\bigr),\qquad s\in[0,\ell]\]
+<p>的黎曼和.这样问题就归结为：\(g\) 在 \([0,\ell]\) 上是否黎曼可积.</p>
+<p><span class="stp">第二步：证明 \(g\) 可积.</span>\(f\) 在 \(L\) 上连续，\(x(s),y(s)\) 连续，故复合函数 \(g\) 在闭区间 \([0,\ell]\) 上连续.剩下的正是"闭区间上的连续函数必可积".标准证法是：由<b>康托尔定理</b>，\(g\) 在闭区间上<b>一致连续</b>，即对任意 \(\varepsilon\gt 0\) 存在 \(\delta\gt 0\)，只要小区间长度 \(\lt \delta\)，\(g\) 在该小区间上的振幅 \(\omega_i\lt\varepsilon\).于是当分割细度 \(\lambda\lt\delta\) 时，达布上、下和之差</p>
+\[\overline{S}-\underline{S}=\sum_{i=1}^{n}\omega_i\,\Delta s_i\lt\varepsilon\sum_{i=1}^{n}\Delta s_i=\varepsilon\,\ell .\]
+<p>由<b>达布可积准则</b>知 \(g\) 可积，即积分和的极限存在，且与分割方式、代表点取法无关——这正是 \(\int_Lf(x,y)\,\mathrm{d}s\) 存在的含义.</p>
+<p><span class="stp">第三步：分段光滑的情形.</span>把 \(L\) 分成有限段光滑弧 \(L_1,\dots,L_k\)，在每段上由上述结论积分存在，再用性质 11.2（对弧段的可加性）拼接即可.</p>
+<div class="bey"><b>为什么说"超纲"：</b>第二步用到的<b>一致连续性（康托尔定理）</b>与<b>达布上下和可积准则</b>，都建立在实数完备性之上，属《数学分析》的内容，工科《高等数学》只要求会用结论.你真正需要记住的是它的实用含义：<b>只要曲线没有尖点断点、被积函数不跳跃，积分就一定存在</b>.正因如此，后文一律默认 \(L\) 光滑（或分段光滑）、\(f\) 连续，从而可以放心地把曲线积分化为定积分去算，而不必每次先检验可积性.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>与已学积分的血缘关系.</b>把定积分 \(\int_a^b f(x)\,\mathrm{d}x\) 中的"直线段 \([a,b]\)"换成"曲线弧 \(L\)"、把"长度元素 \(\mathrm{d}x\)"换成"弧长元素 \(\mathrm{d}s\)"，就得到第一类曲线积分.它与二重积分 \(\iint_D f\,\mathrm{d}\sigma\) 也是同一家族：只不过积分的"地盘"从二维区域降成了一维曲线.四步曲——<b>分割、近似、求和、取极限</b>——始终不变，这正是积分学的统一灵魂.</div>
+
+<h3>二、对弧长的曲线积分的性质</h3>
+<p>设以下各积分均存在，\(\alpha,\beta\) 为常数.</p>
+<div class="def"><div class="lab"><span class="n">性质 11.1</span>线性性</div>
+  \[\int_{L}\bigl[\alpha f(x,y)+\beta g(x,y)\bigr]\mathrm{d}s
+   =\alpha\int_{L}f(x,y)\,\mathrm{d}s+\beta\int_{L}g(x,y)\,\mathrm{d}s .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：写出积分和.</span>把 \(L\) 任意分成 \(n\) 个小弧段，第 \(i\) 段的弧长记为 \(\Delta s_i\)，在其上任取代表点 \((\xi_i,\eta_i)\)，记细度 \(\lambda=\max\limits_{1\le i\le n}\Delta s_i\).由第一类曲线积分的定义</p>
+\[\int_{L}\bigl[\alpha f+\beta g\bigr]\mathrm{d}s=\lim\limits_{\lambda\to0}\sum_{i=1}^{n}\bigl[\alpha f(\xi_i,\eta_i)+\beta g(\xi_i,\eta_i)\bigr]\Delta s_i .\]
+<p><span class="stp">第二步：拆和式.</span>有限项求和可以逐项拆开，常数可以提到求和号外：</p>
+\[\sum_{i=1}^{n}\bigl[\alpha f+\beta g\bigr](\xi_i,\eta_i)\Delta s_i
+ =\alpha\sum_{i=1}^{n}f(\xi_i,\eta_i)\Delta s_i+\beta\sum_{i=1}^{n}g(\xi_i,\eta_i)\Delta s_i .\]
+<p><span class="stp">第三步：取极限.</span>因 \(f,g\) 在 \(L\) 上连续，由定理 11.1，\(\int_Lf\,\mathrm{d}s\) 与 \(\int_Lg\,\mathrm{d}s\) 都存在.令 \(\lambda\to0\)，右端两个和式分别趋于这两个积分，由极限的四则运算法则，左端极限存在且</p>
+\[\int_{L}\bigl[\alpha f+\beta g\bigr]\mathrm{d}s=\alpha\int_{L}f\,\mathrm{d}s+\beta\int_{L}g\,\mathrm{d}s .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 11.2</span>对积分弧段的可加性</div>
+  <p>若积分弧段 \(L\) 可分成两段光滑曲线弧 \(L_1\) 与 \(L_2\)，则</p>
+  \[\int_{L}f(x,y)\,\mathrm{d}s=\int_{L_1}f(x,y)\,\mathrm{d}s+\int_{L_2}f(x,y)\,\mathrm{d}s .\]
+  <p class="muted">引例二中"逐圈分解"用的正是这条性质.它也是处理折线、多边形边界等分段光滑曲线的唯一途径.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>只要在分割 \(L\) 时，<b>把 \(L_1\) 与 \(L_2\) 的连接点 \(C\) 取作一个分点</b>，积分和就自动裂成两组.</p>
+<p><span class="stp">第一步：取特殊分割.</span>由定理 11.1，积分存在，故其值与分割方式无关，我们不妨只考虑以 \(C\) 为分点的那些分割（添一个分点只会使细度不增，不影响 \(\lambda\to0\)）.设这样的分割把 \(L_1\) 分成 \(\Delta s_1,\dots,\Delta s_k\)，把 \(L_2\) 分成 \(\Delta s_{k+1},\dots,\Delta s_n\).</p>
+<p><span class="stp">第二步：裂和.</span>于是</p>
+\[\sum_{i=1}^{n}f(\xi_i,\eta_i)\Delta s_i=\sum_{i=1}^{k}f(\xi_i,\eta_i)\Delta s_i+\sum_{i=k+1}^{n}f(\xi_i,\eta_i)\Delta s_i ,\]
+<p>右端第一个和式是 \(f\) 在 \(L_1\) 上的积分和，第二个是在 \(L_2\) 上的积分和.</p>
+<p><span class="stp">第三步：取极限.</span>\(\lambda\to0\) 时，\(L_1,L_2\) 上的分割细度也同时趋于零，两个和式分别趋于 \(\int_{L_1}f\,\mathrm{d}s\) 与 \(\int_{L_2}f\,\mathrm{d}s\)，故</p>
+\[\int_{L}f\,\mathrm{d}s=\int_{L_1}f\,\mathrm{d}s+\int_{L_2}f\,\mathrm{d}s .\]
+<p>对有限段 \(L=L_1+L_2+\cdots+L_k\) 反复使用本结论即可.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 11.3</span>与曲线的方向无关</div>
+  <p>记 \(L^{-}\) 为与 \(L\) 方向相反的同一条曲线弧，则</p>
+  \[\int_{L^{-}}f(x,y)\,\mathrm{d}s=\int_{L}f(x,y)\,\mathrm{d}s .\]
+  <p><b>理由：</b>无论沿哪个方向行走，每一小段的<b>弧长 \(\Delta s_i\) 恒为正数</b>，分割方式与代表点也完全相同，因此积分和逐项相等，极限自然相等.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>关键只有一句话——第一类曲线积分里出现的是<b>弧长</b> \(\Delta s_i\)，而弧长是"这段线有多长"，是<b>纯粹的正数</b>，与你从哪头往哪头走毫无关系.</p>
+<p><span class="stp">第一步：用同一套分割.</span>设 \(L\) 的分点依次为 \(A=M_0,M_1,\dots,M_n=B\).把 \(L\) 反向后得到 \(L^{-}\)，它的分点依次为 \(B=M_n,M_{n-1},\dots,M_0=A\).两者是<b>同一批分点、同一批小弧段</b>，只是编号顺序颠倒.取代表点时也取同一批点 \((\xi_i,\eta_i)\).</p>
+<p><span class="stp">第二步：比较积分和.</span>\(L\) 上第 \(i\) 段与 \(L^{-}\) 上对应的那一段是同一段弧，其长度都等于 \(\Delta s_i\gt 0\)（长度不带方向）.于是两条曲线上的积分和只是加数排列次序不同，而有限和与次序无关：</p>
+\[\sum_{i}f(\xi_i,\eta_i)\Delta s_i\ \ (\text{在 }L^{-}\text{ 上})=\sum_{i}f(\xi_i,\eta_i)\Delta s_i\ \ (\text{在 }L\text{ 上}).\]
+<p><span class="stp">第三步：取极限.</span>两边细度相同，令 \(\lambda\to0\) 即得 \(\displaystyle\int_{L^{-}}f\,\mathrm{d}s=\int_{L}f\,\mathrm{d}s\).</p>
+<p><span class="stp">对照：</span>第二类曲线积分的和式中出现的是<b>有向投影</b> \(\Delta x_i,\Delta y_i\)，它们会随走向反转而变号（见性质 11.7），这正是两类曲线积分的本质分水岭.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 11.4</span>保号性与估值</div>
+  <p>若在 \(L\) 上恒有 \(f(x,y)\le g(x,y)\)，则 \(\displaystyle\int_L f\,\mathrm{d}s\le\int_L g\,\mathrm{d}s\).特别地，记 \(s\) 为 \(L\) 的弧长，\(m,M\) 分别为 \(f\) 在 \(L\) 上的最小值与最大值，则</p>
+  \[ms\le\int_{L}f(x,y)\,\mathrm{d}s\le Ms,\qquad
+   \left|\int_{L}f\,\mathrm{d}s\right|\le\int_{L}|f|\,\mathrm{d}s .\]
+  <p>取 \(f\equiv1\) 得一个最常用的事实：\(\displaystyle\int_L\mathrm{d}s=s\)，即<b>被积函数为 1 时，曲线积分就是弧长</b>.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：保号性.</span>设在 \(L\) 上 \(f\le g\).对任一分割与任一组代表点，由 \(\Delta s_i\gt 0\) 得逐项不等式 \(f(\xi_i,\eta_i)\Delta s_i\le g(\xi_i,\eta_i)\Delta s_i\)，求和得</p>
+\[\sum_{i=1}^{n}f(\xi_i,\eta_i)\Delta s_i\le\sum_{i=1}^{n}g(\xi_i,\eta_i)\Delta s_i .\]
+<p>两端极限都存在（定理 11.1），由极限的保序性，令 \(\lambda\to0\) 得 \(\displaystyle\int_Lf\,\mathrm{d}s\le\int_Lg\,\mathrm{d}s\).</p>
+<p><span class="stp">第二步：\(\int_L\mathrm{d}s=s\).</span>取 \(f\equiv1\)，则任一积分和 \(\sum_{i}1\cdot\Delta s_i=s\) 恒等于 \(L\) 的全长，故极限也是 \(s\).</p>
+<p><span class="stp">第三步：估值不等式.</span>在 \(L\) 上有 \(m\le f(x,y)\le M\)，对三段分别用第一步与第二步：</p>
+\[ms=\int_{L}m\,\mathrm{d}s\le\int_{L}f\,\mathrm{d}s\le\int_{L}M\,\mathrm{d}s=Ms .\]
+<p><span class="stp">第四步：绝对值不等式.</span>由 \(-|f|\le f\le|f|\) 及第一步得</p>
+\[-\int_{L}|f|\,\mathrm{d}s\le\int_{L}f\,\mathrm{d}s\le\int_{L}|f|\,\mathrm{d}s ,\]
+<p>即 \(\left|\int_Lf\,\mathrm{d}s\right|\le\int_L|f|\,\mathrm{d}s\)（这里用到 \(f\) 连续时 \(|f|\) 也连续，故 \(\int_L|f|\,\mathrm{d}s\) 存在）.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>"方向无关"是第一类曲线积分的身份证.</b>下一节的第二类曲线积分恰恰相反——换向要变号.判断一道题属于哪一类，最快的办法是看微元：写 \(\mathrm{d}s\) 的一定是第一类（无方向），写 \(\mathrm{d}x,\mathrm{d}y\) 的一定是第二类（有方向）.物理上也一目了然：<b>质量、弧长与你从哪头开始称无关；而做功、环量则与走向息息相关</b>.</div>
+
+<h3>三、对弧长的曲线积分的计算法</h3>
+<div class="def"><div class="lab"><span class="n">定理 11.2</span>化为定积分（参数式）</div>
+  <p>设 \(f(x,y)\) 在曲线弧 \(L\) 上连续，\(L\) 的参数方程为</p>
+  \[x=\varphi(t),\quad y=\psi(t)\qquad(\alpha\le t\le\beta),\]
+  <p>其中 \(\varphi,\psi\) 在 \([\alpha,\beta]\) 上具有一阶连续导数且 \(\varphi'^2(t)+\psi'^2(t)
+eq0\)，则</p>
+  \[\boxed{\ \int_{L}f(x,y)\,\mathrm{d}s=\int_{\alpha}^{\beta}f\bigl[\varphi(t),\psi(t)\bigr]\sqrt{\varphi'^2(t)+\psi'^2(t)}\,\mathrm{d}t\ }\qquad(\alpha\lt\beta).\]
+  <p class="muted"><b>证明要点：</b>取 \(t\) 的一个分割 \(\alpha=t_0\lt t_1\lt\cdots\lt t_n=\beta\)，第 \(i\) 段弧长为 \(\Delta s_i=\displaystyle\int_{t_{i-1}}^{t_i}\sqrt{\varphi'^2+\psi'^2}\,\mathrm{d}t=\sqrt{\varphi'^2(\tau_i)+\psi'^2(\tau_i)}\,\Delta t_i\)（积分中值定理）.取代表点为 \(\bigl(\varphi(\tau_i),\psi(\tau_i)\bigr)\)，积分和恰为右端定积分的黎曼和，令 \(\lambda\to0\) 即得.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>定义里的 \(\Delta s_i\) 是"弧长"，不便计算；用弧长公式把它换成"参数增量 \(\Delta t_i\) 乘一个因子"，积分和立刻变成一元定积分的黎曼和.</p>
+<p><span class="stp">第一步：分割的对应.</span>设 \(\alpha\lt\beta\).取 \([\alpha,\beta]\) 的分割 \(\alpha=t_0\lt t_1\lt\cdots\lt t_n=\beta\)，记 \(\Delta t_i=t_i-t_{i-1}\gt 0\).参数 \(t\) 在 \([t_{i-1},t_i\,]\) 上变动时动点扫出 \(L\) 的第 \(i\) 小段，由弧长公式</p>
+\[\Delta s_i=\int_{t_{i-1}}^{t_i}\sqrt{\varphi'^2(t)+\psi'^2(t)}\,\mathrm{d}t .\]
+<p><span class="stp">第二步：用积分中值定理去掉积分号.</span>被积函数 \(\sqrt{\varphi'^2+\psi'^2}\) 连续，故存在 \(\tau_i\in[t_{i-1},t_i\,]\) 使</p>
+\[\Delta s_i=\sqrt{\varphi'^2(\tau_i)+\psi'^2(\tau_i)}\;\Delta t_i .\]
+<p><span class="stp">第三步：两种细度同时趋于零.</span>\(\sqrt{\varphi'^2+\psi'^2}\) 在闭区间 \([\alpha,\beta]\) 上连续且处处非零，故有正的上下界 \(0\lt m\le\sqrt{\varphi'^2+\psi'^2}\le M\)，从而</p>
+\[m\,\Delta t_i\le\Delta s_i\le M\,\Delta t_i .\]
+<p>这说明 \(\lambda=\max\limits_i\Delta s_i\to0\) 与 \(\max\limits_i\Delta t_i\to0\) 是一回事.</p>
+<p><span class="stp">第四步：选代表点，凑黎曼和.</span>由定理 11.1 积分存在，其值与代表点取法无关，故不妨取第 \(i\) 段上与 \(\tau_i\) 对应的点 \((\xi_i,\eta_i)=\bigl(\varphi(\tau_i),\psi(\tau_i)\bigr)\).代入第二步得</p>
+\[\sum_{i=1}^{n}f(\xi_i,\eta_i)\Delta s_i
+ =\sum_{i=1}^{n}f\bigl[\varphi(\tau_i),\psi(\tau_i)\bigr]\sqrt{\varphi'^2(\tau_i)+\psi'^2(\tau_i)}\;\Delta t_i .\]
+<p>右端恰是连续函数 \(F(t)=f\bigl[\varphi(t),\psi(t)\bigr]\sqrt{\varphi'^2(t)+\psi'^2(t)}\) 在 \([\alpha,\beta]\) 上的一个黎曼和.</p>
+<p><span class="stp">第五步：取极限.</span>\(F\) 连续故可积，令 \(\max\Delta t_i\to0\)（等价于 \(\lambda\to0\)）即得</p>
+\[\int_{L}f(x,y)\,\mathrm{d}s=\int_{\alpha}^{\beta}f\bigl[\varphi(t),\psi(t)\bigr]\sqrt{\varphi'^2(t)+\psi'^2(t)}\,\mathrm{d}t .\]
+<p>注意下限必须是较小的 \(\alpha\)：这是因为 \(\Delta s_i\gt 0\) 要求 \(\Delta t_i\gt 0\)，与性质 11.3（与方向无关）完全吻合.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">推论</span>三种常见表示下的弧长元素</div>
+  <p>（1）\(L\) 由<b>显式</b>方程 \(y=y(x)\ (a\le x\le b)\) 给出（取 \(t=x\)）：</p>
+  \[\mathrm{d}s=\sqrt{1+y'^2(x)}\,\mathrm{d}x,\qquad
+    \int_{L}f\,\mathrm{d}s=\int_{a}^{b}f\bigl[x,y(x)\bigr]\sqrt{1+y'^2(x)}\,\mathrm{d}x .\]
+  <p>（2）\(L\) 由<b>参数</b>方程 \(x=\varphi(t),\ y=\psi(t)\ (\alpha\le t\le\beta)\) 给出：</p>
+  \[\mathrm{d}s=\sqrt{\varphi'^2(t)+\psi'^2(t)}\,\mathrm{d}t .\]
+  <p>（3）\(L\) 由<b>极坐标</b>方程 \(r=r(\theta)\ (\theta_1\le\theta\le\theta_2)\) 给出.此时 \(x=r(\theta)\cos\theta,\ y=r(\theta)\sin\theta\)，直接代入（2）并化简得</p>
+  \[\mathrm{d}s=\sqrt{r^2(\theta)+r'^2(\theta)}\,\mathrm{d}\theta,\qquad
+    \int_{L}f\,\mathrm{d}s=\int_{\theta_1}^{\theta_2}f\bigl(r\cos\theta,\,r\sin\theta\bigr)\sqrt{r^2+r'^2}\,\mathrm{d}\theta .\]
+  <p>（4）空间曲线 \(\Gamma:\ x=\varphi(t),\ y=\psi(t),\ z=\omega(t)\ (\alpha\le t\le\beta)\)：</p>
+  \[\int_{\Gamma}f(x,y,z)\,\mathrm{d}s=\int_{\alpha}^{\beta}f\bigl[\varphi,\psi,\omega\bigr]\sqrt{\varphi'^2+\psi'^2+\omega'^2}\,\mathrm{d}t .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">出发点：</span>由弧微分公式 \(\mathrm{d}s=\sqrt{(\mathrm{d}x)^2+(\mathrm{d}y)^2}\)（它等价于定理 11.2 中的 \(\Delta s_i\approx\sqrt{(\Delta x_i)^2+(\Delta y_i)^2}\)），下面只需把 \(\mathrm{d}x,\mathrm{d}y\) 用各自的自变量表出.</p>
+<p><span class="stp">（1）显式 \(y=y(x)\ (a\le x\le b)\)：</span>取 \(t=x\) 作参数，则 \(\mathrm{d}x=\mathrm{d}x,\ \mathrm{d}y=y'(x)\,\mathrm{d}x\)，代入得</p>
+\[\mathrm{d}s=\sqrt{(\mathrm{d}x)^2+y'^2(x)(\mathrm{d}x)^2}=\sqrt{1+y'^2(x)}\;\mathrm{d}x\qquad(\mathrm{d}x\gt 0),\]
+<p>再由定理 11.2（其中 \(\varphi(x)=x,\ \psi(x)=y(x)\)，故 \(\varphi'^2+\psi'^2=1+y'^2\)）得</p>
+\[\int_{L}f\,\mathrm{d}s=\int_{a}^{b}f\bigl[x,y(x)\bigr]\sqrt{1+y'^2(x)}\,\mathrm{d}x .\]
+<p><span class="stp">（2）参数式 \(x=\varphi(t),\ y=\psi(t)\ (\alpha\le t\le\beta)\)：</span>此时 \(\mathrm{d}x=\varphi'(t)\,\mathrm{d}t,\ \mathrm{d}y=\psi'(t)\,\mathrm{d}t\)，于是</p>
+\[\mathrm{d}s=\sqrt{\varphi'^2(t)(\mathrm{d}t)^2+\psi'^2(t)(\mathrm{d}t)^2}=\sqrt{\varphi'^2(t)+\psi'^2(t)}\;\mathrm{d}t\qquad(\mathrm{d}t\gt 0).\]
+<p>这正是定理 11.2 的结论，可见（1）只是它取 \(t=x\) 的特例.</p>
+<p><span class="stp">（3）极坐标 \(r=r(\theta)\ (\theta_1\le\theta\le\theta_2)\)：</span>以 \(\theta\) 为参数，曲线的直角坐标参数式为 \(x=r(\theta)\cos\theta,\ y=r(\theta)\sin\theta\).求导（乘积法则）：</p>
+\[\frac{\mathrm{d}x}{\mathrm{d}\theta}=r'(\theta)\cos\theta-r(\theta)\sin\theta,\qquad
+  \frac{\mathrm{d}y}{\mathrm{d}\theta}=r'(\theta)\sin\theta+r(\theta)\cos\theta .\]
+<p>把两式平方相加，交叉项 \(-2rr'\cos\theta\sin\theta\) 与 \(+2rr'\sin\theta\cos\theta\) 恰好相消：</p>
+\[\left(\frac{\mathrm{d}x}{\mathrm{d}\theta}\right)^2+\left(\frac{\mathrm{d}y}{\mathrm{d}\theta}\right)^2
+ =r'^2(\cos^2\theta+\sin^2\theta)+r^2(\sin^2\theta+\cos^2\theta)=r^2(\theta)+r'^2(\theta).\]
+<p>代入（2）即得</p>
+\[\mathrm{d}s=\sqrt{r^2(\theta)+r'^2(\theta)}\;\mathrm{d}\theta,\qquad
+  \int_{L}f\,\mathrm{d}s=\int_{\theta_1}^{\theta_2}f\bigl(r\cos\theta,\,r\sin\theta\bigr)\sqrt{r^2+r'^2}\,\mathrm{d}\theta .\]
+<p><span class="stp">（4）空间曲线：</span>三维弧微分为 \(\mathrm{d}s=\sqrt{(\mathrm{d}x)^2+(\mathrm{d}y)^2+(\mathrm{d}z)^2}\)，代入 \(\mathrm{d}x=\varphi'\mathrm{d}t,\ \mathrm{d}y=\psi'\mathrm{d}t,\ \mathrm{d}z=\omega'\mathrm{d}t\) 得 \(\mathrm{d}s=\sqrt{\varphi'^2+\psi'^2+\omega'^2}\,\mathrm{d}t\)，于是</p>
+\[\int_{\Gamma}f(x,y,z)\,\mathrm{d}s=\int_{\alpha}^{\beta}f\bigl[\varphi,\psi,\omega\bigr]\sqrt{\varphi'^2+\psi'^2+\omega'^2}\,\mathrm{d}t .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>计算三条铁律.</b><br>
+① <b>代曲线</b>：被积函数中的 \(x,y\) 必须用曲线方程<b>全部换成参数</b>——这一步常能大幅化简（例如在圆 \(x^2+y^2=a^2\) 上直接把 \(x^2+y^2\) 写成常数 \(a^2\)）.<br>
+② <b>换微元</b>：\(\mathrm{d}s\) 一定要按上面四个公式之一换掉，绝不能想当然写成 \(\mathrm{d}x\).<br>
+③ <b>定限：下限必须小于上限</b>.因为 \(\Delta s_i\gt0\)，化成定积分后必须是"从小到大"积，否则符号全错.这是第一类曲线积分与第二类最醒目的操作差别.</div>
+
+<div class="ex"><div class="lab">例 11.1　显式表示（一）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\sqrt{y}\,\mathrm{d}s\)，其中 \(L\) 是抛物线 \(y=x^2\) 上从点 \((0,0)\) 到点 \((1,1)\) 的一段弧.</p>
+  <p class="sol"><span class="mk">解</span>曲线以 \(x\) 为参数，\(0\le x\le1\)，\(y'=2x\)，故 \(\mathrm{d}s=\sqrt{1+4x^2}\,\mathrm{d}x\).又在 \(L\) 上 \(\sqrt{y}=\sqrt{x^2}=x\)（因 \(x\ge0\)），于是</p>
+  \[I=\int_0^1 x\sqrt{1+4x^2}\,\mathrm{d}x .\]
+  <p>令 \(u=1+4x^2\)，则 \(\mathrm{d}u=8x\,\mathrm{d}x\)，当 \(x:0\to1\) 时 \(u:1\to5\)，故</p>
+  \[I=\frac18\int_1^5\sqrt{u}\,\mathrm{d}u=\frac18\cdot\frac23\Bigl[u^{3/2}\Bigr]_1^5=\frac{1}{12}\bigl(5\sqrt5-1\bigr)\approx0.8484 .\]
+  <p class="muted">注意 \(\sqrt{y}=x\) 这一步只在 \(x\ge0\) 时成立.若弧段取在 \(-1\le x\le0\)，就必须写成 \(\sqrt{y}=|x|=-x\)，否则会得到负值——而第一类曲线积分在被积函数非负时绝不可能为负.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.2　显式表示（二）：悬链线上的质量</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L y\,\mathrm{d}s\)，其中 \(L\) 是悬链线 \(y=\cosh x\) 上 \(0\le x\le1\) 的一段弧.</p>
+  <p class="sol"><span class="mk">解</span>\(y'=\sinh x\)，利用双曲函数恒等式 \(\cosh^2x-\sinh^2x=1\) 得</p>
+  \[\mathrm{d}s=\sqrt{1+\sinh^2x}\,\mathrm{d}x=\sqrt{\cosh^2x}\,\mathrm{d}x=\cosh x\,\mathrm{d}x .\]
+  <p>这是悬链线最漂亮的性质：<b>弧长元素等于纵坐标乘以 \(\mathrm{d}x\)</b>，根号自动消失.于是</p>
+  \[I=\int_0^1\cosh x\cdot\cosh x\,\mathrm{d}x=\int_0^1\cosh^2x\,\mathrm{d}x
+   =\int_0^1\frac{1+\cosh 2x}{2}\,\mathrm{d}x=\frac12+\frac{\sinh 2}{4}.\]
+  <p>数值上 \(\sinh 2=3.62686\)，故 \(I=0.5+0.90672=1.40672\).</p>
+  <p class="muted">引例一中输电线覆冰质量之所以能算出闭式解，靠的正是这一步"根号自动消失".悬链线是工程中极少数能把弧长积分做到底的曲线，这也是它在架空线、悬索桥中被反复使用的原因之一.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.3　参数表示（一）：星形线（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\bigl(x^{4/3}+y^{4/3}\bigr)\mathrm{d}s\)，其中 \(L\) 为星形线 \(x^{2/3}+y^{2/3}=a^{2/3}\ (a\gt0)\) 的全部.</p>
+  <p class="sol"><span class="mk">解</span>星形线的标准参数化为</p>
+  \[x=a\cos^3t,\quad y=a\sin^3t\qquad(0\le t\le2\pi).\]
+  <p>求导：\(x'=-3a\cos^2t\sin t,\ y'=3a\sin^2t\cos t\)，于是</p>
+  \[\sqrt{x'^2+y'^2}=3a\sqrt{\cos^4t\sin^2t+\sin^4t\cos^2t}=3a|\sin t\cos t|\sqrt{\cos^2t+\sin^2t}=3a|\sin t\cos t| .\]
+  <p>又 \(x^{4/3}+y^{4/3}=a^{4/3}\bigl(\cos^4t+\sin^4t\bigr)\).由于星形线关于两坐标轴都对称，且被积表达式在四个象限上取值相同，只需算第一象限（\(0\le t\le\pi/2\)，此时 \(|\sin t\cos t|=\sin t\cos t\)）再乘 4：</p>
+  \[I=4a^{4/3}\int_0^{\pi/2}\bigl(\cos^4t+\sin^4t\bigr)\cdot3a\sin t\cos t\,\mathrm{d}t .\]
+  <p>令 \(u=\sin^2t\)，则 \(\mathrm{d}u=2\sin t\cos t\,\mathrm{d}t\)，\(\cos^4t+\sin^4t=(1-u)^2+u^2\)，当 \(t:0\to\pi/2\) 时 \(u:0\to1\)：</p>
+  \[\int_0^{\pi/2}\bigl(\cos^4t+\sin^4t\bigr)3a\sin t\cos t\,\mathrm{d}t
+   =\frac{3a}{2}\int_0^1\bigl[(1-u)^2+u^2\bigr]\mathrm{d}u=\frac{3a}{2}\Bigl(\frac13+\frac13\Bigr)=a .\]
+  <p>所以</p>
+  \[I=4a^{4/3}\cdot a=4a^{7/3}.\]
+  <p class="muted">顺带可得星形线的周长：取 \(f\equiv1\)，\(s=\displaystyle\int_L\mathrm{d}s=4\int_0^{\pi/2}3a\sin t\cos t\,\mathrm{d}t=4\cdot\frac{3a}{2}=6a\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.4　参数表示（二）：摆线（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L y\,\mathrm{d}s\)，其中 \(L\) 为摆线的一拱</p>
+  \[x=a(t-\sin t),\quad y=a(1-\cos t)\qquad(0\le t\le2\pi,\ a\gt0).\]
+  <p class="sol"><span class="mk">解</span>先求弧长元素.\(x'=a(1-\cos t),\ y'=a\sin t\)，故</p>
+  \[x'^2+y'^2=a^2\bigl[(1-\cos t)^2+\sin^2t\bigr]=a^2\bigl(2-2\cos t\bigr)=4a^2\sin^2\frac{t}{2},\]
+  <p>在 \(0\le t\le2\pi\) 上 \(\sin\dfrac{t}{2}\ge0\)，所以 \(\mathrm{d}s=2a\sin\dfrac{t}{2}\,\mathrm{d}t\).又</p>
+  \[y=a(1-\cos t)=2a\sin^2\frac{t}{2}.\]
+  <p>代入得</p>
+  \[I=\int_0^{2\pi}2a\sin^2\frac{t}{2}\cdot2a\sin\frac{t}{2}\,\mathrm{d}t=4a^2\int_0^{2\pi}\sin^3\frac{t}{2}\,\mathrm{d}t .\]
+  <p>令 \(u=\dfrac{t}{2}\)，\(\mathrm{d}t=2\,\mathrm{d}u\)，\(u:0\to\pi\)：</p>
+  \[I=8a^2\int_0^{\pi}\sin^3u\,\mathrm{d}u=8a^2\int_0^{\pi}\bigl(1-\cos^2u\bigr)\sin u\,\mathrm{d}u
+   =8a^2\Bigl[-\cos u+\frac{\cos^3u}{3}\Bigr]_0^{\pi}=8a^2\cdot\frac43=\frac{32a^2}{3}.\]
+  <p class="muted">摆线一拱的弧长为 \(\displaystyle\int_0^{2\pi}2a\sin\frac t2\,\mathrm{d}t=8a\)，因此摆线弧的"平均高度"为 \(\dfrac{32a^2/3}{8a}=\dfrac{4a}{3}\).这个量在机械上就是均匀摆线杆件的质心高度.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.5　极坐标表示（一）：心形线</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\sqrt{x^2+y^2}\,\mathrm{d}s\)，其中 \(L\) 为心形线 \(r=a(1+\cos\theta)\ (0\le\theta\le2\pi,\ a\gt0)\).</p>
+  <p class="sol"><span class="mk">解</span>在极坐标下 \(\sqrt{x^2+y^2}=r=a(1+\cos\theta)\).又 \(r'=-a\sin\theta\)，故</p>
+  \[r^2+r'^2=a^2(1+\cos\theta)^2+a^2\sin^2\theta=a^2\bigl(2+2\cos\theta\bigr)=4a^2\cos^2\frac{\theta}{2},\]
+  <p>从而 \(\mathrm{d}s=2a\left|\cos\dfrac{\theta}{2}\right|\mathrm{d}\theta\).再用 \(1+\cos\theta=2\cos^2\dfrac{\theta}{2}\)，得</p>
+  \[I=\int_0^{2\pi}2a\cos^2\frac{\theta}{2}\cdot2a\left|\cos\frac{\theta}{2}\right|\mathrm{d}\theta
+   =4a^2\int_0^{2\pi}\left|\cos\frac{\theta}{2}\right|^3\mathrm{d}\theta .\]
+  <p>令 \(u=\dfrac{\theta}{2}\)，\(u:0\to\pi\)，\(\mathrm{d}\theta=2\,\mathrm{d}u\)：</p>
+  \[I=8a^2\int_0^{\pi}|\cos u|^3\,\mathrm{d}u=8a^2\cdot2\int_0^{\pi/2}\cos^3u\,\mathrm{d}u=16a^2\cdot\frac23=\frac{32a^2}{3}.\]
+  <p class="muted">这里的绝对值不可丢：\(\cos\dfrac{\theta}{2}\) 在 \(\theta\in(\pi,2\pi)\) 上为负，而弧长元素必须非负.丢掉绝对值会得到 \(0\)，是本题最常见的错误.心形线周长为 \(\displaystyle\int_0^{2\pi}2a|\cos\tfrac\theta2|\,\mathrm{d}\theta=8a\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.6　极坐标表示（二）：对数螺线</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\sqrt{x^2+y^2}\,\mathrm{d}s\)，其中 \(L\) 为对数螺线 \(r=a\mathrm{e}^{\theta}\ (a\gt0)\) 上 \(0\le\theta\le\pi\) 的一段.</p>
+  <p class="sol"><span class="mk">解</span>\(r'=a\mathrm{e}^{\theta}=r\)，所以</p>
+  \[\mathrm{d}s=\sqrt{r^2+r'^2}\,\mathrm{d}\theta=\sqrt{2}\,a\mathrm{e}^{\theta}\,\mathrm{d}\theta .\]
+  <p>被积函数 \(\sqrt{x^2+y^2}=r=a\mathrm{e}^{\theta}\)，于是</p>
+  \[I=\int_0^{\pi}a\mathrm{e}^{\theta}\cdot\sqrt2\,a\mathrm{e}^{\theta}\,\mathrm{d}\theta
+   =\sqrt2\,a^2\int_0^{\pi}\mathrm{e}^{2\theta}\,\mathrm{d}\theta
+   =\frac{\sqrt2}{2}a^2\bigl(\mathrm{e}^{2\pi}\cdot\mathrm{e}^{-\pi}\bigr)\Big|_{\text{改写}} .\]
+  <p>直接积分更清楚：</p>
+  \[I=\sqrt2\,a^2\cdot\frac{\mathrm{e}^{2\theta}}{2}\bigg|_0^{\pi}=\frac{\sqrt2}{2}a^2\bigl(\mathrm{e}^{2\pi}-1\bigr)\approx\frac{1.41421}{2}\times534.49\,a^2\approx377.9\,a^2 .\]
+  <p class="muted">对数螺线满足 \(r'=r\)，故 \(\mathrm{d}s=\sqrt2\,r\,\mathrm{d}\theta\) 与 \(r\) 成正比——这就是"等角螺线"切线与径向夹角恒为 \(45^\circ\) 的解析表现.鹦鹉螺壳、星系旋臂、以及扫描电镜的螺旋扫描轨迹都是这种曲线.</p>
+</div>
+
+<h3>四、空间曲线上的第一类曲线积分</h3>
+<div class="ex"><div class="lab">例 11.7　螺旋线上的积分</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_{\Gamma}\bigl(x^2+y^2+z^2\bigr)\mathrm{d}s\)，其中 \(\Gamma\) 为螺旋线 \(x=a\cos t,\ y=a\sin t,\ z=kt\ (0\le t\le2\pi)\).</p>
+  <p class="sol"><span class="mk">解</span>先求弧长元素：\(x'=-a\sin t,\ y'=a\cos t,\ z'=k\)，故</p>
+  \[\mathrm{d}s=\sqrt{a^2\sin^2t+a^2\cos^2t+k^2}\,\mathrm{d}t=\sqrt{a^2+k^2}\,\mathrm{d}t .\]
+  <p>螺旋线的弧长元素是<b>常数倍的 \(\mathrm{d}t\)</b>，计算因此格外简洁.再把被积函数代曲线：\(x^2+y^2=a^2\)，\(z^2=k^2t^2\)，所以</p>
+  \[I=\sqrt{a^2+k^2}\int_0^{2\pi}\bigl(a^2+k^2t^2\bigr)\mathrm{d}t
+   =\sqrt{a^2+k^2}\Bigl[a^2t+\frac{k^2t^3}{3}\Bigr]_0^{2\pi}
+   =\frac{2\pi}{3}\sqrt{a^2+k^2}\,\bigl(3a^2+4\pi^2k^2\bigr).\]
+  <p>取 \(a=k=1\)：\(I=\sqrt2\bigl(2\pi+\tfrac{8\pi^3}{3}\bigr)=\sqrt2\times88.967\approx125.82\).</p>
+</div>
+
+<h3>五、对称性——第一类曲线积分的"减负神器"</h3>
+<div class="def"><div class="lab"><span class="n">定理 11.3</span>对称性与轮换对称性</div>
+  <p>（1）<b>奇偶对称</b>：若曲线 \(L\) 关于 \(y\) 轴对称，记 \(L_1\) 为 \(L\) 位于 \(y\) 轴右侧的部分，则</p>
+  \[\int_{L}f(x,y)\,\mathrm{d}s=
+   \begin{cases}
+     0, & f(-x,y)=-f(x,y),\\[4pt]
+     2\displaystyle\int_{L_1}f(x,y)\,\mathrm{d}s, & f(-x,y)=f(x,y).
+   \end{cases}\]
+  <p>\(L\) 关于 \(x\) 轴对称时结论类似.</p>
+  <p>（2）<b>轮换对称</b>：若把 \(L\) 的方程中 \(x\) 与 \(y\) 互换后曲线不变（即 \(L\) 关于直线 \(y=x\) 对称），则</p>
+  \[\int_{L}f(x,y)\,\mathrm{d}s=\int_{L}f(y,x)\,\mathrm{d}s .\]
+  <p>对空间曲线，若 \(\Gamma\) 在 \(x,y,z\) 的任意轮换下不变（例如球面与平面 \(x+y+z=0\) 的交线），则</p>
+  \[\int_{\Gamma}f(x,y,z)\,\mathrm{d}s=\int_{\Gamma}f(y,z,x)\,\mathrm{d}s=\int_{\Gamma}f(z,x,y)\,\mathrm{d}s .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>对称的本质是存在一个<b>保持长度的变换</b>（反射）把曲线映成自己.反射不改变 \(\mathrm{d}s\)，只改变被积函数的自变量，于是两个积分只差"换名字".下面用参数式把这句话写严格.</p>
+<p><span class="stp">第一步：（1）奇偶对称的化归.</span>设 \(L\) 关于 \(y\) 轴对称，\(L_1\) 是它位于 \(y\) 轴右侧（\(x\ge0\)）的部分，\(L_2\) 是左侧部分.设 \(L_1\) 的参数式为</p>
+\[x=\varphi(t),\quad y=\psi(t)\qquad(\alpha\le t\le\beta).\]
+<p>对合变换（反射）\(T:(x,y)\mapsto(-x,y)\) 把 \(L_1\) 一对一地映成 \(L_2\)，故 \(L_2\) 可参数化为 \(x=-\varphi(t),\ y=\psi(t)\ (\alpha\le t\le\beta)\).</p>
+<p><span class="stp">第二步：反射不改变弧长元素.</span>对 \(L_2\) 的这个参数式，\(\bigl(-\varphi\bigr)'^2+\psi'^2=\varphi'^2+\psi'^2\)，故两段的弧长元素完全相同.由定理 11.2，</p>
+\[\int_{L_2}f(x,y)\,\mathrm{d}s=\int_{\alpha}^{\beta}f\bigl(-\varphi(t),\psi(t)\bigr)\sqrt{\varphi'^2+\psi'^2}\,\mathrm{d}t=\int_{L_1}f(-x,y)\,\mathrm{d}s .\]
+<p><span class="stp">第三步：合并.</span>由性质 11.2，\(\int_L f\,\mathrm{d}s=\int_{L_1}f\,\mathrm{d}s+\int_{L_2}f\,\mathrm{d}s=\int_{L_1}\bigl[f(x,y)+f(-x,y)\bigr]\mathrm{d}s\).于是</p>
+\[\int_{L}f\,\mathrm{d}s=
+ \begin{cases}
+  \displaystyle\int_{L_1}\bigl[f(x,y)-f(x,y)\bigr]\mathrm{d}s=0, & f(-x,y)=-f(x,y),\\[6pt]
+  \displaystyle\int_{L_1}2f(x,y)\,\mathrm{d}s=2\int_{L_1}f(x,y)\,\mathrm{d}s, & f(-x,y)=f(x,y).
+ \end{cases}\]
+<p>（若 \(L\) 含有落在 \(y\) 轴上的一段，则那里 \(x=0\)：奇函数情形有 \(f(0,y)=-f(0,y)\)，即 \(f\equiv0\)，贡献为零；偶函数情形把它算入 \(L_1\) 即可.）\(L\) 关于 \(x\) 轴对称时，把上述论证中的 \(T\) 换成 \((x,y)\mapsto(x,-y)\) 即可.</p>
+<p><span class="stp">第四步：（2）轮换对称.</span>设 \(L\) 的参数式为 \(x=\varphi(t),\ y=\psi(t)\ (\alpha\le t\le\beta)\)（不重复地走遍 \(L\)）.反射 \(\sigma:(x,y)\mapsto(y,x)\) 是关于直线 \(y=x\) 的对称变换，按假设 \(\sigma(L)=L\).把 \(\sigma\) 作用在参数式上，得</p>
+\[x=\psi(t),\quad y=\varphi(t)\qquad(\alpha\le t\le\beta),\]
+<p>它也不重复地走遍 \(L\)，因而是 \(L\) 的另一个合法参数式；其弧长元素 \(\sqrt{\psi'^2+\varphi'^2}\) 与原来相同.用这两个参数式分别按定理 11.2 计算：</p>
+\[\int_{L}f(x,y)\,\mathrm{d}s\ \overset{\text{新参数式}}{=}\ \int_{\alpha}^{\beta}f\bigl(\psi(t),\varphi(t)\bigr)\sqrt{\varphi'^2+\psi'^2}\,\mathrm{d}t
+ \ \overset{\text{原参数式}}{=}\ \int_{L}f(y,x)\,\mathrm{d}s .\]
+<p><span class="stp">第五步：空间轮换.</span>设 \(\Gamma:\ x=\varphi(t),y=\psi(t),z=\omega(t)\).轮换 \(\rho:(x,y,z)\mapsto(y,z,x)\) 是正交线性变换，保持长度，且按假设 \(\rho(\Gamma)=\Gamma\).于是 \(x=\psi,\ y=\omega,\ z=\varphi\) 也是 \(\Gamma\) 的参数式，弧长元素 \(\sqrt{\psi'^2+\omega'^2+\varphi'^2}\) 不变，仿第四步即得</p>
+\[\int_{\Gamma}f(x,y,z)\,\mathrm{d}s=\int_{\Gamma}f(y,z,x)\,\mathrm{d}s=\int_{\Gamma}f(z,x,y)\,\mathrm{d}s .\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>做题顺序永远是：先看曲线对称吗 → 再看被积函数奇偶吗 → 能砍的项立刻砍掉 → 剩下的才动手算.</b>很多考研题的计算量有一半会被对称性直接消掉；更重要的是，有些被积函数（如 \(\mathrm{e}^{-x^2}\)）根本积不出来，只能靠对称性判定其积分为零.</div>
+
+<div class="ex"><div class="lab">例 11.8　用对称性求圆周上的积分</div>
+  <p class="stmt">设 \(L\) 为圆周 \(x^2+y^2=a^2\)，求 \(\displaystyle I_1=\oint_L x^2\,\mathrm{d}s\) 与 \(\displaystyle I_2=\oint_L(x+y)^2\,\mathrm{d}s\).</p>
+  <p class="sol"><span class="mk">解</span>圆周关于直线 \(y=x\) 对称，由轮换对称性</p>
+  \[\oint_L x^2\,\mathrm{d}s=\oint_L y^2\,\mathrm{d}s .\]
+  <p>两式相加，并在 \(L\) 上用曲线方程 \(x^2+y^2=a^2\)：</p>
+  \[2I_1=\oint_L\bigl(x^2+y^2\bigr)\mathrm{d}s=a^2\oint_L\mathrm{d}s=a^2\cdot2\pi a=2\pi a^3,\]
+  <p>故 \(I_1=\pi a^3\).对第二个积分，展开得</p>
+  \[I_2=\oint_L\bigl(x^2+y^2\bigr)\mathrm{d}s+2\oint_L xy\,\mathrm{d}s .\]
+  <p>圆周关于 \(y\) 轴对称，而 \(xy\) 关于 \(x\) 是奇函数，故 \(\displaystyle\oint_L xy\,\mathrm{d}s=0\).于是 \(I_2=2\pi a^3\).</p>
+  <p class="muted">若硬用参数 \(x=a\cos t\) 计算 \(I_1\)，需要处理 \(\int_0^{2\pi}\cos^2t\,\mathrm{d}t\)；用轮换对称则一步到位.曲线上恒成立的方程（这里是 \(x^2+y^2=a^2\)）是第一类曲线积分的"免费信息"，务必第一时间用上.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.9　椭圆上的对称性化简（考研经典）</div>
+  <p class="stmt">设 \(L\) 为椭圆 \(\dfrac{x^2}{4}+\dfrac{y^2}{3}=1\)，其周长为 \(s\)，求 \(\displaystyle I=\oint_L\bigl(2xy+3x^2+4y^2\bigr)\mathrm{d}s\).</p>
+  <p class="sol"><span class="mk">解</span>这道题的"陷阱"在于椭圆周长无法用初等函数表示，因此绝不能真的去参数化硬算.正确思路分两步.</p>
+  <p><b>第一步：用对称性消项.</b>椭圆关于 \(y\) 轴对称，而 \(2xy\) 关于 \(x\) 为奇函数，故</p>
+  \[\oint_L2xy\,\mathrm{d}s=0 .\]
+  <p><b>第二步：用曲线方程把被积函数化为常数.</b>在 \(L\) 上恒有 \(\dfrac{x^2}{4}+\dfrac{y^2}{3}=1\)，两边同乘 \(12\) 得 \(3x^2+4y^2=12\).于是</p>
+  \[\oint_L\bigl(3x^2+4y^2\bigr)\mathrm{d}s=\oint_L12\,\mathrm{d}s=12\oint_L\mathrm{d}s=12s .\]
+  <p>所以 \(I=12s\).</p>
+  <p class="muted">"把被积函数在曲线上化为常数"是第一类曲线积分独有的绝招——因为积分是沿着曲线做的，曲线方程随时可以代入.看到二次式 \(Ax^2+By^2\) 与椭圆方程系数成比例，就要立刻警觉.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.10　分段光滑曲线（经典题型）</div>
+  <p class="stmt">计算 \(\displaystyle I=\oint_L\mathrm{e}^{\sqrt{x^2+y^2}}\,\mathrm{d}s\)，其中 \(L\) 是圆周 \(x^2+y^2=a^2\)、直线 \(y=x\) 及 \(x\) 轴在第一象限内所围成的<b>扇形的整个边界</b>.</p>
+  <p class="sol"><span class="mk">解</span>边界由三段光滑弧构成，由性质 11.2 分别计算再相加.记 \(A(a,0),\ B\Bigl(\dfrac{a}{\sqrt2},\dfrac{a}{\sqrt2}\Bigr)\).</p>
+  <p><b>第一段 \(OA\)</b>（\(x\) 轴上，\(y=0,\ 0\le x\le a\)）：此时 \(\sqrt{x^2+y^2}=x\)，\(\mathrm{d}s=\mathrm{d}x\)，</p>
+  \[\int_{OA}\mathrm{e}^{\sqrt{x^2+y^2}}\,\mathrm{d}s=\int_0^{a}\mathrm{e}^{x}\,\mathrm{d}x=\mathrm{e}^{a}-1 .\]
+  <p><b>第二段 \(AB\)</b>（圆弧，\(x=a\cos\theta,\ y=a\sin\theta,\ 0\le\theta\le\pi/4\)）：此时 \(\sqrt{x^2+y^2}=a\) 为常数，\(\mathrm{d}s=a\,\mathrm{d}\theta\)，</p>
+  \[\int_{AB}\mathrm{e}^{\sqrt{x^2+y^2}}\,\mathrm{d}s=\int_0^{\pi/4}\mathrm{e}^{a}\cdot a\,\mathrm{d}\theta=\frac{\pi a}{4}\mathrm{e}^{a}.\]
+  <p><b>第三段 \(BO\)</b>（直线 \(y=x,\ 0\le x\le a/\sqrt2\)）：此时 \(\sqrt{x^2+y^2}=\sqrt2\,x\)，\(y'=1\) 故 \(\mathrm{d}s=\sqrt2\,\mathrm{d}x\)，</p>
+  \[\int_{BO}\mathrm{e}^{\sqrt{x^2+y^2}}\,\mathrm{d}s=\int_0^{a/\sqrt2}\mathrm{e}^{\sqrt2 x}\sqrt2\,\mathrm{d}x
+   =\Bigl[\mathrm{e}^{\sqrt2x}\Bigr]_0^{a/\sqrt2}=\mathrm{e}^{a}-1 .\]
+  <p>三段相加：</p>
+  \[I=2\bigl(\mathrm{e}^{a}-1\bigr)+\frac{\pi a}{4}\mathrm{e}^{a}=\mathrm{e}^{a}\Bigl(2+\frac{\pi a}{4}\Bigr)-2 .\]
+  <p>取 \(a=1\)：\(I=\mathrm{e}\bigl(2+\pi/4\bigr)-2\approx2.71828\times2.78540-2\approx5.571\).</p>
+  <p class="muted">三段的方向可以任意（第一类积分与方向无关），但每段都必须<b>独立</b>选参数并保证"下限小于上限".另外注意 \(\mathrm{e}^{\sqrt{x^2+y^2}}\) 在直角坐标下无法积出，正是"代曲线"这一步把它化成了可积的一元函数.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从覆冰厚度到融冰决策：一条输电线的完整计算链</div>
+  <details><summary>展开查看：覆冰厚度、线密度、总质量、等效冰厚与预警阈值的全链条计算</summary>
+  <div class="body">
+    <p>沿用引例一的悬链线 \(y=1000\cosh\dfrac{x}{1000}-1000\ (-200\le x\le200)\)，导线外径 \(d=30\,\mathrm{mm}\)，冰的密度取 \(\rho_{\text{ice}}=900\,\mathrm{kg/m^3}\).</p>
+    <p><b>第一步：由覆冰厚度算线密度.</b>设导线外均匀覆冰厚度为 \(b\)（mm），则冰层的横截面为圆环，面积</p>
+    \[A(b)=\pi\Bigl[\Bigl(\frac d2+b\Bigr)^2-\Bigl(\frac d2\Bigr)^2\Bigr]=\pi b\,(d+b)\quad(\mathrm{mm^2}),\]
+    <p>对应的覆冰线密度 \(\rho_{\text{ice}}A(b)\times10^{-6}\ (\mathrm{kg/m})\).</p>
+    <p><b>第二步：沿悬链线积分求总质量.</b>若覆冰均匀，线密度是常数，则总质量 \(=\) 线密度 \(\times\) 弧长，而弧长本身就是一个第一类曲线积分：</p>
+    \[s=\int_L\mathrm{d}s=\int_{-200}^{200}\cosh\frac{x}{1000}\,\mathrm{d}x=2000\sinh0.2=402.67\ \mathrm{m}.\]
+    <p><b>第三步：代入具体数字.</b></p>
+    <table class="dt">
+      <tr><th>覆冰厚度 \(b\)（mm）</th><th>冰层截面 \(A\)（\(\mathrm{mm^2}\)）</th><th>覆冰线密度（kg/m）</th><th>全档覆冰质量（kg）</th><th>与自重（543.6 kg）之比</th></tr>
+      <tr><td>5</td><td>549.8</td><td>0.4948</td><td>199.2</td><td>0.37</td></tr>
+      <tr><td>10</td><td>1256.6</td><td>1.1310</td><td>455.4</td><td>0.84</td></tr>
+      <tr><td>15</td><td>2120.6</td><td>1.9085</td><td>768.5</td><td>1.41</td></tr>
+      <tr><td>20</td><td>3141.6</td><td>2.8274</td><td>1138.5</td><td>2.09</td></tr>
+    </table>
+    <p><b>第四步：反演等效冰厚.</b>引例一中按"密度随高度线性增大"的真实模型算出的总质量为 \(537.29\,\mathrm{kg}\).令均匀模型给出同样的质量：</p>
+    \[900\pi b(30+b)\times10^{-6}\times402.67=537.29\ \Longrightarrow\ b(30+b)=471.9 ,\]
+    <p>解得 \(b=\dfrac{-30+\sqrt{900+1887.6}}{2}=11.4\,\mathrm{mm}\).也就是说，当前的不均匀覆冰<b>等效于全线均匀覆冰 11.4 mm</b>.</p>
+    <p><b>第五步：决策.</b>该线路按重冰区设计，设计冰厚 \(15\,\mathrm{mm}\)，报警阈值取设计值的 \(75\%\)，即 \(11.25\,\mathrm{mm}\).当前等效冰厚 \(11.4\,\mathrm{mm}\) 已越过阈值，调度中心应立即安排<b>直流融冰</b>：将该线路短接后通入 \(3\!\sim\!4\,\mathrm{kA}\) 的直流电流，用焦耳热在 \(40\!\sim\!60\) 分钟内融冰.</p>
+    <p><b>为什么必须用曲线积分？</b>若粗暴地用"档距 \(400\,\mathrm{m}\)"代替"弧长 \(402.67\,\mathrm{m}\)"，质量会低估 \(0.67\%\)；若再用最低点的线密度 \(1.2\,\mathrm{kg/m}\) 代替变化的密度，总质量只有 \(480\,\mathrm{kg}\)，低估 \(10.7\%\)，等效冰厚被误判为 \(10.3\,\mathrm{mm}\)——恰好落在阈值以下，导致<b>漏报</b>.这就是电网在线监测系统必须逐段积分的工程理由.</p>
+<p class="cn-point">11.4 mm 对 11.25 mm——等效冰厚反演只差 0.15 mm，就是「融冰」和「漏报」的天壤之别.把 537.29 kg 的冰按曲线积分逐段算准，正是国产直流融冰装置能十几分钟化掉一档冰的底气：先算准有多少冰，才谈得上多快化掉它.</p>
+  </div>
+  </details>
+</div>
+
+<div class="note"><b>本节小结.</b>① 第一类曲线积分 \(\displaystyle\int_Lf\,\mathrm{d}s\) 的物理原型是"曲线形构件的质量"，几何原型是"以 \(L\) 为底、以 \(z=f(x,y)\) 为高的柱面面积".② 它<b>与方向无关</b>，化为定积分后<b>必须下限小于上限</b>.③ 计算的核心是把 \(\mathrm{d}s\) 换成参数微元，显式、参数式、极坐标、空间四种情形共四个公式.④ 对称性与"代曲线方程"是两大化简利器，遇到圆、椭圆、星形线等对称曲线必须优先考虑.</div>
+
+    <!-- ============ §11.2 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 无人驾驶：高精地图车道中心线的弧长积分与里程桩标定</summary>
+<p><b>场景：</b> 高精地图（HD Map）并不沿直线给坐标，而是沿车道<b>中心线按弧长</b>打「里程桩」：每前进一米标一个桩号.因为车辆实际走的是弯曲路径，桩距必须用第一类曲线积分 \(s=\int_L\mathrm{d}s\) 算，而不能用直线投影.取某段车道中心线为抛物线 \(y=cx^2\)，线形参数 \(c=0.0008\ \mathrm{m^{-1}}\)，横向范围 \(x\in[-50,50]\ \mathrm{m}\).</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>线形参数</td><td>\(c\)</td><td>\(0.0008\ \mathrm{m^{-1}}\)</td></tr>
+<tr><td>横向半宽</td><td>\(X\)</td><td>\(50\ \mathrm{m}\)</td></tr>
+<tr><td>曲率半径下限</td><td>\(R_{\min}\)</td><td>\(625\ \mathrm{m}\)</td></tr>
+</table>
+<p class="sol"> 弧长元素 \(\mathrm{d}s=\sqrt{1+(y')^2}\,\mathrm{d}x=\sqrt{1+(2cx)^2}\,\mathrm{d}x\).由对称性</p>
+\[s=2\int_{0}^{50}\sqrt{1+4c^2x^2}\,\mathrm{d}x
+ =2\int_{0}^{50}\sqrt{1+2.56\times10^{-6}x^2}\,\mathrm{d}x .\]
+<p>令 \(u=2cx\)，则 \(\mathrm{d}x=\mathrm{d}u/(2c)\)，当 \(x:0\to50\) 时 \(u:0\to0.08\)：</p>
+\[s=\frac{1}{c}\int_{0}^{0.08}\sqrt{1+u^2}\,\mathrm{d}u
+ =\frac{1}{c}\cdot\frac12\Bigl[u\sqrt{1+u^2}+\operatorname{arsinh}u\Bigr]_{0}^{0.08}.\]
+<p>代入 \(u=0.08\)：\(\sqrt{1.0064}=1.00319\)，\(\operatorname{arsinh}0.08=0.07986\)，括号内 \(=0.08006\)，故</p>
+\[s=\frac{0.08006}{0.0008}=100.075\ \mathrm{m}.\]
+<p>与直线投影 \(100\ \mathrm{m}\) 相比，弯曲只多出 \(7.5\ \mathrm{cm}\).曲率 \(\kappa=\dfrac{2c}{(1+4c^2x^2)^{3/2}}\)，中心处最大 \(\kappa_{\max}=2c=0.0016\ \mathrm{m^{-1}}\)，对应 \(R_{\min}=625\ \mathrm{m}\)；全程曲率积分（累计转角和）\(\int_L\kappa\,\mathrm{d}s\approx0.0016\times100.08=0.160\ \mathrm{rad}\approx9.2^{\circ}\).</p>
+<p><b>工程结论：</b> 这 \(7.5\ \mathrm{cm}\) 的「弧长—弦长」差异看似微小，却是高精地图定位的硬约束：若按直线投影标桩，桩号在弯中会系统性超前 \(7.5\ \mathrm{cm}\)，足以让车道级定位在匝道并入处跳变.因此地图引擎必须沿中心线做第一类曲线积分（定义 11.1）来标定桩号；而 \(R_{\min}=625\ \mathrm{m}\)、转角 \(9.2^{\circ}\) 都在无人驾驶「舒适平顺」阈值内，无需降速.一句话：<b>里程桩是弧长积分，不是直线距离</b>.</p>
+<p class="cn-point">7.5 cm 的桩号偏差，到匝道就是一次车道级定位跳变——国产高精地图把里程桩从「直线距离」改成「弧长积分」，不是炫技，而是让 \(s=\int_L\sqrt{1+y'^2}\,\mathrm{d}x\) 在每一条弯道上替自动驾驶的安全把关.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch11-map" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>线形参数 c <input type="range" id="ch11-map-c" min="0" max="20" step="1" value="8" style="width:220px;accent-color:#0F6E56"> <b id="ch11-map-c-t"></b> ×10⁻⁵</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch11-map-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch11-map'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var c=+document.getElementById('ch11-map-c').value/100000;
+      var mL=50,mR=16,mT=30,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var xmax=50;
+      function X(x){ return mL+x/xmax*pW; }
+      function Yv(y){ return mT+pH - y/(c*xmax*xmax)*pH*0.92; }
+      // 车道中心线（抛物线）
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var x=0;x<=xmax;x+=0.5){ var xx=X(x),yy=Yv(c*x*x); x===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 弦（直线）
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(X(0),Yv(0));ctx.lineTo(X(xmax),Yv(c*xmax*xmax));ctx.stroke();ctx.setLineDash([]);
+      // 数值积分弧长
+      var N=2000, sLen=0;
+      var px=0, py=0;
+      for(var i=1;i<=N;i++){
+        var x1=xmax*i/N, y1=c*x1*x1;
+        var dx=x1-px, dy=y1-py;
+        sLen+=Math.sqrt(dx*dx+dy*dy);
+        px=x1; py=y1;
+      }
+      var chord=Math.sqrt(xmax*xmax+(c*xmax*xmax)*(c*xmax*xmax));
+      var diff=sLen-chord;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('c = '+c.toFixed(5)+'   弧长 s = '+sLen.toFixed(3)+' m   弦长 = '+chord.toFixed(3)+' m   差 '+(diff*100).toFixed(2)+' cm',20,20);
+      var out=document.getElementById('ch11-map-out');
+      var tip = diff*100>10 ? '⚠ 弧弦差超过 10 cm：按直线标桩会系统性超前，匝道处定位跳变' : '弧弦差可控，可按近似直线标桩';
+      out.textContent = tip;
+    }
+    document.getElementById('ch11-map-c').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 特高压输电：悬链线覆冰质量的第一类曲线积分</summary>
+<p><b>场景：</b> 寒潮过境的深夜，±800 kV 特高压线路值班室的电话响成一片：山区的档距里导线覆冰已达 \(12\ \mathrm{mm}\)，再厚下去就可能压垮杆塔.调度员要的不是"感觉上还顶得住"，而是这一档导线上到底挂了多少千克的冰——冰层沿整档导线均匀分布，覆冰总质量正是第一类曲线积分 \(M=\int_L\lambda\,\mathrm{d}s\)，其中 \(\lambda\) 为覆冰线密度.例 11.2 已算出该档悬链线弧长 \(s=402.67\ \mathrm{m}\).导线外径 \(d=30\ \mathrm{mm}\)，冰密度 \(\rho_{\text{ice}}=900\ \mathrm{kg/m^3}\)，覆冰厚度 \(b\).</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>覆冰厚度</td><td>\(b\)</td><td>\(12\ \mathrm{mm}\)</td></tr>
+<tr><td>导线外径</td><td>\(d\)</td><td>\(30\ \mathrm{mm}\)</td></tr>
+<tr><td>档距弧长</td><td>\(s\)</td><td>\(402.67\ \mathrm{m}\)</td></tr>
+</table>
+<p class="sol"> 冰层横截面是圆环，面积（引例一）</p>
+\[A(b)=\pi\bigl[(d/2+b)^2-(d/2)^2\bigr]=\pi b(d+b).\]
+<p>代入 \(b=12\ \mathrm{mm}\)：</p>
+\[A(12)=\pi\cdot12\cdot(30+12)=\pi\cdot504=1583.36\ \mathrm{mm^2}.\]
+<p>覆冰线密度 \(\lambda=\rho_{\text{ice}}A(b)\times10^{-6}=900\times1583.36\times10^{-6}=1.4250\ \mathrm{kg/m}\).总质量</p>
+\[M=\int_L\lambda\,\mathrm{d}s=\lambda\cdot s=1.4250\times402.67=573.8\ \mathrm{kg}.\]
+<p>由性质 11.4 取 \(f\equiv\lambda\) 为常数，积分直接退化为「常数 × 弧长」；若覆冰不均匀（如引例一随高度线性增大），则必须老老实实沿悬链线把 \(\lambda(x)\) 积出来.对照裸导线自重 \(543.6\ \mathrm{kg}\)，覆冰质量已超出 \(5.5\%\).</p>
+<p><b>工程结论：</b> 该线路按重冰区设计，报警阈值取设计冰厚 \(15\ \mathrm{mm}\) 的 \(75\%\)，即 \(11.25\ \mathrm{mm}\).当前等效冰厚 \(12\ \mathrm{mm}\gt11.25\ \mathrm{mm}\)，已越阈，调度中心应安排直流融冰.这里的关键物理量——覆冰质量——就是定义 11.1 最直接的工程化身：<b>沿曲线的「密度 × 弧长」求和，正是第一类曲线积分</b>；它和第一类积分「与方向无关」的身份证（性质 11.3）完全自洽，因为导线从哪头开始称，总质量都不会变.</p>
+<p class="cn-point">573.8 kg 的覆冰压在 543.6 kg 的导线自重之上，荷载几乎翻倍——特高压线路能不能扛过寒潮，就压在这条 \(M=\int_L\lambda\,\mathrm{d}s\) 算出的千克数上.西电东送大通道上每一次「越阈即融冰」，都是这类第一类曲线积分在电网调度里站岗.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch11-ice" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>等效冰厚 b <input type="range" id="ch11-ice-b" min="0" max="30" step="0.5" value="12" style="width:220px;accent-color:#0F6E56"> <b id="ch11-ice-b-t"></b> mm</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch11-ice-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch11-ice'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var d=30, sLen=402.67, rhoIce=900;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var b=+document.getElementById('ch11-ice-b').value; // mm 冰厚
+      var cx=W*0.3, cy=H*0.5, sc=Math.min(W,H)*0.02;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 导线截面（导体 + 冰层）
+      ctx.fillStyle='#0e7c7c';
+      ctx.beginPath();ctx.arc(cx,cy,(d/2+b)*sc,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1e293b';
+      ctx.beginPath();ctx.arc(cx,cy,(d/2)*sc,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('导线 d=30mm',cx,cy+6);
+      ctx.fillStyle='#0e7c7c';ctx.font='10px sans-serif';
+      ctx.fillText('冰 b='+b.toFixed(0)+'mm',cx+(d/2+b)*sc+14,cy-6);
+      // 数值
+      var A=Math.PI*b*(d+b); // mm²
+      var lambda=A*rhoIce/1e6; // kg/m
+      var M=lambda*sLen; // kg
+      var thr=15*0.75;
+      var alert=b>thr;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('冰层面积 A = πb(d+b) = '+A.toFixed(0)+' mm²   线密度 λ = '+lambda.toFixed(4)+' kg/m',20,22);
+      ctx.fillText('覆冰质量 M = λ·s = '+lambda.toFixed(4)+'×'+sLen.toFixed(0)+' = '+M.toFixed(0)+' kg   （阈值 '+(thr).toFixed(2)+' mm）',20,42);
+      var out=document.getElementById('ch11-ice-out');
+      out.textContent = alert ? '⚠ 已越阈 '+thr.toFixed(2)+' mm！调度中心应安排直流融冰' : '✔ 未越阈，继续监测';
+    }
+    document.getElementById('ch11-ice-b').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s111" data-ch="11" data-n="5"></div>
+<h2 id="s112"><span class="num">§11.2</span>对坐标的曲线积分</h2>
+    
+<div class="ex"><div class="lab">引例一　电动汽车过弯时电机要消耗多少电：变力沿曲线做的功</div>
+  <p class="stmt">一辆纯电动 SUV 以恒定车速通过一段山路弯道.整车控制器需要预估这段弯道的<b>能耗</b>，以便实时更新剩余续航里程.弯道被建模为四分之一圆弧</p>
+  \[x=40\cos t,\quad y=40\sin t\qquad\Bigl(t:0\to\frac{\pi}{2},\ \text{单位 m}\Bigr),\]
+  <p>即从 \(A(40,0)\) 逆时针行驶到 \(B(0,40)\).车辆在行驶中受到的水平合阻力（滚动阻力 \(+\) 空气阻力 \(+\) 侧风 \(+\) 坡度分力）随位置变化，实测拟合为</p>
+  \[\boldsymbol{F}(x,y)=\bigl(P(x,y),\,Q(x,y)\bigr)=\bigl(250+4y,\ -(150+2x)\bigr)\quad(\mathrm{N}).\]
+  <p>如果力是常向量、路径是直线段，功就是"力点乘位移"这一句乘法 \(W=\boldsymbol{F}\cdot\overrightarrow{AB}\).可现在<b>力随位置变、方向随路径变</b>，唯一的出路仍是分割—近似—求和—取极限：把弯道分成许多小段，每小段近似看成直线位移 \(\Delta\boldsymbol{r}_i=(\Delta x_i,\Delta y_i)\)，段上的力近似为常力 \(\boldsymbol{F}(\xi_i,\eta_i)\)，该段的功近似为</p>
+  \[\Delta W_i\approx\boldsymbol{F}(\xi_i,\eta_i)\cdot\Delta\boldsymbol{r}_i=P(\xi_i,\eta_i)\Delta x_i+Q(\xi_i,\eta_i)\Delta y_i .\]
+  <p><b>具体模拟计算</b>（把 \(t\in[0,\pi/2]\) 四等分，取每段中点为代表点，\(\Delta t=\pi/8\)）：</p>
+  <table class="dt">
+    <tr><th>子弧</th><th>中点 \(t^*\)</th><th>位置 \((x^*,y^*)\)</th><th>\(P\)（N）</th><th>\(Q\)（N）</th><th>\(\Delta W\)（J）</th></tr>
+    <tr><td>1</td><td>0.1963</td><td>\((39.23,\ 7.80)\)</td><td>281.2</td><td>\(-228.5\)</td><td>\(-4381.5\)</td></tr>
+    <tr><td>2</td><td>0.5891</td><td>\((33.26,\ 22.22)\)</td><td>338.9</td><td>\(-216.5\)</td><td>\(-5785.4\)</td></tr>
+    <tr><td>3</td><td>0.9817</td><td>\((22.22,\ 33.26)\)</td><td>383.0</td><td>\(-194.4\)</td><td>\(-6699.6\)</td></tr>
+    <tr><td>4</td><td>1.3745</td><td>\((7.80,\ 39.23)\)</td><td>406.9</td><td>\(-165.6\)</td><td>\(-6776.6\)</td></tr>
+    <tr><td colspan="5"><b>合计（四段近似）</b></td><td><b>\(-23643\)</b></td></tr>
+  </table>
+  <p>取极限即得精确值.把 \(\mathrm{d}x=-40\sin t\,\mathrm{d}t,\ \mathrm{d}y=40\cos t\,\mathrm{d}t\) 代入：</p>
+  \[W=\int_0^{\pi/2}\Bigl[-10000\sin t-6400\sin^2t-6000\cos t-3200\cos^2t\Bigr]\mathrm{d}t
+   =-\bigl(16000+2400\pi\bigr)\approx-23540\ \mathrm{J}.\]
+  <p>负号表示<b>阻力对车做负功</b>，即电机必须额外输出 \(2.354\times10^{4}\,\mathrm{J}\approx6.54\times10^{-3}\,\mathrm{kW\cdot h}\) 的能量来维持车速.四段近似的 \(-23643\,\mathrm{J}\) 与精确值只差 \(0.44\%\)，和式确实在收敛.</p>
+  <p>这个"沿有向曲线把力在位移方向上的分量累加起来"的极限，就是本节要定义的<b>对坐标的曲线积分</b>，记作 \(\displaystyle\int_L P\,\mathrm{d}x+Q\,\mathrm{d}y\).</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　托卡马克装置里的带电粒子：为什么磁场不做功、电场才做功</div>
+  <p class="stmt">受控核聚变装置"托卡马克"用强磁场把上亿摄氏度的等离子体约束在环形真空室内，同时用<b>环向电场</b>驱动等离子体电流并加热.工程师要问：绕行一圈，一个电子能从电场里获得多少能量？磁场又贡献了多少？</p>
+  <p><b>磁场的贡献恒为零.</b>洛伦兹力 \(\boldsymbol{F}=q\boldsymbol{v}\times\boldsymbol{B}\) 永远垂直于速度 \(\boldsymbol{v}\)，而位移微元 \(\mathrm{d}\boldsymbol{r}=\boldsymbol{v}\,\mathrm{d}t\) 与 \(\boldsymbol{v}\) 同向，于是</p>
+  \[\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}=q(\boldsymbol{v}\times\boldsymbol{B})\cdot\boldsymbol{v}\,\mathrm{d}t=0
+   \ \Longrightarrow\ W_{\text{磁}}=\int_{\Gamma}\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}=0 .\]
+  <p>无论轨道多么复杂、绕行多少圈，磁场力做功恒为零——磁场只"拐弯"，不"加速".</p>
+  <p><b>电场的贡献可以精确算出.</b>把环向电场简化为平面模型：在半径 \(R=1.5\,\mathrm{m}\) 的圆环上，电场沿切向，大小 \(E_0=0.5\,\mathrm{V/m}\)，即</p>
+  \[\boldsymbol{E}(x,y)=E_0\cdot\frac{(-y,\ x)}{\sqrt{x^2+y^2}} .\]
+  <p>电子沿圆周 \(x=R\cos t,\ y=R\sin t\ (t:0\to2\pi)\) 走一圈，此时 \(\mathrm{d}x=-R\sin t\,\mathrm{d}t,\ \mathrm{d}y=R\cos t\,\mathrm{d}t\)，于是</p>
+  \[\oint_{C}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=\oint_C\frac{E_0(-y)}{R}\mathrm{d}x+\frac{E_0x}{R}\mathrm{d}y
+   =\int_0^{2\pi}E_0R\bigl(\sin^2t+\cos^2t\bigr)\mathrm{d}t=2\pi R E_0=4.712\ \mathrm{V}.\]
+  <p>电子每绕行一圈获得的能量为 \(W=|q|\times4.712\,\mathrm{V}=1.602\times10^{-19}\times4.712=7.55\times10^{-19}\,\mathrm{J}\)，即 \(4.71\,\mathrm{eV}\).绕行 \(10^{5}\) 圈（约 \(0.1\,\mathrm{s}\)）即可被加速到 \(471\,\mathrm{keV}\).</p>
+  <p class="muted"><b>方向至关重要.</b>若电子反向绕行，上式每一项都变号，结果为 \(-4.712\,\mathrm{V}\)，电子被<b>减速</b>.这与第一类曲线积分形成鲜明对照：质量不管你从哪头称，功却取决于你朝哪边走.<b>方向敏感性正是第二类曲线积分的本质特征.</b></p>
+</div>
+
+<h3>一、对坐标的曲线积分的概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 11.2</span>对坐标的曲线积分（第二类曲线积分）</div>
+  <p>设 \(L\) 为 \(xOy\) 面内从点 \(A\) 到点 \(B\) 的一条<b>有向</b>光滑曲线弧，函数 \(P(x,y),Q(x,y)\) 在 \(L\) 上有界.<b>沿 \(L\) 的方向</b>用点 \(M_1,\dots,M_{n-1}\) 把 \(L\) 分成 \(n\) 个有向小弧段，第 \(i\) 段的起点为 \(M_{i-1}(x_{i-1},y_{i-1})\)、终点为 \(M_i(x_i,y_i)\)，记</p>
+  \[\Delta x_i=x_i-x_{i-1},\qquad \Delta y_i=y_i-y_{i-1}.\]
+  <p>在第 \(i\) 段上任取一点 \((\xi_i,\eta_i)\)，记 \(\lambda\) 为各小弧段长度的最大值.若极限</p>
+  \[\lim_{\lambda\to0}\sum_{i=1}^{n}P(\xi_i,\eta_i)\,\Delta x_i\]
+  <p>总存在，则称之为 \(P(x,y)\) 在有向曲线弧 \(L\) 上<b>对坐标 \(x\) 的曲线积分</b>，记作 \(\displaystyle\int_LP(x,y)\,\mathrm{d}x\).类似地定义<b>对坐标 \(y\) 的曲线积分</b> \(\displaystyle\int_LQ(x,y)\,\mathrm{d}y\).二者之和常写成<b>组合形式</b></p>
+  \[\int_{L}P(x,y)\,\mathrm{d}x+Q(x,y)\,\mathrm{d}y .\]
+  <p>若记 \(\boldsymbol{F}=(P,Q)\)，\(\mathrm{d}\boldsymbol{r}=(\mathrm{d}x,\mathrm{d}y)\)，则上式即<b>向量形式</b></p>
+  \[\int_{L}\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}.\]
+  <p>当 \(L\) 为有向<b>闭曲线</b>时记作 \(\displaystyle\oint_LP\,\mathrm{d}x+Q\,\mathrm{d}y\).</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定义 11.3</span>空间有向曲线上的第二类曲线积分</div>
+  <p>设 \(\Gamma\) 为空间中从 \(A\) 到 \(B\) 的有向光滑曲线弧，\(P,Q,R\) 为 \(\Gamma\) 上的有界函数，完全类似地定义</p>
+  \[\int_{\Gamma}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z
+   =\lim_{\lambda\to0}\sum_{i=1}^{n}\Bigl[P(\xi_i,\eta_i,\zeta_i)\Delta x_i+Q(\xi_i,\eta_i,\zeta_i)\Delta y_i+R(\xi_i,\eta_i,\zeta_i)\Delta z_i\Bigr].\]
+  <p>它的物理原型是<b>空间变力 \(\boldsymbol{F}=(P,Q,R)\) 沿曲线 \(\Gamma\) 所做的功</b>.</p>
+</div>
+
+<div class="note"><b>\(\Delta x_i\) 是"有符号"的.</b>这是与第一类曲线积分最关键的差别：弧长 \(\Delta s_i\) 恒为正，而投影 \(\Delta x_i=x_i-x_{i-1}\) 可正可负——沿 \(x\) 增大的方向走它为正，反之为负.正因如此，"曲线的方向"必须写进定义里，而积分值也就随方向改变.</div>
+
+<h3>二、对坐标的曲线积分的性质</h3>
+<div class="def"><div class="lab"><span class="n">性质 11.5</span>线性性</div>
+  \[\int_{L}\bigl[\alpha\boldsymbol{F}_1+\beta\boldsymbol{F}_2\bigr]\cdot\mathrm{d}\boldsymbol{r}
+   =\alpha\int_{L}\boldsymbol{F}_1\cdot\mathrm{d}\boldsymbol{r}+\beta\int_{L}\boldsymbol{F}_2\cdot\mathrm{d}\boldsymbol{r}.\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：写出向量形式的积分和.</span>把有向弧 \(L\) 依方向分成 \(n\) 小段，第 \(i\) 段的有向弦向量为 \(\Delta\boldsymbol{r}_i=(\Delta x_i,\Delta y_i)\)，其上取代表点 \(M_i(\xi_i,\eta_i)\).由定义</p>
+\[\int_{L}\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}=\lim\limits_{\lambda\to0}\sum_{i=1}^{n}\boldsymbol{F}(M_i)\cdot\Delta\boldsymbol{r}_i .\]
+<p><span class="stp">第二步：用数量积的线性性拆开.</span>对每个 \(i\)，</p>
+\[\bigl[\alpha\boldsymbol{F}_1(M_i)+\beta\boldsymbol{F}_2(M_i)\bigr]\cdot\Delta\boldsymbol{r}_i
+ =\alpha\,\boldsymbol{F}_1(M_i)\cdot\Delta\boldsymbol{r}_i+\beta\,\boldsymbol{F}_2(M_i)\cdot\Delta\boldsymbol{r}_i ,\]
+<p>对 \(i\) 求和，常数提到求和号外，得</p>
+\[\sum_{i=1}^{n}\bigl[\alpha\boldsymbol{F}_1+\beta\boldsymbol{F}_2\bigr](M_i)\cdot\Delta\boldsymbol{r}_i
+ =\alpha\sum_{i=1}^{n}\boldsymbol{F}_1(M_i)\cdot\Delta\boldsymbol{r}_i+\beta\sum_{i=1}^{n}\boldsymbol{F}_2(M_i)\cdot\Delta\boldsymbol{r}_i .\]
+<p><span class="stp">第三步：取极限.</span>两个分量函数都连续，故右端两个积分存在；令 \(\lambda\to0\)，由极限四则运算法则即得</p>
+\[\int_{L}\bigl[\alpha\boldsymbol{F}_1+\beta\boldsymbol{F}_2\bigr]\cdot\mathrm{d}\boldsymbol{r}
+ =\alpha\int_{L}\boldsymbol{F}_1\cdot\mathrm{d}\boldsymbol{r}+\beta\int_{L}\boldsymbol{F}_2\cdot\mathrm{d}\boldsymbol{r}.\]
+<p>写成坐标形式，就是 \(\int_L(\alpha P_1+\beta P_2)\mathrm{d}x+(\alpha Q_1+\beta Q_2)\mathrm{d}y\) 可按 \(\alpha,\beta\) 拆项；特别地 \(\int_LP\,\mathrm{d}x+Q\,\mathrm{d}y=\int_LP\,\mathrm{d}x+\int_LQ\,\mathrm{d}y\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 11.6</span>对有向弧段的可加性</div>
+  <p>若有向曲线弧 \(L\) 可分成两段有向光滑弧 \(L_1,L_2\)（首尾相接、方向一致），则</p>
+  \[\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{L_1}P\,\mathrm{d}x+Q\,\mathrm{d}y+\int_{L_2}P\,\mathrm{d}x+Q\,\mathrm{d}y .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：把接点取作分点.</span>设 \(L\) 由 \(L_1\)（从 \(A\) 到 \(C\)）与 \(L_2\)（从 \(C\) 到 \(B\)）首尾相接、方向一致地拼成.沿 \(L\) 的方向作分割时，总可以把接点 \(C\) 取作一个分点（添分点只会使细度不增）.设分点为 \(A=M_0,\dots,M_k=C,\dots,M_n=B\).</p>
+<p><span class="stp">第二步：裂和.</span>记第 \(i\) 段的投影增量为 \(\Delta x_i,\Delta y_i\)，代表点为 \((\xi_i,\eta_i)\)，则</p>
+\[\sum_{i=1}^{n}\bigl[P(\xi_i,\eta_i)\Delta x_i+Q(\xi_i,\eta_i)\Delta y_i\bigr]
+ =\sum_{i=1}^{k}(\cdots)+\sum_{i=k+1}^{n}(\cdots),\]
+<p>其中前一组恰是沿 \(L_1\)（方向由 \(A\) 到 \(C\)）的积分和，后一组恰是沿 \(L_2\)（方向由 \(C\) 到 \(B\)）的积分和——这里用到"方向一致"，否则 \(\Delta x_i,\Delta y_i\) 的符号对不上.</p>
+<p><span class="stp">第三步：取极限.</span>令 \(\lambda\to0\)，三个和式各自收敛，得</p>
+\[\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{L_1}P\,\mathrm{d}x+Q\,\mathrm{d}y+\int_{L_2}P\,\mathrm{d}x+Q\,\mathrm{d}y .\]
+<p>对有限段拼接反复使用即可，这正是处理折线、多边形回路的依据.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 11.7</span>方向性（换向变号）</div>
+  <p>设 \(L^{-}\) 是与 \(L\) 方向相反的同一条曲线弧，则</p>
+  \[\int_{L^{-}}P\,\mathrm{d}x+Q\,\mathrm{d}y=-\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y .\]
+  <p><b>理由：</b>反向后每一小段的投影都变号，\(\Delta x_i\to-\Delta x_i,\ \Delta y_i\to-\Delta y_i\)，而代表点与分割方式可取成一样，故积分和整体变号.</p>
+  <p class="muted">物理意义再直白不过：把同一段路倒着走一遍，摩擦力做的功符号相反；电动车下坡时电机"发电"回收能量，正是这条性质的日常版本.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>第二类积分和里出现的不是弧长，而是<b>带符号的投影增量</b> \(\Delta x_i,\Delta y_i\).倒着走时，每一小段的"终点减起点"变成"起点减终点"，于是逐项反号.</p>
+<p><span class="stp">第一步：用同一批分点.</span>设 \(L\) 从 \(A\) 到 \(B\)，分点依次为 \(A=M_0,M_1,\dots,M_n=B\)，\(M_i(x_i,y_i)\).则 \(L^{-}\) 从 \(B\) 到 \(A\)，其分点依次为 \(M_n,M_{n-1},\dots,M_0\)，是同一批点、同一批小弧段.代表点也取同一批 \((\xi_i,\eta_i)\).</p>
+<p><span class="stp">第二步：比较投影增量.</span>在 \(L\) 上第 \(i\) 段（由 \(M_{i-1}\) 到 \(M_i\)）的增量为</p>
+\[\Delta x_i=x_i-x_{i-1},\qquad \Delta y_i=y_i-y_{i-1};\]
+<p>在 \(L^{-}\) 上同一段是由 \(M_i\) 到 \(M_{i-1}\)，增量为</p>
+\[x_{i-1}-x_i=-\Delta x_i,\qquad y_{i-1}-y_i=-\Delta y_i .\]
+<p><span class="stp">第三步：和式整体变号.</span>于是</p>
+\[\sum_{i=1}^{n}\bigl[P(\xi_i,\eta_i)(-\Delta x_i)+Q(\xi_i,\eta_i)(-\Delta y_i)\bigr]
+ =-\sum_{i=1}^{n}\bigl[P(\xi_i,\eta_i)\Delta x_i+Q(\xi_i,\eta_i)\Delta y_i\bigr].\]
+<p><span class="stp">第四步：取极限.</span>令 \(\lambda\to0\) 即得</p>
+\[\int_{L^{-}}P\,\mathrm{d}x+Q\,\mathrm{d}y=-\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y .\]
+<p>请对照性质 11.3：那里的 \(\Delta s_i\) 恒正故不变号，这里的 \(\Delta x_i\) 带符号故变号——两类曲线积分的差别全在于此.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>两类曲线积分的对照表——务必背熟.</b>
+<table class="dt">
+  <tr><th>对比项</th><th>第一类（对弧长）</th><th>第二类（对坐标）</th></tr>
+  <tr><td>记号</td><td>\(\displaystyle\int_Lf(x,y)\,\mathrm{d}s\)</td><td>\(\displaystyle\int_LP\,\mathrm{d}x+Q\,\mathrm{d}y\)</td></tr>
+  <tr><td>微元</td><td>弧长 \(\Delta s_i\gt0\) 恒为正</td><td>投影 \(\Delta x_i,\Delta y_i\) 可正可负</td></tr>
+  <tr><td>曲线</td><td>无方向</td><td>有方向（起点、终点须指明）</td></tr>
+  <tr><td>换向</td><td>值不变</td><td>值变号</td></tr>
+  <tr><td>物理原型</td><td>质量、弧长、质心、转动惯量</td><td>功、环量、流量</td></tr>
+  <tr><td>化为定积分后</td><td>下限必须<b>小于</b>上限</td><td>下限对应<b>起点</b>、上限对应<b>终点</b>，可以上限小于下限</td></tr>
+  <tr><td>取被积函数为 1</td><td>\(\displaystyle\int_L\mathrm{d}s=\) 弧长</td><td>\(\displaystyle\int_L\mathrm{d}x=x_B-x_A\)</td></tr>
+</table>
+最后一行值得玩味：\(\displaystyle\int_L\mathrm{d}x\) 只与端点有关，与曲线形状完全无关——这已经是"路径无关"的第一个例子，我们将在 §11.4 系统研究它.</div>
+
+<h3>三、对坐标的曲线积分的计算法</h3>
+<div class="def"><div class="lab"><span class="n">定理 11.4</span>化为定积分（统一参数化）</div>
+  <p>设 \(P(x,y),Q(x,y)\) 在有向曲线弧 \(L\) 上连续，\(L\) 的参数方程为 \(x=\varphi(t),\ y=\psi(t)\)，当参数 \(t\) 单调地由 \(\alpha\) 变到 \(\beta\) 时点 \((x,y)\) 从 \(L\) 的<b>起点</b>沿 \(L\) 走到<b>终点</b>；若 \(\varphi,\psi\) 有一阶连续导数且 \(\varphi'^2+\psi'^2
+eq0\)，则</p>
+  \[\boxed{\ \int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y
+   =\int_{\alpha}^{\beta}\Bigl\{P\bigl[\varphi(t),\psi(t)\bigr]\varphi'(t)+Q\bigl[\varphi(t),\psi(t)\bigr]\psi'(t)\Bigr\}\mathrm{d}t\ }\]
+  <p>这里 \(\alpha\) 与 \(\beta\) 的<b>大小关系不受限制</b>：\(\alpha\) 一定对应起点，\(\beta\) 一定对应终点.</p>
+  <p>对空间有向曲线 \(\Gamma:\ x=\varphi(t),\ y=\psi(t),\ z=\omega(t)\)（\(t\) 从 \(\alpha\) 到 \(\beta\)），有</p>
+  \[\int_{\Gamma}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\int_{\alpha}^{\beta}\bigl[P\varphi'+Q\psi'+R\omega'\bigr]\mathrm{d}t .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>把 \(\Delta x_i\) 用<b>拉格朗日中值定理</b>换成 \(\varphi'(\tau_i)\Delta t_i\)，积分和立刻成为一元函数的黎曼和；而 \(\Delta t_i\) 的正负自动记录了曲线的走向，这正是"\(\alpha\) 与 \(\beta\) 大小不受限制"的来源.</p>
+<p><span class="stp">第一步：分项处理.</span>由性质 11.5（线性性），\(\int_LP\,\mathrm{d}x+Q\,\mathrm{d}y=\int_LP\,\mathrm{d}x+\int_LQ\,\mathrm{d}y\)，故只需分别证明</p>
+\[\int_{L}P\,\mathrm{d}x=\int_{\alpha}^{\beta}P\bigl[\varphi(t),\psi(t)\bigr]\varphi'(t)\,\mathrm{d}t,\qquad
+  \int_{L}Q\,\mathrm{d}y=\int_{\alpha}^{\beta}Q\bigl[\varphi(t),\psi(t)\bigr]\psi'(t)\,\mathrm{d}t .\]
+<p><span class="stp">第二步：作分割.</span>取参数区间的分割 \(\alpha=t_0,t_1,\dots,t_n=\beta\)，其中 \(t_i\) 按 \(t\) 从 \(\alpha\) 变到 \(\beta\) 的顺序排列（若 \(\alpha\gt\beta\) 则它是递减的），记 \(\Delta t_i=t_i-t_{i-1}\)，各 \(\Delta t_i\) 同号.它对应把 \(L\) 从起点到终点分成 \(n\) 段有向小弧.</p>
+<p><span class="stp">第三步：用中值定理换掉 \(\Delta x_i\).</span>\(\varphi\) 有连续导数，故存在 \(\tau_i\) 介于 \(t_{i-1},t_i\) 之间，使</p>
+\[\Delta x_i=\varphi(t_i)-\varphi(t_{i-1})=\varphi'(\tau_i)\,\Delta t_i .\]
+<p><span class="stp">第四步：选代表点，凑黎曼和.</span>积分存在时其值与代表点取法无关，取 \((\xi_i,\eta_i)=\bigl(\varphi(\tau_i),\psi(\tau_i)\bigr)\)，则</p>
+\[\sum_{i=1}^{n}P(\xi_i,\eta_i)\Delta x_i=\sum_{i=1}^{n}P\bigl[\varphi(\tau_i),\psi(\tau_i)\bigr]\varphi'(\tau_i)\,\Delta t_i ,\]
+<p>右端是连续函数 \(P[\varphi,\psi]\varphi'\) 在以 \(\alpha\) 为起点、\(\beta\) 为终点的区间上的黎曼和.</p>
+<p><span class="stp">第五步：细度对应并取极限.</span>由 \(\varphi'^2+\psi'^2
+eq0\) 与连续性，弧长元素有正的上下界（见定理 11.2 第三步），故 \(\lambda\to0\) 等价于 \(\max|\Delta t_i|\to0\).令其趋于零，和式趋于定积分 \(\int_{\alpha}^{\beta}P[\varphi,\psi]\varphi'\,\mathrm{d}t\)（当 \(\alpha\gt\beta\) 时 \(\Delta t_i\lt 0\)，极限自动是"上限小于下限"的定积分，与定积分的方向约定一致）.</p>
+<p><span class="stp">第六步：合并.</span>同法可得关于 \(Q\,\mathrm{d}y\) 的等式，两式相加即</p>
+\[\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{\alpha}^{\beta}\Bigl\{P\bigl[\varphi(t),\psi(t)\bigr]\varphi'(t)+Q\bigl[\varphi(t),\psi(t)\bigr]\psi'(t)\Bigr\}\mathrm{d}t .\]
+<p>空间情形只需在第三、四步中同时对 \(x,y,z\) 三个分量施行，得 \(\int_{\Gamma}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\int_{\alpha}^{\beta}\bigl[P\varphi'+Q\psi'+R\omega'\bigr]\mathrm{d}t\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>计算三步与两个陷阱.</b><br>
+① <b>选参数</b>：显式曲线 \(y=y(x)\) 就取 \(x\) 为参数（此时 \(\mathrm{d}y=y'(x)\mathrm{d}x\)）；曲线关于 \(y\) 是单值的（如 \(x=x(y)\)）就取 \(y\)；圆、椭圆、摆线用角参数.<br>
+② <b>代曲线</b>：把 \(P,Q\) 中的 \(x,y\) 与微元 \(\mathrm{d}x,\mathrm{d}y\) 全部换成参数表达式.<br>
+③ <b>定限</b>：<b>起点定下限、终点定上限</b>，绝不能"从小到大".<br>
+<b>陷阱一</b>：竖直线段上 \(\mathrm{d}x=0\)、水平线段上 \(\mathrm{d}y=0\)，相应项直接为零，不要漏也不要多算.<br>
+<b>陷阱二</b>：分段光滑曲线必须逐段积分，每一段单独选参数、单独定起终点.</div>
+
+<div class="ex"><div class="lab">例 11.11　基本计算：以 \(y\) 为参数</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_Lxy\,\mathrm{d}x\)，其中 \(L\) 为抛物线 \(y^2=x\) 上从点 \(A(1,-1)\) 到点 \(B(1,1)\) 的一段弧.</p>
+  <p class="sol"><span class="mk">解</span>这条弧关于 \(x\) 不是单值的（同一个 \(x\) 对应两个 \(y\)），若取 \(x\) 为参数就必须分成两段.改取 \(y\) 为参数：\(x=y^2\)，\(\mathrm{d}x=2y\,\mathrm{d}y\).起点 \(A\) 对应 \(y=-1\)，终点 \(B\) 对应 \(y=1\)，故 \(y\) 从 \(-1\) 变到 \(1\)：</p>
+  \[I=\int_{-1}^{1}y^2\cdot y\cdot 2y\,\mathrm{d}y=2\int_{-1}^{1}y^4\,\mathrm{d}y=4\int_0^1y^4\,\mathrm{d}y=\frac45 .\]
+  <p class="muted">若坚持用 \(x\)：下半支 \(y=-\sqrt x\)（\(x:1\to0\)）、上半支 \(y=\sqrt x\)（\(x:0\to1\)），两段各得 \(\dfrac25\)，合计仍为 \(\dfrac45\)——但工作量翻倍.<b>选参数的第一原则：让曲线成为该参数的单值函数.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 11.12　同起点同终点，三条路径三个值（核心对比题）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_Lxy\,\mathrm{d}x\)，其中 \(L\) 分别为从 \(O(0,0)\) 到 \(B(1,1)\) 的三条路径：<br>
+  （1）抛物线 \(y=x^2\)；（2）直线段 \(y=x\)；（3）折线 \(O\to A(1,0)\to B(1,1)\).</p>
+  <p class="sol"><span class="mk">解</span>三条路径的起点、终点完全相同，我们逐一计算.</p>
+  <p><b>（1）抛物线 \(y=x^2\).</b>取 \(x\) 为参数，\(x:0\to1\)：</p>
+  \[I_1=\int_0^1x\cdot x^2\,\mathrm{d}x=\int_0^1x^3\,\mathrm{d}x=\frac14 .\]
+  <p><b>（2）直线 \(y=x\).</b>取 \(x\) 为参数，\(x:0\to1\)：</p>
+  \[I_2=\int_0^1x\cdot x\,\mathrm{d}x=\int_0^1x^2\,\mathrm{d}x=\frac13 .\]
+  <p><b>（3）折线 \(OA+AB\).</b>在 \(OA\) 上 \(y=0\)，被积函数 \(xy=0\)，故该段积分为 \(0\)；在 \(AB\) 上 \(x\equiv1\)，故 \(\mathrm{d}x=0\)，该段积分也为 \(0\).所以</p>
+  \[I_3=0+0=0 .\]
+  <p><b>结论：</b>\(I_1=\dfrac14,\ I_2=\dfrac13,\ I_3=0\)，三值互不相同.<b>第二类曲线积分一般与路径有关</b>——起点终点相同并不能保证积分值相同.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.13　同起点同终点，三条路径同一个值（路径无关的预告）</div>
+  <p class="stmt">在例 11.12 的三条路径上分别计算 \(\displaystyle J=\int_L2xy\,\mathrm{d}x+x^2\,\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span><b>（1）\(y=x^2\)：</b>\(\mathrm{d}y=2x\,\mathrm{d}x\)，</p>
+  \[J_1=\int_0^1\bigl[2x\cdot x^2+x^2\cdot2x\bigr]\mathrm{d}x=\int_0^14x^3\,\mathrm{d}x=1 .\]
+  <p><b>（2）\(y=x\)：</b>\(\mathrm{d}y=\mathrm{d}x\)，</p>
+  \[J_2=\int_0^1\bigl[2x\cdot x+x^2\bigr]\mathrm{d}x=\int_0^13x^2\,\mathrm{d}x=1 .\]
+  <p><b>（3）折线：</b>在 \(OA\) 上 \(y=0,\ \mathrm{d}y=0\)，被积表达式为 \(0\)；在 \(AB\) 上 \(x=1,\ \mathrm{d}x=0\)，被积表达式为 \(1\cdot\mathrm{d}y\)，故</p>
+  \[J_3=0+\int_0^1\mathrm{d}y=1 .\]
+  <p>三条路径给出同一个值 \(1\).</p>
+  <p class="muted">对比例 11.12 与例 11.13：同样的三条路径，前者结果各异，后者却完全一致.差别究竟在哪？注意 \(J\) 的被积表达式恰是全微分 \(\mathrm{d}(x^2y)\)，而 \(1=x^2y\big|_{(1,1)}-x^2y\big|_{(0,0)}\).这正是 §11.4 要揭示的<b>路径无关</b>现象，其判据是 \(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\)：这里 \(P=2xy,\ Q=x^2\)，\(P_y=2x=Q_x\)；而例 11.12 中 \(P=xy,\ Q=0\)，\(P_y=x
+eq0=Q_x\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.14　方向性的直接验证</div>
+  <p class="stmt">设 \(L\) 为上半圆周 \(x^2+y^2=1\ (y\ge0)\).分别计算沿 \(L_1\)（从 \((-1,0)\) 到 \((1,0)\)）与沿 \(L_2\)（从 \((1,0)\) 到 \((-1,0)\)）的积分 \(\displaystyle\int_Ly\,\mathrm{d}x\).</p>
+  <p class="sol"><span class="mk">解</span>取参数 \(x=\cos t,\ y=\sin t\)，则 \(\mathrm{d}x=-\sin t\,\mathrm{d}t\).</p>
+  <p><b>沿 \(L_1\)：</b>起点 \((-1,0)\) 对应 \(t=\pi\)，终点 \((1,0)\) 对应 \(t=0\)，故 \(t\) 从 \(\pi\) 变到 \(0\)：</p>
+  \[\int_{L_1}y\,\mathrm{d}x=\int_{\pi}^{0}\sin t\cdot(-\sin t)\,\mathrm{d}t=\int_0^{\pi}\sin^2t\,\mathrm{d}t=\frac{\pi}{2}.\]
+  <p><b>沿 \(L_2\)：</b>\(t\) 从 \(0\) 变到 \(\pi\)：</p>
+  \[\int_{L_2}y\,\mathrm{d}x=\int_0^{\pi}\sin t\cdot(-\sin t)\,\mathrm{d}t=-\frac{\pi}{2}.\]
+  <p>两者互为相反数，验证了性质 11.7.</p>
+  <p class="muted">这里出现了"下限 \(\pi\) 大于上限 \(0\)"的情形，在第二类曲线积分中<b>完全合法</b>；若换成第一类积分 \(\int_Ly\,\mathrm{d}s\)，则无论方向如何都必须写成 \(\int_0^\pi\sin t\cdot1\,\mathrm{d}t=2\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.15　抛物线弧上的组合积分（经典综合）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\bigl(x^2-2xy\bigr)\mathrm{d}x+\bigl(y^2-2xy\bigr)\mathrm{d}y\)，其中 \(L\) 是抛物线 \(y=x^2\) 上从点 \((-1,1)\) 到点 \((1,1)\) 的一段弧.</p>
+  <p class="sol"><span class="mk">解</span>取 \(x\) 为参数，\(y=x^2\)，\(\mathrm{d}y=2x\,\mathrm{d}x\)，\(x\) 从 \(-1\) 变到 \(1\).逐项代入：</p>
+  \[P=x^2-2x\cdot x^2=x^2-2x^3,\qquad Q=x^4-2x\cdot x^2=x^4-2x^3 .\]
+  <p>于是</p>
+  \[I=\int_{-1}^{1}\Bigl[\bigl(x^2-2x^3\bigr)+\bigl(x^4-2x^3\bigr)\cdot2x\Bigr]\mathrm{d}x
+   =\int_{-1}^{1}\bigl(x^2-2x^3+2x^5-4x^4\bigr)\mathrm{d}x .\]
+  <p>区间关于原点对称，奇次幂项 \(-2x^3\) 与 \(2x^5\) 的积分为零，只剩偶次幂：</p>
+  \[I=2\int_0^1\bigl(x^2-4x^4\bigr)\mathrm{d}x=2\Bigl(\frac13-\frac45\Bigr)=2\cdot\Bigl(-\frac{7}{15}\Bigr)=-\frac{14}{15}.\]
+  <p class="muted">虽然这里用到了"奇函数在对称区间积分为零"，但请注意：这是<b>化为定积分之后</b>的一元函数奇偶性，与第一类曲线积分中"沿曲线的对称性"是两回事，不可混淆.第二类曲线积分没有现成的对称性定理可用.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.16　空间直线段上的积分（经典综合）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_{\Gamma}x^3\,\mathrm{d}x+3zy^2\,\mathrm{d}y-x^2y\,\mathrm{d}z\)，其中 \(\Gamma\) 是从点 \(A(3,2,1)\) 到点 \(B(0,0,0)\) 的直线段.</p>
+  <p class="sol"><span class="mk">解</span>直线 \(AB\) 过原点，方向向量为 \(\overrightarrow{OA}=(3,2,1)\)，故可参数化为</p>
+  \[x=3t,\quad y=2t,\quad z=t .\]
+  <p>起点 \(A\) 对应 \(t=1\)，终点 \(B\) 对应 \(t=0\)，故 \(t\) 从 \(1\) 变到 \(0\).又 \(\mathrm{d}x=3\,\mathrm{d}t,\ \mathrm{d}y=2\,\mathrm{d}t,\ \mathrm{d}z=\mathrm{d}t\)，逐项代入：</p>
+  \[x^3\mathrm{d}x=27t^3\cdot3\,\mathrm{d}t=81t^3\mathrm{d}t,\quad
+    3zy^2\mathrm{d}y=3t\cdot4t^2\cdot2\,\mathrm{d}t=24t^3\mathrm{d}t,\quad
+    -x^2y\,\mathrm{d}z=-9t^2\cdot2t\,\mathrm{d}t=-18t^3\mathrm{d}t .\]
+  <p>三项相加得 \(87t^3\mathrm{d}t\)，于是</p>
+  \[I=\int_1^{0}87t^3\,\mathrm{d}t=87\Bigl[\frac{t^4}{4}\Bigr]_1^{0}=-\frac{87}{4}.\]
+  <p class="muted">若把方向改成从 \(B\) 到 \(A\)，则 \(t\) 从 \(0\) 到 \(1\)，结果为 \(+\dfrac{87}{4}\).<b>空间曲线积分同样换向变号.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 11.17　空间螺旋线上的积分</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_{\Gamma}y\,\mathrm{d}x+z\,\mathrm{d}y+x\,\mathrm{d}z\)，其中 \(\Gamma\) 为螺旋线 \(x=\cos t,\ y=\sin t,\ z=t\)，\(t\) 从 \(0\) 变到 \(2\pi\).</p>
+  <p class="sol"><span class="mk">解</span>\(\mathrm{d}x=-\sin t\,\mathrm{d}t,\ \mathrm{d}y=\cos t\,\mathrm{d}t,\ \mathrm{d}z=\mathrm{d}t\)，代入得</p>
+  \[I=\int_0^{2\pi}\Bigl[\sin t\cdot(-\sin t)+t\cos t+\cos t\Bigr]\mathrm{d}t
+   =-\int_0^{2\pi}\sin^2t\,\mathrm{d}t+\int_0^{2\pi}t\cos t\,\mathrm{d}t+\int_0^{2\pi}\cos t\,\mathrm{d}t .\]
+  <p>三个积分逐一处理：\(\displaystyle\int_0^{2\pi}\sin^2t\,\mathrm{d}t=\pi\)；由分部积分</p>
+  \[\int_0^{2\pi}t\cos t\,\mathrm{d}t=\bigl[t\sin t+\cos t\bigr]_0^{2\pi}=(0+1)-(0+1)=0;\]
+  <p>而 \(\displaystyle\int_0^{2\pi}\cos t\,\mathrm{d}t=0\).故 \(I=-\pi\).</p>
+</div>
+
+<h3>四、两类曲线积分之间的联系</h3>
+<div class="def"><div class="lab"><span class="n">定理 11.5</span>用单位切向量沟通两类曲线积分</div>
+  <p>设有向光滑曲线弧 \(L\) 上点 \((x,y)\) 处沿 \(L\) 方向的<b>单位切向量</b>为</p>
+  \[\boldsymbol{\tau}=(\cos\alpha,\ \cos\beta),\qquad \cos^2\alpha+\cos^2\beta=1,\]
+  <p>其中 \(\alpha,\beta\) 分别为该切向量与 \(x\) 轴、\(y\) 轴正向的夹角.注意到 \(\mathrm{d}x=\cos\alpha\,\mathrm{d}s,\ \mathrm{d}y=\cos\beta\,\mathrm{d}s\)，便有</p>
+  \[\boxed{\ \int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{L}\bigl(P\cos\alpha+Q\cos\beta\bigr)\mathrm{d}s\ }\]
+  <p>对空间曲线，设单位切向量为 \((\cos\alpha,\cos\beta,\cos\gamma)\)，则</p>
+  \[\int_{\Gamma}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\int_{\Gamma}\bigl(P\cos\alpha+Q\cos\beta+R\cos\gamma\bigr)\mathrm{d}s
+   =\int_{\Gamma}\boldsymbol{F}\cdot\boldsymbol{\tau}\,\mathrm{d}s .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>两类积分都能化成同一个参数 \(t\) 的定积分.把它们各自化下去，会发现第一类那边多出来的因子 \(\sqrt{\varphi'^2+\psi'^2}\) 恰好被方向余弦分母上的同一个因子约掉——这就是 \(\mathrm{d}x=\cos\alpha\,\mathrm{d}s\) 的精确含义.</p>
+<p><span class="stp">第一步：取顺向参数.</span>设 \(L\) 的参数式为 \(x=\varphi(t),\ y=\psi(t)\)，且当 \(t\) 由 \(a\) <b>递增</b>到 \(b\) 时动点沿 \(L\) 的指定方向由起点走向终点（若给定参数是递减的，作代换 \(t=-u\) 即可化为递增情形）.记</p>
+\[\Lambda(t)=\sqrt{\varphi'^2(t)+\psi'^2(t)}\gt 0 .\]
+<p><span class="stp">第二步：写出单位切向量.</span>向量 \(\bigl(\varphi'(t),\psi'(t)\bigr)\) 是 \(L\) 在该点的切向量，且因 \(t\) 递增即为前进方向，它就指向 \(L\) 的方向.单位化得</p>
+\[\boldsymbol{\tau}=(\cos\alpha,\ \cos\beta)=\left(\frac{\varphi'(t)}{\Lambda(t)},\ \frac{\psi'(t)}{\Lambda(t)}\right),\qquad
+ \cos^2\alpha+\cos^2\beta=\frac{\varphi'^2+\psi'^2}{\Lambda^2}=1 .\]
+<p>由此立刻看出 \(\cos\alpha\,\mathrm{d}s=\dfrac{\varphi'}{\Lambda}\cdot\Lambda\,\mathrm{d}t=\varphi'\,\mathrm{d}t=\mathrm{d}x\)，同理 \(\cos\beta\,\mathrm{d}s=\mathrm{d}y\).</p>
+<p><span class="stp">第三步：把右端第一类积分化为定积分.</span>被积函数 \(P\cos\alpha+Q\cos\beta\) 在 \(L\) 上连续，由定理 11.2（注意 \(a\lt b\)）：</p>
+\[\int_{L}\bigl(P\cos\alpha+Q\cos\beta\bigr)\mathrm{d}s
+ =\int_{a}^{b}\left[P\,\frac{\varphi'}{\Lambda}+Q\,\frac{\psi'}{\Lambda}\right]\Lambda\,\mathrm{d}t
+ =\int_{a}^{b}\bigl[P\varphi'+Q\psi'\bigr]\mathrm{d}t .\]
+<p><span class="stp">第四步：把左端第二类积分化为定积分.</span>由定理 11.4，起点对应 \(a\)、终点对应 \(b\)，故</p>
+\[\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{a}^{b}\bigl[P\varphi'+Q\psi'\bigr]\mathrm{d}t .\]
+<p><span class="stp">第五步：比较.</span>第三步与第四步的右端是同一个定积分，故</p>
+\[\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{L}\bigl(P\cos\alpha+Q\cos\beta\bigr)\mathrm{d}s .\]
+<p><span class="stp">第六步：空间情形与向量写法.</span>取 \(\Lambda=\sqrt{\varphi'^2+\psi'^2+\omega'^2}\)，\(\boldsymbol{\tau}=(\varphi',\psi',\omega')/\Lambda=(\cos\alpha,\cos\beta,\cos\gamma)\)，重复第三、四步得</p>
+\[\int_{\Gamma}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\int_{\Gamma}\bigl(P\cos\alpha+Q\cos\beta+R\cos\gamma\bigr)\mathrm{d}s=\int_{\Gamma}\boldsymbol{F}\cdot\boldsymbol{\tau}\,\mathrm{d}s .\]
+<p>物理含义：第二类积分就是把力 \(\boldsymbol{F}\) 投影到<b>前进方向</b>上，再按弧长累加——这也解释了为什么换向会变号（\(\boldsymbol{\tau}\) 反向）.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>怎么理解这个公式？</b>右端 \(\boldsymbol{F}\cdot\boldsymbol{\tau}\) 是<b>力在切线方向上的投影</b>（一个数量函数），再对弧长积分——这正是中学物理"功等于切向分力乘路程"的严格版本.方向信息全部装进了 \(\boldsymbol{\tau}\) 里：曲线换向，\(\boldsymbol{\tau}\) 变成 \(-\boldsymbol{\tau}\)，右端自然变号，与性质 11.7 一致.<b>第二类曲线积分 \(=\) 切向分量的第一类曲线积分</b>，这是理解全章的一把钥匙.</div>
+
+<div class="ex"><div class="lab">例 11.18　两类曲线积分的互化</div>
+  <p class="stmt">把 \(\displaystyle\int_LP(x,y)\,\mathrm{d}x+Q(x,y)\,\mathrm{d}y\) 化成对弧长的曲线积分，其中 \(L\) 为抛物线 \(y=x^2\) 上从 \(O(0,0)\) 到 \(B(1,1)\) 的一段弧.</p>
+  <p class="sol"><span class="mk">解</span>曲线以 \(x\) 为参数，沿 \(L\) 的方向 \(x\) 递增，故切向量可取 \((1,\ y')=(1,\ 2x)\)（与方向一致）.单位化：</p>
+  \[\boldsymbol{\tau}=\frac{(1,\,2x)}{\sqrt{1+4x^2}},\qquad
+    \cos\alpha=\frac{1}{\sqrt{1+4x^2}},\quad \cos\beta=\frac{2x}{\sqrt{1+4x^2}} .\]
+  <p>由定理 11.5，</p>
+  \[\int_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{L}\frac{P(x,y)+2xQ(x,y)}{\sqrt{1+4x^2}}\,\mathrm{d}s .\]
+  <p><b>验证：</b>若把右端再化为定积分，\(\mathrm{d}s=\sqrt{1+4x^2}\,\mathrm{d}x\)，根号约去，得 \(\displaystyle\int_0^1\bigl[P+2xQ\bigr]\mathrm{d}x\)，正是直接用定理 11.4 的结果.两条路殊途同归.</p>
+  <p class="muted">若 \(L\) 的方向反过来（从 \(B\) 到 \(O\)），则切向量应取 \(\dfrac{(-1,-2x)}{\sqrt{1+4x^2}}\)，右端被积函数整体变号.<b>化两类积分时，第一件事永远是确定切向量的指向.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 11.19　变力做功综合题（经典综合）</div>
+  <p class="stmt">设一质点在点 \(M(x,y)\) 处受力 \(\boldsymbol{F}\) 作用，\(\boldsymbol{F}\) 的大小与 \(M\) 到原点 \(O\) 的距离成正比（比例系数 \(k\gt0\)），方向恒<b>指向原点</b>.质点由点 \(A(a,0)\) 沿椭圆 \(\dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=1\) 按逆时针方向移动到点 \(B(0,b)\)，求力 \(\boldsymbol{F}\) 所做的功 \(W\).</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：写出力场.</b>点 \(M(x,y)\) 到原点的距离为 \(r=\sqrt{x^2+y^2}\)，指向原点的单位向量是 \(\dfrac{-(x,y)}{r}\)，故</p>
+  \[\boldsymbol{F}=kr\cdot\frac{-(x,y)}{r}=-k(x,\ y),\qquad\text{即}\quad P=-kx,\ \ Q=-ky .\]
+  <p><b>第二步：参数化路径.</b>取 \(x=a\cos t,\ y=b\sin t\).起点 \(A(a,0)\) 对应 \(t=0\)，终点 \(B(0,b)\) 对应 \(t=\dfrac{\pi}{2}\)，逆时针方向恰好是 \(t\) 递增，故 \(t:0\to\dfrac{\pi}{2}\).又 \(\mathrm{d}x=-a\sin t\,\mathrm{d}t,\ \mathrm{d}y=b\cos t\,\mathrm{d}t\).</p>
+  <p><b>第三步：代入计算.</b></p>
+  \[W=\int_{L}-kx\,\mathrm{d}x-ky\,\mathrm{d}y
+   =-k\int_0^{\pi/2}\Bigl[a\cos t\cdot(-a\sin t)+b\sin t\cdot b\cos t\Bigr]\mathrm{d}t
+   =-k\bigl(b^2-a^2\bigr)\int_0^{\pi/2}\sin t\cos t\,\mathrm{d}t .\]
+  <p>而 \(\displaystyle\int_0^{\pi/2}\sin t\cos t\,\mathrm{d}t=\Bigl[\frac{\sin^2t}{2}\Bigr]_0^{\pi/2}=\frac12\)，故</p>
+  \[W=\frac{k}{2}\bigl(a^2-b^2\bigr).\]
+  <p><b>数值：</b>取 \(a=5\,\mathrm{m},\ b=3\,\mathrm{m},\ k=2\,\mathrm{N/m}\)，则 \(W=\dfrac{2}{2}(25-9)=16\,\mathrm{J}\).</p>
+  <p class="muted">注意到 \(-kx\,\mathrm{d}x-ky\,\mathrm{d}y=-\mathrm{d}\Bigl[\dfrac k2(x^2+y^2)\Bigr]\) 是全微分，因此这个功其实与路径无关，只取决于端点：\(W=\dfrac k2\bigl(a^2-0\bigr)-\dfrac k2\bigl(0+b^2\bigr)=\dfrac k2(a^2-b^2)\)，与上面完全一致.这类"中心力场"正是 §11.4 的主角.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 弯道怎么走最省电：路径规划中的第二类曲线积分</div>
+  <details><summary>展开查看：三条路径的能耗对比、能量回收与续航里程的完整计算</summary>
+  <div class="body">
+    <p>沿用引例一的阻力场 \(\boldsymbol{F}=\bigl(250+4y,\ -(150+2x)\bigr)\ (\mathrm{N})\)，起点 \(A(40,0)\)、终点 \(B(0,40)\)（单位 m）.车载路径规划器给出三个候选方案，我们逐一算出电机需要克服阻力做的功.</p>
+    <p><b>方案一：四分之一圆弧</b>（引例一已算）</p>
+    \[W_1=-\bigl(16000+2400\pi\bigr)=-23540\ \mathrm{J}.\]
+    <p><b>方案二：直线切弯.</b>参数化 \(x=40-40t,\ y=40t\ (t:0\to1)\)，则 \(\mathrm{d}x=-40\,\mathrm{d}t,\ \mathrm{d}y=40\,\mathrm{d}t\)，</p>
+    \[P=250+160t,\qquad Q=-\bigl(150+2(40-40t)\bigr)=-(230-80t),\]
+    \[W_2=\int_0^1\Bigl[(250+160t)(-40)+\bigl(-(230-80t)\bigr)(40)\Bigr]\mathrm{d}t
+     =\int_0^1\bigl(-19200-3200t\bigr)\mathrm{d}t=-20800\ \mathrm{J}.\]
+    <p><b>方案三：直角折线</b> \(A(40,0)\to O(0,0)\to B(0,40)\).在 \(AO\) 上 \(y=0,\ \mathrm{d}y=0\)，\(x\) 从 \(40\) 到 \(0\)：</p>
+    \[\int_{AO}=\int_{40}^{0}250\,\mathrm{d}x=-10000\ \mathrm{J};\]
+    <p>在 \(OB\) 上 \(x=0,\ \mathrm{d}x=0\)，\(y\) 从 \(0\) 到 \(40\)：</p>
+    \[\int_{OB}=\int_0^{40}\bigl(-150\bigr)\mathrm{d}y=-6000\ \mathrm{J},\qquad W_3=-16000\ \mathrm{J}.\]
+    <p><b>对比表：</b></p>
+    <table class="dt">
+      <tr><th>方案</th><th>路径</th><th>路径长度（m）</th><th>阻力做功（J）</th><th>电机耗能（\(10^{-3}\,\mathrm{kW\cdot h}\)）</th><th>相对方案一节省</th></tr>
+      <tr><td>一</td><td>四分之一圆弧</td><td>62.83</td><td>\(-23540\)</td><td>6.54</td><td>—</td></tr>
+      <tr><td>二</td><td>直线切弯</td><td>56.57</td><td>\(-20800\)</td><td>5.78</td><td>11.6%</td></tr>
+      <tr><td>三</td><td>直角折线</td><td>80.00</td><td>\(-16000\)</td><td>4.44</td><td>32.0%</td></tr>
+    </table>
+    <p><b>一个反直觉的结论：路径最长的方案三反而最省电.</b>原因是阻力场并非各向同性——沿 \(x\) 轴走时 \(y=0\)，风阻项 \(4y\) 消失；沿 \(y\) 轴走时 \(x=0\)，坡度项 \(2x\) 消失.走"贴着坐标轴"的折线恰好绕开了阻力最大的区域.<b>这正是第二类曲线积分与第一类的根本差别：它关心的不是走了多远，而是"力在你走的方向上有多大分量".</b></p>
+    <p><b>能量回收.</b>若车辆返程沿同一路径由 \(B\) 回到 \(A\)，由性质 11.7，阻力做功变号为 \(+23540\,\mathrm{J}\)（方案一）.但要注意：真实的滚动摩擦总是耗散的，其做功是第一类积分 \(-\int_L\mu N\,\mathrm{d}s\lt0\)，往返都为负；只有<b>保守成分</b>（如坡度对应的重力势能）才能通过再生制动回收.把 \(\boldsymbol{F}\) 分解为保守部分与耗散部分，是整车能量管理算法的核心，我们将在 §11.4、§11.5 给出严格工具.</p>
+    <p><b>续航估算.</b>设某条山路含 \(120\) 个类似弯道，采用方案三比方案一每趟节省 \((23540-16000)\times120=9.05\times10^{5}\,\mathrm{J}=0.251\,\mathrm{kW\cdot h}\).对一块 \(60\,\mathrm{kW\cdot h}\) 的电池、百公里电耗 \(15\,\mathrm{kW\cdot h}\) 的车型，相当于多跑 \(1.7\,\mathrm{km}\).</p>
+  </div>
+  </details>
+</div>
+
+<div class="note"><b>本节小结.</b>① 第二类曲线积分 \(\displaystyle\int_LP\,\mathrm{d}x+Q\,\mathrm{d}y\) 的物理原型是"变力沿曲线做功"，它<b>与曲线的方向有关，换向变号</b>.② 计算法只有一条：统一参数化后代入，<b>起点定下限、终点定上限</b>.③ 一般情况下积分值与路径有关（例 11.12），但在特殊条件下会与路径无关（例 11.13），后者由 §11.4 的判据 \(P_y=Q_x\) 刻画.④ 两类曲线积分由单位切向量沟通：\(\displaystyle\int_L\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}=\int_L\boldsymbol{F}\cdot\boldsymbol{\tau}\,\mathrm{d}s\).</div>
+
+    <!-- ============ §11.3 ============ -->
+<div class="labx">
+  <div class="lab">第二类曲线积分 · 参数曲线</div>
+  <div class="desc">参数 (\(a\)) 改变曲线 (\(y=\sin(ax)\)) 的疏密，沿该路径积分体现变路径下的积分值变化（示意）.</div>
+  <canvas id="cv_p113" width="720" height="320"></canvas>
+  <div class="ctrl"><label>a = <span id="vo_p113">1.5</span></label>
+  <input type="range" id="rg_p113" min="0.5" max="3" step="0.1" value="1.5"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p113'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p113');
+    var vo=document.getElementById('vo_p113');
+    var W=cv.width,H=cv.height;
+    var xmin=-3,xmax=3,ymin=-1.4,ymax=1.4;
+    var p=1.5;
+    function fx(x){ return Math.sin(p*x); }
+    function gx(x){  }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var s=setup(), ctx=s.ctx, W=s.W, H=s.H;
+      ctx.fillStyle='#fafcfd'; ctx.fillRect(0,0,W,H);
+      // grid
+      ctx.strokeStyle='rgba(148,163,184,0.12)'; ctx.lineWidth=1;
+      for(var gxv=Math.ceil(xmin);gxv<=xmax;gxv+=2){var xx=X(gxv)*W;ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,H);ctx.stroke();}
+      for(var gyv=Math.ceil(ymin);gyv<=ymax;gyv+=2){var yy=Y(gyv)*H;ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(W,yy);ctx.stroke();}
+      // axes
+      var y0=Y(0)*H, x0=X(0)*W;
+      ctx.strokeStyle='rgba(0,0,0,0.18)'; ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(x0,0);ctx.lineTo(x0,H);ctx.moveTo(0,y0);ctx.lineTo(W,y0);ctx.stroke();
+      // f(x)=x*sin x
+      ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.8; ctx.lineCap='round'; ctx.beginPath();
+      var f1=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fx(x);
+        if(!isFinite(y)){f1=true;continue;}var py=Y(y);
+        if(py<0||py>1){f1=true;continue;}var sx=px,sy=py*H;
+        if(f1){ctx.moveTo(sx,sy);f1=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // f'(x)=sin x+x*cos x
+      ctx.strokeStyle='#D97706'; ctx.lineWidth=2.2; ctx.beginPath();
+      var f2=true;
+      for(var px=0;px<=W;px+=1.2){var x=xmin+px/W*(xmax-xmin);var y=fpx(x);
+        if(!isFinite(y)){f2=true;continue;}var py=Y(y);
+        if(py<0||py>1){f2=true;continue;}var sx=px,sy=py*H;
+        if(f2){ctx.moveTo(sx,sy);f2=false;}else{ctx.lineTo(sx,sy);}}
+      ctx.stroke();
+      // legend
+      ctx.font='12px -apple-system,"Segoe UI","PingFang SC",sans-serif';
+      ctx.fillStyle='#0F6E56'; ctx.fillRect(W-145,10,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText('f(x)=x\u00b7sin x', W-125,16);
+      ctx.fillStyle='#D97706'; ctx.fillRect(W-145,26,16,3);
+      ctx.fillStyle='#334155'; ctx.fillText("f\u2032(x)=sin x+x\u00b7cos x", W-125,32);
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 协作机器人：末端沿不同路径作业的能耗差</summary>
+<p><b>场景：</b> 一台协作机器人把零件从 \(A(0,0)\) 移到 \(B(2,2)\)（单位 m）的作业点.装配阻力场为 \(\boldsymbol{F}=(4+y,\ 3x)\ (\mathrm{N/m})\).机械臂规划器想知道：走<b>直线</b>还是走<b>抛物线</b> \(y=x^2\)，电机耗电差别有多大？耗电正比于力做的功 \(W=\int_L\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}\).</p>
+<table class="dt">
+<tr><th>路径</th><th>参数化</th><th>做功 \(W/\mathrm{J}\)</th></tr>
+<tr><td>① 直线</td><td>\(x=y=t,\ t:0\to2\)</td><td>\(16\)</td></tr>
+<tr><td>② 抛物线</td><td>\(y=x^2,\ x:0\to2\)</td><td>\(26.67\)</td></tr>
+</table>
+<p class="sol"> 用定理 11.4（统一参数化）.</p>
+<p><b>① 直线</b>：\(x=t,\ y=t,\ \mathrm{d}x=\mathrm{d}y=\mathrm{d}t\)，</p>
+\[W_1=\int_0^2\bigl[(4+t)+3t\bigr]\mathrm{d}t
+ =\int_0^2(4+4t)\mathrm{d}t=\Bigl[4t+2t^2\Bigr]_0^2=16\ \mathrm{J}.\]
+<p><b>② 抛物线</b>：\(y=x^2,\ \mathrm{d}y=2x\,\mathrm{d}x\)，</p>
+\[W_2=\int_0^2\bigl[(4+x^2)+3x\cdot2x\bigr]\mathrm{d}x
+ =\int_0^2(4+7x^2)\mathrm{d}x
+ =\Bigl[4x+\frac{7x^3}{3}\Bigr]_0^2=8+\frac{56}{3}=26.67\ \mathrm{J}.\]
+<p>两者相差 \(10.67\ \mathrm{J}\)，约 \(67\%\).判据 \(P_y=\dfrac{\partial(4+y)}{\partial y}=1
+eq0=\dfrac{\partial(3x)}{\partial x}=Q_x\)，故场非保守（例 11.12 已点明：\(P_y
+eq Q_x\) 时路径有关）.</p>
+<p><b>工程结论：</b> 对同一对端点，弯一点路就多耗 \(67\%\) 的电.机器人轨迹优化不能只管「不撞」和「最短」，还要把第二类曲线积分（定义 11.2）作为代价函数一起优化——这正是运动规划里「能耗最优轨迹」的数学内核.注意这里是<b>有符号</b>的：路径反向（从 B 回 A）功变号，相当于制动回收，对应性质 11.7 的换向变号.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 电动汽车：保守场「路径无关」与非保守阻力「必须优化」的对照</summary>
+<p><b>场景：</b> 城市的午后，一位骑手骑着 \(m=120\ \mathrm{kg}\) 的电动两轮车从 \(A(0,0)\) 到 \(B(40,40)\)（单位 m）送餐.他早就发现：走对角线明明最短，电量却掉得比绕行更快——原来路上受两类力：<b>重力类保守力</b> \(\boldsymbol{F}_1=(c,\ -mg)\)（\(c=30\ \mathrm{N}\) 为滚动阻力，\(g=9.8\)）与<b>横风类非保守阻力</b> \(\boldsymbol{F}_2=(0.3y,\ 0)\).比较两种力下「直线对角」与「先横后竖折线」的能耗，反直觉的答案就藏在第二类曲线积分里.</p>
+<table class="dt">
+<tr><th>力场</th><th>判据 \(P_y=Q_x\)</th><th>直线 \(W/\mathrm{J}\)</th><th>折线 \(W/\mathrm{J}\)</th><th>是否路径有关</th></tr>
+<tr><td>\(\boldsymbol{F}_1\)</td><td>\(0=0\)（保守）</td><td>\(-45840\)</td><td>\(-45840\)</td><td>无关</td></tr>
+<tr><td>\(\boldsymbol{F}_2\)</td><td>\(0.3
+eq0\)（非保守）</td><td>\(240\)</td><td>\(0\)</td><td>有关</td></tr>
+</table>
+<p class="sol"> 保守场：</p>
+\[W_1=c\Delta x-mg\Delta y=30\times40-1176\times40=1200-47040=-45840\ \mathrm{J},\]
+<p>与路径无关（只取决于 \(\Delta y\)）.非保守横风场：直线 \(x=y=t\ (0\le t\le40)\) 上</p>
+\[W_2^{(直)}=\int_0^{40}0.3t\,\mathrm{d}t=0.3\times\frac{40^2}{2}=240\ \mathrm{J};\]
+<p>折线 \(A\to(40,0)\to B\)：在 \(AO\) 段 \(y=0\) 故 \(\boldsymbol{F}_2=0\)，在 \(OB\) 段 \(\mathrm{d}x=0\) 故 \(\int\boldsymbol{F}_2\cdot\mathrm{d}\boldsymbol{r}=0\)，合计 \(0\ \mathrm{J}\).</p>
+<p><b>工程结论：</b> 重力、弹簧力这类<b>保守场</b>（\(P_y=Q_x\)）下，能耗只由端点高度差决定，规划器可只按最短或最安全路径走，不必操心能耗——这为 §11.4「路径无关」埋下伏笔.而空气阻力这类<b>非保守场</b>下，能耗与路径强相关：本例中「贴着坐标轴走」比「对角直穿」省下全部 \(240\ \mathrm{J}\) 风阻功.整车能量管理必须把非保守部分单独建模、单独优化，这正是例 11.19 末尾「把力分解为保守与耗散两部分」的工程落点.</p>
+<p class="cn-point">同样一程路，把横风那 240 J 的非保守功「贴着坐标轴走」就能省下来——国产新能源汽车把力拆成保守与耗散两部分建模，正是为了让电池里每一度电都花在刀刃上，跑出更远的绿色里程.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch11-ev" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>路径 <input type="range" id="ch11-ev-path" min="0" max="2" step="1" value="0" style="width:160px;accent-color:#0F6E56"> <b id="ch11-ev-path-t"></b>（0=直线，1=先x后y，2=先y后x）</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch11-ev-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch11-ev'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var path=+document.getElementById('ch11-ev-path').value;
+      var A={x:0,y:0}, B={x:40,y:40};
+      var mL=50,mR=16,mT=36,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      function X(x){ return mL+x/50*pW; }
+      function Yv(y){ return mT+pH-y/50*pH; }
+      // 路径
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.moveTo(X(A.x),Yv(A.y));
+      if(path===0){ ctx.lineTo(X(B.x),Yv(B.y)); } // 直线
+      else if(path===1){ ctx.lineTo(X(B.x),Yv(A.y)); ctx.lineTo(X(B.x),Yv(B.y)); } // 先 x 后 y
+      else { ctx.lineTo(X(A.x),Yv(B.y)); ctx.lineTo(X(B.x),Yv(B.y)); } // 先 y 后 x
+      ctx.stroke();
+      // 端点
+      ctx.fillStyle='#dc2626';
+      ctx.beginPath();ctx.arc(X(A.x),Yv(A.y),5,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(X(B.x),Yv(B.y),5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#334155';ctx.font='11px sans-serif';
+      ctx.fillText('A(0,0)',X(A.x)-20,Yv(A.y)+18);
+      ctx.fillText('B(40,40)',X(B.x)+6,Yv(B.y)-8);
+      // 数值：保守力 W1 = cΔx - mgΔy（与路径无关）；横风 W2 = ∫0.3t dt（直线 240J，贴边走 0）
+      var W1=30*40-1176*40;
+      var W2 = path===0 ? 240 : 0;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('保守力（重力类）W₁ = cΔx − mgΔy = '+W1.toFixed(0)+' J（路径无关）',20,20);
+      ctx.fillText('非保守（横风）W₂ = '+(path===0?'∫₀⁴⁰ 0.3t dt = 240 J':'沿坐标轴 = 0 J')+'    总 '+(W1+W2).toFixed(0)+' J',20,40);
+      var out=document.getElementById('ch11-ev-out');
+      out.textContent = path===0 ? '对角直穿：横风做功 240 J——非保守场能耗与路径强相关' : '贴坐标轴走：横风做功 0，省下全部 240 J';
+    }
+    document.getElementById('ch11-ev-path').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s112" data-ch="11" data-n="5"></div>
+<h2 id="s113"><span class="num">§11.3</span>格林公式</h2>
+    
+<div class="ex"><div class="lab">引例一　无人机航测怎样算出一块地的面积：沿边界走一圈，就知道里面有多大</div>
+  <p class="stmt">测绘无人机沿一块不规则农田的边界飞行一周，机载 RTK-GNSS 每隔若干米记录一个厘米级精度的坐标点.落地后，软件在<b>一秒之内</b>给出了这块地的面积.它并没有把田地切成小方格去数，而是<b>只用边界上的那一串坐标</b>.这怎么可能？</p>
+  <p>把边界简化为五边形，按<b>逆时针</b>顺序给出顶点（以田块西南角为原点，单位 m）：</p>
+  \[P_1(0,0),\quad P_2(86,12),\quad P_3(120,74),\quad P_4(52,108),\quad P_5(-14,60).\]
+  <p>本节将证明的<b>格林公式</b>告诉我们：区域 \(D\) 的面积可以写成沿其正向边界 \(L\) 的一个曲线积分</p>
+  \[S=\frac12\oint_{L}x\,\mathrm{d}y-y\,\mathrm{d}x .\]
+  <p><b>关键一步：把这个积分算到每一条边上.</b>设某条边从 \(P_i(x_i,y_i)\) 到 \(P_{i+1}(x_{i+1},y_{i+1})\)，记 \(\Delta x=x_{i+1}-x_i,\ \Delta y=y_{i+1}-y_i\)，参数化为 \(x=x_i+t\Delta x,\ y=y_i+t\Delta y\ (t:0\to1)\)，则 \(\mathrm{d}x=\Delta x\,\mathrm{d}t,\ \mathrm{d}y=\Delta y\,\mathrm{d}t\)，被积表达式为</p>
+  \[x\,\mathrm{d}y-y\,\mathrm{d}x=\bigl[(x_i+t\Delta x)\Delta y-(y_i+t\Delta y)\Delta x\bigr]\mathrm{d}t=\bigl(x_i\Delta y-y_i\Delta x\bigr)\mathrm{d}t,\]
+  <p>含 \(t\) 的项 \(t\Delta x\Delta y-t\Delta y\Delta x\) <b>恰好抵消</b>！于是每条边的贡献是一个纯粹的常数：</p>
+  \[\int_{P_iP_{i+1}}x\,\mathrm{d}y-y\,\mathrm{d}x=x_i\Delta y-y_i\Delta x=x_iy_{i+1}-y_ix_{i+1}.\]
+  <p><b>具体计算</b>（约定 \(P_6=P_1\)）：</p>
+  <table class="dt">
+    <tr><th>边</th><th>\((x_i,y_i)\)</th><th>\((x_{i+1},y_{i+1})\)</th><th>\(x_iy_{i+1}\)</th><th>\(y_ix_{i+1}\)</th><th>贡献 \(x_iy_{i+1}-y_ix_{i+1}\)</th></tr>
+    <tr><td>\(P_1P_2\)</td><td>\((0,0)\)</td><td>\((86,12)\)</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td>\(P_2P_3\)</td><td>\((86,12)\)</td><td>\((120,74)\)</td><td>6364</td><td>1440</td><td>4924</td></tr>
+    <tr><td>\(P_3P_4\)</td><td>\((120,74)\)</td><td>\((52,108)\)</td><td>12960</td><td>3848</td><td>9112</td></tr>
+    <tr><td>\(P_4P_5\)</td><td>\((52,108)\)</td><td>\((-14,60)\)</td><td>3120</td><td>\(-1512\)</td><td>4632</td></tr>
+    <tr><td>\(P_5P_1\)</td><td>\((-14,60)\)</td><td>\((0,0)\)</td><td>0</td><td>0</td><td>0</td></tr>
+    <tr><td colspan="5"><b>总和</b></td><td><b>18668</b></td></tr>
+  </table>
+  <p>所以</p>
+  \[S=\frac12\times18668=9334\ \mathrm{m^2}=0.9334\ \text{公顷}\approx14.0\ \text{亩}.\]
+  <p>这就是计算几何中大名鼎鼎的<b>鞋带公式</b>（Shoelace formula）：把顶点坐标上下交错相乘再相减，像系鞋带一样.它不是什么"技巧"，而是<b>格林公式在多边形上的直接后果</b>.</p>
+  <p class="muted"><b>为什么工程上非它不可？</b>① 复杂度只有 \(O(N)\)，\(N\) 是顶点数，比栅格化后逐像素统计快几个数量级；② 只需边界数据，而 GNSS 恰恰只能测到边界；③ 无需区域是凸的，凹多边形、带缺口的地块同样适用；④ 符号自带方向信息——若顶点按顺时针给出，总和为负，其绝对值仍是面积，而正负号可用来自动判定环的内外（这正是 GIS 软件处理"岛"与"洞"的方法）.机械式<b>求积仪</b>用一根摇臂沿图形边界描一圈就读出面积，其原理也是这个公式.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　机器视觉的"轮廓矩"：由一圈边界读出形心</div>
+  <p class="stmt">工业相机拍下传送带上的零件，图像处理算法先提取出零件的<b>轮廓</b>（一串边界像素坐标），随后必须立刻算出零件的面积与<b>形心</b>，机械手才能对准抓取.OpenCV 中的 <code>cv::moments</code> 函数正是只用轮廓点就完成了这件事.</p>
+  <p>在格林公式中适当选取 \(P,Q\)，可以把区域上的各阶矩全部转化为边界积分：</p>
+  \[m_{00}=\iint_D\mathrm{d}\sigma=\frac12\oint_Lx\,\mathrm{d}y-y\,\mathrm{d}x,\qquad
+    m_{10}=\iint_Dx\,\mathrm{d}\sigma=\frac12\oint_Lx^2\,\mathrm{d}y,\qquad
+    m_{01}=\iint_Dy\,\mathrm{d}\sigma=-\frac12\oint_Ly^2\,\mathrm{d}x .\]
+  <p>形心坐标即 \(\bar x=m_{10}/m_{00},\ \bar y=m_{01}/m_{00}\).对多边形，逐边积分后可整理成便于编程的求和式（记 \(c_i=x_iy_{i+1}-y_ix_{i+1}\)）：</p>
+  \[\bar x=\frac{1}{6S}\sum_i\bigl(x_i+x_{i+1}\bigr)c_i,\qquad
+    \bar y=\frac{1}{6S}\sum_i\bigl(y_i+y_{i+1}\bigr)c_i .\]
+  <p>用引例一的五边形（\(S=9334\)，\(6S=56004\)）：</p>
+  <table class="dt">
+    <tr><th>边</th><th>\(c_i\)</th><th>\(x_i+x_{i+1}\)</th><th>\((x_i+x_{i+1})c_i\)</th><th>\(y_i+y_{i+1}\)</th><th>\((y_i+y_{i+1})c_i\)</th></tr>
+    <tr><td>\(P_1P_2\)</td><td>0</td><td>86</td><td>0</td><td>12</td><td>0</td></tr>
+    <tr><td>\(P_2P_3\)</td><td>4924</td><td>206</td><td>1014344</td><td>86</td><td>423464</td></tr>
+    <tr><td>\(P_3P_4\)</td><td>9112</td><td>172</td><td>1567264</td><td>182</td><td>1658384</td></tr>
+    <tr><td>\(P_4P_5\)</td><td>4632</td><td>38</td><td>176016</td><td>168</td><td>778176</td></tr>
+    <tr><td>\(P_5P_1\)</td><td>0</td><td>\(-14\)</td><td>0</td><td>60</td><td>0</td></tr>
+    <tr><td colspan="3"><b>总和</b></td><td><b>2757624</b></td><td></td><td><b>2860024</b></td></tr>
+  </table>
+  <p>于是</p>
+  \[\bar x=\frac{2757624}{56004}=49.24,\qquad \bar y=\frac{2860024}{56004}=51.07 .\]
+  <p>作为对照，五个顶点的算术平均是 \((48.8,\ 50.8)\)，两者接近但并不相等——<b>顶点平均是"点的重心"，形心是"面的重心"</b>，只有格林公式给出的后者才是机械手该去抓的位置.</p>
+  <p class="muted">这两个引例传达同一个思想：<b>区域内部的整体信息，完全被它的边界所决定</b>.这就是格林公式的灵魂，也是后面高斯公式、斯托克斯公式乃至微积分基本定理 \(\int_a^bf'=f(b)-f(a)\) 的共同主题.</p>
+</div>
+
+<h3>一、平面区域的连通性与边界的正向</h3>
+<div class="def"><div class="lab"><span class="n">定义 11.4</span>单连通区域、复连通区域与边界的正向</div>
+  <p>设 \(D\) 为平面区域.若 \(D\) 内<b>任一闭曲线</b>所围的部分都仍属于 \(D\)（直观地说：\(D\) 内任一闭曲线都能在 \(D\) 内连续收缩为一点，\(D\) "没有洞"），则称 \(D\) 为<b>单连通区域</b>；否则称为<b>复连通区域</b>.</p>
+  <p class="muted">圆盘、矩形、上半平面、整个平面都是单连通区域；圆环 \(1\lt x^2+y^2\lt4\)、挖去原点的平面 \(\{(x,y)
+eq(0,0)\}\) 都是复连通区域.</p>
+  <p>规定平面区域 \(D\) 的边界曲线 \(L\) 的<b>正向</b>如下：当观察者沿 \(L\) 的这个方向行走时，\(D\) 内在他<b>近处的部分总在他的左侧</b>.</p>
+  <p>按此规定：单连通区域（如圆盘）的边界正向就是<b>逆时针</b>；而对于复连通区域（如圆环），<b>外边界取逆时针，内边界（洞的边界）取顺时针</b>.</p>
+</div>
+<div class="note"><b>正向的"左手法则"记忆法.</b>想象你是一个巡田人，规则是"田永远在你左手边".绕着一整块田走，你会逆时针走；若田中间有个池塘（洞），沿池塘边走时田仍要在左手边，你就必须顺时针绕池塘.<b>一句话：外逆内顺.</b>正向搞错会导致整个答案差一个负号，是格林公式最高频的失分点.</div>
+
+<h3>二、格林公式</h3>
+<div class="def"><div class="lab"><span class="n">定理 11.6</span>格林（Green）公式</div>
+  <p>设闭区域 \(D\) 由<b>分段光滑</b>的曲线 \(L\) 围成，函数 \(P(x,y),Q(x,y)\) 在 \(D\) 上具有<b>一阶连续偏导数</b>，则</p>
+  \[\boxed{\ \iint_{D}\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}x\,\mathrm{d}y
+   =\oint_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y\ }\]
+  <p>其中 \(L\) 取<b>正向</b>.</p>
+  <p><b>证明要点（对既是 X 型又是 Y 型的区域）.</b>设</p>
+  \[D=\{(x,y)\mid a\le x\le b,\ \varphi_1(x)\le y\le\varphi_2(x)\}
+    =\{(x,y)\mid c\le y\le d,\ \psi_1(y)\le x\le\psi_2(y)\}.\]
+  <p>先看含 \(P\) 的那一半.按 X 型化为累次积分并用牛顿–莱布尼茨公式：</p>
+  \[\iint_{D}\frac{\partial P}{\partial y}\,\mathrm{d}x\mathrm{d}y
+   =\int_a^b\mathrm{d}x\int_{\varphi_1(x)}^{\varphi_2(x)}\frac{\partial P}{\partial y}\,\mathrm{d}y
+   =\int_a^b\Bigl[P\bigl(x,\varphi_2(x)\bigr)-P\bigl(x,\varphi_1(x)\bigr)\Bigr]\mathrm{d}x .\]
+  <p>另一方面，正向边界 \(L\) 由下边界 \(y=\varphi_1(x)\)（\(x\) 从 \(a\) 到 \(b\)）与上边界 \(y=\varphi_2(x)\)（\(x\) 从 \(b\) 到 \(a\)）拼成（左右两条竖直边上 \(\mathrm{d}x=0\)，贡献为零），故</p>
+  \[\oint_LP\,\mathrm{d}x=\int_a^bP\bigl(x,\varphi_1(x)\bigr)\mathrm{d}x+\int_b^aP\bigl(x,\varphi_2(x)\bigr)\mathrm{d}x
+   =-\int_a^b\Bigl[P\bigl(x,\varphi_2\bigr)-P\bigl(x,\varphi_1\bigr)\Bigr]\mathrm{d}x .\]
+  <p>比较两式得 \(\displaystyle\oint_LP\,\mathrm{d}x=-\iint_D\frac{\partial P}{\partial y}\,\mathrm{d}x\mathrm{d}y\).同理，按 Y 型可证 \(\displaystyle\oint_LQ\,\mathrm{d}y=\iint_D\frac{\partial Q}{\partial x}\,\mathrm{d}x\mathrm{d}y\).两式相加即得格林公式.</p>
+  <p><b>一般区域怎么办？</b>用若干条辅助线把 \(D\) 切成有限个既 X 型又 Y 型的小块，在每小块上应用上述结论后相加.每条辅助线都被走了两次且方向相反，其上的曲线积分<b>相互抵消</b>，最终只剩下 \(D\) 的外边界.这一"内部抵消"的思想在下面的复连通情形还要再用一次.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>公式两端一个是二重积分、一个是边界积分，桥梁是<b>牛顿–莱布尼茨公式</b>：先把二重积分化成累次积分，内层积分用 N–L 公式一算，就只剩下边界上的值.全式拆成 \(P\) 与 \(Q\) 两半分别对付，一半用 X 型，一半用 Y 型.</p>
+<p><span class="stp">第一步：设定简单区域.</span>先设 \(D\) 既是 X 型又是 Y 型，即</p>
+\[D=\{(x,y)\mid a\le x\le b,\ \varphi_1(x)\le y\le\varphi_2(x)\}
+  =\{(x,y)\mid c\le y\le d,\ \psi_1(y)\le x\le\psi_2(y)\},\]
+<p>其中 \(\varphi_1,\varphi_2,\psi_1,\psi_2\) 分段光滑.</p>
+<p><span class="stp">第二步：\(P\) 那一半（按 X 型）.</span>因 \(\dfrac{\partial P}{\partial y}\) 连续，二重积分可化为累次积分；对固定的 \(x\)，函数 \(y\mapsto P(x,y)\) 以 \(\partial P/\partial y\) 为导数，由牛顿–莱布尼茨公式</p>
+\[\iint_{D}\frac{\partial P}{\partial y}\,\mathrm{d}x\mathrm{d}y
+ =\int_a^b\mathrm{d}x\int_{\varphi_1(x)}^{\varphi_2(x)}\frac{\partial P}{\partial y}\,\mathrm{d}y
+ =\int_a^b\Bigl[P\bigl(x,\varphi_2(x)\bigr)-P\bigl(x,\varphi_1(x)\bigr)\Bigr]\mathrm{d}x .\]
+<p><span class="stp">第三步：算边界上的 \(\oint_LP\,\mathrm{d}x\).</span>正向（逆时针）边界由四部分组成：下边界 \(y=\varphi_1(x)\)（\(x\) 由 \(a\) 到 \(b\)）、右侧竖直段 \(x=b\)、上边界 \(y=\varphi_2(x)\)（\(x\) 由 \(b\) 到 \(a\)）、左侧竖直段 \(x=a\).在两条竖直段上 \(x\) 为常数，以 \(y\) 为参数时 \(\dfrac{\mathrm{d}x}{\mathrm{d}y}=0\)，由定理 11.4 知它们对 \(\oint P\,\mathrm{d}x\) 的贡献为零.于是由性质 11.6 与定理 11.4（取 \(x\) 为参数）：</p>
+\[\oint_LP\,\mathrm{d}x=\int_a^bP\bigl(x,\varphi_1(x)\bigr)\mathrm{d}x+\int_b^aP\bigl(x,\varphi_2(x)\bigr)\mathrm{d}x
+ =-\int_a^b\Bigl[P\bigl(x,\varphi_2\bigr)-P\bigl(x,\varphi_1\bigr)\Bigr]\mathrm{d}x .\]
+<p>与第二步比较得</p>
+\[\oint_LP\,\mathrm{d}x=-\iint_{D}\frac{\partial P}{\partial y}\,\mathrm{d}x\mathrm{d}y .\]
+<p><span class="stp">第四步：\(Q\) 那一半（按 Y 型）.</span>同理</p>
+\[\iint_{D}\frac{\partial Q}{\partial x}\,\mathrm{d}x\mathrm{d}y
+ =\int_c^d\mathrm{d}y\int_{\psi_1(y)}^{\psi_2(y)}\frac{\partial Q}{\partial x}\,\mathrm{d}x
+ =\int_c^d\Bigl[Q\bigl(\psi_2(y),y\bigr)-Q\bigl(\psi_1(y),y\bigr)\Bigr]\mathrm{d}y .\]
+<p>另一方面，正向边界中<b>右边界</b> \(x=\psi_2(y)\) 是自下而上（\(y\) 由 \(c\) 到 \(d\)），<b>左边界</b> \(x=\psi_1(y)\) 是自上而下（\(y\) 由 \(d\) 到 \(c\)），两条水平段上 \(\mathrm{d}y=0\) 无贡献，故</p>
+\[\oint_LQ\,\mathrm{d}y=\int_c^dQ\bigl(\psi_2(y),y\bigr)\mathrm{d}y+\int_d^cQ\bigl(\psi_1(y),y\bigr)\mathrm{d}y
+ =\iint_{D}\frac{\partial Q}{\partial x}\,\mathrm{d}x\mathrm{d}y .\]
+<p><span class="stp">第五步：相加.</span>第三、四步两式相加，并用性质 11.5 合并左端，即得</p>
+\[\oint_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y=\iint_{D}\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}x\,\mathrm{d}y .\]
+<p><span class="stp">第六步：一般区域.</span>若 \(D\) 不是上述简单区域，可作有限条分段光滑辅助线把它分成有限个既 X 型又 Y 型的小块 \(D_1,\dots,D_N\).在每块上用第五步的结论并相加：右端由二重积分对区域的可加性合成 \(\iint_D\)；左端中每条辅助线都恰好被两块小区域的正向边界各走一次且<b>方向相反</b>，由性质 11.7 其上的积分两两抵消，只剩下 \(D\) 的外边界 \(L\).故公式对一般区域仍成立.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 11.7</span>复连通区域上的格林公式</div>
+  <p>设复连通闭区域 \(D\) 的边界由外边界 \(L\) 与内边界 \(l_1,l_2,\dots,l_m\) 组成（各内边界互不包含），\(P,Q\) 在 \(D\) 上有一阶连续偏导数，则</p>
+  \[\iint_{D}\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}x\mathrm{d}y
+   =\oint_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y+\sum_{k=1}^{m}\oint_{l_k}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+  <p>其中每条边界都取对 \(D\) 而言的正向（<b>外逆内顺</b>）.</p>
+  <p class="muted"><b>证法：</b>用辅助线把每个"洞"与外边界连起来，把复连通区域割成单连通区域；辅助线来回各走一次，积分抵消，剩下的正是上式.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>复连通区域"有洞"，不能直接套定理 11.6.办法是<b>拿刀把洞和外边界连起来</b>：沿辅助割线切开后区域变成单连通的，而每条割线都会被边界来回各走一次、方向相反，积分自动抵消.抵消完剩下的，正是外边界加上各内边界.</p>
+<p><span class="stp">第一步：先看一个洞的情形（\(m=1\)）.</span>设 \(D\) 的外边界为 \(L\)、内边界为 \(l_1\).在 \(D\) 内作<b>两条互不相交</b>的分段光滑割线 \(\overline{AB}\) 与 \(\overline{CE}\)，其中 \(A,C\in L\)，\(B,E\in l_1\).这两刀把 \(D\) 切成两个<b>单连通</b>闭区域 \(D_1,D_2\)（好比把一个垫圈剪成上下两个"C 形块"），它们的边界都是分段光滑的<b>简单闭曲线</b>.</p>
+<p><span class="stp">第二步：在每块上用格林公式.</span>由定理 11.6，对 \(k=1,2\)</p>
+\[\iint_{D_k}\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}x\mathrm{d}y=\oint_{\partial D_k}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+<p>其中 \(\partial D_k\) 取逆时针正向.</p>
+<p><span class="stp">第三步：相加，看两端各剩什么.</span>左端：割线是没有面积的（零面积集），由二重积分对区域的可加性，两式左端之和等于 \(\iint_{D}\bigl(Q_x-P_y\bigr)\mathrm{d}x\mathrm{d}y\).</p>
+<p>右端：把 \(\partial D_1\) 与 \(\partial D_2\) 的组成逐段清点——</p>
+<p>（i）<b>割线</b> \(\overline{AB},\overline{CE}\) 各出现两次：一次属于 \(D_1\) 的边界、一次属于 \(D_2\) 的边界.由于 \(D_1,D_2\) 分别位于割线两侧，两次行走的方向恰好相反，由性质 11.7 这两次积分互为相反数，<b>相加抵消</b>；</p>
+<p>（ii）<b>外边界的两段弧</b>拼成完整的 \(L\)，且由于两块区域都在外边界内侧，沿它们各自逆时针边界走时，这两段弧的走向都与 \(L\) 的<b>逆时针</b>方向一致，故由性质 11.6 合成 \(\oint_LP\,\mathrm{d}x+Q\,\mathrm{d}y\)（\(L\) 取逆时针）；</p>
+<p>（iii）<b>内边界的两段弧</b>拼成完整的 \(l_1\).注意此时 \(D_1,D_2\) 都在 \(l_1\) 的<b>外侧</b>，故沿它们的逆时针边界走过 \(l_1\) 时，实际走向是绕洞<b>顺时针</b>，合成 \(\oint_{l_1}P\,\mathrm{d}x+Q\,\mathrm{d}y\)（\(l_1\) 取顺时针）.</p>
+<p>三项合起来即</p>
+\[\iint_{D}\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}x\mathrm{d}y
+ =\oint_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y+\oint_{l_1}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+<p>其中 \(L\) 逆时针、\(l_1\) 顺时针，这正是"<b>外逆内顺</b>"，即两条边界都取"人沿边界走时区域 \(D\) 恒在左手边"的方向.</p>
+<p><span class="stp">第四步：一般的 \(m\) 个洞.</span>对每个洞照第一步再补两条割线（各割线互不相交，也不与已作的相交）.有限次切割后，\(D\) 被分成有限个单连通闭区域，在每块上用定理 11.6 后求和：所有割线仍是被来回各走一次、方向相反而两两抵消；外边界合成正向 \(L\)；第 \(k\) 个洞的边界合成顺时针的 \(l_k\).于是</p>
+\[\iint_{D}\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)\mathrm{d}x\mathrm{d}y
+ =\oint_{L}P\,\mathrm{d}x+Q\,\mathrm{d}y+\sum_{k=1}^{m}\oint_{l_k}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+<p>每条边界都取对 \(D\) 而言的正向.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>格林公式的物理意义.</b>把 \(\boldsymbol{F}=(P,Q)\) 看成平面流体的速度场，左端 \(\dfrac{\partial Q}{\partial x}-\dfrac{\partial P}{\partial y}\) 描述流体在一点处的<b>旋转强度</b>（旋度），右端 \(\displaystyle\oint_L\boldsymbol{F}\cdot\mathrm{d}\boldsymbol{r}\) 是流体沿边界一圈的<b>环流量</b>.格林公式说：<b>边界上的总环流，等于内部所有微小旋涡强度的累加</b>.相邻微小旋涡的交界处速度相互抵消，只有最外圈"露"了出来——这与证明中的"内部抵消"完全是同一件事的两种语言.</div>
+
+<h3>三、格林公式的直接应用：把难算的曲线积分变成二重积分</h3>
+<div class="ex"><div class="lab">例 11.20　参数化算不动，格林公式两行搞定</div>
+  <p class="stmt">计算 \(\displaystyle I=\oint_L\bigl(\mathrm{e}^x\sin y-3y\bigr)\mathrm{d}x+\bigl(\mathrm{e}^x\cos y+2x\bigr)\mathrm{d}y\)，其中 \(L\) 为圆周 \(x^2+y^2=4\)，取正向（逆时针）.</p>
+  <p class="sol"><span class="mk">解</span>若直接参数化，被积函数中会出现 \(\mathrm{e}^{2\cos t}\sin(2\sin t)\) 这类无法用初等函数积出的表达式.改用格林公式：</p>
+  \[P=\mathrm{e}^x\sin y-3y,\qquad Q=\mathrm{e}^x\cos y+2x,\]
+  \[\frac{\partial P}{\partial y}=\mathrm{e}^x\cos y-3,\qquad \frac{\partial Q}{\partial x}=\mathrm{e}^x\cos y+2,\qquad
+    \frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=5 .\]
+  <p>超越项 \(\mathrm{e}^x\cos y\) 完全抵消了！于是</p>
+  \[I=\iint_{x^2+y^2\le4}5\,\mathrm{d}x\mathrm{d}y=5\cdot\pi\cdot2^2=20\pi\approx62.83 .\]
+  <p class="muted">这就是格林公式最常见的用法：<b>被积函数复杂但 \(Q_x-P_y\) 简单</b>.命题人往往故意把 \(P\) 与 \(Q\) 里塞进同一个"讨厌"的函数，让它在求偏导后相消.见到 \(\mathrm{e}^x\sin y\) 与 \(\mathrm{e}^x\cos y\) 成对出现、或 \(f(x)\) 与 \(g(y)\) 各自只依赖一个变量，就该立刻想到格林公式.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.21　两条抛物线围成的区域（经典综合）</div>
+  <p class="stmt">计算 \(\displaystyle I=\oint_L\bigl(2xy-x^2\bigr)\mathrm{d}x+\bigl(x+y^2\bigr)\mathrm{d}y\)，其中 \(L\) 是由抛物线 \(y=x^2\) 和 \(y^2=x\) 所围成区域 \(D\) 的正向边界曲线.</p>
+  <p class="sol"><span class="mk">解</span>两抛物线交于 \((0,0)\) 与 \((1,1)\)，区域</p>
+  \[D=\bigl\{(x,y)\mid 0\le x\le1,\ x^2\le y\le\sqrt x\bigr\}.\]
+  <p>计算偏导：\(P=2xy-x^2\Rightarrow P_y=2x\)；\(Q=x+y^2\Rightarrow Q_x=1\).故 \(Q_x-P_y=1-2x\)，由格林公式</p>
+  \[I=\iint_D\bigl(1-2x\bigr)\mathrm{d}x\mathrm{d}y=\int_0^1\mathrm{d}x\int_{x^2}^{\sqrt x}\bigl(1-2x\bigr)\mathrm{d}y
+   =\int_0^1\bigl(1-2x\bigr)\bigl(\sqrt x-x^2\bigr)\mathrm{d}x .\]
+  <p>展开被积函数：\(\bigl(1-2x\bigr)\bigl(x^{1/2}-x^2\bigr)=x^{1/2}-x^2-2x^{3/2}+2x^3\)，逐项积分</p>
+  \[I=\Bigl[\frac23x^{3/2}-\frac{x^3}{3}-\frac45x^{5/2}+\frac{x^4}{2}\Bigr]_0^1
+   =\frac23-\frac13-\frac45+\frac12=\frac{20-10-24+15}{30}=\frac{1}{30}.\]
+  <p class="muted">若不用格林公式，就要沿两条抛物线分别做第二类曲线积分，工作量大且极易在方向上出错.这里的正向是：沿 \(y=x^2\) 从 \((0,0)\) 到 \((1,1)\)，再沿 \(y^2=x\)（即 \(x=y^2\)）从 \((1,1)\) 回到 \((0,0)\)——读者可自行验证结果同为 \(\dfrac1{30}\).</p>
+</div>
+
+<h3>四、用格林公式求平面图形的面积</h3>
+<div class="def"><div class="lab"><span class="n">推论</span>面积的曲线积分公式</div>
+  <p>在格林公式中分别取 \((P,Q)=(0,x)\)、\((-y,0)\)、\(\Bigl(-\dfrac y2,\dfrac x2\Bigr)\)，都有 \(Q_x-P_y=1\)，于是</p>
+  \[S_D=\iint_D\mathrm{d}x\mathrm{d}y=\oint_Lx\,\mathrm{d}y=-\oint_Ly\,\mathrm{d}x=\frac12\oint_Lx\,\mathrm{d}y-y\,\mathrm{d}x ,\]
+  <p>其中 \(L\) 为 \(D\) 的正向边界.第三个式子最常用，因为它对 \(x,y\) 对称，且在参数化后往往能大幅化简.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>格林公式左端是 \(\iint_D(Q_x-P_y)\,\mathrm{d}x\mathrm{d}y\).只要<b>凑一组 \((P,Q)\) 使 \(Q_x-P_y\equiv1\)</b>，左端就变成 \(\iint_D\mathrm{d}x\mathrm{d}y\)，即面积；右端则是一个纯边界积分.凑法不唯一，于是得到几个等价公式.</p>
+<p><span class="stp">第一步：取 \((P,Q)=(0,x)\).</span>此时 \(P,Q\) 是多项式，处处有连续偏导，且</p>
+\[\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=1-0=1 .\]
+<p>代入格林公式（\(L\) 为 \(D\) 的正向边界）得</p>
+\[S_D=\iint_D\mathrm{d}x\mathrm{d}y=\oint_Lx\,\mathrm{d}y .\]
+<p><span class="stp">第二步：取 \((P,Q)=(-y,0)\).</span>此时</p>
+\[\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=0-(-1)=1 ,\]
+<p>同样代入格林公式得</p>
+\[S_D=\oint_L(-y)\,\mathrm{d}x=-\oint_Ly\,\mathrm{d}x .\]
+<p><span class="stp">第三步：取 \((P,Q)=\Bigl(-\dfrac y2,\ \dfrac x2\Bigr)\).</span>此时</p>
+\[\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=\frac12-\left(-\frac12\right)=1 ,\]
+<p>代入格林公式得</p>
+\[S_D=\oint_L\left(-\frac y2\right)\mathrm{d}x+\frac x2\,\mathrm{d}y=\frac12\oint_Lx\,\mathrm{d}y-y\,\mathrm{d}x .\]
+<p><span class="stp">第四步：三式等价.</span>综上</p>
+\[S_D=\iint_D\mathrm{d}x\mathrm{d}y=\oint_Lx\,\mathrm{d}y=-\oint_Ly\,\mathrm{d}x=\frac12\oint_Lx\,\mathrm{d}y-y\,\mathrm{d}x .\]
+<p>事实上第三式正是前两式的算术平均（由性质 11.5 的线性性立得），因而三者必然一致.实用上第三式最好用：它关于 \(x,y\) 对称，代入参数式 \(x=\varphi(t),y=\psi(t)\) 后成为 \(\dfrac12\int_{\alpha}^{\beta}(\varphi\psi'-\psi\varphi')\,\mathrm{d}t\)，常有大量约简.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 11.22　椭圆的面积</div>
+  <p class="stmt">用格林公式求椭圆 \(\dfrac{x^2}{a^2}+\dfrac{y^2}{b^2}=1\) 所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>取正向参数化 \(x=a\cos\theta,\ y=b\sin\theta\ (\theta:0\to2\pi)\)，则 \(\mathrm{d}x=-a\sin\theta\,\mathrm{d}\theta,\ \mathrm{d}y=b\cos\theta\,\mathrm{d}\theta\)，于是</p>
+  \[x\,\mathrm{d}y-y\,\mathrm{d}x=\bigl(ab\cos^2\theta+ab\sin^2\theta\bigr)\mathrm{d}\theta=ab\,\mathrm{d}\theta ,\]
+  <p>被积表达式化为常数！所以</p>
+  \[S=\frac12\int_0^{2\pi}ab\,\mathrm{d}\theta=\pi ab .\]
+  <p class="muted">若改用 \(S=\oint_Lx\,\mathrm{d}y\)，则需算 \(\int_0^{2\pi}ab\cos^2\theta\,\mathrm{d}\theta=\pi ab\)，多了一步倍角化简.<b>对称形式的威力于此可见.</b></p>
+</div>
+
+<div class="ex"><div class="lab">例 11.23　星形线所围的面积</div>
+  <p class="stmt">求星形线 \(x=a\cos^3t,\ y=a\sin^3t\ (0\le t\le2\pi,\ a\gt0)\) 所围图形的面积.</p>
+  <p class="sol"><span class="mk">解</span>\(\mathrm{d}x=-3a\cos^2t\sin t\,\mathrm{d}t,\ \mathrm{d}y=3a\sin^2t\cos t\,\mathrm{d}t\)，于是</p>
+  \[x\,\mathrm{d}y-y\,\mathrm{d}x=3a^2\Bigl[\cos^3t\sin^2t\cos t+\sin^3t\cos^2t\sin t\Bigr]\mathrm{d}t
+   =3a^2\sin^2t\cos^2t\bigl(\cos^2t+\sin^2t\bigr)\mathrm{d}t=3a^2\sin^2t\cos^2t\,\mathrm{d}t .\]
+  <p>再用 \(\sin t\cos t=\dfrac12\sin2t\)：</p>
+  \[S=\frac12\int_0^{2\pi}\frac{3a^2}{4}\sin^22t\,\mathrm{d}t=\frac{3a^2}{8}\int_0^{2\pi}\sin^22t\,\mathrm{d}t=\frac{3a^2}{8}\cdot\pi=\frac{3\pi a^2}{8}.\]
+  <p class="muted">星形线内接于边长 \(2a\) 的正方形，面积比为 \(\dfrac{3\pi a^2/8}{4a^2}=\dfrac{3\pi}{32}\approx0.295\)，即只占外接正方形的三成不到——这与它"四角内凹"的形状吻合.</p>
+</div>
+
+<h3>五、曲线不封闭时的"补线法"</h3>
+<div class="note"><b>补线法的三步套路.</b>格林公式要求 \(L\) 是<b>闭</b>曲线，可考题里的 \(L\) 常常不闭.办法是：<br>
+① <b>补</b>：添一段（或几段）最好算的辅助曲线 \(L_1\)（通常取平行于坐标轴的直线段），使 \(L+L_1\) 成为闭曲线；<br>
+② <b>算</b>：对闭曲线用格林公式算出 \(\displaystyle\oint_{L+L_1}\)，<b>务必先判断 \(L+L_1\) 是正向还是负向</b>，若为负向要加负号；<br>
+③ <b>减</b>：用 \(\displaystyle\int_L=\oint_{L+L_1}-\int_{L_1}\) 得到答案.<br>
+补线的选择原则：让 \(L_1\) 上的积分尽可能简单——直线段上 \(\mathrm{d}x=0\) 或 \(\mathrm{d}y=0\)，往往能让整段积分为零.</div>
+
+<div class="ex"><div class="lab">例 11.24　补线法（一）：上半圆弧（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\bigl(\mathrm{e}^x\sin y-my\bigr)\mathrm{d}x+\bigl(\mathrm{e}^x\cos y-m\bigr)\mathrm{d}y\)，其中 \(m\) 为常数，\(L\) 为由点 \(A(a,0)\) 沿上半圆周 \(x^2+y^2=ax\ (y\ge0)\) 到点 \(O(0,0)\) 的弧（\(a\gt0\)）.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：补线.</b>圆 \(x^2+y^2=ax\) 即 \(\Bigl(x-\dfrac a2\Bigr)^2+y^2=\Bigl(\dfrac a2\Bigr)^2\)，圆心 \(\Bigl(\dfrac a2,0\Bigr)\)、半径 \(\dfrac a2\).补上 \(x\) 轴上的有向线段 \(\overline{OA}\)：\(y=0\)，\(x\) 从 \(0\) 到 \(a\).</p>
+  <p><b>第二步：判定方向.</b>闭曲线 \(L+\overline{OA}\) 的走法是：从 \(A(a,0)\) 经上半圆到 \(O(0,0)\)，再沿 \(x\) 轴回到 \(A\).行走时上半圆盘 \(D\) 始终在左侧，故这是<b>正向</b>，可直接用格林公式.</p>
+  <p><b>第三步：算二重积分.</b></p>
+  \[P=\mathrm{e}^x\sin y-my,\quad Q=\mathrm{e}^x\cos y-m,\qquad
+    \frac{\partial P}{\partial y}=\mathrm{e}^x\cos y-m,\quad \frac{\partial Q}{\partial x}=\mathrm{e}^x\cos y,\]
+  <p>故 \(Q_x-P_y=m\).上半圆盘的面积为 \(\dfrac12\pi\Bigl(\dfrac a2\Bigr)^2=\dfrac{\pi a^2}{8}\)，于是</p>
+  \[\oint_{L+\overline{OA}}=\iint_Dm\,\mathrm{d}x\mathrm{d}y=\frac{\pi ma^2}{8}.\]
+  <p><b>第四步：减去补线上的积分.</b>在 \(\overline{OA}\) 上 \(y=0,\ \mathrm{d}y=0\)，故 \(P=\mathrm{e}^x\sin0-m\cdot0=0\)，整段积分为 \(0\).所以</p>
+  \[I=\frac{\pi ma^2}{8}-0=\frac{\pi ma^2}{8}.\]
+  <p class="muted">这道题几乎是补线法的"标准像"：超越函数 \(\mathrm{e}^x\sin y\) 在求偏导后相消，补线选在 \(x\) 轴上使补线积分为零.若把 \(L\) 的方向反过来（从 \(O\) 到 \(A\)），闭曲线变成负向，答案就是 \(-\dfrac{\pi ma^2}{8}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.25　补线法（二）：补线上的积分不为零</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\bigl(2xy+y^2+x^2\bigr)\mathrm{d}x+\bigl(x^2+4x\bigr)\mathrm{d}y\)，其中 \(L\) 为上半圆周 \(y=\sqrt{1-x^2}\)，方向从 \(A(1,0)\) 到 \(B(-1,0)\).</p>
+  <p class="sol"><span class="mk">解</span><b>补线：</b>取 \(x\) 轴上的线段 \(\overline{BA}\)：\(y=0\)，\(x\) 从 \(-1\) 到 \(1\).闭曲线 \(C=L+\overline{BA}\) 从 \(A\) 经上半圆到 \(B\)、再沿 \(x\) 轴回到 \(A\)，上半圆盘 \(D\) 恒在左侧，为<b>正向</b>.</p>
+  <p><b>算二重积分：</b>\(P=2xy+y^2+x^2\Rightarrow P_y=2x+2y\)；\(Q=x^2+4x\Rightarrow Q_x=2x+4\).故</p>
+  \[\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=(2x+4)-(2x+2y)=4-2y .\]
+  <p>由格林公式</p>
+  \[\oint_C=\iint_D\bigl(4-2y\bigr)\mathrm{d}x\mathrm{d}y=4\iint_D\mathrm{d}\sigma-2\iint_Dy\,\mathrm{d}\sigma .\]
+  <p>上半单位圆盘面积为 \(\dfrac\pi2\)；用极坐标 \(\displaystyle\iint_Dy\,\mathrm{d}\sigma=\int_0^{\pi}\mathrm{d}\theta\int_0^1r\sin\theta\cdot r\,\mathrm{d}r=\Bigl(\int_0^\pi\sin\theta\,\mathrm{d}\theta\Bigr)\cdot\frac13=\frac23\).所以</p>
+  \[\oint_C=4\cdot\frac{\pi}{2}-2\cdot\frac23=2\pi-\frac43 .\]
+  <p><b>减去补线：</b>在 \(\overline{BA}\) 上 \(y=0,\ \mathrm{d}y=0\)，\(P=x^2\)，故</p>
+  \[\int_{\overline{BA}}=\int_{-1}^{1}x^2\,\mathrm{d}x=\frac23 .\]
+  <p>最终</p>
+  \[I=\oint_C-\int_{\overline{BA}}=\Bigl(2\pi-\frac43\Bigr)-\frac23=2\pi-2\approx4.283 .\]
+  <p class="muted">与例 11.24 相比，这里补线上的积分<b>不为零</b>，必须老老实实减掉.学生最常犯的两个错误是：忘了减补线，或者减的时候把补线方向搞反（本题若把 \(\overline{BA}\) 误当成从 \(A\) 到 \(B\)，会多出 \(\dfrac43\) 的误差）.</p>
+</div>
+
+<h3>六、奇点在区域内时的"挖洞法"</h3>
+<div class="note"><b>为什么要挖洞？</b>格林公式要求 \(P,Q\) 在<b>整个闭区域 \(D\) 上</b>都有一阶连续偏导数.一旦 \(D\) 内有某点使 \(P\) 或 \(Q\) 无定义（称为<b>奇点</b>，典型如分母 \(x^2+y^2\) 在原点为零），公式就<b>不能直接用</b>.对策是：以奇点为中心挖去一个很小的圆盘，在剩下的复连通区域上用定理 11.7，把"大回路"上的积分转移到"小圆"上——而小圆上的积分往往能精确算出.</div>
+
+<div class="ex"><div class="lab">例 11.26　挖洞法的样板题：绕原点的环量恒为 \(2\pi\)（必考）</div>
+  <p class="stmt">计算 \(\displaystyle I=\oint_L\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}\)，其中 \(L\) 为任意一条<b>包围原点</b>的分段光滑正向简单闭曲线.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：算偏导，确认"几乎处处无旋".</b>记</p>
+  \[P=\frac{-y}{x^2+y^2},\qquad Q=\frac{x}{x^2+y^2}.\]
+  <p>由商的求导法则，当 \((x,y)
+eq(0,0)\) 时</p>
+  \[\frac{\partial Q}{\partial x}=\frac{1\cdot\bigl(x^2+y^2\bigr)-x\cdot2x}{\bigl(x^2+y^2\bigr)^2}=\frac{y^2-x^2}{\bigl(x^2+y^2\bigr)^2},\qquad
+    \frac{\partial P}{\partial y}=\frac{-\bigl(x^2+y^2\bigr)+y\cdot2y}{\bigl(x^2+y^2\bigr)^2}=\frac{y^2-x^2}{\bigl(x^2+y^2\bigr)^2}.\]
+  <p>二者相等，即 \(Q_x-P_y=0\) 在<b>除原点外</b>处处成立.但原点是奇点，\(L\) 又包围了它，所以不能直接说积分为零.</p>
+  <p><b>第二步：挖洞.</b>取充分小的 \(\varepsilon\gt0\)，使圆周 \(l_\varepsilon:\ x^2+y^2=\varepsilon^2\) 完全落在 \(L\) 的内部.记 \(D\) 为 \(L\) 与 \(l_\varepsilon\) 之间的复连通闭区域.在 \(D\) 上 \(P,Q\) 有一阶连续偏导数且 \(Q_x-P_y=0\)，由定理 11.7（外边界 \(L\) 逆时针、内边界 \(l_\varepsilon\) 取顺时针，记作 \(l_\varepsilon^{-}\)）：</p>
+  \[\oint_{L}\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}+\oint_{l_\varepsilon^{-}}\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}=\iint_D0\,\mathrm{d}\sigma=0 .\]
+  <p>把内边界改回逆时针（变号），得</p>
+  \[\oint_{L}\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}=\oint_{l_\varepsilon}\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}\qquad(l_\varepsilon\ \text{取逆时针}).\]
+  <p><b>第三步：在小圆上精确计算.</b>令 \(x=\varepsilon\cos t,\ y=\varepsilon\sin t\ (t:0\to2\pi)\)，此时分母 \(x^2+y^2=\varepsilon^2\) 变成常数（这正是挖圆形洞的好处），分子</p>
+  \[x\,\mathrm{d}y-y\,\mathrm{d}x=\varepsilon\cos t\cdot\varepsilon\cos t\,\mathrm{d}t-\varepsilon\sin t\cdot\bigl(-\varepsilon\sin t\bigr)\mathrm{d}t=\varepsilon^2\,\mathrm{d}t .\]
+  <p>于是</p>
+  \[I=\int_0^{2\pi}\frac{\varepsilon^2}{\varepsilon^2}\,\mathrm{d}t=2\pi .\]
+  <p><b>结论：</b>只要 \(L\) 包围原点，无论它是圆、椭圆、正方形还是任何奇形怪状的闭曲线，也无论它离原点多远，积分值<b>恒等于 \(2\pi\)</b>.</p>
+  <p class="muted">这个 \(2\pi\) 有深刻含义：\(\dfrac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}=\mathrm{d}\bigl(\arctan\dfrac yx\bigr)=\mathrm{d}\theta\)，即极角的微分.绕原点一圈，极角增加 \(2\pi\).若曲线绕原点 \(n\) 圈，积分就是 \(2n\pi\)——这个整数 \(n\) 称为曲线关于原点的<b>绕数</b>，是拓扑学与复变函数（留数定理）的起点.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.27　同一个被积函数，三种回路三个答案</div>
+  <p class="stmt">仍设 \(\displaystyle I=\oint_L\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}\)，\(L\) 取正向.分别求：<br>
+  （1）\(L:\ (x-2)^2+y^2=1\)；（2）\(L:\ \dfrac{x^2}{9}+\dfrac{y^2}{4}=1\)；（3）\(L\) 为顶点 \((\pm3,\pm3)\) 的正方形边界.</p>
+  <p class="sol"><span class="mk">解</span>解题的唯一判据是：<b>原点在不在 \(L\) 内部？</b></p>
+  <p><b>（1）</b>该圆圆心 \((2,0)\)、半径 \(1\)，原点到圆心距离为 \(2\gt1\)，故原点在 \(L\) <b>外部</b>.此时 \(L\) 所围闭区域 \(D\) 内无奇点，\(P,Q\) 在 \(D\) 上有一阶连续偏导且 \(Q_x-P_y=0\)，直接用格林公式：</p>
+  \[I=\iint_D0\,\mathrm{d}\sigma=0 .\]
+  <p><b>（2）</b>椭圆包围原点，由例 11.26 的结论 \(I=2\pi\).（也可自行挖一个小圆验证.）</p>
+  <p><b>（3）</b>正方形包围原点，同样 \(I=2\pi\).注意正方形是分段光滑的，例 11.26 的论证对它照样有效.</p>
+  <p class="muted"><b>切记：不要看到 \(Q_x-P_y=0\) 就下结论"积分为零".</b>必须先检查闭曲线所围区域内有没有奇点.这一点在 §11.4 会上升为"单连通"这一条不可省略的假设.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.28　挖洞法进阶：洞要挖成什么形状（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle I=\oint_L\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{4x^2+y^2}\)，其中 \(L\) 为圆周 \(x^2+y^2=R^2\ (R\gt0)\)，取正向.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：验证 \(Q_x=P_y\).</b>记 \(P=\dfrac{-y}{4x^2+y^2},\ Q=\dfrac{x}{4x^2+y^2}\)，当 \((x,y)
+eq(0,0)\) 时</p>
+  \[\frac{\partial Q}{\partial x}=\frac{\bigl(4x^2+y^2\bigr)-x\cdot8x}{\bigl(4x^2+y^2\bigr)^2}=\frac{y^2-4x^2}{\bigl(4x^2+y^2\bigr)^2},\qquad
+    \frac{\partial P}{\partial y}=\frac{-\bigl(4x^2+y^2\bigr)+y\cdot2y}{\bigl(4x^2+y^2\bigr)^2}=\frac{y^2-4x^2}{\bigl(4x^2+y^2\bigr)^2},\]
+  <p>二者相等.原点是唯一奇点，且被 \(L\) 包围.</p>
+  <p><b>第二步：挖一个"合身"的洞.</b>若仍挖圆形洞，分母 \(4x^2+y^2\) 不会变成常数，计算并不简化.<b>正确的做法是让洞的形状与分母匹配</b>：取小椭圆</p>
+  \[l_\varepsilon:\ 4x^2+y^2=\varepsilon^2,\qquad\text{参数化}\quad x=\frac{\varepsilon}{2}\cos t,\ \ y=\varepsilon\sin t\ \ (t:0\to2\pi),\]
+  <p>并取 \(\varepsilon\) 充分小使 \(l_\varepsilon\) 落在 \(L\) 内.由复连通格林公式（区域内 \(Q_x-P_y=0\)）得</p>
+  \[I=\oint_{l_\varepsilon}\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{4x^2+y^2}\qquad(l_\varepsilon\ \text{取逆时针}).\]
+  <p><b>第三步：计算.</b>在 \(l_\varepsilon\) 上分母恒为 \(\varepsilon^2\)，而 \(\mathrm{d}x=-\dfrac{\varepsilon}{2}\sin t\,\mathrm{d}t,\ \mathrm{d}y=\varepsilon\cos t\,\mathrm{d}t\)，故</p>
+  \[x\,\mathrm{d}y-y\,\mathrm{d}x=\frac{\varepsilon}{2}\cos t\cdot\varepsilon\cos t\,\mathrm{d}t-\varepsilon\sin t\cdot\Bigl(-\frac{\varepsilon}{2}\sin t\Bigr)\mathrm{d}t=\frac{\varepsilon^2}{2}\,\mathrm{d}t ,\]
+  \[I=\int_0^{2\pi}\frac{\varepsilon^2/2}{\varepsilon^2}\,\mathrm{d}t=\frac12\cdot2\pi=\pi .\]
+  <p>答案与 \(R\) 无关，恒为 \(\pi\).</p>
+  <p class="muted"><b>口诀：分母长什么样，洞就挖什么样.</b>分母是 \(x^2+y^2\) 就挖圆，是 \(4x^2+y^2\) 就挖椭圆 \(4x^2+y^2=\varepsilon^2\)，是 \((x-1)^2+y^2\) 就在 \((1,0)\) 处挖小圆.目的只有一个：让分母在小回路上变成常数.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 从航迹到地块：无人机测绘的完整精度分析</div>
+  <details><summary>展开查看：采样密度、面积误差、形心偏差与求积仪原理的完整计算链</summary>
+  <div class="body">
+    <p><b>场景：</b> 清晨六点，湖南某村的土地确权测绘现场，无人机沿着弯弯绕绕的田埂飞一圈，只采回 64 个 GPS 点.软件把这些点连成多边形就能报面积，可村里几户人家都盯着同一块田——采密了，全县的地都要排队等；采稀了，田亩数差一点，农民红本本上就少几个平方.采样多密才够？</p>
+    <p><b>模型.</b>取半径 \(R=50\,\mathrm{m}\) 的圆形地块作基准，真值 \(S=\pi R^2=7853.98\,\mathrm{m^2}\).若在边界上等间隔采 \(N\) 个点，得到的是圆内接正 \(N\) 边形，其面积由鞋带公式给出</p>
+    \[S_N=\frac12\sum_{i=1}^{N}\bigl(x_iy_{i+1}-y_ix_{i+1}\bigr)=\frac{N}{2}R^2\sin\frac{2\pi}{N}.\]
+    <p>（每一项 \(x_iy_{i+1}-y_ix_{i+1}=R^2\sin\dfrac{2\pi}{N}\)，恰是相邻两半径叉积的模.）</p>
+    <table class="dt">
+      <tr><th>采样点数 \(N\)</th><th>相邻点间距（m）</th><th>\(S_N\)（\(\mathrm{m^2}\)）</th><th>绝对误差（\(\mathrm{m^2}\)）</th><th>相对误差</th></tr>
+      <tr><td>8</td><td>38.3</td><td>7071.07</td><td>\(-782.91\)</td><td>\(-9.968\%\)</td></tr>
+      <tr><td>16</td><td>19.5</td><td>7653.67</td><td>\(-200.31\)</td><td>\(-2.550\%\)</td></tr>
+      <tr><td>32</td><td>9.8</td><td>7803.61</td><td>\(-50.37\)</td><td>\(-0.641\%\)</td></tr>
+      <tr><td>64</td><td>4.9</td><td>7841.37</td><td>\(-12.61\)</td><td>\(-0.161\%\)</td></tr>
+      <tr><td>128</td><td>2.5</td><td>7850.83</td><td>\(-3.15\)</td><td>\(-0.040\%\)</td></tr>
+    </table>
+    <p><b>规律.</b>\(N\) 每翻一倍，误差降为原来的 \(1/4\)——这是 \(O(N^{-2})\) 的<b>二阶收敛</b>.由 \(\sin u\approx u-\dfrac{u^3}{6}\) 可得</p>
+    \[\frac{S-S_N}{S}\approx\frac{2\pi^2}{3N^2},\]
+    <p>代入 \(N=64\) 得 \(0.161\%\)，与表中完全吻合.</p>
+    <p><b>工程结论.</b>我国农村土地确权要求面积相对误差不超过 \(0.5\%\).由上式反解</p>
+    \[N\ge\pi\sqrt{\frac{2}{3\times0.005}}=\pi\sqrt{133.3}=36.3 ,\]
+    <p>即至少需要 \(37\) 个采样点，对应边界采样间距不超过 \(2\pi R/37=8.5\,\mathrm{m}\).实际作业中无人机以 \(5\,\mathrm{m/s}\) 飞行、\(1\,\mathrm{Hz}\) 打点，间距 \(5\,\mathrm{m}\)，对应 \(N=63\)，误差约 \(0.17\%\)，<b>裕度充足</b>.</p>
+    <p><b>误差始终是单侧的.</b>注意上表的误差全为负——内接多边形永远小于真实凸区域.因此实测面积系统性偏小，专业软件会用样条拟合边界或加二阶修正项来补偿.而对凹凸相间的自然地块，正负误差部分抵消，实际精度往往还要更好一些.</p>
+    <p><b>形心的稳定性.</b>用引例二的公式对同样的圆做实验：无论 \(N\) 取多少，由对称性算得的形心都是 \((0,0)\)，误差为零.这说明<b>形心比面积对采样密度更不敏感</b>——因为一阶矩的离散误差在对称位置上互相抵消.机器视觉中"面积估计要慎重、形心定位很可靠"的经验法则，根源就在这里.</p>
+    <p><b>回望求积仪.</b>十九世纪的机械式极坐标求积仪，是一根可绕定点转动的摇臂加一个测量轮.操作者用描针沿图形边界描一圈，测量轮只记录<b>垂直于轮面的滑动量</b>，其累计值恰好正比于 \(\displaystyle\oint_Lx\,\mathrm{d}y\).一台纯机械装置，硬是把格林公式"算"了出来.今天的 GIS 软件、CAD 软件、图像处理库，不过是把这根摇臂换成了一行 \(O(N)\) 的循环代码而已.</p>
+    <p class="cn-point">采样点从 8 个加到 64 个，面积误差从 9.97% 掉到 0.16%，\(O(N^{-2})\) 的二阶收敛把「37 个点」钉成确权精度的硬杠杠.无人机一天飞完一个县还不让农民吃亏，靠的是开工前就把这条误差曲线算得明明白白.</p>
+  </div>
+  </details>
+</div>
+
+<div class="note"><b>本节小结.</b>① 格林公式 \(\displaystyle\oint_LP\,\mathrm{d}x+Q\,\mathrm{d}y=\iint_D\bigl(Q_x-P_y\bigr)\mathrm{d}\sigma\) 是"边界 \(\leftrightarrow\) 内部"的桥梁，使用前必须核对三件事：<b>闭曲线、正向、\(D\) 上偏导连续</b>.② 三大用法：直接化简（\(Q_x-P_y\) 简单时）、求面积（取 \(Q_x-P_y=1\)）、以及反过来把二重积分化为曲线积分.③ 两大技巧：曲线不闭就<b>补线</b>，区域内有奇点就<b>挖洞</b>，二者都是考研必考.④ 挖洞时"分母长什么样，洞就挖什么样".</div>
+
+    <!-- ============ §11.4 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 无人机航测：GPS 打点用格林公式求地块面积</summary>
+<p><b>场景：</b> 农村土地确权中，无人机沿地块边界飞一圈、按 \(1\ \mathrm{Hz}\) 采回一串 GPS 坐标.软件把相邻点连成多边形，用鞋带公式算面积.鞋带公式正是格林公式面积公式 \(S=\dfrac12\oint_Lx\,\mathrm{d}y-y\,\mathrm{d}x\) 的离散版（例 11.22 椭圆面积即其参数化）.某地块顶点（单位 m）依次为</p>
+\[(0,0),\ (120,0),\ (140,80),\ (60,140),\ (0,90).\]
+<table class="dt">
+<tr><th>顶点</th><th>\((x_i,y_i)\)</th><th>\(x_iy_{i+1}-y_ix_{i+1}\)</th></tr>
+<tr><td>\(v_1\)</td><td>\((0,0)\)</td><td>\(0\)</td></tr>
+<tr><td>\(v_2\)</td><td>\((120,0)\)</td><td>\(120\times80-0=9600\)</td></tr>
+<tr><td>\(v_3\)</td><td>\((140,80)\)</td><td>\(140\times140-80\times60=14800\)</td></tr>
+<tr><td>\(v_4\)</td><td>\((60,140)\)</td><td>\(60\times90-140\times0=5400\)</td></tr>
+<tr><td>\(v_5\)</td><td>\((0,90)\)</td><td>\(0\)</td></tr>
+<tr><td>合计</td><td>—</td><td>\(\Sigma=29800\)</td></tr>
+</table>
+<p class="sol"> 由格林公式面积推论（§11.3 第四小节）：</p>
+\[S=\frac12\sum_{i=1}^{5}\bigl(x_iy_{i+1}-y_ix_{i+1}\bigr)
+ =\frac12\times29800=14900\ \mathrm{m^2}=1.49\ \mathrm{ha}.\]
+<p>误差分析（引例二已算）：采样点 \(N\) 每翻倍，误差降为 \(1/4\)（\(O(N^{-2})\) 二阶收敛）.国土要求相对误差 \(\le0.5\%\)，反解需 \(N\ge37\) 个点；实际 \(5\ \mathrm{m/s}\)、\(1\ \mathrm{Hz}\) 飞行对应 \(N\approx63\)，误差约 \(0.17\%\)，裕度充足.</p>
+<p><b>工程结论：</b> 把「绕边界走一圈、记录坐标」翻译成「闭曲线积分」，是测绘软件不到十行代码的循环.它和例 11.38「绕翼型环量算升力」是同一个格林公式：左边是边界上的线积分，右边是区域内部的量（这里是面积 \(1\)，那里是旋度）.<b>格林公式的本质——区域内部的整体信息被它的边界完全决定——在这里变成了确权发证的法律依据.</b></p>
+<p class="cn-point">5 个顶点、一趟 \(O(N)\) 的循环，就把 1.49 公顷的田算成了受法律保护的权属面积——格林公式 \(S=\frac12\oint_Lx\,\mathrm{d}y-y\,\mathrm{d}x\) 从讲义走进农村，成了亿万农民红本本上的法律依据.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch11-drone" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>拖动第 4 个顶点 x <input type="range" id="ch11-drone-mv" min="0" max="140" step="2" value="60" style="width:220px;accent-color:#0F6E56"> <b id="ch11-drone-mv-t"></b> m</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch11-drone-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch11-drone'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var base=[{x:0,y:0},{x:120,y:0},{x:140,y:80},{x:60,y:140},{x:0,y:90}];
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mv=+document.getElementById('ch11-drone-mv').value; // 拖动第4个顶点 x
+      var pts=base.map(function(p){ return {x:p.x, y:p.y}; });
+      pts[3].x=mv;
+      var mL=60,mR=16,mT=36,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      function X(x){ return mL+x/160*pW; }
+      function Yv(y){ return mT+pH-y/160*pH; }
+      // 多边形
+      ctx.fillStyle='rgba(15,110,86,0.20)';
+      ctx.beginPath();
+      pts.forEach(function(p,i){ var xx=X(p.x),yy=Yv(p.y); i===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); });
+      ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;
+      ctx.beginPath();
+      pts.forEach(function(p,i){ var xx=X(p.x),yy=Yv(p.y); i===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); });
+      ctx.closePath();ctx.stroke();
+      // 顶点
+      pts.forEach(function(p){
+        ctx.fillStyle='#dc2626';
+        ctx.beginPath();ctx.arc(X(p.x),Yv(p.y),4,0,Math.PI*2);ctx.fill();
+      });
+      // 鞋带面积
+      var S=0, N=pts.length;
+      for(var i=0;i<N;i++){
+        var j=(i+1)%N;
+        S+=pts[i].x*pts[j].y-pts[i].y*pts[j].x;
+      }
+      S=Math.abs(S)/2;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('S = ½∮ x dy − y dx = ½|Σ(xᵢyᵢ₊₁−yᵢxᵢ₊₁)| = '+S.toFixed(0)+' m² = '+(S/666.7).toFixed(2)+' 亩',20,20);
+      var out=document.getElementById('ch11-drone-out');
+      out.textContent = '复杂度 O(N)，N=顶点数——只需边界坐标，凸/凹多边形都适用';
+    }
+    document.getElementById('ch11-drone-mv').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 电磁场：安培环路定理的线积分数值验证</summary>
+<p><b>场景：</b> 电磁兼容实验室里，工程师用磁场探头贴着一根通有 \(I=10\ \mathrm{A}\) 的长直导线绕一圈，想验证测出的环量是否与导线里的真实电流对得上——对不上，探头标定就有问题.由安培环路定理，沿任意包围导线的闭曲线有 \(\displaystyle\oint_L\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{l}=\mu_0 I\).这正是「环量 = 旋度 × 面积」在磁场中的版本（类比定理 11.10：磁场旋度 \(
+abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}\)）.取半径为 \(r=0.05\ \mathrm{m}\) 的圆周验证.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>电流</td><td>\(I\)</td><td>\(10\ \mathrm{A}\)</td></tr>
+<tr><td>环路半径</td><td>\(r\)</td><td>\(0.05\ \mathrm{m}\)</td></tr>
+<tr><td>真空磁导率</td><td>\(\mu_0\)</td><td>\(4\pi\times10^{-7}\ \mathrm{H/m}\)</td></tr>
+</table>
+<p class="sol"> 圆周上磁感应强度大小 \(B=\dfrac{\mu_0 I}{2\pi r}\)，方向沿切向，故</p>
+\[\oint_L\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{l}=B\cdot2\pi r
+ =\frac{\mu_0 I}{2\pi r}\cdot2\pi r=\mu_0 I.\]
+<p>代入数值：</p>
+\[B=\frac{4\pi\times10^{-7}\times10}{2\pi\times0.05}
+ =\frac{4\times10^{-6}}{0.1}=4.0\times10^{-5}\ \mathrm{T},\]
+\[\oint_L\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{l}=4.0\times10^{-5}\times2\pi\times0.05
+ =1.257\times10^{-5}\ \mathrm{T\cdot m}=\mu_0 I=1.257\times10^{-5}\ \mathrm{T\cdot m}.\]
+<p>左右完全相等，验证通过.注意只要环路包围电流，结果就与半径 \(r\) 无关——和例 11.26「绕原点环量恒为 \(2\pi\)」异曲同工：<b>闭曲线积分捕捉的是被围区域的「总量」（这里是穿过环路的总电流），而非局部场值</b>.</p>
+<p><b>工程结论：</b> 商用电磁场有限元软件（如 ANSYS Maxwell）校核时，会沿用户画的任意闭合路径做离散线积分 \(\sum\boldsymbol{B}_i\cdot\Delta\boldsymbol{l}_i\)，检验是否等于 \(\mu_0 I_{\text{enc}}\).若偏差超容差，说明网格剖分或边界条件有误.这条「线积分校验」的底层逻辑，就是 §11.3 的格林公式与环量概念.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch11-amp" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>环路半径 R <input type="range" id="ch11-amp-r" min="0.02" max="0.2" step="0.01" value="0.05" style="width:220px;accent-color:#0F6E56"> <b id="ch11-amp-r-t"></b> m</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch11-amp-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch11-amp'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var mu0=4*Math.PI*1e-7, I=10;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var R=+document.getElementById('ch11-amp-r').value;
+      var cx=W*0.3, cy=H*0.5, sc=Math.min(W,H)*0.2;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 导线（中心）
+      ctx.fillStyle='#1e293b';
+      ctx.beginPath();ctx.arc(cx,cy,6,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#334155';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('电流 I=10 A',cx,cy-14);
+      // 环路
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.arc(cx,cy,R*sc,0,Math.PI*2);ctx.stroke();
+      // B 方向箭头
+      for(var k=0;k<8;k++){
+        var ang=k*Math.PI/4;
+        var bx=cx+R*sc*Math.cos(ang), by=cy+R*sc*Math.sin(ang);
+        var tx=bx-8*Math.sin(ang), ty=by+8*Math.cos(ang);
+        ctx.strokeStyle='#0e7c7c';ctx.lineWidth=2;
+        ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(tx,ty);ctx.stroke();
+      }
+      // 数值
+      var B=mu0*I/(2*Math.PI*R);
+      var circ=B*2*Math.PI*R;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('B = μ₀I/2πR = '+(B*1e5).toFixed(2)+'×10⁻⁵ T   ∮B·dl = B·2πR = '+(circ*1e6).toFixed(2)+'×10⁻⁶ T·m = μ₀I（恒等！）',20,22);
+      var out=document.getElementById('ch11-amp-out');
+      out.textContent = '环量与环路半径无关（都等于 μ₀I = '+(mu0*I).toExponential(3)+' T·m）——这就是「环量=旋度×面积」的体现';
+    }
+    document.getElementById('ch11-amp-r').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s113" data-ch="11" data-n="5"></div>
+<h2 id="s114"><span class="num">§11.4</span>曲线积分与路径无关的条件</h2>
+    
+<div class="ex"><div class="lab">引例一　芯片测试台上的静电：为什么"走哪条路都一样"</div>
+  <p class="stmt">晶圆测试车间里，探针台的绝缘台面因摩擦起电形成静电场.一个带电微粒（或探针尖端的电荷）从台面上 \(A\) 点移动到 \(B\) 点时，静电力会对它做功；若这份能量超过器件的<b>静电放电（ESD）损伤阈值</b>（对先进制程的栅氧化层约为几十微焦），芯片就会被击穿.ESD 工程师必须回答：<b>这份能量与微粒走的路线有关吗？</b></p>
+  <p>实测台面上的静电场为</p>
+  \[\boldsymbol{E}(x,y)=\bigl(k(2x+y),\ k(x+4y)\bigr),\qquad k=2\times10^{5}\ \mathrm{V/m^2},\]
+  <p>坐标单位为 m，考察区域为 \(0\le x\le0.1,\ 0\le y\le0.1\).取 \(A(0,0)\)、\(B(0.06,0.04)\).电场沿路径的<b>线积分</b>就是两点间的电压</p>
+  \[U_{AB}=\int_{L}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=\int_LE_x\,\mathrm{d}x+E_y\,\mathrm{d}y .\]
+  <p><b>沿三条完全不同的路径分别计算：</b></p>
+  <table class="dt">
+    <tr><th>路径</th><th>参数化</th><th>被积表达式积分过程</th><th>\(U_{AB}\)（V）</th></tr>
+    <tr><td>① 直线段</td><td>\(x=0.06t,\ y=0.04t\)</td><td>\(k\displaystyle\int_0^1\bigl(0.0096t+0.0088t\bigr)\mathrm{d}t=k\times0.0092\)</td><td>1840</td></tr>
+    <tr><td>② 折线 \(A\to(0.06,0)\to B\)</td><td>先 \(y=0\)，后 \(x=0.06\)</td><td>\(k\bigl(0.0036\bigr)+k\bigl(0.0024+0.0032\bigr)=k\times0.0092\)</td><td>1840</td></tr>
+    <tr><td>③ 抛物线</td><td>\(y=x^2/0.09\)</td><td>\(k\bigl[x^2+11.111x^3+246.91x^4\bigr]_0^{0.06}=k\times0.0092\)</td><td>1840</td></tr>
+  </table>
+  <p>三条路径给出<b>完全相同</b>的 \(1840\,\mathrm{V}\)！以路径 ② 为例验证：在 \(y=0\) 段，\(\mathrm{d}y=0\)，\(\displaystyle\int_0^{0.06}k\cdot2x\,\mathrm{d}x=k\bigl[x^2\bigr]_0^{0.06}=0.0036k\)；在 \(x=0.06\) 段，\(\mathrm{d}x=0\)，\(\displaystyle\int_0^{0.04}k(0.06+4y)\,\mathrm{d}y=k\bigl[0.06y+2y^2\bigr]_0^{0.04}=k(0.0024+0.0032)=0.0056k\)；合计 \(0.0092k=1840\,\mathrm{V}\).</p>
+  <p><b>能量核算.</b>一个带 \(q=50\,\mathrm{nC}\) 电荷的微粒从 \(A\) 移到 \(B\)，静电力做功</p>
+  \[W=qU_{AB}=5\times10^{-8}\times1840=9.2\times10^{-5}\ \mathrm{J}=92\ \mathrm{\mu J},\]
+  <p>已远超典型栅氧化层 \(30\,\mathrm{\mu J}\) 的损伤阈值，必须加装离子风机中和.</p>
+  <p><b>路径无关的秘密在哪里？</b>注意 \(P=k(2x+y),\ Q=k(x+4y)\) 满足</p>
+  \[\frac{\partial P}{\partial y}=k=\frac{\partial Q}{\partial x},\]
+  <p>并且存在函数 \(\varphi(x,y)=-k\bigl(x^2+xy+2y^2\bigr)\)（即<b>电势</b>）使 \(\boldsymbol{E}=-
+abla\varphi\)，于是</p>
+  \[U_{AB}=\varphi(A)-\varphi(B)=0-\bigl(-2\times10^5\times0.0092\bigr)=1840\ \mathrm{V},\]
+  <p>只依赖两个端点.<b>"存在势函数"与"积分与路径无关"是同一件事的两种说法</b>，这就是本节要建立的理论.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　为什么"单连通"三个字不能少：涡流场的警告</div>
+  <p class="stmt">在流体机械与等离子体物理中，常出现<b>点涡</b>速度场</p>
+  \[\boldsymbol{v}(x,y)=\frac{\Gamma_0}{2\pi}\cdot\frac{(-y,\ x)}{x^2+y^2},\qquad \Gamma_0=12\ \mathrm{m^2/s}.\]
+  <p>这个场同样满足 \(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\)（例 11.26 已算过），按引例一的经验似乎应当"路径无关、闭曲线积分为零".可实际测量给出的却是：</p>
+  <table class="dt">
+    <tr><th>采样圆半径 \(R\)（m）</th><th>圆上切向速度 \(|\boldsymbol{v}|=\dfrac{\Gamma_0}{2\pi R}\)（m/s）</th><th>周长 \(2\pi R\)（m）</th><th>环量 \(\displaystyle\oint_C\boldsymbol{v}\cdot\mathrm{d}\boldsymbol{r}\)（\(\mathrm{m^2/s}\)）</th></tr>
+    <tr><td>1</td><td>1.9099</td><td>6.283</td><td>12.00</td></tr>
+    <tr><td>2</td><td>0.9549</td><td>12.566</td><td>12.00</td></tr>
+    <tr><td>5</td><td>0.3820</td><td>31.416</td><td>12.00</td></tr>
+    <tr><td>10</td><td>0.1910</td><td>62.832</td><td>12.00</td></tr>
+  </table>
+  <p>速度随半径衰减，周长随半径增长，二者恰好抵消，<b>环量恒为 \(12\,\mathrm{m^2/s}\)，绝不为零</b>.</p>
+  <p>矛盾出在哪？出在<b>区域</b>上.点涡场在原点无定义，包含原点的任何区域都是<b>复连通</b>的，"洞"的存在让判据 \(P_y=Q_x\) 失效.若只在不含原点的<b>单连通</b>区域（例如右半平面 \(x\gt0\)）内讨论，则该场确实是保守的，其势函数为 \(\dfrac{\Gamma_0}{2\pi}\arctan\dfrac yx\).</p>
+  <p class="muted">这个对照说明：本节定理的四个等价条件<b>必须在单连通区域上</b>才成立.少了这三个字，结论就是错的——这也是历年考研最爱设置的陷阱.</p>
+</div>
+
+<h3>一、曲线积分与路径无关的四个等价条件</h3>
+<div class="def"><div class="lab"><span class="n">定理 11.8</span>平面曲线积分与路径无关的等价条件</div>
+  <p>设 \(G\) 是<b>单连通</b>开区域，函数 \(P(x,y),Q(x,y)\) 在 \(G\) 内具有<b>一阶连续偏导数</b>，则以下四个条件<b>相互等价</b>：</p>
+  <p>① 在 \(G\) 内<b>处处</b>成立 \(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\)；</p>
+  <p>② 对 \(G\) 内<b>任意</b>分段光滑闭曲线 \(C\)，有 \(\displaystyle\oint_CP\,\mathrm{d}x+Q\,\mathrm{d}y=0\)；</p>
+  <p>③ 曲线积分 \(\displaystyle\int_LP\,\mathrm{d}x+Q\,\mathrm{d}y\) 在 \(G\) 内<b>与路径无关</b>，即只取决于起点与终点；</p>
+  <p>④ 存在 \(G\) 内的可微函数 \(u(x,y)\)，使 \(P\,\mathrm{d}x+Q\,\mathrm{d}y\) 是它的<b>全微分</b>：</p>
+  \[\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y,\qquad\text{即}\quad \frac{\partial u}{\partial x}=P,\ \ \frac{\partial u}{\partial y}=Q .\]
+  <p>此时称 \(u\) 为 \(P\,\mathrm{d}x+Q\,\mathrm{d}y\) 的一个<b>原函数</b>（在物理上即<b>势函数</b>，相差一个常数）.</p>
+  <p><b>证明要点（环链 ①\(\Rightarrow\)②\(\Rightarrow\)③\(\Rightarrow\)④\(\Rightarrow\)①）.</b></p>
+  <p>\(①\Rightarrow②\)：设 \(C\) 是 \(G\) 内任一闭曲线，因 \(G\) 单连通，\(C\) 所围区域 \(D\) 整个包含在 \(G\) 内，故 \(P,Q\) 在 \(D\) 上偏导连续，可用格林公式：</p>
+  \[\oint_CP\,\mathrm{d}x+Q\,\mathrm{d}y=\iint_D\Bigl(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\Bigr)\mathrm{d}\sigma=\iint_D0\,\mathrm{d}\sigma=0 .\]
+  <p class="muted">这一步<b>唯一</b>用到"单连通"：若 \(D\) 中有洞（洞里的点不属于 \(G\)），格林公式便不可用.</p>
+  <p>\(②\Rightarrow③\)：设 \(L_1,L_2\) 是 \(G\) 内从 \(A\) 到 \(B\) 的两条路径，则 \(C=L_1+L_2^{-}\) 是闭曲线，由 ② 得 \(\displaystyle\int_{L_1}-\int_{L_2}=\oint_C=0\)，即两积分相等.</p>
+  <p>\(③\Rightarrow④\)：固定 \(A(x_0,y_0)\in G\)，对任意 \((x,y)\in G\) 定义</p>
+  \[u(x,y)=\int_{(x_0,y_0)}^{(x,y)}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+  <p>由 ③ 这个定义是<b>无歧义</b>的.为求 \(u_x\)，从 \((x,y)\) 沿水平线段走到 \((x+\Delta x,y)\)，由可加性</p>
+  \[u(x+\Delta x,y)-u(x,y)=\int_{x}^{x+\Delta x}P(t,y)\,\mathrm{d}t=P(\xi,y)\Delta x\quad(\text{积分中值定理}),\]
+  <p>两边除以 \(\Delta x\) 并令 \(\Delta x\to0\)，由 \(P\) 连续得 \(u_x=P\).同理 \(u_y=Q\).</p>
+  <p>\(④\Rightarrow①\)：由 \(u_x=P,\ u_y=Q\) 得 \(P_y=u_{xy},\ Q_x=u_{yx}\).因 \(P,Q\) 有连续偏导，二阶混合偏导连续，故 \(u_{xy}=u_{yx}\)，即 \(P_y=Q_x\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>四个条件两两互证要六次，太笨.按<b>环链</b> ①\(\Rightarrow\)②\(\Rightarrow\)③\(\Rightarrow\)④\(\Rightarrow\)① 走一圈，四步即可得到全部等价性.</p>
+<p><span class="stp">第一步：①\(\Rightarrow\)②.</span>设 \(C\) 是 \(G\) 内任一分段光滑闭曲线，不妨设它取正向，所围闭区域记为 \(D\).因 \(G\) <b>单连通</b>，\(D\subset G\)，故 \(P,Q\) 在 \(D\) 上有一阶连续偏导，格林公式可用：</p>
+\[\oint_CP\,\mathrm{d}x+Q\,\mathrm{d}y=\iint_D\Bigl(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\Bigr)\mathrm{d}\sigma=\iint_D0\,\mathrm{d}\sigma=0 .\]
+<p>若 \(C\) 取负向，由性质 11.7 结果仍为 \(0\).此处<b>唯一</b>用到单连通性：若 \(D\) 中含有不属于 \(G\) 的"洞"，\(P,Q\) 在洞上未必有定义，格林公式即失效.</p>
+<p><span class="stp">第二步：②\(\Rightarrow\)③.</span>设 \(L_1,L_2\) 是 \(G\) 内从 \(A\) 到 \(B\) 的两条分段光滑路径，则 \(C=L_1+L_2^{-}\) 是 \(G\) 内一条分段光滑闭曲线.由性质 11.6 与性质 11.7，</p>
+\[0=\oint_CP\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{L_1}P\,\mathrm{d}x+Q\,\mathrm{d}y-\int_{L_2}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+<p>故两条路径上的积分相等，即积分只依赖起点与终点.</p>
+<p><span class="stp">第三步：③\(\Rightarrow\)④.</span>固定 \(A(x_0,y_0)\in G\)，对任意 \((x,y)\in G\) 定义</p>
+\[u(x,y)=\int_{(x_0,y_0)}^{(x,y)}P\,\mathrm{d}x+Q\,\mathrm{d}y ,\]
+<p>由 ③ 这一定义与路径选取无关，故 \(u\) 是良定义的二元函数.为求 \(u_x\)：因 \(G\) 是开区域，当 \(|\Delta x|\) 充分小时，水平线段 \(N:\ (x,y)\to(x+\Delta x,y)\) 整个含于 \(G\) 内.先由 \((x_0,y_0)\) 走到 \((x,y)\)，再沿 \(N\) 走，由性质 11.6</p>
+\[u(x+\Delta x,y)-u(x,y)=\int_{N}P\,\mathrm{d}x+Q\,\mathrm{d}y=\int_{x}^{x+\Delta x}P(t,y)\,\mathrm{d}t\]
+<p>（在 \(N\) 上 \(y\) 为常数，故 \(\mathrm{d}y=0\)）.由 \(P\) 连续及积分中值定理，存在 \(\xi\) 介于 \(x\) 与 \(x+\Delta x\) 之间使右端 \(=P(\xi,y)\Delta x\).于是</p>
+\[\frac{u(x+\Delta x,y)-u(x,y)}{\Delta x}=P(\xi,y),\qquad \lim\limits_{\Delta x\to0}P(\xi,y)=P(x,y),\]
+<p>即 \(u_x=P\).同理沿竖直线段可得 \(u_y=Q\).因 \(P,Q\) 连续，\(u\) 的两个偏导连续，故 \(u\) 可微且 \(\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y\).</p>
+<p><span class="stp">第四步：④\(\Rightarrow\)①.</span>由 \(u_x=P,\ u_y=Q\) 得</p>
+\[\frac{\partial P}{\partial y}=\frac{\partial^2u}{\partial y\partial x},\qquad
+  \frac{\partial Q}{\partial x}=\frac{\partial^2u}{\partial x\partial y}.\]
+<p>按假设 \(P,Q\) 有一阶连续偏导，故这两个二阶混合偏导数都连续；由混合偏导的相等性定理（第 9 章），它们相等，即在 \(G\) 内处处 \(\dfrac{\partial P}{\partial y}=\dfrac{\partial Q}{\partial x}\).</p>
+<p><span class="stp">第五步：闭环.</span>①\(\Rightarrow\)②\(\Rightarrow\)③\(\Rightarrow\)④\(\Rightarrow\)① 已全部打通，故四条件相互等价.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>四个条件各司其职——一张速查表.</b>
+<table class="dt">
+  <tr><th>条件</th><th>内容</th><th>角色</th><th>使用场合</th></tr>
+  <tr><td>①</td><td>\(P_y=Q_x\) 在单连通域内处处成立</td><td><b>判据</b></td><td>动手前先算两个偏导，一分钟定性质</td></tr>
+  <tr><td>②</td><td>任意闭曲线积分为零</td><td><b>理论枢纽</b></td><td>把"闭曲线"问题一步归零；也是 ①\(\to\)③ 的桥</td></tr>
+  <tr><td>③</td><td>积分只与端点有关</td><td><b>算法</b></td><td>把难走的路径换成折线，是最常用的解题手段</td></tr>
+  <tr><td>④</td><td>存在原函数（势函数）\(u\)</td><td><b>工具</b></td><td>求出 \(u\) 后直接"端点代入"：\(\displaystyle\int_A^B=u(B)-u(A)\)</td></tr>
+</table>
+<b>三步判别法：</b>① 算 \(P_y\) 与 \(Q_x\) 是否相等；② 检查区域是否单连通（有没有使 \(P,Q\) 无定义的奇点被包在里面）；③ 两条都满足 \(\Rightarrow\) 路径无关 \(\Rightarrow\) 求出 \(u\) 后端点代入.</div>
+
+<div class="def"><div class="lab"><span class="n">定理 11.9</span>原函数的两种求法</div>
+  <p>设 ①～④ 成立，则原函数 \(u(x,y)\)（相差常数）可由下述两法求得.</p>
+  <p><b>（一）折线积分法.</b>取起点 \((x_0,y_0)\)，沿平行于坐标轴的折线积分.若走"先横后竖"的折线：</p>
+  \[u(x,y)=\int_{x_0}^{x}P(t,\,y_0)\,\mathrm{d}t+\int_{y_0}^{y}Q(x,\,s)\,\mathrm{d}s ;\]
+  <p>若走"先竖后横"的折线：</p>
+  \[u(x,y)=\int_{y_0}^{y}Q(x_0,\,s)\,\mathrm{d}s+\int_{x_0}^{x}P(t,\,y)\,\mathrm{d}t .\]
+  <p class="muted">两式必然给出相同结果（相差常数）.要点：<b>横段上 \(y\) 冻结、竖段上 \(x\) 冻结</b>.起点通常取 \((0,0)\) 最省事，但若 \(P\) 或 \(Q\) 在原点无定义（如含 \(\ln x\)、\(1/x\)），就要另选，例如 \((1,1)\).</p>
+  <p><b>（二）偏积分法（凑待定函数法）.</b>由 \(\dfrac{\partial u}{\partial x}=P\) 对 \(x\) 求不定积分（把 \(y\) 看成常数）：</p>
+  \[u(x,y)=\int P(x,y)\,\mathrm{d}x+\varphi(y),\]
+  <p>其中"积分常数"是 \(y\) 的待定函数 \(\varphi(y)\).再对 \(y\) 求偏导并令其等于 \(Q\)，解出 \(\varphi'(y)\)，积分即得 \(\varphi(y)\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>定理 11.8 只告诉我们原函数<b>存在</b>：\(u(x,y)=\int_{(x_0,y_0)}^{(x,y)}P\,\mathrm{d}x+Q\,\mathrm{d}y\).既然积分与路径无关，就<b>专挑最好算的路径</b>——平行于坐标轴的折线，横段上 \(\mathrm{d}y=0\)、竖段上 \(\mathrm{d}x=0\)，两个二元问题立刻退化为两个一元定积分.这是第一种方法.第二种方法则反过来，由 \(u_x=P\) 先积分再定"常数".</p>
+<p><span class="stp">第一步：曲线积分确为原函数.</span>设 ①～④ 成立.由定理 11.8 第三步的论证，函数 \(u(x,y)=\int_{(x_0,y_0)}^{(x,y)}P\,\mathrm{d}x+Q\,\mathrm{d}y\) 与路径无关地良定义，且沿水平增量作差、用积分中值定理与 \(P\) 的连续性可得 \(u_x=P\)，同理 \(u_y=Q\)，即 \(\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y\).又若 \(v\) 是另一原函数，则 \(\mathrm{d}(u-v)=0\)，在连通区域上得 \(u-v\) 为常数，故原函数至多相差一个常数.</p>
+<p><span class="stp">第二步：（一）折线积分法——"先横后竖".</span>设折线 \((x_0,y_0)\to(x,y_0)\to(x,y)\) 含于 \(G\) 内（例如 \(G\) 是矩形或凸区域时总可如此选取）.由性质 11.6 拆成两段：</p>
+<p>横段上 \(y\equiv y_0\) 为常数，以 \(t\) 为参数（\(x=t,\ y=y_0\)，\(t\) 由 \(x_0\) 到 \(x\)），\(\mathrm{d}y=0\)，由定理 11.4 该段积分 \(=\int_{x_0}^{x}P(t,y_0)\,\mathrm{d}t\)；</p>
+<p>竖段上 \(x\) 冻结为常数，以 \(s\) 为参数（\(x\) 不变，\(y=s\)，\(s\) 由 \(y_0\) 到 \(y\)），\(\mathrm{d}x=0\)，该段积分 \(=\int_{y_0}^{y}Q(x,s)\,\mathrm{d}s\).相加得</p>
+\[u(x,y)=\int_{x_0}^{x}P(t,\,y_0)\,\mathrm{d}t+\int_{y_0}^{y}Q(x,\,s)\,\mathrm{d}s .\]
+<p><span class="stp">第三步：直接验证它就是原函数.</span>对上式求偏导.先对 \(y\)：第一项与 \(y\) 无关，第二项由变上限积分求导得</p>
+\[\frac{\partial u}{\partial y}=0+Q(x,y)=Q .\]
+<p>再对 \(x\)：第一项由变上限积分求导得 \(P(x,y_0)\)；第二项是含参变量积分，因 \(Q_x\) 连续可在积分号下求导，并用条件 ① \(Q_x=P_y\)：</p>
+\[\frac{\partial}{\partial x}\int_{y_0}^{y}Q(x,s)\,\mathrm{d}s=\int_{y_0}^{y}\frac{\partial Q}{\partial x}(x,s)\,\mathrm{d}s
+ =\int_{y_0}^{y}\frac{\partial P}{\partial y}(x,s)\,\mathrm{d}s=P(x,y)-P(x,y_0).\]
+<p>两项相加得 \(u_x=P(x,y_0)+P(x,y)-P(x,y_0)=P\).故 \(\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y\).</p>
+<p><span class="stp">第四步："先竖后横"的折线.</span>换走 \((x_0,y_0)\to(x_0,y)\to(x,y)\)，同法（竖段上 \(x\equiv x_0\)、横段上 \(y\) 冻结）得</p>
+\[u(x,y)=\int_{y_0}^{y}Q(x_0,\,s)\,\mathrm{d}s+\int_{x_0}^{x}P(t,\,y)\,\mathrm{d}t .\]
+<p>由于两条折线起点终点相同，且积分与路径无关（条件 ③），两式给出同一个 \(u\)；若起点取得不同，则由第一步只相差一个常数.要点是：<b>横段上 \(y\) 冻结、竖段上 \(x\) 冻结</b>；起点取 \((0,0)\) 最省事，但若 \(P,Q\) 在原点无定义（含 \(\ln x\)、\(1/x\) 等），须另取如 \((1,1)\)，并保证折线不越出 \(G\).</p>
+<p><span class="stp">第五步：（二）偏积分法（凑待定函数法）.</span>由 \(\dfrac{\partial u}{\partial x}=P\)，把 \(y\) 看作常数对 \(x\) 求不定积分：</p>
+\[u(x,y)=\int P(x,y)\,\mathrm{d}x+\varphi(y),\]
+<p>其中"积分常数"对 \(x\) 而言是常数，对 \(y\) 却可以变化，故是待定函数 \(\varphi(y)\).再对 \(y\) 求偏导并令其等于 \(Q\)：</p>
+\[\varphi'(y)=Q(x,y)-\frac{\partial}{\partial y}\int P(x,y)\,\mathrm{d}x .\]
+<p><span class="stp">第六步：说明右端确实只含 \(y\).</span>把右端对 \(x\) 求偏导（\(P\) 有连续偏导，故可交换求导次序）：</p>
+\[\frac{\partial}{\partial x}\left[Q-\frac{\partial}{\partial y}\int P\,\mathrm{d}x\right]
+ =\frac{\partial Q}{\partial x}-\frac{\partial}{\partial y}\left[\frac{\partial}{\partial x}\int P\,\mathrm{d}x\right]
+ =\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=0 .\]
+<p>故右端与 \(x\) 无关，确为 \(y\) 的函数，对 \(y\) 积分即得 \(\varphi(y)\)（相差常数），代回即得原函数.可见条件 ① 不仅保证原函数存在，还正是这套算法能"解得出 \(\varphi\)"的原因.</p>
+<p><span class="stp">第七步：凑微分法.</span>若能直接看出 \(P\,\mathrm{d}x+Q\,\mathrm{d}y\) 可整理成某函数的全微分（如 \(y\,\mathrm{d}x+x\,\mathrm{d}y=\mathrm{d}(xy)\)、\(\dfrac{x\,\mathrm{d}x+y\,\mathrm{d}y}{x^2+y^2}=\mathrm{d}\Bigl(\dfrac12\ln(x^2+y^2)\Bigr)\)），则该函数即为 \(u\)；由第一步的唯一性（相差常数），这样凑出的结果与前两法一致.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 11.29　偏积分法（一）</div>
+  <p class="stmt">验证 \(\bigl(3x^2y-y^3+1\bigr)\mathrm{d}x+\bigl(x^3-3xy^2+2\bigr)\mathrm{d}y\) 是某函数的全微分，并求出这个函数.</p>
+  <p class="sol"><span class="mk">解</span><b>第一步：验证.</b>\(P=3x^2y-y^3+1,\ Q=x^3-3xy^2+2\)，</p>
+  \[\frac{\partial P}{\partial y}=3x^2-3y^2,\qquad \frac{\partial Q}{\partial x}=3x^2-3y^2 .\]
+  <p>二者相等，且 \(P,Q\) 在整个平面（单连通）上偏导连续，故所给表达式是全微分.</p>
+  <p><b>第二步：对 \(x\) 偏积分.</b>把 \(y\) 视为常数，</p>
+  \[u(x,y)=\int\bigl(3x^2y-y^3+1\bigr)\mathrm{d}x=x^3y-xy^3+x+\varphi(y).\]
+  <p><b>第三步：用 \(u_y=Q\) 定出 \(\varphi\).</b>对上式关于 \(y\) 求偏导：</p>
+  \[\frac{\partial u}{\partial y}=x^3-3xy^2+\varphi'(y).\]
+  <p>令其等于 \(Q=x^3-3xy^2+2\)，得 \(\varphi'(y)=2\)，故 \(\varphi(y)=2y+C\).所以</p>
+  \[u(x,y)=x^3y-xy^3+x+2y+C .\]
+  <p><b>检验：</b>\(u_x=3x^2y-y^3+1=P\)，\(u_y=x^3-3xy^2+2=Q\)，正确.</p>
+  <p class="muted">若第三步算出的 \(\varphi'(y)\) 中<b>还残留 \(x\)</b>，一定是前面算错了（或者原表达式根本不是全微分）——因为 \(\varphi\) 只能是 \(y\) 的函数.这是一个免费的自检机制，务必利用.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.30　偏积分法（二）：含三角与超越函数</div>
+  <p class="stmt">求 \(\bigl(2x\cos y-y^2\sin x\bigr)\mathrm{d}x+\bigl(2y\cos x-x^2\sin y\bigr)\mathrm{d}y\) 的原函数.</p>
+  <p class="sol"><span class="mk">解</span><b>验证：</b></p>
+  \[\frac{\partial P}{\partial y}=-2x\sin y-2y\sin x,\qquad \frac{\partial Q}{\partial x}=-2y\sin x-2x\sin y ,\]
+  <p>相等，是全微分.</p>
+  <p><b>偏积分：</b>对 \(x\) 积分（\(y\) 视为常数）</p>
+  \[u=\int\bigl(2x\cos y-y^2\sin x\bigr)\mathrm{d}x=x^2\cos y+y^2\cos x+\varphi(y).\]
+  <p><b>定 \(\varphi\)：</b></p>
+  \[\frac{\partial u}{\partial y}=-x^2\sin y+2y\cos x+\varphi'(y)=Q=2y\cos x-x^2\sin y\ \Longrightarrow\ \varphi'(y)=0 ,\]
+  <p>故 \(\varphi\) 为常数，</p>
+  \[u(x,y)=x^2\cos y+y^2\cos x+C .\]
+  <p class="muted">这类"对称型"表达式在物理中很常见（如各向异性介质中的势能）.识别技巧：把 \(P\) 中的项各自"反积分"，若能凑成一个对 \(x,y\) 轮换对称的函数，答案往往一眼可见.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.31　折线积分法（一）</div>
+  <p class="stmt">用折线积分法重做例 11.29，即求 \(\bigl(3x^2y-y^3+1\bigr)\mathrm{d}x+\bigl(x^3-3xy^2+2\bigr)\mathrm{d}y\) 的原函数.</p>
+  <p class="sol"><span class="mk">解</span>取起点 \((0,0)\)，走"先横后竖"的折线：先从 \((0,0)\) 沿 \(x\) 轴到 \((x,0)\)，再竖直上升到 \((x,y)\).</p>
+  <p><b>横段：</b>此段上 \(y\equiv0,\ \mathrm{d}y=0\)，被积表达式为 \(P(t,0)\,\mathrm{d}t=\bigl(3t^2\cdot0-0+1\bigr)\mathrm{d}t=\mathrm{d}t\)，故</p>
+  \[\int_0^{x}P(t,0)\,\mathrm{d}t=\int_0^x1\,\mathrm{d}t=x .\]
+  <p><b>竖段：</b>此段上 \(x\) 固定，\(\mathrm{d}x=0\)，被积表达式为 \(Q(x,s)\,\mathrm{d}s=\bigl(x^3-3xs^2+2\bigr)\mathrm{d}s\)，故</p>
+  \[\int_0^{y}\bigl(x^3-3xs^2+2\bigr)\mathrm{d}s=\Bigl[x^3s-xs^3+2s\Bigr]_0^{y}=x^3y-xy^3+2y .\]
+  <p>两段相加：</p>
+  \[u(x,y)=x+x^3y-xy^3+2y ,\]
+  <p>与例 11.29 的结果（取 \(C=0\)）完全一致.</p>
+  <p class="muted"><b>折线法的优势</b>在于把二元问题拆成两个一元定积分，每一步都不含待定函数，机械可靠，特别适合编程实现；<b>偏积分法的优势</b>在于不必担心起点是否落在定义域内.两法都要熟练.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.32　折线积分法（二）：抛物线弧上的积分（考研经典）</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_L\bigl(2xy^3-y^2\cos x\bigr)\mathrm{d}x+\bigl(1-2y\sin x+3x^2y^2\bigr)\mathrm{d}y\)，其中 \(L\) 为抛物线 \(2x=\pi y^2\) 上由点 \((0,0)\) 到点 \(\Bigl(\dfrac{\pi}{2},1\Bigr)\) 的一段弧.</p>
+  <p class="sol"><span class="mk">解</span>直接沿抛物线代入会得到极其繁琐的定积分，先检验路径无关性.</p>
+  <p><b>第一步：验证判据.</b></p>
+  \[\frac{\partial P}{\partial y}=6xy^2-2y\cos x,\qquad \frac{\partial Q}{\partial x}=-2y\cos x+6xy^2 ,\]
+  <p>二者相等，且 \(P,Q\) 在全平面（单连通）上偏导连续，故积分与路径无关.</p>
+  <p><b>第二步：求原函数（折线法，起点 \((0,0)\)）.</b>横段上 \(y=0\)，\(P(t,0)=2t\cdot0-0=0\)，贡献为零；竖段上 \(x\) 固定：</p>
+  \[u(x,y)=0+\int_0^{y}\bigl(1-2s\sin x+3x^2s^2\bigr)\mathrm{d}s=\Bigl[s-s^2\sin x+x^2s^3\Bigr]_0^{y}=y-y^2\sin x+x^2y^3 .\]
+  <p><b>第三步：端点代入.</b></p>
+  \[I=u\Bigl(\frac{\pi}{2},1\Bigr)-u(0,0)=\Bigl[1-1\cdot\sin\frac{\pi}{2}+\Bigl(\frac{\pi}{2}\Bigr)^2\cdot1\Bigr]-0=1-1+\frac{\pi^2}{4}=\frac{\pi^2}{4}\approx2.467 .\]
+  <p class="muted"><b>题目里的抛物线 \(2x=\pi y^2\) 是"障眼法"</b>：一旦确认路径无关，曲线的具体形状就完全无关紧要，只有两个端点起作用.看到被积函数复杂而端点简洁，第一反应就应该是验证 \(P_y=Q_x\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.33　用原函数做定端点计算</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_{(1,0)}^{(2,1)}\bigl(2xy-y^4+3\bigr)\mathrm{d}x+\bigl(x^2-4xy^3\bigr)\mathrm{d}y\).</p>
+  <p class="sol"><span class="mk">解</span><b>验证：</b>\(P_y=2x-4y^3,\ Q_x=2x-4y^3\)，相等，全平面单连通，故与路径无关，记号 \(\displaystyle\int_{(1,0)}^{(2,1)}\) 是合法的.</p>
+  <p><b>求原函数（偏积分法）：</b></p>
+  \[u=\int\bigl(2xy-y^4+3\bigr)\mathrm{d}x=x^2y-xy^4+3x+\varphi(y),\]
+  \[\frac{\partial u}{\partial y}=x^2-4xy^3+\varphi'(y)=Q=x^2-4xy^3\ \Longrightarrow\ \varphi'(y)=0 .\]
+  <p>取 \(\varphi\equiv0\)，则 \(u=x^2y-xy^4+3x\).</p>
+  <p><b>端点代入：</b></p>
+  \[I=u(2,1)-u(1,0)=\bigl(4-2+6\bigr)-\bigl(0-0+3\bigr)=8-3=5 .\]
+  <p class="muted">这一步"端点代入"完全平行于一元微积分的牛顿–莱布尼茨公式 \(\displaystyle\int_a^bf'(x)\mathrm{d}x=f(b)-f(a)\).可以说，定理 11.8 就是<b>牛顿–莱布尼茨公式在平面上的推广</b>：原函数 \(u\) 扮演 \(f\) 的角色，端点扮演 \(a,b\) 的角色.</p>
+</div>
+
+<h3>二、全微分方程</h3>
+<div class="def"><div class="lab"><span class="n">定义 11.5</span>全微分方程</div>
+  <p>形如</p>
+  \[P(x,y)\,\mathrm{d}x+Q(x,y)\,\mathrm{d}y=0\]
+  <p>的一阶微分方程，若其左端恰是某个函数 \(u(x,y)\) 的全微分，即 \(\mathrm{d}u=P\,\mathrm{d}x+Q\,\mathrm{d}y\)，则称之为<b>全微分方程</b>（或<b>恰当方程</b>）.此时方程即 \(\mathrm{d}u=0\)，其<b>通解</b>为</p>
+  \[u(x,y)=C\qquad(C\ \text{为任意常数}).\]
+  <p>由定理 11.8，在单连通区域内，方程是全微分方程的<b>充要条件</b>为</p>
+  \[\frac{\partial P}{\partial y}=\frac{\partial Q}{\partial x}.\]
+</div>
+
+<div class="ex"><div class="lab">例 11.34　求解全微分方程</div>
+  <p class="stmt">求解微分方程 \(\bigl(x^2+y\bigr)\mathrm{d}x+\bigl(x-2y\bigr)\mathrm{d}y=0\).</p>
+  <p class="sol"><span class="mk">解</span><b>判别：</b>\(P=x^2+y,\ Q=x-2y\)，\(P_y=1=Q_x\)，是全微分方程.</p>
+  <p><b>求原函数：</b></p>
+  \[u=\int\bigl(x^2+y\bigr)\mathrm{d}x=\frac{x^3}{3}+xy+\varphi(y),\qquad
+    \frac{\partial u}{\partial y}=x+\varphi'(y)=x-2y\ \Longrightarrow\ \varphi'(y)=-2y,\ \varphi(y)=-y^2 .\]
+  <p>所以 \(u=\dfrac{x^3}{3}+xy-y^2\)，<b>通解</b>为</p>
+  \[\frac{x^3}{3}+xy-y^2=C .\]
+  <p class="muted">全微分方程的解通常是<b>隐式</b>的，不必（往往也无法）解出 \(y\).几何上，通解是一族<b>等值线</b>（等势线）；物理上，若 \(u\) 是势能，这些曲线就是等势面在平面上的截线.</p>
+</div>
+
+<div class="ex"><div class="lab">例 11.35　全微分方程的初值问题</div>
+  <p class="stmt">求解初值问题 \(\bigl(3x^2+6xy^2\bigr)\mathrm{d}x+\bigl(6x^2y+4y^3\bigr)\mathrm{d}y=0,\quad y(0)=1\).</p>
+  <p class="sol"><span class="mk">解</span><b>判别：</b>\(P_y=12xy,\ Q_x=12xy\)，相等，是全微分方程.</p>
+  <p><b>求原函数（折线法，起点 \((0,0)\)）：</b>横段上 \(y=0\)，\(P(t,0)=3t^2\)，</p>
+  \[\int_0^x3t^2\,\mathrm{d}t=x^3 ;\]
+  <p>竖段上 \(x\) 固定，\(Q(x,s)=6x^2s+4s^3\)，</p>
+  \[\int_0^y\bigl(6x^2s+4s^3\bigr)\mathrm{d}s=\Bigl[3x^2s^2+s^4\Bigr]_0^y=3x^2y^2+y^4 .\]
+  <p>故 \(u=x^3+3x^2y^2+y^4\)，通解为 \(x^3+3x^2y^2+y^4=C\).</p>
+  <p><b>定常数：</b>代入 \(x=0,\ y=1\) 得 \(C=0+0+1=1\).所求特解为</p>
+  \[x^3+3x^2y^2+y^4=1 .\]
+</div>
+
+<div class="ex"><div class="lab">例 11.36　单连通条件的反例（必考陷阱）</div>
+  <p class="stmt">设 \(P=\dfrac{-y}{x^2+y^2},\ Q=\dfrac{x}{x^2+y^2}\).已知在 \((x,y)
+eq(0,0)\) 处 \(P_y=Q_x\).试问：<br>
+  （1）在挖去原点的平面 \(G_1=\{(x,y)
+eq(0,0)\}\) 内，积分 \(\displaystyle\int_LP\,\mathrm{d}x+Q\,\mathrm{d}y\) 与路径无关吗？<br>
+  （2）在右半平面 \(G_2=\{x\gt0\}\) 内呢？若无关，求出原函数.</p>
+  <p class="sol"><span class="mk">解</span><b>（1）不无关.</b>\(G_1\) 是<b>复连通</b>区域（有一个"洞"在原点），定理 11.8 的前提不满足.事实上，取 \(L\) 为绕原点一周的单位圆，由例 11.26</p>
+  \[\oint_L\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}=2\pi
+eq0 ,\]
+  <p>条件 ② 被直接推翻，因而 ③ 也不成立.换句话说：从 \((1,0)\) 到 \((-1,0)\)，沿上半圆走得 \(\pi\)，沿下半圆走得 \(-\pi\)，两条路径结果不同.</p>
+  <p><b>（2）无关.</b>\(G_2=\{x\gt0\}\) 是<b>单连通</b>区域（半平面没有洞），且不含原点，故 \(P,Q\) 在其中偏导连续、\(P_y=Q_x\)，定理 11.8 完全适用.</p>
+  <p><b>求原函数（偏积分法）：</b>由 \(\dfrac{\partial u}{\partial x}=\dfrac{-y}{x^2+y^2}\) 对 \(x\) 积分（\(y\) 视为常数）：</p>
+  \[u=-y\int\frac{\mathrm{d}x}{x^2+y^2}=-y\cdot\frac1{|y|}\arctan\frac{x}{|y|}+\varphi(y).\]
+  <p>为避免绝对值，换一条路：由 \(\dfrac{\partial u}{\partial y}=\dfrac{x}{x^2+y^2}\) 对 \(y\) 积分（\(x\gt0\) 视为常数）：</p>
+  \[u=x\int\frac{\mathrm{d}y}{x^2+y^2}=x\cdot\frac1x\arctan\frac yx+\psi(x)=\arctan\frac yx+\psi(x).\]
+  <p>再对 \(x\) 求偏导：\(\dfrac{\partial u}{\partial x}=\dfrac{-y/x^2}{1+y^2/x^2}+\psi'(x)=\dfrac{-y}{x^2+y^2}+\psi'(x)\)，令其等于 \(P\) 得 \(\psi'(x)=0\).故</p>
+  \[u(x,y)=\arctan\frac{y}{x}+C\qquad(x\gt0).\]
+  <p>这正是<b>极角 \(\theta\)</b>.它在右半平面内是单值可微的，但绕原点一圈后会增加 \(2\pi\)——<b>无法在整个挖去原点的平面上定义成单值函数</b>，这就是 \(G_1\) 上路径无关性失效的根本原因.</p>
+  <p class="muted"><b>一句话记住：\(P_y=Q_x\) 只是"局部"无旋，路径无关却是"整体"性质；把局部升级为整体，靠的正是"单连通"这座桥.</b>本题也解释了为什么复变函数论中 \(\ln z\) 必须引入"割线"与"分支".</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 机械臂抓取的能耗规划：保守力与耗散力的分离</div>
+  <details><summary>展开查看：势能计算、路径无关部分与路径相关部分的完整分解</summary>
+  <div class="body">
+    <p><b>场景.</b>六轴工业机械臂末端在竖直平面内把工件从 \(A(0.2,\ 0.1)\) 搬到 \(B(0.6,\ 0.5)\)（单位 m）.末端受两类力：</p>
+    <p>① <b>保守力</b>：工件重力 \((0,-mg)\) 与配重弹簧的弹性回复力 \((-kx,-ky)\)，合为</p>
+    \[\boldsymbol{F}_{\text{c}}=\bigl(-kx,\ -mg-ky\bigr),\qquad m=3\,\mathrm{kg},\ g=9.8\,\mathrm{m/s^2},\ k=60\,\mathrm{N/m};\]
+    <p>② <b>耗散力</b>：导轨摩擦，大小恒为 \(f=\mu N=0.15\times20=3\,\mathrm{N}\)，方向始终与运动方向相反.</p>
+    <p><b>第一步：验证保守性并求势能.</b>\(P=-kx,\ Q=-mg-ky\)，</p>
+    \[\frac{\partial P}{\partial y}=0=\frac{\partial Q}{\partial x},\]
+    <p>且定义域为全平面（单连通），故 \(\boldsymbol{F}_{\text{c}}\) 是保守力.取 \(\boldsymbol{F}_{\text{c}}=-
+abla U\)，用偏积分法：由 \(-\dfrac{\partial U}{\partial x}=-kx\) 得 \(U=\dfrac{k}{2}x^2+\varphi(y)\)；再由 \(-\dfrac{\partial U}{\partial y}=-mg-ky\) 得 \(\varphi'(y)=mg+ky\)，故</p>
+    \[U(x,y)=\frac{k}{2}x^2+mgy+\frac{k}{2}y^2 .\]
+    <p><b>第二步：算两端点的势能.</b></p>
+    <table class="dt">
+      <tr><th>位置</th><th>\(\dfrac k2x^2\)（J）</th><th>\(mgy\)（J）</th><th>\(\dfrac k2y^2\)（J）</th><th>总势能 \(U\)（J）</th></tr>
+      <tr><td>\(A(0.2,0.1)\)</td><td>1.20</td><td>2.94</td><td>0.30</td><td>4.44</td></tr>
+      <tr><td>\(B(0.6,0.5)\)</td><td>10.80</td><td>14.70</td><td>7.50</td><td>33.00</td></tr>
+    </table>
+    <p>保守力做功 \(W_{\text{c}}=U(A)-U(B)=4.44-33.00=-28.56\,\mathrm{J}\)，<b>与轨迹形状完全无关</b>.</p>
+    <p><b>第三步：算耗散部分——这一项与路径有关.</b>摩擦力做功是第一类曲线积分</p>
+    \[W_{f}=-\int_Lf\,\mathrm{d}s=-f\cdot(\text{路径长度}),\]
+    <p>它<b>正比于路程</b>，因而必须逐条路径计算.</p>
+    <table class="dt">
+      <tr><th>轨迹方案</th><th>路径长度（m）</th><th>\(W_f\)（J）</th><th>电机总输出 \(-W_{\text{c}}-W_f\)（J）</th></tr>
+      <tr><td>直线段 \(AB\)</td><td>0.5657</td><td>\(-1.697\)</td><td>30.257</td></tr>
+      <tr><td>四分之一圆弧（圆心 \((0.2,0.5)\)，半径 \(0.4\)）</td><td>0.6283</td><td>\(-1.885\)</td><td>30.445</td></tr>
+      <tr><td>直角折线 \(A\to(0.6,0.1)\to B\)</td><td>0.8000</td><td>\(-2.400\)</td><td>30.960</td></tr>
+    </table>
+    <p><b>第四步：结论与工程意义.</b>三条轨迹的电机输出分别为 \(30.26,\ 30.45,\ 30.96\,\mathrm{J}\)，其中<b>共同的 \(28.56\,\mathrm{J}\) 是路径无关的势能变化，谁也躲不掉</b>；差异只来自摩擦，最多相差 \(0.70\,\mathrm{J}\)（\(2.3\%\)）.因此轨迹规划的正确目标不是"少爬坡"（爬坡代价固定），而是<b>缩短路程、减少不必要的往复</b>.</p>
+    <p><b>第五步：能量回收.</b>把工件从 \(B\) 放回 \(A\) 时，保守力做正功 \(+28.56\,\mathrm{J}\)，其中扣除摩擦损耗 \(1.70\,\mathrm{J}\) 后，理论上有 \(26.86\,\mathrm{J}\) 可通过伺服驱动器回馈到直流母线.若产线节拍为 \(4\,\mathrm{s}\)、每天运行 \(20\) 小时，每台机械臂一年可回收</p>
+    \[26.86\times\frac{3600\times20}{4}\times365\ \mathrm{J}=1.76\times10^{9}\,\mathrm{J}\approx490\ \mathrm{kW\cdot h}.\]
+    <p><b>把力场分解为"保守 \(+\) 耗散"，再分别用路径无关性与弧长积分处理——这正是本节理论在工业现场的直接变现.</b></p>
+    <p class="cn-point">每一次「放下工件」，保守力那 28.56 J 有 26.86 J 能回馈直流母线，一年累计约 490 度电——绿色制造不靠口号，靠的是先用 \(W_{\text{c}}=U(A)-U(B)\) 把「躲不掉的势能」和「能省掉的摩擦」分账算清，能回收的每一焦耳都被公式钉死.</p>
+  </div>
+  </details>
+</div>
+
+<div class="note"><b>本节小结.</b>① 四个等价条件的核心是判据 \(P_y=Q_x\)，但它必须配上<b>单连通</b>与<b>偏导连续</b>两个前提.② 求原函数两法：折线积分法（机械可靠）与偏积分法（灵活）.③ 路径无关时，曲线积分退化为"端点代入"\(\displaystyle\int_A^B=u(B)-u(A)\)，这是平面上的牛顿–莱布尼茨公式.④ 全微分方程 \(P\,\mathrm{d}x+Q\,\mathrm{d}y=0\) 的通解就是 \(u(x,y)=C\).⑤ 遇到分母含 \(x^2+y^2\) 之类的表达式，先问一句：<b>奇点在不在我的区域里？</b></div>
+
+    <!-- ============ §11.5 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 机械臂抓取：保守重力场下能耗与路径无关</summary>
+<p><b>场景：</b> 一台五轴机械臂抓取 \(m=5\ \mathrm{kg}\) 的工件，从 \(A(0,0)\) 移到 \(B(0.4,0.3)\)（单位 m，约臂展中点）.重力场 \(\boldsymbol{F}=(0,\ -mg)\).控制器关心：选「直线」还是「先横后竖折线」更省电？</p>
+<table class="dt">
+<tr><th>路径</th><th>参数化</th><th>做功 \(W/\mathrm{J}\)</th></tr>
+<tr><td>① 直线</td><td>\((0.4t,\ 0.3t),\ t:0\to1\)</td><td>\(-14.7\)</td></tr>
+<tr><td>② 折线</td><td>\((0.4t,0)\to(0.4,0.3s)\)</td><td>\(-14.7\)</td></tr>
+</table>
+<p class="sol"> 重力场 \(P=0,\ Q=-mg\)，判据 \(P_y=0=Q_x\) 成立，且全平面单连通，故保守（定理 11.8）.功只取决于端点纵坐标差：</p>
+\[W=\int_L(-mg)\,\mathrm{d}y=-mg(y_B-y_A)=-5\times9.8\times0.3=-14.7\ \mathrm{J}.\]
+<p>两条路径都得到 \(-14.7\ \mathrm{J}\)：直线段 \(\int_0^1(-mg)(0.3)\,\mathrm{d}t=-14.7\)；折线 \(AO\) 段 \(\mathrm{d}y=0\) 贡献 \(0\)，\(OB\) 段 \(\int_0^{0.3}(-mg)\,\mathrm{d}y=-14.7\)，合计相同.</p>
+<p><b>工程结论：</b> 在保守场里，<b>能耗不是轨迹优化的目标</b>——两条路径耗电完全一样，调度器只需按「最短、最平滑、远离奇异位形」去规划即可.这正是例 11.37「重力做功与路径无关」的工程版.把「存在势函数 → 端点代入」写进运动规划，可把一条曲线积分直接退化成一个减法（牛顿–莱布尼茨公式在平面上的推广，例 11.33 注），省掉逐点积分.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 电磁执行器：非保守场下必须优化拖动路径</summary>
+<p><b>场景：</b> 一台电磁执行器拖动零件，其平面内作用力场为 \(\boldsymbol{F}=(2y,\ 0)\ (\mathrm{N/m})\).从原点 \(O(0,0)\) 移到 \(B(1,1)\)，规划器比较「直线」与「抛物线 \(y=x^2\)」两条 route，看哪条更省电.</p>
+<table class="dt">
+<tr><th>路径</th><th>参数化</th><th>做功 \(W/\mathrm{J}\)</th><th>相对直线</th></tr>
+<tr><td>① 直线</td><td>\(x=y=t,\ t:0\to1\)</td><td>\(1.000\)</td><td>—</td></tr>
+<tr><td>② 抛物线</td><td>\(y=x^2,\ x:0\to1\)</td><td>\(0.667\)</td><td>省 \(33\%\)</td></tr>
+</table>
+<p class="sol"> 判据 \(P_y=\dfrac{\partial(2y)}{\partial y}=2
+eq0=Q_x\)，场<b>非保守</b>，路径有关.</p>
+<p><b>① 直线</b>：\(x=y=t\)，</p>
+\[W_1=\int_0^1(2t)\,\mathrm{d}t=\Bigl[t^2\Bigr]_0^1=1\ \mathrm{J}.\]
+<p><b>② 抛物线</b>：\(y=x^2,\ \mathrm{d}y=2x\,\mathrm{d}x\)，</p>
+\[W_2=\int_0^1 2x^2\,\mathrm{d}x=\frac23=0.667\ \mathrm{J}.\]
+<p>两者相差 \(0.333\ \mathrm{J}\)，抛物线更省.</p>
+<p><b>工程结论：</b> 是否保守，决定调度策略的根本分野：保守场（上例重力）下路径随意；非保守场（本案电磁力）下必须把它当代价函数优化——绕一条「y 较小」的弧能省 \(33\%\) 电.判据就一条：\(P_y\stackrel{?}{=}Q_x\)（定理 11.8 条件 ①）.但务必记住引例二与例 11.36 的警告：<b>即使局部 \(P_y=Q_x\)，若区域内藏着奇点（如原点处的点涡），单连通前提不成立，路径无关仍会失效</b>.执行器驱动前要先做「奇点排查」.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s114" data-ch="11" data-n="5"></div>
+<h2 id="s115"><span class="num">§11.5</span>曲线积分的应用</h2>
+    
+<div class="h3">§11.5 曲线积分的应用</div>
+
+<p class="muted">从理论走向工程：当曲线积分与“力、流量、质量、升力”这些物理量结合时，它就不再只是符号游戏，而是飞机、风机、卫星和芯片设计背后的真实算力.本节把第二型曲线积分解释为“环量”与“通量”，把第一型曲线积分解释为“质量”与“转动惯量”，并给出库塔–茹科夫斯基升力定理这一高光应用.</p>
+
+<div class="ex">
+<div class="lab">引例一 · 风机叶片的升力从何而来</div>
+<p class="stmt">水平风速 \(v=60\ \mathrm{m/s}\) 掠过一段翼型，气流绕翼型形成环量 \(\Gamma\).设空气密度 \(\rho=1.225\ \mathrm{kg/m^3}\)，实测环量 \(\Gamma=80\ \mathrm{m^2/s}\).库塔–茹科夫斯基定理告诉我们：单位长度翼展所受升力 \(L=\rho\,v\,\Gamma\).这台百千瓦级风机单叶片在额定风速下的升力有多大？</p>
+<p class="sol"><span class="mk">解</span>直接代入：
+\[
+L=\rho\,v\,\Gamma=1.225\times 60\times 80=5880\ \mathrm{N/m}.
+\]
+即每米翼展承受约 \(5.88\ \mathrm{kN}\) 的升力.三叶片、叶展 \(40\ \mathrm{m}\) 的风机，单侧叶片理论总升力约为 \(5880\times 40\times 3\approx 7.06\times 10^5\ \mathrm{N}\)，相当于把约 \(72\) 吨重物托离地面——这正是风机能够稳定旋转、持续发电的力学根源.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>数值</th><th>单位</th></tr>
+<tr><td>空气密度</td><td>\(\rho\)</td><td>\(1.225\)</td><td>\(\mathrm{kg/m^3}\)</td></tr>
+<tr><td>来流速度</td><td>\(v\)</td><td>\(60\)</td><td>\(\mathrm{m/s}\)</td></tr>
+<tr><td>绕翼环量</td><td>\(\Gamma\)</td><td>\(80\)</td><td>\(\mathrm{m^2/s}\)</td></tr>
+<tr><td>单位翼展升力</td><td>\(L\)</td><td>\(5880\)</td><td>\(\mathrm{N/m}\)</td></tr>
+<tr><td>单叶总升力</td><td>\(3L\ell\)</td><td>\(7.06\times10^5\)</td><td>\(\mathrm{N}\)</td></tr>
+</table>
+<p class="muted">而环量 \(\Gamma\) 本身正是一个第二型曲线积分：沿翼型闭合围线 \(\oint_{\partial C} \vec v\cdot\mathrm{d}\vec r\).曲线积分与升力的链条在例 11.38 中闭环验证.</p>
+</div>
+
+<div class="ex">
+<div class="lab">引例二 · 卫星太阳翼展开的变力做功</div>
+<p class="stmt">某卫星太阳翼在展开过程中，驱动机构提供的力沿一条平面曲线 \(L\) 作用，力场为 \(\vec F(x,y)=(2x+y,\ x-3y)\).太阳翼端点的运动轨迹由参数方程
+\[
+x=t^2,\qquad y=2t,\qquad 0\le t\le 2
+\]
+给出.求展开全过程驱动机构对太阳翼所做的功.</p>
+<p class="sol"><span class="mk">解</span>功即第二型曲线积分
+\[
+W=\int_L \vec F\cdot\mathrm{d}\vec r=\int_L (2x+y)\,\mathrm{d}x+(x-3y)\,\mathrm{d}y.
+\]
+由 \(x=t^2,\ y=2t\) 得 \(\mathrm{d}x=2t\,\mathrm{d}t,\ \mathrm{d}y=2\,\mathrm{d}t\)，且 \(2x+y=2t^2+2t,\ x-3y=t^2-6t\).于是
+\[
+\begin{aligned}
+W&=\int_0^2\big[(2t^2+2t)(2t)+(t^2-6t)(2)\big]\mathrm{d}t\\
+&=\int_0^2\big(4t^3+4t^2+2t^2-12t\big)\mathrm{d}t
+=\int_0^2(4t^3+6t^2-12t)\,\mathrm{d}t\\
+&=\Big[t^4+2t^3-6t^2\Big]_0^2=(16+16-24)-0=8\ \mathrm{J}.
+\end{aligned}
+\]
+展开做功为 \(8\ \mathrm{J}\)，量级与星上执行机构的额定能量预算吻合.</p>
+<table class="dt">
+<tr><th>\(t\)</th><th>\(x\)</th><th>\(y\)</th><th>\(F_x\)</th><th>\(F_y\)</th><th>微元功 \(\mathrm{d}W\)</th></tr>
+<tr><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td><td>\(0\)</td></tr>
+<tr><td>\(1\)</td><td>\(1\)</td><td>\(2\)</td><td>\(4\)</td><td>\(-5\)</td><td>\((4\cdot2-5\cdot2)\mathrm{d}t=-2\mathrm{d}t\)</td></tr>
+<tr><td>\(2\)</td><td>\(4\)</td><td>\(4\)</td><td>\(12\)</td><td>\(-4\)</td><td>\((12\cdot4-4\cdot2)\mathrm{d}t=40\mathrm{d}t\)</td></tr>
+<tr><td>积分</td><td>—</td><td>—</td><td>—</td><td>—</td><td>\(W=8\ \mathrm{J}\)</td></tr>
+</table>
+</div>
+
+<div class="def">
+<div class="lab">定义 11.5 · 变力沿曲线所做的功</div>
+<p class="stmt">质点在变力场 \(\vec F(x,y)=(P(x,y),Q(x,y))\) 作用下沿有向曲线 \(L\) 从 \(A\) 运动到 \(B\)，则力所做的功为第二型曲线积分
+\[
+W=\int_L \vec F\cdot\mathrm{d}\vec r=\int_L P\,\mathrm{d}x+Q\,\mathrm{d}y.
+\]
+在空间力场 \(\vec F=(P,Q,R)\) 中则为 \(W=\int_L P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z\).更换运动方向，功改变符号，与 §11.2 的“有向性”完全一致.</p>
+</div>
+
+<div class="def">
+\[
+\Gamma=\oint_L \vec F\cdot\mathrm{d}\vec r=\oint_L P\,\mathrm{d}x+Q\,\mathrm{d}y.
+\]
+</div>
+
+<div class="def">
+\[
+\operatorname{rot}\vec F=\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=Q_x-P_y.
+\]
+注意平面旋度退化为一个标量（垂直纸面方向的 \(z\) 分量），它正是格林公式右端被积函数的“场论身份”.</p>
+</div>
+
+<div class="def">
+<div class="lab">定义 11.8 · 曲线形构件的质量、质心与转动惯量</div>
+<p class="stmt">设平面光滑曲线 \(L\) 上分布有线密度 \(\rho(x,y)\)（单位弧长质量）.则
+\[
+M=\int_L \rho\,\mathrm{d}s,\quad
+\bar x=\frac1M\int_L x\rho\,\mathrm{d}s,\quad
+\bar y=\frac1M\int_L y\rho\,\mathrm{d}s,
+\]
+\[
+I_x=\int_L y^2\rho\,\mathrm{d}s,\quad
+I_y=\int_L x^2\rho\,\mathrm{d}s,\quad
+I_O=\int_L (x^2+y^2)\rho\,\mathrm{d}s.
+\]
+这里全部是第一型曲线积分——弧长元素 \(\mathrm{d}s\) 恒正，故质量、转动惯量恒非负，与路径方向无关.</p>
+</div>
+
+<div class="note"><b>第一型 vs 第二型的应用分工.</b>凡是“沿路径累积的标量”（质量、弧长、质心、转动惯量、带电导线的电荷）都用第一型 \(\int_L f\,\mathrm{d}s\)；凡是“力或场的投影沿坐标的累积”（功、环量、通量）都用第二型 \(\int_L P\,\mathrm{d}x+Q\,\mathrm{d}y\).辨清“被积的是标量还是向量投影”，就不会选错积分类型.</div>
+
+<div class="theorem">
+<div class="lab">定理 11.10 · 格林公式的向量形式（环量–旋度公式）</div>
+<p class="stmt">设 \(D\) 为平面单连通区域，\(L=\partial D\) 取正向，\(\vec F=(P,Q)\) 在 \(D\) 上有一阶连续偏导，则
+\[
+\oint_L \vec F\cdot\mathrm{d}\vec r=\iint_D \operatorname{rot}\vec F\,\mathrm{d}\sigma
+=\iint_D (Q_x-P_y)\,\mathrm{d}\sigma.
+\]
+即“沿边界的环量”等于“区域内旋度的二重积分”.这是 §11.3 格林公式的场论表述，左端是环量，右端是旋度总量.</p>
+</div>
+
+<div class="theorem">
+<div class="lab">定理 11.11 · 平面通量公式（通量–散度公式）</div>
+<p class="stmt">记穿过闭曲线 \(L\)（正向）向外的<b>通量</b>
+\[
+\Phi=\oint_L \vec F\cdot\vec n\,\mathrm{d}s=\oint_L P\,\mathrm{d}y-Q\,\mathrm{d}x,
+\]
+其中 \(\vec n\) 为单位外法向量.设 \(\vec F=(P,Q)\) 在 \(D\) 上有一阶连续偏导，则
+\[
+\Phi=\iint_D \operatorname{div}\vec F\,\mathrm{d}\sigma=\iint_D (P_x+Q_y)\,\mathrm{d}\sigma,
+\]
+</div>
+
+<div class="note"><b>两种闭曲线积分的对照.</b>沿正向闭曲线，<b>切向投影</b> \(P\,\mathrm{d}x+Q\,\mathrm{d}y\) 给出环量、连着旋度；<b>法向投影</b> \(P\,\mathrm{d}y-Q\,\mathrm{d}x\) 给出通量、连着散度.记忆口诀：“切向环量、法向通量；旋度转、散度涌.”</div>
+
+<div class="ex">
+<div class="lab">例 11.37 · 重力场沿任意路径做功与路径无关</div>
+<p class="stmt">重力场 \(\vec F=(0,-mg)\)，质点从 \(A(0,0)\) 沿任意路径到 \(B(x_1,y_1)\)，求重力做功并说明是否与路径无关.</p>
+<p class="sol"><span class="mk">解</span>
+\[
+W=\int_L 0\,\mathrm{d}x+(-mg)\,\mathrm{d}y=-mg\int_L \mathrm{d}y=-mg(y_1-0)=-mgy_1.
+\]
+结果只依赖端点纵坐标，与路径无关.这正是 §11.4 的“保守场”结论：这里 \(P=0,Q=-mg\)，\(P_y=0=Q_x\)，满足路径无关判据.</p>
+</div>
+
+<div class="ex">
+<div class="lab">例 11.38 · 绕翼型环量算出升力（闭环验证库塔–茹科夫斯基）</div>
+<p class="sol"><span class="mk">解</span>环量
+\[
+\Gamma=\oint_L P\,\mathrm{d}x+Q\,\mathrm{d}y=\oint_L (-y)\,\mathrm{d}x+x\,\mathrm{d}y.
+\]
+由格林公式，\(\Gamma=\iint_D (Q_x-P_y)\,\mathrm{d}\sigma=\iint_D(1-(-1))\,\mathrm{d}\sigma=2\iint_D\mathrm{d}\sigma\).椭圆面积 \(\iint_D\mathrm{d}\sigma=\pi\cdot 2\cdot 1=2\pi\)，故
+\[
+\Gamma=2\times 2\pi=4\pi\approx 12.57\ \mathrm{m^2/s}.
+\]
+于是单位翼展升力
+\[
+L=\rho v\Gamma=1.225\times 50\times 12.57\approx 770\ \mathrm{N/m}.
+\]
+这正是库塔–茹科夫斯基定理“升力来自环量”的定量体现：\(L=\rho v\Gamma\) 中的 \(\Gamma\) 本就是曲线积分 \(\oint\vec v\cdot\mathrm{d}\vec r\).</p>
+</div>
+
+<div class="ex">
+<div class="lab">例 11.39 · 由环量求旋度并判断旋转中心</div>
+<p class="sol"><span class="mk">解</span>旋度
+\[
+\operatorname{rot}\vec F=Q_x-P_y=(2y)-2y=0.
+\]
+</div>
+
+<div class="ex">
+<div class="lab">例 11.40 · 引力对沿螺旋上升质点的做功</div>
+<p class="stmt">质点受指向原点的平方反比引力 \(\vec F=-\dfrac{k}{(x^2+y^2+z^2)^{3/2}}(x,y,z)\)，沿螺旋线
+\[
+x=\cos t,\ y=\sin t,\ z=t,\quad 0\le t\le 2\pi
+\]
+从 \(t=0\) 升到 \(t=2\pi\).求引力做功.</p>
+<p class="sol"><span class="mk">解</span>注意到
+\[
+\vec F=
+abla\!\left(\frac{k}{\sqrt{x^2+y^2+z^2}}\right),
+\]
+因为 \(\dfrac{\partial}{\partial x}\dfrac{k}{r}=-k\dfrac{x}{r^3}=-F_x\).故 \(\vec F\) 是保守场，做功只与端点有关：
+\[
+W=\int_L \vec F\cdot\mathrm{d}\vec r=u(B)-u(A),\quad u=\frac{k}{\sqrt{x^2+y^2+z^2}}.
+\]
+端点 \(A(1,0,0)\)、\(B(1,0,2\pi)\)，于是
+\[
+W=\frac{k}{\sqrt{1+4\pi^2}}-\frac{k}{1}=k\!\left(\frac1{\sqrt{1+4\pi^2}}-1\right)\lt 0.
+\]
+引力做负功，说明质点上升需克服引力耗散能量，与直觉一致.</p>
+</div>
+
+<div class="ex">
+<div class="lab">例 11.41 · 变密度曲线杆的质量与质心</div>
+<p class="stmt">曲线 \(L\) 为直线段从 \((0,0)\) 到 \((3,4)\)，线密度 \(\rho(x,y)=x+2y\).求该杆质量与质心坐标.</p>
+<p class="sol"><span class="mk">解</span>参数化：\(\vec r(t)=(3t,4t),\ 0\le t\le 1\)，\(\mathrm{d}s=\sqrt{3^2+4^2}\,\mathrm{d}t=5\,\mathrm{d}t\)，且 \(\rho=3t+8t=11t\).质量
+\[
+M=\int_L \rho\,\mathrm{d}s=\int_0^1 11t\cdot 5\,\mathrm{d}t=55\Big[\frac{t^2}{2}\Big]_0^1=27.5.
+\]
+质心：
+\[
+\bar x=\frac1M\int_L x\rho\,\mathrm{d}s=\frac1{27.5}\int_0^1 (3t)(11t)\cdot 5\,\mathrm{d}t
+=\frac{165}{27.5}\int_0^1 t^2\mathrm{d}t=\frac{165}{27.5}\cdot\frac13=2,
+\]
+\[
+\bar y=\frac1M\int_L y\rho\,\mathrm{d}s=\frac1{27.5}\int_0^1 (4t)(11t)\cdot 5\,\mathrm{d}t
+=\frac{220}{27.5}\cdot\frac13=\frac{8}{3}\approx 2.667.
+\]
+质心为 \((2,\,8/3)\)，恰在杆中点的延长比例上（密度随 \(t\) 增大，质心偏向远端）.</p>
+</div>
+
+<div class="ex">
+<div class="lab">例 11.42 · 圆弧形导线的转动惯量</div>
+<p class="stmt">半圆弧 \(y=\sqrt{a^2-x^2}\,( -a\le x\le a)\)，均匀线密度 \(\rho_0\).求它对直径（\(x\) 轴）的转动惯量 \(I_x\) 与对原点的极转动惯量 \(I_O\).</p>
+<p class="sol"><span class="mk">解</span>参数化 \(x=a\cos t,\ y=a\sin t,\ 0\le t\le \pi\)，\(\mathrm{d}s=a\,\mathrm{d}t\).
+\[
+I_x=\int_L y^2\rho_0\,\mathrm{d}s=\rho_0\int_0^\pi a^2\sin^2 t\cdot a\,\mathrm{d}t
+=\rho_0 a^3\int_0^\pi \frac{1-\cos 2t}{2}\,\mathrm{d}t=\rho_0 a^3\cdot\frac{\pi}{2}=\frac{\pi}{2}\rho_0 a^3.
+\]
+极转动惯量：因 \(x^2+y^2=a^2\) 为常数，
+\[
+I_O=\int_L (x^2+y^2)\rho_0\,\mathrm{d}s=\rho_0 a^2\int_L \mathrm{d}s=\rho_0 a^2\cdot(\pi a)=\pi\rho_0 a^3.
+\]
+可验 \(I_O=I_x+I_y\)，由对称性 \(I_y=I_x\)，故 \(I_O=2I_x=\pi\rho_0 a^3\)，自洽.</p>
+</div>
+
+<div class="ex">
+<p class="sol"><span class="mk">解</span>通量 \(\Phi=\iint_D \operatorname{div}\vec F\,\mathrm{d}\sigma\)，散度
+\[
+\operatorname{div}\vec F=P_x+Q_y=1+(-1)=0.
+\]
+故 \(\Phi=\iint_D 0\,\mathrm{d}\sigma=0\)：进入椭圆的“流量”恰好等于流出的，净通量为零.直观上该场在 \(x\) 方向拉伸、\(y\) 方向压缩，面积无净源汇.</p>
+</div>
+
+<div class="ex">
+<div class="lab">例 11.44 · 有源场的通量与内部“源强”</div>
+<p class="sol"><span class="mk">解</span>散度 \(\operatorname{div}\vec F=2+3=5\) 为常数，故
+\[
+\Phi=\iint_D 5\,\mathrm{d}\sigma=5\cdot \pi R^2=5\pi R^2.
+\]
+通量正比于面积，比例系数正是散度 \(5\)：散度就是“单位面积的源强”.若 \(R=2\)，则 \(\Phi=5\pi\cdot4=20\pi\approx 62.8\)，表示每秒有约 \(62.8\) 单位的“物质”从圆盘内涌出.</p>
+</div>
+
+<div class="ex">
+<div class="lab">例 11.45 · 综合：库塔–茹科夫斯基升力的完整推演</div>
+<p class="stmt">考虑二维不可压缩定常流，远场速度 \(\vec v_\infty=(v,0)\)，叠加一个环量为 \(\Gamma\) 的点涡后，翼型表面速度场切向分量为 \(v_\tau=v+\dfrac{\Gamma}{2\pi r}\cos\theta\)（沿翼面）.用伯努利积分可得上下表面压差，进而证明总升力
+\[
+L=\rho v_\infty \Gamma.
+\]
+用曲线积分语言重述并数值演算：取 \(v=70\ \mathrm{m/s},\ \rho=1.225,\ \Gamma=120\ \mathrm{m^2/s}\).</p>
+<p class="sol"><span class="mk">解</span>曲线积分视角下，绕翼型闭合围线的环量
+\[
+\Gamma=\oint_{\partial C}\vec v\cdot\mathrm{d}\vec r
+\]
+正是速度场沿翼面的“净绕流”.由动量定理与伯努利方程推得单位翼展升力
+\[
+L=\rho\, v_\infty\,\Gamma.
+\]
+代入数值：
+\[
+L=1.225\times 70\times 120=10290\ \mathrm{N/m}\approx 10.3\ \mathrm{kN/m}.
+\]
+一架翼展 \(30\ \mathrm{m}\) 的客机单翼总升力约 \(10.3\times30\approx 309\ \mathrm{kN}\)，可平衡约 \(31.5\) 吨重量——与大型客机最大起飞重量的量级相符.曲线积分在这里把“绕流的旋转（环量）”直接翻译为“向上的托举（升力）”，是空气动力学最核心的定量桥梁.</p>
+<table class="dt">
+<tr><th>情景</th><th>\(v_\infty\) (m/s)</th><th>\(\Gamma\) (m²/s)</th><th>\(L\) (N/m)</th></tr>
+<tr><td>小型风机</td><td>\(60\)</td><td>\(80\)</td><td>\(5880\)</td></tr>
+<tr><td>简化翼型</td><td>\(50\)</td><td>\(12.57\)</td><td>\(770\)</td></tr>
+<tr><td>客机机翼</td><td>\(70\)</td><td>\(120\)</td><td>\(10290\)</td></tr>
+</table>
+</div>
+
+<div class="case">
+  <div class="lab">应用探微 · 自动驾驶的"最省电路线"：对坐标的曲线积分算总能耗</div>
+  <details open><summary>展开：沿一条给定轨迹行驶，电机要付出多少功</summary>
+  <div class="body">
+    <p class="stmt">电动车沿某条规划轨迹 \(C\) 行驶，电机需要克服的阻力可看成"力场" \(\vec F\).行驶消耗的总能量正是对坐标的曲线积分 \(\displaystyle W=\int_C \vec F\cdot\mathrm d\vec r\).比较两条路线，就能选出最省电的一条.</p>
+    <p>设平直路段阻力与速度反向：\(\vec F(x,y)=(-k v,\,0)\)，其中 \(k=2\ \mathrm{N\cdot s/m}\)，\(v=10\ \mathrm{m/s}\).轨迹①为直线 \(A(0,0)	o B(100,0)\)，轨迹②为折线路径 \(A	o(50,30)	o B\).</p>
+    <p><b>路线①（直线）：</b>\(\mathrm d\vec r=(\mathrm dx,0)\)，故</p>
+    \[W_1=\int_0^{100}(-k v)\,\mathrm dx=-k v\cdot100=-2	\times10	\times100=-2000\ \mathrm J.\]
+    <p>取绝对值，耗电 \(2000\ \mathrm J\).</p>
+    <p><b>路线②（折线）：</b>第一段长 \(\sqrt{50^2+30^2}\approx58.31\ \mathrm m\)，方向单位向量 \((	frac{50}{58.31},	frac{30}{58.31})\)；阻力在位移方向投影为 \(-kv\cdot	frac{50}{58.31}\).该段功</p>
+    \[W_{2a}=(-2	\times10)\cdot	frac{50}{58.31}	\times58.31=-1000\ \mathrm J,\]
+    <p>第二段同理再 \(-1000\ \mathrm J\)，合计 \(-2000\ \mathrm J\).两段直线里程相同、阻力恒定，耗电相等；但若路线②绕得更远，里程变长，耗电立刻上升——曲线积分把"路径形状"直接换算成能耗，正是路径规划器择优的依据.</p>
+  </div></details>
+</div>
+
+<div class="note"><b>本节小结.</b>① 变力沿曲线做功 = 第二型曲线积分，方向改变则功变号；② 闭曲线上的第二型积分叫<b>环量</b>，由格林公式等于区域内<b>旋度</b>的二重积分；③ 法向形式的闭曲线积分叫<b>通量</b>，等于<b>散度</b>的二重积分——旋度“转”、散度“涌”；④ 第一型曲线积分用于质量、质心、转动惯量等标量累积，\(\mathrm{d}s\) 恒正；⑤ 库塔–茹科夫斯基定理 \(L=\rho v\Gamma\) 把“绕翼环量（曲线积分）”变成“升力（工程载荷）”，是曲线积分最具象的高光应用.</div>
+
+<div class="note"><b>本章贯通.</b>第 11 章从第一型（对弧长）与第二型（对坐标）两条线索展开：第一型解释“沿路径的标量累积”，第二型解释“力与场的投影累积”；格林公式把第二型闭曲线积分拉回平面二重积分；路径无关条件把“保守场”与“原函数”连通；最后本节把这些工具翻译成功、环量、通量、质量与升力.下章（第 12 章）将把“积分区域”从曲线升级到<b>曲面</b>，进入曲面积分与高斯公式、斯托克斯公式的更高维度统一.</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 格林：磨坊主出身的数学家</summary>
+
+<p>1793 年，乔治·格林（George Green）出生在英格兰诺丁汉一个磨坊主家庭.他几乎没受过正规学校教育，少年时在父亲的面包房和磨坊里长大，数学全靠夜里自学——读的是当时能弄到的微积分小册子.1828 年，三十四岁的格林自费印刷了一本名为《论数学分析应用于电磁理论》（An Essay on the Application on Mathematical Analysis to the Theories of Electricity and Magnetism）的小册子，只印了不到五十本，主要送给了诺丁汉的学者和朋友.</p>
+<p>在这本小册子里，格林第一次严格定义了今天所称的「势函数」（他叫 potential）和「格林函数」，并给出了把区域边界上的积分与区域内部的积分联系起来的公式——这正是教材 §11.3 的格林公式的精神先驱.他敏锐地指出：电磁场中「内部的总量」可以由「边界上的观测」完全决定，这一思想比高斯公式、斯托克斯公式的系统表述都早了一步.可惜这本小册子长期沉睡，直到爱丁堡的数学家开尔文（William Thomson）在 1845 年偶然读到并大力推介，格林的工作才被剑桥数学界接纳.</p>
+<p>格林一生只活了四十七岁，没留下多少大部头著作，但他的名字已经钉在了数学物理的基石上：格林公式、格林函数、格林定理.一个磨坊主的儿子，用夜里偷来的灯光，为场论铺好了第一块砖.诺丁汉大学今天仍保留着那座格林磨坊，作为这位「业余数学家」的纪念碑.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] George Green, An Essay on the Application of Mathematical Analysis to the Theories of Electricity and Magnetism, Nottingham, 1828. [2] M. Kline《古今数学思想》第三册，上海科学技术出版社，1980. [3] Wikipedia 词条 “George Green (mathematician)”“Green's theorem”.</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 保守场与能量守恒：物理与数学的同构</summary>
+
+<p>数学的「原函数 \(u\)」与物理的「势能 \(U\)」是同一样东西的两套语言：定理 11.8 的「端点代入」就是物理里「末态势能减初态势能」.例 11.37 的重力场、例 11.19 的指向原点的中心力场、例 11.40 的平方反比引力场，都是保守场的典型；它们做功与路径无关，所以行星绕日、卫星绕地才能有稳定的轨道能量.反过来，一旦 \(P_y
+eq Q_x\)（如例 11.12 的 \(xy\,\mathrm{d}x\)、或带漩涡的流体），闭曲线积分不为零，就对应物理里的「耗散」或「有旋」——能量不再守恒，功会随路径流失或累积.</p>
+<p>更深一层，§11.3 的格林公式与 §11.5 的环量–旋度、通量–散度公式，其实是同一个微分运算「\(
+
+abla\)」在不同维度和不同投影下的表现：切向投影给出旋度（环量），法向投影给出散度（通量）.从平面上的曲线积分，到空间的高斯公式、斯托克斯公式，再到 Maxwell 方程组，这条「边界积分 = 内部微分」的线索一以贯之.理解 §11.4 的保守场，等于拿到了打开整个经典场论的一把钥匙.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] H. Goldstein《Classical Mechanics》第1章 “Conservative Systems”，Addison-Wesley. [2] 同济大学《高等数学》第十一章「曲线积分与曲面积分」，高等教育出版社. [3] M. Kline《古今数学思想》第四册，上海科学技术出版社，1980.</p>
+</details>
+</div>
+
+<div class="ky" id="adv11">
+<div class="ky-hd">🎯 考研选讲 · 第十一章 曲线积分</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题（数学一常考））计算 \(\displaystyle I=\int_L\bigl(\mathrm{e}^x\sin y-my\bigr)\mathrm{d}x+\bigl(\mathrm{e}^x\cos y-m\bigr)\mathrm{d}y\)，其中 \(L\) 为由点 \(A(a,0)\) 沿上半圆周 \(x^2+y^2=ax\ (y\ge0)\) 到点 \(O(0,0)\) 的弧（\(a\gt0,\ m\) 为常数）.</p>
+<p class="ky-hint"><b>思路点拨.</b> 曲线不封闭，直接参数化会被 \(\mathrm{e}^x\sin y\) 卡死.标准套路是<b>补线法</b>：补上 \(x\) 轴上的线段 \(\overline{OA}\)，使 \(L+\overline{OA}\) 成闭曲线，再用格林公式；先判定正向，最后减去补线积分.注意超越函数在求偏导后相消.</p>
+<p class="sol"><span class="mk">解</span> 补 \(\overline{OA}:y=0,\ x:0\to a\).闭曲线 \(L+\overline{OA}\) 行走时上半圆盘在左侧，为正向.\(P=\mathrm{e}^x\sin y-my,\ Q=\mathrm{e}^x\cos y-m\)，则</p>
+\[\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=\mathrm{e}^x\cos y-\bigl(\mathrm{e}^x\cos y-m\bigr)=m.\]
+<p>上半圆盘面积 \(\dfrac{\pi a^2}{8}\)，故</p>
+\[\oint_{L+\overline{OA}}=\iint_D m\,\mathrm{d}\sigma=\frac{\pi ma^2}{8}.\]
+<p>在 \(\overline{OA}\) 上 \(y=0,\ \mathrm{d}y=0\)，故 \(P=0\)，\(\displaystyle\int_{\overline{OA}}=0\).于是</p>
+\[I=\frac{\pi ma^2}{8}-0=\frac{\pi ma^2}{8}.\]
+<p class="ky-idea"><b>命题意图.</b> 考查补线法三步（补—算—减）与「超越函数求偏导相消」的嗅觉；同时考正向判定（外逆内顺）.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题（数学一常考））验证 \(\bigl(3x^2y-y^3+1\bigr)\mathrm{d}x+\bigl(x^3-3xy^2+2\bigr)\mathrm{d}y\) 是某函数的全微分，并求出一个原函数.</p>
+<p class="ky-hint"><b>思路点拨.</b> 先算 \(P_y\) 与 \(Q_x\) 是否相等（且区域为全平面单连通）；相等后即用<b>偏积分法</b>（或折线积分法）求原函数 \(u\).注意偏积分时「积分常数」是 \(y\) 的函数 \(\varphi(y)\)，若第三步出现残留的 \(x\) 必是算错.</p>
+<p class="sol"><span class="mk">解</span> \(P=3x^2y-y^3+1,\ Q=x^3-3xy^2+2\)，</p>
+\[\frac{\partial P}{\partial y}=3x^2-3y^2=\frac{\partial Q}{\partial x},\]
+<p>故为全微分.对 \(x\) 偏积分：</p>
+\[u=\int(3x^2y-y^3+1)\mathrm{d}x=x^3y-xy^3+x+\varphi(y).\]
+<p>对 \(y\) 求偏导并令等于 \(Q\)：</p>
+\[\frac{\partial u}{\partial y}=x^3-3xy^2+\varphi'(y)=x^3-3xy^2+2\ \Longrightarrow\ \varphi'(y)=2,\]
+<p>故 \(\varphi(y)=2y+C\)，取 \(C=0\) 得</p>
+\[u(x,y)=x^3y-xy^3+x+2y.\]
+<p class="ky-idea"><b>命题意图.</b> 考查路径无关四等价条件（定理 11.8）与原函数求法（定理 11.9）；「\(\varphi\) 中残留 \(x\) 即错」是重要自检点.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题（数学一常考））计算 \(\displaystyle I=\int_L\bigl(x^2-2xy\bigr)\mathrm{d}x+\bigl(y^2-2xy\bigr)\mathrm{d}y\)，其中 \(L\) 是抛物线 \(y=x^2\) 上从点 \((-1,1)\) 到点 \((1,1)\) 的一段弧.</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是<b>第二类曲线积分的直接参数化</b>（定理 11.4）：取 \(x\) 为参数，起点对应 \(x=-1\)、终点对应 \(x=1\)（下限小于上限是巧合，本质是「起点定下限、终点定上限」）.代入后注意奇偶函数在对称区间的积分.</p>
+<p class="sol"><span class="mk">解</span> \(y=x^2,\ \mathrm{d}y=2x\,\mathrm{d}x,\ x:-1\to1\)，</p>
+\[P=x^2-2x\cdot x^2=x^2-2x^3,\qquad Q=x^4-2x\cdot x^2=x^4-2x^3.\]
+<p>于是</p>
+\[I=\int_{-1}^{1}\Bigl[(x^2-2x^3)+(x^4-2x^3)\cdot2x\Bigr]\mathrm{d}x
+ =\int_{-1}^{1}\bigl(x^2-2x^3+2x^5-4x^4\bigr)\mathrm{d}x.\]
+<p>奇次幂项积分为零，只剩偶次：</p>
+\[I=2\int_0^1(x^2-4x^4)\mathrm{d}x=2\Bigl(\frac13-\frac45\Bigr)=2\cdot\Bigl(-\frac{7}{15}\Bigr)=-\frac{14}{15}.\]
+<p class="ky-idea"><b>命题意图.</b> 考查统一参数化公式与「化为定积分后的一元奇偶性」（注意这不同于第一类积分的沿曲线对称性）；也提醒：下限大于上限在第二类中合法，本题恰好下限小于上限.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题（数学一常考））计算 \(\displaystyle I=\oint_L\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}\)，其中 \(L\) 为任意一条包围原点的分段光滑正向简单闭曲线.</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是<b>挖洞法</b>的样板（例 11.26）.先算 \(Q_x-P_y=0\)（除原点外），但原点是奇点且被包围，不能直接用格林公式.以原点为圆心挖一个小圆 \(l_\varepsilon\)，在挖洞后的复连通区域用定理 11.7，把大回路积分转移到小圆上精确算出.关键口诀：<b>分母长什么样，洞就挖什么样</b>.</p>
+<p class="sol"><span class="mk">解</span> 记 \(P=\dfrac{-y}{x^2+y^2},\ Q=\dfrac{x}{x^2+y^2}\)，在 \((x,y)
+eq(0,0)\) 处 \(Q_x-P_y=0\).挖小圆 \(l_\varepsilon:x^2+y^2=\varepsilon^2\)（逆时针），由复连通格林公式</p>
+\[\oint_L\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}
+ =\oint_{l_\varepsilon}\frac{x\,\mathrm{d}y-y\,\mathrm{d}x}{x^2+y^2}.\]
+<p>令 \(x=\varepsilon\cos t,\ y=\varepsilon\sin t\ (t:0\to2\pi)\)，分母化为常数 \(\varepsilon^2\)，分子</p>
+\[x\,\mathrm{d}y-y\,\mathrm{d}x=\varepsilon^2\,\mathrm{d}t,\]
+<p>故</p>
+\[I=\int_0^{2\pi}\frac{\varepsilon^2}{\varepsilon^2}\,\mathrm{d}t=2\pi.\]
+<p>若 \(L\) 不包围原点，则所围区域内无奇点，直接用格林公式得 \(I=0\).</p>
+<p class="ky-idea"><b>命题意图.</b> 必考陷阱：「看到 \(Q_x-P_y=0\) 就断言积分为零」是错的，必须先查奇点是否在区域内.该积分 \(2\pi\) 正是极角绕原点的总增量（绕数），是留数定理与拓扑的雏形.</p>
+</div>
+
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 风机叶片：库塔–茹科夫斯基升力来自环量</summary>
+<p><b>场景：</b> 北方草原的风电场里，一台 2 MW 风机正在满发，三片 40 米长的叶片合力被气流「托」起约 72 吨的等效重量——托力的来源，是翼型周围气流形成<b>环量</b> \(\Gamma\)，而环量正是一个第二类闭曲线积分 \(\Gamma=\oint_{\partial C}\boldsymbol{v}\cdot\mathrm{d}\boldsymbol{r}\)（定义 11.6）.库塔–茹科夫斯基定理给出单位翼展升力 \(L=\rho v_\infty\Gamma\)（例 11.38、例 11.45）.</p>
+<table class="dt">
+<tr><th>情景</th><th>\(v_\infty/(\mathrm{m/s})\)</th><th>\(\Gamma/(\mathrm{m^2/s})\)</th><th>\(\rho/(\mathrm{kg/m^3})\)</th><th>\(L/(\mathrm{N/m})\)</th></tr>
+<tr><td>小型风机</td><td>\(60\)</td><td>\(80\)</td><td>\(1.225\)</td><td>\(5880\)</td></tr>
+<tr><td>简化翼型</td><td>\(50\)</td><td>\(12.57\)</td><td>\(1.225\)</td><td>\(770\)</td></tr>
+<tr><td>客机机翼</td><td>\(70\)</td><td>\(120\)</td><td>\(1.225\)</td><td>\(10290\)</td></tr>
+</table>
+<p class="sol"> 小型风机：</p>
+\[L=\rho v_\infty\Gamma=1.225\times60\times80=5880\ \mathrm{N/m}.\]
+<p>三叶片、叶展 \(\ell=40\ \mathrm{m}\)，单侧叶片总升力 \(3L\ell=5880\times40\times3=7.06\times10^5\ \mathrm{N}\)，约可托起</p>
+\[\frac{7.06\times10^5}{9.8}\approx7.2\times10^4\ \mathrm{kg}=72\ \mathrm{t}.\]
+<p>这与风机额定功率的量级自洽.用格林公式的向量形式（定理 11.10）也可得环量 \(\Gamma=\iint_D(Q_x-P_y)\,\mathrm{d}\sigma\)——升力本质是被翼面「卷」起来的旋度总量.</p>
+<p><b>工程结论：</b> 升力与环量严格成正比，所以翼型设计的核心就是<b>用几何弯度制造合适的环量 \(\Gamma\)</b>（库塔条件决定 \(\Gamma\) 的大小）.一条闭曲线积分 \(\oint\boldsymbol{v}\cdot\mathrm{d}\boldsymbol{r}\)，就这样翻译成了托起几十吨重的向上力——这是空气动力学最核心的定量桥梁，也是曲线积分在高端装备上最耀眼的应用.</p>
+<p class="cn-point">环量 \(\Gamma=80\ \mathrm{m^2/s}\) 乘上风速与空气密度，就是托起 72 吨的 \(L=\rho v_\infty\Gamma\)——中国风电装机连续多年全球第一，每一度绿电背后都有一条被曲线积分算准的环量.高端装备的地基，常常就是这样一条闭曲线积分.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 管道流量：通量–散度公式是 CFD 的质量守恒内核</summary>
+<p><b>场景：</b> 供水调度中心的大屏上，出厂水主管的流量突然跳变，抢修班却不能停水拆管去核实，只能靠测速度剖面来估算——这段圆管（半径 \(R=0.5\ \mathrm{m}\)）输水，轴向速度剖面为抛物型 \(v(r)=v_0\bigl(1-(r/R)^2\bigr)\)，\(v_0=2\ \mathrm{m/s}\).体积流量 \(Q\) 是对「速度 × 面积微元」的第一类积分；而定理 11.11 的通量–散度公式 \(\Phi=\oint_L\boldsymbol{F}\cdot\boldsymbol{n}\,\mathrm{d}s=\iint_D\operatorname{div}\boldsymbol{F}\,\mathrm{d}\sigma\) 则是它的二维闭曲线版本.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>管半径</td><td>\(R\)</td><td>\(0.5\ \mathrm{m}\)</td></tr>
+<tr><td>中心速度</td><td>\(v_0\)</td><td>\(2\ \mathrm{m/s}\)</td></tr>
+<tr><td>流体</td><td>水</td><td>不可压缩</td></tr>
+</table>
+<p class="sol"> 在圆盘截面上积分（环向对称，取圆环微元 \(2\pi r\,\mathrm{d}r\)）：</p>
+\[Q=\int_0^R v(r)\cdot2\pi r\,\mathrm{d}r
+ =2\pi v_0\int_0^R\Bigl(r-\frac{r^3}{R^2}\Bigr)\mathrm{d}r
+ =2\pi v_0\Bigl(\frac{R^2}{2}-\frac{R^2}{4}\Bigr)
+ =\frac{\pi v_0 R^2}{2}.\]
+<p>代入数值：</p>
+\[Q=\frac{\pi\times2\times0.25}{2}=0.25\pi=0.785\ \mathrm{m^3/s}.\]
+<p>另一方面，对不可压缩流体 \(\operatorname{div}\boldsymbol{v}=0\)，由通量–散度公式（定理 11.11）沿管道横截面边界的净通量为零：入口流入 = 出口流出，内部无源无汇.本例算出的 \(Q=0.785\ \mathrm{m^3/s}\) 正是这个「进出相等」的断面通量.</p>
+<p><b>工程结论：</b> 通量–散度公式（定理 11.11）是流体力学连续方程 \(\displaystyle\iiint_V
+abla\cdot\boldsymbol{v}\,\mathrm{d}V=\oint_{\partial V}\boldsymbol{v}\cdot\boldsymbol{n}\,\mathrm{d}S\) 的二维原型，是 every CFD 求解器质量守恒项的数学来源.工程上只要测出速度剖面 \(v(r)\)，用第一类积分（定义 11.8 同族的「沿截面的累积」）就能标定流量，不必拆管——这正是曲线/面积分从课本走进水厂、油气管线的日常.</p>
+<p class="cn-point">一个抛物型速度剖面 \(v(r)=v_0\bigl(1-(r/R)^2\bigr)\) 沿截面积分，就得到每秒 \(0.785\ \mathrm{m^3}\) 的出厂水量——供水、输油管网里千千万万个「不断流计量」，靠的就是这条通量公式守住的民生账本.</p>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC11">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq11" data-ch=11><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第11章 · 曲线积分</div>
+<a href="#s111">11.1 对弧长的曲线积分</a>
+<a href="#s112">11.2 对坐标的曲线积分</a>
+<a href="#s113">11.3 格林公式</a>
+<a href="#s114">11.4 曲线积分与路径无关的条件</a>
+<a href="#s115">11.5 曲线积分的应用</a>
+<a href="ch11.html#adv11">考研选讲</a>
+<a href="ch11.html#cq11">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 11, "list": [["s111", "11.1 对弧长的曲线积分"], ["s112", "11.2 对坐标的曲线积分"], ["s113", "11.3 格林公式"], ["s114", "11.4 曲线积分与路径无关的条件"], ["s115", "11.5 曲线积分的应用"], ["adv11", "考研选讲"], ["cq11", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

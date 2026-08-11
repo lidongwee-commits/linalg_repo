@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第7章 · 常微分方程</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第7章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第7章 · 常微分方程</div>
+<a href="ch7.html">整章</a>
+<a href="ch7.html#adv7">考研选讲</a>
+<a href="ch7.html#cq7">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH7 -->
+<div class="kicker">Chapter 7</div>
+<h1 class="title">常微分方程<span class="en">Ordinary Differential Equations</span></h1>
+<p class="lede">许多自然规律以“变化率之间的关系”表述，即微分方程.本章先建立基本概念，再分类求解一阶方程（可分离、齐次、线性），研究二阶线性微分方程的理论与解法，并简要介绍几类高阶方程.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>微分方程</b> → 神经 ODE：深度网络即动力系统</li>
+<li><b>一阶方程</b> → 温度衰减、用户采用率 Logistic</li>
+<li><b>二阶线性</b> → 弹簧-阻尼机械臂振动</li>
+<li><b>高阶方程</b> → 小车倒立摆控制</li>
+  </ul>
+</div>
+
+    <!-- ============ §7.1 ============ -->
+<div class="labx">
+  <div class="lab">微分方程概念 · 方向场</div>
+  <div class="desc">方程 (\(\dfrac{\mathrm{d}y}{\mathrm{d}x}=y\)) 的方向场：箭头方向即解曲线的切线方向.</div>
+  <canvas id="cv_p71" width="720" height="320"></canvas>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p71'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var W=cv.width,H=cv.height;
+    var xmin=-4,xmax=4,ymin=-3,ymax=3;
+    function f(x,y){ return y; }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+    var step=0.5;
+    ctx.strokeStyle='rgba(94,234,212,.75)';ctx.lineWidth=1.6;
+    for(var x=xmin;x<=xmax+1e-9;x+=step){
+      for(var y=ymin;y<=ymax+1e-9;y+=step){
+        var m=f(x,y);
+        if(!isFinite(m))continue;
+        var ang=Math.atan(m);
+        var L=0.34;
+        var x1=x-L*Math.cos(ang), y1=y-L*Math.sin(ang);
+        var x2=x+L*Math.cos(ang), y2=y+L*Math.sin(ang);
+        ctx.beginPath();ctx.moveTo(X(x1),Y(y1));ctx.lineTo(X(x2),Y(y2));ctx.stroke();
+        ctx.fillStyle='rgba(94,234,212,.9)';
+        ctx.beginPath();ctx.arc(X(x2),Y(y2),1.6,0,7);ctx.fill();
+      }
+    }
+  })();
+  </script>
+</div>
+
+<div class="labx">
+  <div class="lab">交互 · 指数增长与衰减：(\(dy/dt = ky\))</div>
+  <div class="desc">一阶线性 ODE 的解 (\(y=y_0 e^{kt}\)).k>0 指数增长，k<0 指数衰减.</div>
+  <div class="row"><canvas id="viz-ode" width="520" height="240" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">k = <span id="viz-k-val" style="font-weight:700;color:#a78bfa">0.50</span></label>
+    <input type="range" id="viz-k" min="-1.5" max="1.5" step="0.1" value="0.5" style="flex:1;min-width:100px;accent-color:#a78bfa">
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-ode'),ctx=c.getContext('2d');
+  var kS=document.getElementById('viz-k'),kV=document.getElementById('viz-k-val');
+  function draw(){var k=parseFloat(kS.value);kV.textContent=k.toFixed(2);var W=c.width,H=c.height;
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/20){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/10){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.strokeStyle=k>=0?'#0F6E56':'#fb7185';ctx.lineWidth=2.5;ctx.beginPath();
+    for(var px=0;px<=W;px+=2){var t=px/W*5;var y=Math.exp(k*t);var py=H*0.7-y*H*0.08;if(py<0||py>H)continue;ctx[px===0?'moveTo':'lineTo'](px,py);}ctx.stroke();
+    ctx.fillStyle='#33473f';ctx.font='11px sans-serif';
+    ctx.fillText('y(t)=y₀·e^(kt)  k='+k.toFixed(1)+(k>0?' 📈增长':' 📉衰减'),W*0.04,H*0.1);
+  }requestAnimationFrame(function(){draw();});kS.addEventListener('input',draw);
+})();
+</script>
+
+    <h2 id="s071"><span class="num">§7.1</span>常微分方程的基本概念</h2>
+    
+<div class="ex"><div class="lab">引例一　传染病为什么会"指数爆发"：SIR 模型的雏形</div>
+  <p class="stmt">流行病学中最基础的传播模型是 <b>SIR 模型</b>：把总人口 \(N\) 分为易感者 \(S(t)\)、感染者 \(I(t)\)、移出者（康复或隔离）\(R(t)\).设有效接触率为 \(\beta\)、移出率为 \(\gamma\)，则三者满足</p>
+  \[\frac{\mathrm{d}S}{\mathrm{d}t}=-\frac{\beta SI}{N},\qquad
+    \frac{\mathrm{d}I}{\mathrm{d}t}=\frac{\beta SI}{N}-\gamma I,\qquad
+    \frac{\mathrm{d}R}{\mathrm{d}t}=\gamma I .\]
+  <p>请注意：这里没有一个式子直接告诉我们"\(I(t)\) 等于什么"，它们只给出<b>各个量变化率之间的关系</b>.这种含有未知函数导数的方程，就是<b>微分方程</b>.</p>
+  <p><b>疫情初期的具体计算.</b>取 \(N=10000\)，\(\beta=0.4\,\mathrm{d^{-1}}\)，\(\gamma=0.1\,\mathrm{d^{-1}}\)，初始感染者 \(I_0=10\).初期 \(S\approx N\)，故 \(\dfrac{S}{N}\approx1\)，第二式简化为</p>
+  \[\frac{\mathrm{d}I}{\mathrm{d}t}=(\beta-\gamma)I=0.3\,I .\]
+  <p>这是一个最简单的一阶微分方程，容易验证 \(I(t)=10\,\mathrm{e}^{0.3t}\) 满足它.代入具体天数：</p>
+  <table class="dt">
+    <tr><th>时间 \(t\)（天）</th><th>0</th><th>5</th><th>10</th><th>15</th><th>20</th></tr>
+    <tr><th>感染人数 \(I(t)\)</th><th>10</th><th>44.8</th><th>200.9</th><th>900.2</th><th>4034.3</th></tr>
+  </table>
+  <p>20 天内感染者增长 <b>403 倍</b>.定义<b>基本再生数</b> \(R_0=\dfrac{\beta}{\gamma}=4\)：一个病人平均传染 4 个人.当且仅当 \(R_0\gt1\) 时 \(\dfrac{\mathrm{d}I}{\mathrm{d}t}\gt0\)，疫情才会扩散.防控措施（戴口罩降 \(\beta\)、快速隔离升 \(\gamma\)）的全部目标，就是把 \(R_0\) 压到 1 以下.</p>
+  <p><b>一句话总结：</b>规律往往以"变化率之间的关系"给出，而我们想要的是"函数本身".<b>从前者求出后者，就是解微分方程.</b></p>
+</div>
+
+<div class="ex"><div class="lab">引例二　动力电池的"极化电压"从哪来：一阶 RC 等效电路</div>
+  <p class="stmt">电池管理系统（BMS）用<b>一阶 RC 等效电路</b>描述锂电池的动态特性：极化电阻 \(R_p=0.015\,\Omega\) 与极化电容 \(C_p=3000\,\mathrm{F}\) 并联.以恒流 \(I=50\,\mathrm{A}\) 放电时，极化电压 \(U_p(t)\) 满足</p>
+  \[R_pC_p\frac{\mathrm{d}U_p}{\mathrm{d}t}+U_p=IR_p .\]
+  <p>代入数据：时间常数 \(\tau=R_pC_p=0.015\times3000=45\,\mathrm{s}\)，稳态值 \(IR_p=0.75\,\mathrm{V}\).可以验证</p>
+  \[U_p(t)=0.75\bigl(1-\mathrm{e}^{-t/45}\bigr)\quad(\mathrm{V})\]
+  <p>满足该方程及初始条件 \(U_p(0)=0\).具体数值：</p>
+  <table class="dt">
+    <tr><th>放电时间 \(t\)（s）</th><th>0</th><th>45（\(1\tau\)）</th><th>90（\(2\tau\)）</th><th>135（\(3\tau\)）</th><th>\(\to\infty\)</th></tr>
+    <tr><th>极化电压 \(U_p\)（V）</th><th>0</th><th>0.474</th><th>0.649</th><th>0.713</th><th>0.750</th></tr>
+  </table>
+  <p>BMS 正是靠这个 \(0.75\,\mathrm{V}\) 的修正量，从端电压中扣除极化影响，才能准确估计电池的真实荷电状态（SOC）.<b>本节先把"什么是微分方程、什么叫它的解"讲清楚，解法从 §7.2 开始展开.</b></p>
+</div>
+
+<h3>一、微分方程的基本概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 7.1</span>微分方程与阶</div>
+  <p>含有未知函数及其导数（或微分）的方程，称为<b>微分方程</b>.若未知函数是<b>一元</b>函数，称为<b>常微分方程</b>；若是多元函数（含偏导数），称为<b>偏微分方程</b>.本章只讨论常微分方程.</p>
+  <p>方程中出现的未知函数的<b>最高阶导数的阶数</b>，称为微分方程的<b>阶</b>.\(n\) 阶常微分方程的一般形式为</p>
+  \[F\bigl(x,\,y,\,y',\,y'',\,\dots,\,y^{(n)}\bigr)=0,\]
+  <p>其中 \(y^{(n)}\) 必须实际出现.若能解出最高阶导数，写成 \(y^{(n)}=f\bigl(x,y,y',\dots,y^{(n-1)}\bigr)\)，称为<b>正规形式</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.1　判定阶数与类型</div>
+  <p class="stmt">指出下列方程的阶数：</p>
+  <p>\(\text{(1)}\ \dfrac{\mathrm{d}y}{\mathrm{d}x}=3x^2y\)；　\(\text{(2)}\ y''+4y'+4y=\sin x\)；　\(\text{(3)}\ (y')^3+y^5=x\)；　\(\text{(4)}\ x^2\dfrac{\mathrm{d}^3y}{\mathrm{d}x^3}-\Bigl(\dfrac{\mathrm{d}y}{\mathrm{d}x}\Bigr)^{4}=0\).</p>
+  <p class="sol"><span class="mk">解</span>(1) 最高阶导数为 \(y'\)，<b>一阶</b>.</p>
+  <p>(2) 最高为 \(y''\)，<b>二阶</b>；且 \(y,y',y''\) 都是一次的，称为<b>二阶线性</b>方程.</p>
+  <p>(3) 最高为 \(y'\)，<b>一阶</b>.注意 \((y')^3\) 是三次方，但<b>阶数看的是求导次数，不是幂次</b>，故仍是一阶（非线性）.</p>
+  <p>(4) 最高为 \(y'''\)，<b>三阶</b>（非线性，因含 \((y')^4\)）.</p>
+  <p class="muted"><b>易错提醒：</b>"阶"与"次"是两回事.\((y')^3\) 中的 3 是<b>次数</b>，不影响阶数.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定义 7.2</span>解、通解与特解</div>
+  <p>若函数 \(y=\varphi(x)\) 在区间 \(I\) 上有 \(n\) 阶导数，且代入方程后使其成为恒等式，则称 \(y=\varphi(x)\) 为该微分方程在 \(I\) 上的<b>解</b>.</p>
+  <p>若一个解含有 \(n\) 个<b>相互独立</b>的任意常数（即无法合并减少），且 \(n\) 等于方程的阶数，则称之为<b>通解</b>.</p>
+  <p>通解中的任意常数取定具体数值后所得的解，称为<b>特解</b>.</p>
+  <p>不含任意常数、又不能由通解中任意常数取值得到的解，称为<b>奇解</b>.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定义 7.3</span>初始条件、初值问题与积分曲线</div>
+  <p>用来确定任意常数的附加条件称为<b>定解条件</b>.若这些条件都给在同一点 \(x_0\) 上，即</p>
+  \[y(x_0)=y_0,\quad y'(x_0)=y_1,\quad\dots,\quad y^{(n-1)}(x_0)=y_{n-1},\]
+  <p>则称为<b>初始条件</b>；微分方程连同初始条件，称为<b>初值问题</b>（或柯西问题）.</p>
+  <p>微分方程的一个解在 \(xOy\) 平面上的图形，称为该方程的一条<b>积分曲线</b>.通解对应<b>一族</b>积分曲线，初始条件相当于指定曲线必须通过点 \((x_0,y_0)\)（并具有给定的切线斜率等），从而在曲线族中挑出一条.</p>
+</div>
+
+<div class="note"><b>三个数量关系要牢记：</b>方程的阶数 = 通解中独立任意常数的个数 = 确定特解所需初始条件的个数.<br>
+一阶方程 \(y'=f(x,y)\) 的通解含 1 个常数，需 1 个条件 \(y(x_0)=y_0\)；二阶方程需 2 个条件 \(y(x_0)=y_0,\;y'(x_0)=y_1\).<b>只给 \(y(x_0)=y_0\) 一个条件是定不下二阶方程的特解的</b>，这是初学者最常见的错误.</div>
+
+<div class="ex"><div class="lab">例 7.2　验证解并区分通解与特解</div>
+  <p class="stmt">验证 \(y=C_1\mathrm{e}^{x}+C_2\mathrm{e}^{-x}\)（\(C_1,C_2\) 为任意常数）是方程 \(y''-y=0\) 的通解，并求满足 \(y(0)=2,\ y'(0)=0\) 的特解.</p>
+  <p class="sol"><span class="mk">解</span>求导：\(y'=C_1\mathrm{e}^{x}-C_2\mathrm{e}^{-x}\)，\(y''=C_1\mathrm{e}^{x}+C_2\mathrm{e}^{-x}=y\).故 \(y''-y=0\) 恒成立，是解.</p>
+  <p>方程为二阶，而该解含 2 个独立常数（\(\mathrm{e}^{x}\) 与 \(\mathrm{e}^{-x}\) 线性无关，\(C_1,C_2\) 不能合并），故为<b>通解</b>.</p>
+  <p>代入初始条件：</p>
+  \[\begin{cases}C_1+C_2=2,\\ C_1-C_2=0,\end{cases}\qquad\Longrightarrow\qquad C_1=C_2=1 .\]
+  <p>故特解为 \(y=\mathrm{e}^{x}+\mathrm{e}^{-x}=2\cosh x\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.3　由曲线族反求微分方程（消去任意常数）</div>
+  <p class="stmt">求以 \(y=C_1\cos2x+C_2\sin2x\) 为通解的微分方程.</p>
+  <p class="sol"><span class="mk">解</span>含 2 个任意常数，故所求方程应为<b>二阶</b>.逐次求导：</p>
+  \[y'=-2C_1\sin2x+2C_2\cos2x,\qquad
+    y''=-4C_1\cos2x-4C_2\sin2x .\]
+  <p>观察到 \(y''=-4(C_1\cos2x+C_2\sin2x)=-4y\)，两个常数同时被消去.故所求方程为</p>
+  \[y''+4y=0 .\]
+  <p class="muted"><b>方法要点：</b>含 \(n\) 个常数就求导 \(n\) 次，得到 \(n+1\) 个式子，从中消去这 \(n\) 个常数即可.这是"建立微分方程"的逆向练习，也是理解"通解与方程一一对应"的关键.</p>
+</div>
+
+<h3>二、用微分方程建立数学模型</h3>
+<div class="note"><b>微分方程建模四步法：</b><br>
+① <b>设变量</b>——明确自变量（常为时间 \(t\) 或位置 \(x\)）与未知函数，写清单位；<br>
+② <b>找规律</b>——依据物理定律（牛顿第二定律、能量守恒、基尔霍夫定律）或经验假设（"变化率正比于……"），列出<b>含导数</b>的等式；<br>
+③ <b>定条件</b>——写出初始条件或边界条件，个数须与阶数相符；<br>
+④ <b>解与验</b>——求解并<b>回代检验</b>，还要检查量纲与极限行为（\(t\to\infty\) 时是否趋于合理的稳态）.</div>
+
+<div class="ex"><div class="lab">例 7.4　几何建模：由切线斜率确定曲线</div>
+  <p class="stmt">已知一条曲线通过点 \((1,2)\)，且其上任一点 \((x,y)\) 处切线的斜率等于该点横坐标的平方，求此曲线方程.</p>
+  <p class="sol"><span class="mk">解</span><b>设变量：</b>设曲线为 \(y=y(x)\).</p>
+  <p><b>找规律：</b>切线斜率就是导数，故</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=x^2 .\]
+  <p><b>定条件：</b>\(y(1)=2\)（一阶方程，一个条件，正好）.</p>
+  <p><b>求解：</b>两端积分 \(y=\dfrac{x^3}{3}+C\).代入条件 \(2=\dfrac13+C\)，得 \(C=\dfrac53\).故</p>
+  \[y=\frac{x^3}{3}+\frac53 .\]
+  <p class="muted">通解 \(y=\dfrac{x^3}{3}+C\) 是一族平行的积分曲线（互相上下平移），初始条件从中挑出经过 \((1,2)\) 的那一条.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.5　物理建模：伞降回收的空气阻力方程</div>
+  <p class="stmt">火箭助推器采用伞降回收.设助推器质量 \(m=1200\,\mathrm{kg}\)，开伞后所受空气阻力与速度成正比，比例系数 \(k=980\,\mathrm{N\cdot s/m}\).以开伞瞬间为 \(t=0\)、此时速度 \(v_0=120\,\mathrm{m/s}\)（向下为正）.建立速度满足的微分方程，并说明其终端速度.</p>
+  <p class="sol"><span class="mk">解</span><b>设变量：</b>\(v(t)\) 为 \(t\) 时刻的下落速度（\(\mathrm{m/s}\)）.</p>
+  <p><b>找规律：</b>由牛顿第二定律，合力 = 重力 − 阻力：</p>
+  \[m\frac{\mathrm{d}v}{\mathrm{d}t}=mg-kv,\qquad\text{即}\qquad
+    1200\frac{\mathrm{d}v}{\mathrm{d}t}=1200\times9.8-980v .\]
+  <p><b>定条件：</b>\(v(0)=120\,\mathrm{m/s}\).这是一个一阶线性微分方程的初值问题.</p>
+  <p><b>终端速度分析（无需求解！）：</b>当运动趋于稳定时 \(\dfrac{\mathrm{d}v}{\mathrm{d}t}\to0\)，方程给出</p>
+  \[v_{\infty}=\frac{mg}{k}=\frac{1200\times9.8}{980}=12\ \mathrm{m/s}.\]
+  <p>即最终以 \(12\,\mathrm{m/s}\)（约 \(43\,\mathrm{km/h}\)）匀速落地.这个"平衡解"是常数函数 \(v\equiv12\)，它本身也是方程的一个特解.</p>
+  <p class="muted"><b>本例展示了微分方程的一个巨大优势：</b>即使还不会解，也能通过"令导数为零"读出系统的<b>稳态</b>.工程上把 \(v_{\infty}\) 称为平衡点，它决定了伞面积的设计——要把落地速度压到 \(8\,\mathrm{m/s}\) 以内，须把 \(k\) 提高到 \(1470\,\mathrm{N\cdot s/m}\) 以上.完整解将在 §7.2 例 7.13 给出.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.6　机房散热建模：牛顿冷却定律</div>
+  <p class="stmt">某数据中心机柜断电后，机内温度 \(T(t)\) 按<b>牛顿冷却定律</b>下降：温度变化率与它同环境温度之差成正比.设环境温度 \(T_e=22\,{}^{\circ}\mathrm{C}\).建立微分方程并指出其阶数、所需条件个数.</p>
+  <p class="sol"><span class="mk">解</span>"变化率与温差成正比"直接翻译为</p>
+  \[\frac{\mathrm{d}T}{\mathrm{d}t}=-k\,(T-T_e)=-k\,(T-22),\qquad k\gt0 .\]
+  <p>负号表示：当 \(T\gt22\) 时 \(\dfrac{\mathrm{d}T}{\mathrm{d}t}\lt0\)，温度下降，符合物理直觉.</p>
+  <p>这是<b>一阶</b>方程，需<b>一个</b>初始条件（如 \(T(0)=78\,{}^{\circ}\mathrm{C}\)）.但注意方程里还有一个<b>未知参数</b> \(k\)，它不是任意常数而是物性参数，需要一次额外的<b>实测数据</b>（如 \(T(15)=60\,{}^{\circ}\mathrm{C}\)）来标定.§7.2 引例二将完成这一标定并算出具体温度曲线.</p>
+  <p class="muted"><b>区分两类"未知量"：</b>任意常数 \(C\) 由初始条件确定；模型参数 \(k\) 由实验数据拟合确定.二者在方程中的地位完全不同.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.7　验证隐式解</div>
+  <p class="stmt">验证由方程 \(x^2+y^2=C\ (C\gt0)\) 所确定的隐函数是微分方程 \(x+y\dfrac{\mathrm{d}y}{\mathrm{d}x}=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>对 \(x^2+y^2=C\) 两端关于 \(x\) 求导（\(y\) 是 \(x\) 的函数）：</p>
+  \[2x+2y\frac{\mathrm{d}y}{\mathrm{d}x}=0\quad\Longrightarrow\quad x+y\frac{\mathrm{d}y}{\mathrm{d}x}=0 .\]
+  <p>恒等式成立.方程为一阶，而关系式含 1 个任意常数 \(C\)，故为通解.</p>
+  <p>其积分曲线族是以原点为中心的<b>同心圆族</b>.这也说明：<b>解未必总能写成 \(y=\varphi(x)\) 的显式形式</b>，写成 \(\Phi(x,y)=C\) 的形式称为<b>隐式通解</b>（或通积分），同样是合法的答案.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 7.1</span>解的存在唯一性（皮卡定理）</div>
+  <p>考虑初值问题 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=f(x,y),\ y(x_0)=y_0\).若 \(f(x,y)\) 及其偏导数 \(\dfrac{\partial f}{\partial y}\) 在点 \((x_0,y_0)\) 的某矩形邻域内连续，则该初值问题在 \(x_0\) 的某个邻域内<b>存在唯一</b>的解.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需压缩映射与一致收敛，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：把微分方程改写成积分方程.</span>若 \(y(x)\) 是初值问题 \(y'=f(x,y),\ y(x_0)=y_0\) 的解，两端从 \(x_0\) 积到 \(x\)，由牛顿–莱布尼茨公式得</p>
+\[y(x)=y_0+\int_{x_0}^{x}f\bigl(t,y(t)\bigr)\,\mathrm{d}t .\]
+<p>反之，满足这个积分方程的连续函数必可导且满足原初值问题.于是<b>解微分方程 \(\Leftrightarrow\) 解积分方程</b>.这一步是全部证明的关键改写：积分方程右端对 \(y\) 的依赖是"光滑"的，便于做迭代.</p>
+<p><span class="stp">第二步：构造皮卡逐次逼近序列.</span>取 \(y_0(x)\equiv y_0\)，再递推定义</p>
+\[y_{n+1}(x)=y_0+\int_{x_0}^{x}f\bigl(t,y_n(t)\bigr)\,\mathrm{d}t,\qquad n=0,1,2,\dots\]
+<p>直观上：每做一次积分，就把"斜率场"的信息多用一层，曲线越来越接近真解.只要能证明 \(\{y_n(x)\}\) 收敛，把极限代进递推式两端取极限，极限函数就满足积分方程.</p>
+<p><span class="stp">第三步：用利普希茨条件控制误差.</span>因 \(\dfrac{\partial f}{\partial y}\) 在闭矩形 \(R\) 上连续，故有界，设 \(\left|\dfrac{\partial f}{\partial y}\right|\le L\).由拉格朗日中值定理，对 \(R\) 内任意两点</p>
+\[\bigl|f(x,y_a)-f(x,y_b)\bigr|\le L\,|y_a-y_b| ,\]
+<p>这称为<b>利普希茨条件</b>.用它对相邻两次逼近之差作估计，可归纳证明</p>
+\[\bigl|y_{n+1}(x)-y_n(x)\bigr|\le \frac{ML^{n}}{(n+1)!}\,|x-x_0|^{n+1},\]
+<p>其中 \(M=\max_R|f|\).右端是收敛级数 \(\sum \dfrac{M L^n h^{n+1}}{(n+1)!}\) 的通项，于是函数项级数 \(y_0+\sum\limits_{n\ge0}(y_{n+1}-y_n)\) 在 \(|x-x_0|\le h\) 上<b>一致收敛</b>，其和即为 \(\lim\limits_{n\to\infty}y_n(x)=y(x)\)，且 \(y\) 连续.一致收敛保证了可以在积分号下取极限，从而 \(y\) 满足积分方程.</p>
+<p><span class="stp">第四步：唯一性.</span>设 \(y,\tilde y\) 都是解，令 \(\phi(x)=|y(x)-\tilde y(x)|\).由积分方程与利普希茨条件</p>
+\[\phi(x)\le L\int_{x_0}^{x}\phi(t)\,\mathrm{d}t .\]
+<p>由此（格朗沃尔不等式，或反复迭代得 \(\phi\le \dfrac{CL^n|x-x_0|^n}{n!}\to0\)）推出 \(\phi\equiv0\)，即 \(y\equiv\tilde y\).换一个角度看，第二步的迭代正是把映射 \(T[y](x)=y_0+\int_{x_0}^{x}f(t,y)\mathrm{d}t\) 反复作用；当 \(h\) 足够小时 \(T\) 是<b>压缩映射</b>，压缩映射原理同时给出解的存在与唯一.</p>
+<div class="bey"><b>为什么说"超纲"：</b>上面每一步的严格化都要用到《数学分析》才系统讲授的工具——<b>函数列的一致收敛</b>（才能保证极限函数连续、才能逐项积分）、<b>完备度量空间上的压缩映射原理</b>（Banach 不动点定理）、以及闭矩形上连续函数有界这类实数完备性的推论.工科《高等数学》只要求会<b>用</b>这条定理：它告诉我们"在 \(f\) 与 \(f_y\) 连续的地方，过每一点恰有一条积分曲线"，这正是后面各节放心地"求出通解、再代初值定常数"的合法性依据.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>唯一性为什么重要？</b>它保证"过每一点只有一条积分曲线"，从而积分曲线族<b>互不相交</b>.工程上，这意味着<b>同一初始状态必然导致同一后续演化</b>——系统是可预测的.反之，若 \(\dfrac{\partial f}{\partial y}\) 不连续，唯一性可能失效.例如 \(y'=3y^{2/3},\ y(0)=0\) 既有解 \(y\equiv0\)，又有解 \(y=x^3\)，还有无穷多个"拼接解"——这类奇异现象是分岔与混沌理论的起点.</div>
+
+<div class="case"><div class="lab">应用探微 · 完整的 SIR 模型：从方程读出"群体免疫阈值"</div>
+  <details><summary>展开查看：不解方程也能得到防控结论</summary>
+  <div class="body">
+    <p><b>场景：</b> 疫情进入第二十天，疾控中心的屏幕上感染者数量已经爬到 \(4000\)，\(\dfrac{\mathrm{d}I}{\mathrm{d}t}\) 却还在往上冲.摆在面前的这组方程连解析解都没有，但要回答"封到什么程度才能把疫情压下去"，其实一次积分都不用做——靠导数的正负号就够.</p>
+    <p><b>结论一：疫情是否扩散的判据.</b>由第二式</p>
+    \[\frac{\mathrm{d}I}{\mathrm{d}t}=\gamma I\Bigl(\frac{\beta}{\gamma}\cdot\frac{S}{N}-1\Bigr)=\gamma I\bigl(R_0 s-1\bigr),\qquad s=\frac{S}{N}.\]
+    <p>因 \(\gamma I\gt0\)，故 \(\dfrac{\mathrm{d}I}{\mathrm{d}t}\gt0\) 当且仅当 \(R_0s\gt1\)，即</p>
+    \[s\gt\frac{1}{R_0}\quad\Longleftrightarrow\quad \text{疫情继续扩大}.\]
+    <p><b>结论二：群体免疫阈值.</b>要让 \(I\) 从一开始就单调下降，须使易感者比例 \(s\lt\dfrac{1}{R_0}\)，即免疫（含接种）人群比例</p>
+    \[p\gt1-\frac{1}{R_0}.\]
+    <p>代入不同病原体的 \(R_0\)：</p>
+    <table class="dt">
+      <tr><th>病原体</th><th>\(R_0\) 典型值</th><th>阈值 \(1-1/R_0\)</th><th>含义</th></tr>
+      <tr><td>季节性流感</td><td>1.3</td><td>23%</td><td>接种 1/4 人口即可抑制</td></tr>
+      <tr><td>新冠原始株</td><td>2.5</td><td>60%</td><td>需过半人口免疫</td></tr>
+      <tr><td>本例设定</td><td>4.0</td><td>75%</td><td>四分之三人口须免疫</td></tr>
+      <tr><td>麻疹</td><td>15</td><td>93%</td><td>接种率稍降即反弹</td></tr>
+    </table>
+    <p><b>结论三：峰值时刻.</b>感染人数达到峰值时 \(\dfrac{\mathrm{d}I}{\mathrm{d}t}=0\)，即 \(s=\dfrac{1}{R_0}=0.25\).对本例 \(N=10000\)，当易感者降到 \(2500\) 人时疫情见顶.</p>
+    <p><b>请体会这段推理：</b>我们<b>一次积分都没做</b>，仅靠"导数的符号"就得到了公共卫生政策的量化目标.这正是微分方程作为"语言"的力量——<b>先建模，再定性，最后才是定量求解</b>.接下来的三节，我们就来学习"定量求解"的手艺.</p>
+    <p class="cn-point">把 \(R_0=4\) 对应的 \(75\%\) 群体免疫阈值算清楚，靠的不是解方程而是判号——科学防疫的每一道封控线、每一次疫苗接种率目标，背后都是这样一行"先定性、后定量"的微分方程.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §7.2 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 齐奥尔科夫斯基方程：火箭为什么必须分级</summary>
+<p><b>场景：</b> 发射台上，一枚起飞质量 \(480\ \mathrm{t}\) 的火箭点火离地——它每秒向后抛出几百公斤燃气，一边加速一边"瘦身"，这正是<b>变质量系统</b>.若忽略引力与阻力，设瞬时质量 \(m(t)\)、速度 \(v(t)\)、燃气相对火箭的排出速度恒为 \(u\)，在 \([t,t+\mathrm{d}t]\) 内抛掉质量 \(-\mathrm{d}m\)，由动量守恒可列出</p>
+\[m\,\mathrm{d}v=-u\,\mathrm{d}m
+ \qquad\Longleftrightarrow\qquad
+ m\frac{\mathrm{d}v}{\mathrm{d}t}=-u\frac{\mathrm{d}m}{\mathrm{d}t}.\]
+<p>这是一个含未知函数 \(v(m)\) 的<b>一阶可分离变量方程</b>，初始条件 \(v(m_{0})=0\).</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>一级取值</th><th>二级取值</th></tr>
+<tr><td>起飞（点火）质量</td><td>\(m_0\)</td><td>480 t</td><td>95 t</td></tr>
+<tr><td>关机质量</td><td>\(m_1\)</td><td>100 t</td><td>15 t</td></tr>
+<tr><td>发动机比冲</td><td>\(I_{sp}\)</td><td>300 s</td><td>340 s</td></tr>
+<tr><td>排气速度 \(u=I_{sp}g_0\)</td><td>\(u\)</td><td>2942 m/s</td><td>3334 m/s</td></tr>
+</table>
+<p class="sol"> 分离变量并积分：</p>
+\[\int_{0}^{v}\mathrm{d}v=-u\int_{m_{0}}^{m}\frac{\mathrm{d}m}{m}
+ \;\Longrightarrow\;v=u\ln\frac{m_{0}}{m}.\]
+<p>这就是著名的<b>齐奥尔科夫斯基公式</b>.逐级代入：</p>
+\[\Delta v_{1}=2942\times\ln\frac{480}{100}=2942\times1.5686=4614.9\ \mathrm{m/s},\]
+\[\Delta v_{2}=3334\times\ln\frac{95}{15}=3334\times1.8458=6154.5\ \mathrm{m/s}.\]
+<p>总速度增量 \(\Delta v=4614.9+6154.5=1.077\times10^{4}\ \mathrm{m/s}\).扣除重力损失与气动损失约 \(1.8\ \mathrm{km/s}\)，实际入轨速度约 \(8.97\ \mathrm{km/s}\)，略高于第一宇宙速度 \(7.9\ \mathrm{km/s}\) 加上轨道抬升所需——方案可行.</p>
+<p><b>反证分级的必要性：</b>若把两级合并成一枚单级火箭，总起飞质量仍为 \(480+95=575\ \mathrm{t}\)，但结构壳体无法抛掉，关机质量为 \(100+15=115\ \mathrm{t}\)，取平均排气速度 \(u=3100\ \mathrm{m/s}\)：</p>
+\[\Delta v_{\text{单级}}=3100\times\ln\frac{575}{115}=3100\times1.6094=4989\ \mathrm{m/s}.\]
+<p>只有分级方案的 \(46\%\)，连近地轨道都进不去.</p>
+<p><b>工程结论：</b> \(\Delta v\) 与质量比是<b>对数</b>关系，这意味着靠"多带燃料"提升运力的收益极其缓慢：质量比从 \(5\) 提到 \(10\)，\(\Delta v\) 只增加 \(u\ln2\approx2.1\ \mathrm{km/s}\)，而结构强度与成本却成倍上升.<b>唯一有效的破局手段就是把已经空掉的壳体扔掉</b>——这就是多级火箭的数学根据.同样地，可回收火箭要预留约 \(10\%\) 的推进剂用于返场，代价是运力下降约 \(15\%\)，这笔账也完全由这一条微分方程决定.</p>
+<p class="cn-point">把质量比从 \(5\) 提到 \(10\)，\(\Delta v\) 只换来 \(u\ln2\approx2.1\ \mathrm{km/s}\)——从"两弹一星"到长征系列载人登月，每一次运力跃升都是这条对数方程逼出来的结构革命：想靠"多带燃料"一票到底，数学第一个不答应.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch7-rocket" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>排气速度 u <input type="range" id="ch7-rocket-u" min="2500" max="3500" step="50" value="2942" style="width:150px;accent-color:#0F6E56"> <b id="ch7-rocket-u-t"></b> m/s</label>
+<label>质量比 m₀/m <input type="range" id="ch7-rocket-r" min="2" max="20" step="1" value="5" style="width:150px;accent-color:#0F6E56"> <b id="ch7-rocket-r-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch7-rocket-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch7-rocket'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=60,mR=14,mT=26,mB=38,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var u=+document.getElementById('ch7-rocket-u').value;
+      var r0=+document.getElementById('ch7-rocket-r').value;
+      // 画 Δv 曲线 vs 质量比 1~20
+      function X(r){ return mL+(r-1)/19*pW; }
+      function Y(dv){ return mT+pH - dv/12000*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 对数曲线
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var rr=1;rr<=20;rr+=0.1){ var xx=X(rr),yy=Y(u*Math.log(rr)); rr===1?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 当前点
+      var dv=u*Math.log(r0);
+      ctx.fillStyle='#0e7c7c';
+      ctx.beginPath();ctx.arc(X(r0),Y(dv),5,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(X(r0),Y(dv));ctx.lineTo(X(r0),mT+pH);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#0e7c7c';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText('质量比 '+r0.toFixed(0),X(r0),mT+pH+16);
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('12',mL-6,Y(12000)); ctx.fillText('0',mL-6,Y(0));
+      ctx.textAlign='center';ctx.fillText('质量比 m₀/m',(mL+W-mR)/2,mT+pH+28);
+      ctx.save();ctx.translate(14,(mT+pH)/2);ctx.rotate(-Math.PI/2);
+      ctx.textAlign='center';ctx.fillText('Δv (km/s)',0,0);ctx.restore();
+      // 数值
+      var dv1=u*Math.log(r0), stage2=u*Math.log((r0*0.6)/(r0*0.6-0.5*r0+0.1));
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('Δv = u·ln(m₀/m) = '+u.toFixed(0)+'×ln'+r0.toFixed(0)+' = '+(dv/1000).toFixed(1)+' km/s',mL,mT+13);
+      var out=document.getElementById('ch7-rocket-out');
+      var hint = r0<=5 ? '质量比从 5 提到 10，Δv 只增加 u·ln2 ≈ '+(u*Math.log(2)/1000).toFixed(1)+' km/s——多带燃料收益极慢' : '对数关系：翻倍燃料只换来固定增量，唯有分级丢弃空壳才能破局';
+      out.textContent = hint;
+    }
+    document.getElementById('ch7-rocket-u').addEventListener('input', draw);
+    document.getElementById('ch7-rocket-r').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · Neural ODE：把神经网络写成一条微分方程</summary>
+<p><b>场景：</b> 你把 ResNet 一路堆到上千层，训练脚本却被"显存不足"杀掉——每多一层，只换来性能小数点后第三位的提升.2018 年的 <b>Neural ODE</b> 给出了一个反直觉的视角：把层号 \(k\) 看成连续的"时间" \(t\)、把 \(1\) 看成步长 \(\Delta t\)，残差结构 \(h_{k+1}=h_{k}+f(h_{k},\theta_{k})\) 恰是</p>
+\[\frac{\mathrm{d}h}{\mathrm{d}t}=f\bigl(h(t),t;\theta\bigr)\]
+<p>的<b>欧拉折线法</b>离散格式.于是"网络有多少层"变成了"求解器用多少步"，深度不再是超参数，而由数值精度自动决定.为看清这一点，取一维玩具模型 \(f(h)=-0.8h+0.5\)，初值 \(h(0)=2\)，考察 \(t=1\)（相当于"一个残差块"）处的输出.</p>
+<table class="dt">
+<tr><th>项目</th><th>取值</th></tr>
+<tr><td>连续动力学</td><td>\(h'=-0.8h+0.5\)</td></tr>
+<tr><td>初始特征</td><td>\(h(0)=2\)</td></tr>
+<tr><td>欧拉迭代式</td><td>\(h_{n+1}=h_{n}+\Delta t\,(-0.8h_{n}+0.5)\)</td></tr>
+<tr><td>层数 \(N\)</td><td>\(1,2,4,8\)（对应 \(\Delta t=1/N\)）</td></tr>
+</table>
+<p class="sol"> <b>先求精确解.</b>这是一阶线性方程，稳态为 \(h_{\infty}=0.625\)，通解 \(h=0.625+C\mathrm{e}^{-0.8t}\)，由 \(h(0)=2\) 得 \(C=1.375\)，故</p>
+\[h(t)=0.625+1.375\,\mathrm{e}^{-0.8t},\qquad
+  h(1)=0.625+1.375\times0.449329=1.2428 .\]
+<p><b>再看欧拉离散.</b>迭代式可写成 \(h_{n+1}=(1-0.8\Delta t)h_{n}+0.5\Delta t\)，其误差满足 \(h_{N}-0.625=1.375\,(1-0.8\Delta t)^{N}\)：</p>
+<table class="dt">
+<tr><th>层数 \(N\)</th><th>步长 \(\Delta t\)</th><th>\(h_N\)</th><th>与精确值之差</th><th>相对误差</th></tr>
+<tr><td>1</td><td>1.000</td><td>0.9000</td><td>\(-0.3428\)</td><td>27.6%</td></tr>
+<tr><td>2</td><td>0.500</td><td>1.1200</td><td>\(-0.1228\)</td><td>9.9%</td></tr>
+<tr><td>4</td><td>0.250</td><td>1.1882</td><td>\(-0.0546\)</td><td>4.4%</td></tr>
+<tr><td>8</td><td>0.125</td><td>1.2169</td><td>\(-0.0259\)</td><td>2.1%</td></tr>
+</table>
+<p>误差每次约减半，正是欧拉法<b>一阶收敛</b>（误差 \(O(\Delta t)\)）的表现.</p>
+<p><b>工程结论：</b> 两点启示.其一，<b>"加深网络"在数学上等价于"减小积分步长"</b>：从 1 层加到 8 层，输出从 \(0.90\) 逼近到 \(1.22\)，收敛到同一条连续轨迹上——这解释了为什么超过某个深度后模型性能趋于饱和.其二，既然本质是解 ODE，就没必要固守低阶的欧拉法：改用四阶龙格–库塔或自适应 RK45 求解器，用 4 次函数求值即可达到 \(10^{-6}\) 精度，等效于上千层 ResNet，而显存占用是常数（反向传播用伴随方程反解，无需存储中间层）.<b>本节强调"先建模、再判型、后求解"，Neural ODE 正是这一思路在人工智能领域最漂亮的一次兑现：把离散的工程结构，重新读成一条连续的微分方程.</b></p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s071" data-ch="7" data-n="5"></div>
+<h2 id="s072"><span class="num">§7.2</span>一阶微分方程的常见类型及解法</h2>
+    
+<div class="ex"><div class="lab">引例一　无人机电机为什么"转不快也停不下"：一阶惯性环节</div>
+  <p class="stmt">四旋翼无人机的桨叶转速不能瞬间改变.忽略非线性因素，电机—桨叶系统可用<b>一阶惯性环节</b>描述：</p>
+  \[\tau\frac{\mathrm{d}\omega}{\mathrm{d}t}+\omega=K u,\]
+  <p>其中 \(\omega\) 为转速（\(\mathrm{r/min}\)），\(u\) 为油门电压（\(\mathrm{V}\)），时间常数 \(\tau=0.15\,\mathrm{s}\)，增益 \(K=850\,\mathrm{r/(min\cdot V)}\).飞控在 \(t=0\) 时把油门从 \(0\) 阶跃到 \(u=4\,\mathrm{V}\)，电机初始静止.求 \(\omega(t)\) 及 \(t=0.3\,\mathrm{s}\) 时的转速.</p>
+  <p class="sol"><span class="mk">解</span>整理成标准形式：</p>
+  \[\frac{\mathrm{d}\omega}{\mathrm{d}t}+\frac{1}{0.15}\,\omega=\frac{850\times4}{0.15}=\frac{3400}{0.15}.\]
+  <p>这是<b>一阶线性方程</b>，也可分离变量.用分离变量法：记 \(\omega_{\infty}=Ku=3400\)，则</p>
+  \[\frac{\mathrm{d}\omega}{\omega_{\infty}-\omega}=\frac{\mathrm{d}t}{\tau}
+   \;\Longrightarrow\;-\ln|\omega_{\infty}-\omega|=\frac{t}{\tau}+C_1
+   \;\Longrightarrow\;\omega_{\infty}-\omega=C\mathrm{e}^{-t/\tau}.\]
+  <p>由 \(\omega(0)=0\) 得 \(C=\omega_{\infty}=3400\)，故</p>
+  \[\omega(t)=3400\bigl(1-\mathrm{e}^{-t/0.15}\bigr)\quad(\mathrm{r/min}).\]
+  <p><b>代入 \(t=0.3\,\mathrm{s}\)（恰为 \(2\tau\)）：</b></p>
+  \[\omega(0.3)=3400\bigl(1-\mathrm{e}^{-2}\bigr)=3400\times(1-0.13534)=3400\times0.86466=2939.8\ \mathrm{r/min}.\]
+  <table class="dt">
+    <tr><th>时刻 \(t\)（s）</th><th>\(t/\tau\)</th><th>\(1-\mathrm{e}^{-t/\tau}\)</th><th>转速 \(\omega\)（r/min）</th><th>达到稳态的百分比</th></tr>
+    <tr><td>0.05</td><td>0.33</td><td>0.2835</td><td>963.8</td><td>28.3%</td></tr>
+    <tr><td>0.15</td><td>1</td><td>0.6321</td><td>2149.2</td><td>63.2%</td></tr>
+    <tr><td>0.30</td><td>2</td><td>0.8647</td><td>2939.8</td><td>86.5%</td></tr>
+    <tr><td>0.45</td><td>3</td><td>0.9502</td><td>3230.7</td><td>95.0%</td></tr>
+    <tr><td>0.60</td><td>4</td><td>0.9817</td><td>3337.7</td><td>98.2%</td></tr>
+  </table>
+  <p><b>工程结论：</b>经过 \(3\tau=0.45\,\mathrm{s}\) 转速才达到 \(95\%\).这 \(0.45\,\mathrm{s}\) 的"滞后"正是无人机在阵风中会先偏一下再纠正的根本原因；要提高机动性，必须减小 \(\tau\)（用更轻的桨、更强的电机）.<b>一条微分方程，直接对应一项飞行品质指标.</b></p>
+</div>
+
+<div class="ex"><div class="lab">引例二　断电后机房多久能进人：牛顿冷却定律的参数标定</div>
+  <p class="stmt">承例 7.6：某机柜断电瞬间内部温度 \(T(0)=78\,{}^{\circ}\mathrm{C}\)，环境 \(T_e=22\,{}^{\circ}\mathrm{C}\)，实测 \(15\,\mathrm{s}\) 后降至 \(60\,{}^{\circ}\mathrm{C}\).求温度函数，并预测 \(1\) 分钟、\(2\) 分钟后的温度.</p>
+  <p class="sol"><span class="mk">解</span>方程 \(\dfrac{\mathrm{d}T}{\mathrm{d}t}=-k(T-22)\) 可分离变量：</p>
+  \[\frac{\mathrm{d}T}{T-22}=-k\,\mathrm{d}t
+   \;\Longrightarrow\;\ln|T-22|=-kt+C_1
+   \;\Longrightarrow\;T=22+C\mathrm{e}^{-kt}.\]
+  <p>由 \(T(0)=78\) 得 \(C=56\).再由 \(T(15)=60\) 标定 \(k\)：</p>
+  \[56\,\mathrm{e}^{-15k}=38\;\Longrightarrow\;\mathrm{e}^{-15k}=0.67857
+   \;\Longrightarrow\;k=\frac{-\ln0.67857}{15}=\frac{0.38777}{15}=0.02585\ \mathrm{s^{-1}}.\]
+  <p>故 \(T(t)=22+56\,\mathrm{e}^{-0.02585t}\).预测：</p>
+  \[T(60)=22+56\,\mathrm{e}^{-1.5511}=22+56\times0.21203=33.87\ ^\circ\mathrm{C},\]
+  \[T(120)=22+56\,\mathrm{e}^{-3.1021}=22+56\times0.04495=24.52\ ^\circ\mathrm{C}.\]
+  <p>若安全操作要求温度低于 \(35\,{}^{\circ}\mathrm{C}\)，则解 \(22+56\mathrm{e}^{-0.02585t}=35\) 得 \(t=\dfrac{\ln(56/13)}{0.02585}=\dfrac{1.4610}{0.02585}=56.5\,\mathrm{s}\).<b>断电约 1 分钟后即可安全检修.</b></p>
+</div>
+
+<h3>一、可分离变量的方程</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.2</span>可分离变量方程的解法</div>
+  <p>形如</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=f(x)\,g(y)\qquad\text{或}\qquad M_1(x)N_1(y)\,\mathrm{d}x+M_2(x)N_2(y)\,\mathrm{d}y=0\]
+  <p>的一阶方程称为<b>可分离变量方程</b>.当 \(g(y)
+eq0\) 时，可"分离"成</p>
+  \[\frac{\mathrm{d}y}{g(y)}=f(x)\,\mathrm{d}x,\]
+  <p>两端分别积分即得隐式通解</p>
+  \[\int\frac{\mathrm{d}y}{g(y)}=\int f(x)\,\mathrm{d}x+C .\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>"分离变量"表面上是把 \(\mathrm{d}y\) 与 \(\mathrm{d}x\) 当成可以搬来搬去的数，这只是记号上的方便.真正的道理是<b>复合函数求导（换元积分法）的逆用</b>：把方程改写成"某个复合函数的导数 = 某个已知函数的导数".</p>
+<p><span class="stp">第一步：改写方程.</span>设 \(y=y(x)\) 是方程 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=f(x)g(y)\) 的解，且在所考虑的区间上 \(g(y(x))
+eq0\).两端同除 \(g(y)\) 得</p>
+\[\frac{1}{g\bigl(y(x)\bigr)}\cdot\frac{\mathrm{d}y}{\mathrm{d}x}=f(x).\]
+<p><span class="stp">第二步：识别左端是一个复合函数的导数.</span>取 \(G(y)\) 为 \(\dfrac{1}{g(y)}\) 的任一原函数，即 \(G'(y)=\dfrac{1}{g(y)}\).由复合函数求导法则</p>
+\[\frac{\mathrm{d}}{\mathrm{d}x}G\bigl(y(x)\bigr)=G'\bigl(y(x)\bigr)\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{1}{g\bigl(y(x)\bigr)}\frac{\mathrm{d}y}{\mathrm{d}x}.\]
+<p>再取 \(F(x)\) 为 \(f(x)\) 的任一原函数.于是第一步的方程等价于</p>
+\[\frac{\mathrm{d}}{\mathrm{d}x}\Bigl[G\bigl(y(x)\bigr)-F(x)\Bigr]=0 .\]
+<p><span class="stp">第三步：积分.</span>在区间上导数恒为零的函数必为常数，故存在常数 \(C\) 使</p>
+\[G\bigl(y(x)\bigr)=F(x)+C,\qquad\text{即}\qquad \int\frac{\mathrm{d}y}{g(y)}=\int f(x)\,\mathrm{d}x+C .\]
+<p>这正是所要的隐式通解；形式记号 \(\dfrac{\mathrm{d}y}{g(y)}=f(x)\mathrm{d}x\) 只是上述推导的速记.</p>
+<p><span class="stp">第四步：验证充分性.</span>反过来，设 \(y(x)\) 由 \(G(y)=F(x)+C\) 隐式确定.因 \(G'(y)=\dfrac1{g(y)}
+eq0\)，由隐函数存在定理 \(y\) 可导，对等式两端关于 \(x\) 求导得 \(\dfrac{1}{g(y)}y'=f(x)\)，即 \(y'=f(x)g(y)\).故隐式关系确定的函数确是解.</p>
+<p><span class="stp">第五步：补上被除掉的解.</span>上面第一步除以了 \(g(y)\).若 \(g(y_*)=0\)，则常值函数 \(y\equiv y_*\) 满足 \(y'=0=f(x)g(y_*)\)，也是方程的解，称为<b>奇解</b>（有时可由通解取极限得到，有时不能）.对第二种写法 \(M_1N_1\mathrm{d}x+M_2N_2\mathrm{d}y=0\)，同除 \(M_2(x)N_1(y)\) 后化为 \(\dfrac{M_1}{M_2}\mathrm{d}x+\dfrac{N_2}{N_1}\mathrm{d}y=0\)，重复上述论证即可，另需单独检查 \(M_2(x)=0\) 与 \(N_1(y)=0\) 给出的解.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>两个必须注意的细节：</b><br>
+① 分离时除以 \(g(y)\)，须单独讨论 \(g(y)=0\) 的情形.若 \(g(y_0)=0\)，则常数函数 \(y\equiv y_0\) 也是解（称为<b>平衡解</b>），它有时能被通解涵盖，有时不能.<br>
+② 积分后出现的 \(\ln|y|\) 中的绝对值，最终可通过令 \(C\) 取任意<b>非零</b>实数来吸收；若再允许 \(C=0\)，往往恰好把平衡解也包含进来.</div>
+
+<div class="ex"><div class="lab">例 7.8　基础题</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=2xy\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>分离变量（先设 \(y
+eq0\)）：</p>
+  \[\frac{\mathrm{d}y}{y}=2x\,\mathrm{d}x\;\Longrightarrow\;\ln|y|=x^2+C_1
+   \;\Longrightarrow\;|y|=\mathrm{e}^{C_1}\mathrm{e}^{x^2}.\]
+  <p>令 \(C=\pm\mathrm{e}^{C_1}\)（任意非零常数），得 \(y=C\mathrm{e}^{x^2}\).又 \(y\equiv0\) 显然也是解，恰对应 \(C=0\).故通解为</p>
+  \[y=C\mathrm{e}^{x^2}\quad(C\ \text{为任意常数}).\]
+</div>
+
+<div class="ex"><div class="lab">例 7.9　指数型</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\mathrm{e}^{x-y}\) 满足 \(y(0)=0\) 的特解.</p>
+  <p class="sol"><span class="mk">解</span>先把右端拆开：\(\mathrm{e}^{x-y}=\mathrm{e}^{x}\mathrm{e}^{-y}\)，可分离：</p>
+  \[\mathrm{e}^{y}\,\mathrm{d}y=\mathrm{e}^{x}\,\mathrm{d}x
+   \;\Longrightarrow\;\mathrm{e}^{y}=\mathrm{e}^{x}+C .\]
+  <p>代入 \(x=0,y=0\)：\(1=1+C\)，故 \(C=0\)，得 \(\mathrm{e}^{y}=\mathrm{e}^{x}\)，即 \(y=x\).</p>
+  <p class="muted">验证：\(y'=1\)，而 \(\mathrm{e}^{x-y}=\mathrm{e}^{0}=1\)，成立.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.10　Logistic 方程与 5G 用户渗透率预测</div>
+  <p class="stmt">新技术的市场渗透率 \(y(t)\)（占潜在用户的比例，\(0\lt y\lt1\)）常服从 <b>Logistic 方程</b></p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}t}=r\,y\,(1-y).\]
+  <p>取增长系数 \(r=0.8\,\mathrm{年^{-1}}\)，初始渗透率 \(y(0)=0.02\).求 \(y(t)\)，并预测第 5 年与第 8 年的渗透率.</p>
+  <p class="sol"><span class="mk">解</span>分离变量：</p>
+  \[\frac{\mathrm{d}y}{y(1-y)}=r\,\mathrm{d}t .\]
+  <p>左端用部分分式 \(\dfrac{1}{y(1-y)}=\dfrac1y+\dfrac{1}{1-y}\)，积分得</p>
+  \[\ln|y|-\ln|1-y|=rt+C_1\;\Longrightarrow\;\frac{y}{1-y}=C\mathrm{e}^{rt}.\]
+  <p>解出 \(y\)：</p>
+  \[y(t)=\frac{1}{1+A\mathrm{e}^{-rt}},\qquad A=\frac1C .\]
+  <p>由 \(y(0)=0.02\)：\(\dfrac{1}{1+A}=0.02\Rightarrow A=49\).故</p>
+  \[y(t)=\frac{1}{1+49\,\mathrm{e}^{-0.8t}}.\]
+  <p>代入具体年份：</p>
+  \[y(5)=\frac{1}{1+49\mathrm{e}^{-4}}=\frac{1}{1+49\times0.018316}=\frac{1}{1.8975}=0.527,\]
+  \[y(8)=\frac{1}{1+49\mathrm{e}^{-6.4}}=\frac{1}{1+49\times0.0016616}=\frac{1}{1.0814}=0.925 .\]
+  <p>即第 5 年渗透率 \(52.7\%\)、第 8 年 \(92.5\%\)——这正是我国 5G 用户增长呈现的典型 <b>S 形曲线</b>.</p>
+  <p class="muted"><b>拐点在哪？</b>由 \(\dfrac{\mathrm{d}^2y}{\mathrm{d}t^2}=r(1-2y)\dfrac{\mathrm{d}y}{\mathrm{d}t}\) 知，\(y=0.5\) 时增速最快.本例 \(y(t)=0.5\) 解得 \(t=\dfrac{\ln49}{0.8}=4.87\) 年——<b>市场爆发的时间点，早在初始数据里就被方程锁定了</b>.另注意 \(y\equiv0\) 与 \(y\equiv1\) 是两个平衡解.</p>
+</div>
+
+<h3>二、齐次方程</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.3</span>齐次方程与代换 \(u=y/x\)</div>
+  <p>若一阶方程可化为</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\varphi\Bigl(\frac{y}{x}\Bigr),\]
+  <p>即右端只依赖于比值 \(\dfrac yx\)，则称为<b>齐次方程</b>.作代换</p>
+  \[u=\frac yx,\qquad y=ux,\qquad \frac{\mathrm{d}y}{\mathrm{d}x}=u+x\frac{\mathrm{d}u}{\mathrm{d}x},\]
+  <p>代入原方程得 \(u+x\dfrac{\mathrm{d}u}{\mathrm{d}x}=\varphi(u)\)，即</p>
+  \[x\frac{\mathrm{d}u}{\mathrm{d}x}=\varphi(u)-u,\]
+  <p>这是<b>可分离变量</b>方程.解出 \(u\) 后回代 \(u=\dfrac yx\) 即得原方程通解.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>方程 \(y'=\varphi(y/x)\) 的右端只认识"比值" \(y/x\)，不单独认识 \(x\) 和 \(y\).既然未知量真正的"自由度"是这个比值，就干脆把它取作新的未知函数 \(u=y/x\).这样右端立刻变成只含 \(u\) 的 \(\varphi(u)\)，而左端经计算只会多出一项 \(x u'\)，于是 \(x\) 与 \(u\) 自然分家.</p>
+<p><span class="stp">第一步：作代换并求导.</span>设 \(x
+eq0\)，令 \(u(x)=\dfrac{y(x)}{x}\)，则 \(y=ux\).由乘积求导法则</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=u+x\frac{\mathrm{d}u}{\mathrm{d}x}.\]
+<p>注意 \(u\) 与 \(y\) 是一一对应的（已知 \(y\) 可定 \(u\)，已知 \(u\) 可定 \(y=ux\)），且 \(y\) 可导当且仅当 \(u\) 可导，故这一代换不会丢解也不会添解.</p>
+<p><span class="stp">第二步：代入化简.</span>把上式与 \(\varphi(y/x)=\varphi(u)\) 一并代入原方程 \(y'=\varphi(y/x)\)，得</p>
+\[u+x\frac{\mathrm{d}u}{\mathrm{d}x}=\varphi(u)\qquad\Longleftrightarrow\qquad x\frac{\mathrm{d}u}{\mathrm{d}x}=\varphi(u)-u .\]
+<p><span class="stp">第三步：说明它可分离变量.</span>上式右端只含 \(u\)，左端的 \(x\) 只以因子形式出现，故当 \(\varphi(u)-u
+eq0\) 时可写成</p>
+\[\frac{\mathrm{d}u}{\varphi(u)-u}=\frac{\mathrm{d}x}{x},\]
+<p>这正是定理 7.2 的可分离变量方程，两端积分得</p>
+\[\int\frac{\mathrm{d}u}{\varphi(u)-u}=\ln|x|+C .\]
+<p><span class="stp">第四步：回代.</span>由上式解出 \(u\) 作为 \(x\) 的函数（或保留隐式形式），再以 \(u=\dfrac yx\) 代回，即得原方程的通解.</p>
+<p><span class="stp">第五步：补充特殊解.</span>若存在 \(u_*\) 使 \(\varphi(u_*)-u_*=0\)，则 \(u\equiv u_*\) 满足第二步的方程，对应原方程的解 \(y=u_*x\)——一条过原点的直线.这类解在第三步的除法中被排除，须单独列出.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>如何一眼识别齐次方程？</b>把方程写成 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{P(x,y)}{Q(x,y)}\).若 \(P,Q\) 是<b>同次数的齐次函数</b>（每一项中 \(x,y\) 的次数之和相同），则必为齐次方程.例如 \(\dfrac{x^2+y^2}{xy}\)——分子分母都是 2 次，齐次；而 \(\dfrac{x^2+y}{xy}\) 分子非齐次，不是.</div>
+
+<div class="ex"><div class="lab">例 7.11　含正切的齐次方程</div>
+  <p class="stmt">求 \(x\dfrac{\mathrm{d}y}{\mathrm{d}x}=y+x\tan\dfrac yx\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>两端除以 \(x\)：\(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac yx+\tan\dfrac yx\)，是齐次方程.令 \(u=\dfrac yx\)：</p>
+  \[u+x\frac{\mathrm{d}u}{\mathrm{d}x}=u+\tan u
+   \;\Longrightarrow\;x\frac{\mathrm{d}u}{\mathrm{d}x}=\tan u .\]
+  <p>分离变量并积分：</p>
+  \[\cot u\,\mathrm{d}u=\frac{\mathrm{d}x}{x}
+   \;\Longrightarrow\;\ln|\sin u|=\ln|x|+C_1
+   \;\Longrightarrow\;\sin u=Cx .\]
+  <p>回代得通解</p>
+  \[\sin\frac yx=Cx .\]
+</div>
+
+<div class="ex"><div class="lab">例 7.12　考研经典：化为极坐标形式的齐次方程</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{x+y}{x-y}\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>分子分母都是一次齐次式，除以 \(x\)：\(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{1+y/x}{1-y/x}\).令 \(u=\dfrac yx\)：</p>
+  \[u+x\frac{\mathrm{d}u}{\mathrm{d}x}=\frac{1+u}{1-u}
+   \;\Longrightarrow\;x\frac{\mathrm{d}u}{\mathrm{d}x}=\frac{1+u}{1-u}-u=\frac{1+u^2}{1-u}.\]
+  <p>分离变量：</p>
+  \[\frac{1-u}{1+u^2}\,\mathrm{d}u=\frac{\mathrm{d}x}{x}
+   \;\Longrightarrow\;\int\Bigl(\frac{1}{1+u^2}-\frac{u}{1+u^2}\Bigr)\mathrm{d}u=\int\frac{\mathrm{d}x}{x}.\]
+  \[\arctan u-\frac12\ln(1+u^2)=\ln|x|+C_1 .\]
+  <p>回代 \(u=\dfrac yx\)，并注意 \(\dfrac12\ln\Bigl(1+\dfrac{y^2}{x^2}\Bigr)=\dfrac12\ln(x^2+y^2)-\ln|x|\)，两个 \(\ln|x|\) 恰好抵消：</p>
+  \[\arctan\frac yx=\frac12\ln(x^2+y^2)+C .\]
+  <p class="muted"><b>几何意义极美：</b>令 \(x=\rho\cos\theta,\ y=\rho\sin\theta\)，上式即 \(\theta=\ln\rho+C\)，也就是 \(\rho=C'\mathrm{e}^{\theta}\)——<b>对数螺线</b>！它是鹦鹉螺壳、台风云系、星系旋臂的共同形状，也是雷达天线扫描轨迹与某些无人机搜索路径的设计曲线.</p>
+</div>
+
+<h3>三、一阶线性微分方程</h3>
+<div class="def"><div class="lab"><span class="n">定义 7.4</span>一阶线性方程</div>
+  <p>形如</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)\,y=Q(x)\]
+  <p>的方程称为<b>一阶线性微分方程</b>（未知函数 \(y\) 及其导数都是一次的）.当 \(Q(x)\equiv0\) 时称为<b>齐次</b>的，否则称为<b>非齐次</b>的.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 7.4</span>一阶线性方程的通解公式（常数变易法）</div>
+  <p>一阶线性方程 \(y'+P(x)y=Q(x)\) 的通解为</p>
+  \[\boxed{\;y=\mathrm{e}^{-\int P(x)\mathrm{d}x}\Bigl[\int Q(x)\,\mathrm{e}^{\int P(x)\mathrm{d}x}\,\mathrm{d}x+C\Bigr]\;}\]
+  <p>其中 \(\displaystyle\int P(x)\mathrm{d}x\) 表示 \(P\) 的<b>任意一个</b>原函数（不再另加常数）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：先解齐次方程.</span>先考虑 \(Q(x)\equiv0\) 的情形 \(y'+P(x)y=0\).分离变量得 \(\dfrac{\mathrm{d}y}{y}=-P(x)\mathrm{d}x\)，积分得 \(\ln|y|=-\int P\mathrm{d}x+C_1\)，即</p>
+\[y=C\,\mathrm{e}^{-\int P(x)\mathrm{d}x}\qquad(C\ \text{为任意常数}),\]
+<p>其中 \(\int P\mathrm{d}x\) 表示 \(P\) 的一个固定原函数（\(C=0\) 时给出解 \(y\equiv0\)，故这一族已含全部解）.</p>
+<p><span class="stp">思路（为什么把常数"变易"）：</span>齐次方程的解族是"常数 \(\times\) 一个固定函数".非齐次项 \(Q\) 相当于对系统持续地"加料"，使这个常数不再守恒.于是猜测非齐次解仍具有 \(y=C(x)\mathrm{e}^{-\int P\mathrm{d}x}\) 的形状，只是把常数 \(C\) 换成待定函数 \(C(x)\)——这就是<b>常数变易法</b>.它的妙处在于：这样设形之后，含 \(C(x)\) 本身的项会<b>自动相消</b>，只剩 \(C'(x)\).</p>
+<p><span class="stp">第二步：代入定出 \(C(x)\).</span>记 \(\mu(x)=\mathrm{e}^{\int P(x)\mathrm{d}x}\)，则 \(y=C(x)\mu(x)^{-1}\).求导</p>
+\[y'=C'(x)\mu^{-1}+C(x)\bigl(\mu^{-1}\bigr)'=C'(x)\mu^{-1}-C(x)P(x)\mu^{-1}.\]
+<p>代入 \(y'+Py=Q\)：</p>
+\[C'\mu^{-1}-CP\mu^{-1}+P\,C\mu^{-1}=Q\quad\Longrightarrow\quad C'(x)\mu^{-1}=Q(x).\]
+<p>果然含 \(C\) 的两项抵消.于是 \(C'(x)=Q(x)\mu(x)=Q(x)\mathrm{e}^{\int P\mathrm{d}x}\)，积分得</p>
+\[C(x)=\int Q(x)\,\mathrm{e}^{\int P(x)\mathrm{d}x}\,\mathrm{d}x+C .\]
+<p><span class="stp">第三步：写出通解.</span>回代 \(y=C(x)\mathrm{e}^{-\int P\mathrm{d}x}\) 即得</p>
+\[y=\mathrm{e}^{-\int P(x)\mathrm{d}x}\Bigl[\int Q(x)\,\mathrm{e}^{\int P(x)\mathrm{d}x}\,\mathrm{d}x+C\Bigr].\]
+<p><span class="stp">第四步：\(\mu=\mathrm{e}^{\int P\mathrm{d}x}\) 为什么是"积分因子".</span>换个角度看同一件事：把原方程两端乘以 \(\mu(x)\)，由于 \(\mu'=P\mu\)，左端恰好成为一个乘积的导数：</p>
+\[\mu y'+\mu P y=\mu y'+\mu' y=\bigl(\mu y\bigr)' .\]
+<p>于是方程变为 \((\mu y)'=\mu Q\)，直接积分得 \(\mu y=\int \mu Q\,\mathrm{d}x+C\)，与上式完全一致.可见 \(\mathrm{e}^{\int P\mathrm{d}x}\) 的<b>唯一使命</b>就是让左端凑成全导数，而这要求 \(\mu'/\mu=P\)，解之即 \(\mu=\mathrm{e}^{\int P\mathrm{d}x}\)——公式中的指数并非从天而降.</p>
+<p><span class="stp">第五步：验证与完备性.</span>直接对所得 \(y\) 求导代入，可逐项验证它满足方程；反之由第四步的等价变形（乘以处处非零的 \(\mu\) 是可逆运算）知方程的<b>任一</b>解都必形如上式，故它确是通解.此外，取 \(\int P\mathrm{d}x\) 的不同原函数只会使 \(\mu\) 差一个非零常数因子，最终结果不变，故公式中不必再加常数.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<p><b>完整推导（常数变易法）.</b>这个公式不必死记，它的推导过程本身就是一种通用的方法，务必完全掌握.</p>
+
+<p><b>第一步：先解对应的齐次方程</b> \(\dfrac{\mathrm{d}y}{\mathrm{d}x}+P(x)y=0\).它可分离变量：</p>
+\[\frac{\mathrm{d}y}{y}=-P(x)\,\mathrm{d}x
+ \;\Longrightarrow\;\ln|y|=-\int P(x)\,\mathrm{d}x+C_1
+ \;\Longrightarrow\;y=C\,\mathrm{e}^{-\int P(x)\mathrm{d}x}.\]
+
+<p><b>第二步：把常数"变易"为函数.</b>非齐次方程的解显然不是上式（代进去左端得 0 而非 \(Q\)）.但可以猜想：解的"骨架"仍是 \(\mathrm{e}^{-\int P\mathrm{d}x}\)，只是前面的系数不再是常数，而是一个待定函数 \(C(x)\).于是设</p>
+\[y=C(x)\,\mathrm{e}^{-\int P(x)\mathrm{d}x}.\]
+
+<p><b>第三步：代入原方程定出 \(C(x)\).</b>由乘积求导法则（注意 \(\bigl(\mathrm{e}^{-\int P\mathrm{d}x}\bigr)'=-P\,\mathrm{e}^{-\int P\mathrm{d}x}\)）：</p>
+\[\frac{\mathrm{d}y}{\mathrm{d}x}=C'(x)\,\mathrm{e}^{-\int P\mathrm{d}x}-C(x)P(x)\,\mathrm{e}^{-\int P\mathrm{d}x}.\]
+<p>代入 \(y'+Py=Q\)：</p>
+\[C'(x)\mathrm{e}^{-\int P\mathrm{d}x}-C(x)P\mathrm{e}^{-\int P\mathrm{d}x}
+ +P\cdot C(x)\mathrm{e}^{-\int P\mathrm{d}x}=Q(x).\]
+<p><b>关键的一步发生了：</b>第二、三项完全抵消（这正是常数变易法之所以有效的原因），只剩</p>
+\[C'(x)\,\mathrm{e}^{-\int P\mathrm{d}x}=Q(x)
+ \;\Longrightarrow\;C'(x)=Q(x)\,\mathrm{e}^{\int P\mathrm{d}x}.\]
+
+<p><b>第四步：积分并回代.</b></p>
+\[C(x)=\int Q(x)\,\mathrm{e}^{\int P\mathrm{d}x}\,\mathrm{d}x+C,\]
+<p>代回 \(y=C(x)\mathrm{e}^{-\int P\mathrm{d}x}\) 即得定理 7.4 的公式.推导完毕.</p>
+
+<div class="note"><b>通解结构的深刻含义：</b>把公式展开</p>
+\[y=\underbrace{C\,\mathrm{e}^{-\int P\mathrm{d}x}}_{\text{齐次方程通解}}
+ +\underbrace{\mathrm{e}^{-\int P\mathrm{d}x}\int Q\,\mathrm{e}^{\int P\mathrm{d}x}\mathrm{d}x}_{\text{非齐次方程的一个特解}}.\]
+<p><b>非齐次通解 = 齐次通解 + 非齐次一个特解</b>.这一结构对所有线性微分方程（含 §7.3 的二阶方程）普遍成立.工程上，第一项称为<b>零输入响应</b>（由初始状态决定，随时间衰减），第二项称为<b>零状态响应</b>（由外部激励 \(Q\) 决定，是稳态部分）.</div>
+
+<div class="ex"><div class="lab">例 7.13　直接套用通解公式</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}+y=\mathrm{e}^{-x}\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>\(P(x)=1,\ Q(x)=\mathrm{e}^{-x}\).\(\displaystyle\int P\,\mathrm{d}x=x\)，故积分因子 \(\mathrm{e}^{x}\)：</p>
+  \[y=\mathrm{e}^{-x}\Bigl[\int \mathrm{e}^{-x}\cdot\mathrm{e}^{x}\,\mathrm{d}x+C\Bigr]
+   =\mathrm{e}^{-x}\Bigl[\int1\,\mathrm{d}x+C\Bigr]=(x+C)\,\mathrm{e}^{-x}.\]
+  <p class="muted"><b>另一种写法（积分因子法）：</b>方程两端同乘 \(\mathrm{e}^{x}\)，左端恰是 \((y\mathrm{e}^{x})'\)：\((y\mathrm{e}^{x})'=1\)，积分得 \(y\mathrm{e}^{x}=x+C\).这个技巧在手算时更快.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.14　考研经典：\(P(x)\) 含分式</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}-\dfrac{2y}{x+1}=(x+1)^{5/2}\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>\(P(x)=-\dfrac{2}{x+1},\ Q(x)=(x+1)^{5/2}\).先算</p>
+  \[\int P\,\mathrm{d}x=-2\ln(x+1),\qquad
+    \mathrm{e}^{\int P\mathrm{d}x}=(x+1)^{-2},\qquad
+    \mathrm{e}^{-\int P\mathrm{d}x}=(x+1)^{2}.\]
+  <p>代入通解公式：</p>
+  \[y=(x+1)^2\Bigl[\int (x+1)^{5/2}(x+1)^{-2}\,\mathrm{d}x+C\Bigr]
+   =(x+1)^2\Bigl[\int(x+1)^{1/2}\,\mathrm{d}x+C\Bigr].\]
+  \[y=(x+1)^2\Bigl[\frac23(x+1)^{3/2}+C\Bigr].\]
+  <p class="muted"><b>本题两个易错点：</b>① \(P(x)\) 前的负号不能丢，写成标准形式 \(y'+P y=Q\) 后 \(P=-\dfrac{2}{x+1}\)；② 求 \(\displaystyle\int P\mathrm{d}x\) 时<b>不要再加常数</b>，否则会多出一个可被 \(C\) 吸收的因子，徒增计算量.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.15　考研经典：把 \(x\) 当作 \(y\) 的函数</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{1}{x+y}\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>若视 \(y\) 为未知函数，方程 \(y'=\dfrac{1}{x+y}\) 既不可分离、也非齐次、更不是线性的.</p>
+  <p><b>换个角度</b>：把 \(x\) 看作 \(y\) 的函数.由反函数求导法则 \(\dfrac{\mathrm{d}x}{\mathrm{d}y}=\dfrac{1}{\mathrm{d}y/\mathrm{d}x}\)，原方程变为</p>
+  \[\frac{\mathrm{d}x}{\mathrm{d}y}=x+y,\qquad\text{即}\qquad
+    \frac{\mathrm{d}x}{\mathrm{d}y}-x=y .\]
+  <p>这是以 \(y\) 为自变量、\(x\) 为未知函数的<b>一阶线性方程</b>，\(P(y)=-1,\ Q(y)=y\).积分因子 \(\mathrm{e}^{-y}\)：</p>
+  \[\bigl(x\mathrm{e}^{-y}\bigr)'=y\mathrm{e}^{-y}.\]
+  <p>右端分部积分：\(\displaystyle\int y\mathrm{e}^{-y}\mathrm{d}y=-y\mathrm{e}^{-y}-\mathrm{e}^{-y}+C=-(y+1)\mathrm{e}^{-y}+C\).故</p>
+  \[x\mathrm{e}^{-y}=-(y+1)\mathrm{e}^{-y}+C
+   \;\Longrightarrow\;x=C\mathrm{e}^{y}-y-1 .\]
+  <p class="muted"><b>这是考研的高频套路：</b>当方程对 \(y\) 不友好时，试试<b>互换自变量与因变量</b>.判据是——把 \(x\) 与 \(\dfrac{\mathrm{d}x}{\mathrm{d}y}\) 看成"未知量"后，方程是否成为一次的.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.16　RL 电路的电流响应</div>
+  <p class="stmt">某无刷电机绕组可等效为电阻 \(R=2.4\,\Omega\) 与电感 \(L=0.012\,\mathrm{H}\) 串联.\(t=0\) 时接入直流电压 \(E=48\,\mathrm{V}\)，初始电流为零.由基尔霍夫定律</p>
+  \[L\frac{\mathrm{d}i}{\mathrm{d}t}+Ri=E .\]
+  <p>求 \(i(t)\)，并计算 \(t=10\,\mathrm{ms}\) 时的电流.</p>
+  <p class="sol"><span class="mk">解</span>化为标准形式 \(\dfrac{\mathrm{d}i}{\mathrm{d}t}+\dfrac RL i=\dfrac EL\).这里 \(P=\dfrac RL=200\,\mathrm{s^{-1}}\)（常数），\(Q=\dfrac EL=4000\).积分因子 \(\mathrm{e}^{200t}\)：</p>
+  \[\bigl(i\,\mathrm{e}^{200t}\bigr)'=4000\,\mathrm{e}^{200t}
+   \;\Longrightarrow\;i\,\mathrm{e}^{200t}=20\,\mathrm{e}^{200t}+C
+   \;\Longrightarrow\;i=20+C\mathrm{e}^{-200t}.\]
+  <p>由 \(i(0)=0\) 得 \(C=-20\)，故</p>
+  \[i(t)=20\bigl(1-\mathrm{e}^{-200t}\bigr)\quad(\mathrm{A}).\]
+  <p>稳态电流 \(\dfrac ER=20\,\mathrm{A}\)，时间常数 \(\tau=\dfrac LR=5\,\mathrm{ms}\).当 \(t=10\,\mathrm{ms}=2\tau\)：</p>
+  \[i(0.01)=20\bigl(1-\mathrm{e}^{-2}\bigr)=20\times0.86466=17.29\ \mathrm{A}.\]
+  <p class="muted">对照引例一的电机转速方程——形式完全相同！<b>电气的 \(L/R\) 与机械的转动惯性，在数学上是同一个一阶惯性环节.</b>这种跨学科的"同构"正是微分方程最迷人之处.</p>
+</div>
+
+<h3>四、伯努利方程</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.5</span>伯努利方程</div>
+  <p>形如</p>
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)y=Q(x)\,y^{n}\qquad(n
+eq0,1)\]
+  <p>的方程称为<b>伯努利方程</b>.两端同除 \(y^{n}\)：</p>
+  \[y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)\,y^{1-n}=Q(x).\]
+  <p>令 \(z=y^{1-n}\)，则 \(\dfrac{\mathrm{d}z}{\mathrm{d}x}=(1-n)y^{-n}\dfrac{\mathrm{d}y}{\mathrm{d}x}\)，方程化为<b>一阶线性方程</b></p>
+  \[\frac{\mathrm{d}z}{\mathrm{d}x}+(1-n)P(x)\,z=(1-n)Q(x).\]
+  <p>求出 \(z\) 后回代 \(z=y^{1-n}\) 即可.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>方程 \(y'+Py=Qy^{n}\) 之所以"非线性"，全怪右端的 \(y^n\).若两端同除 \(y^n\)，非线性项就被压平成常数 \(Q\)，而左端出现 \(y^{-n}y'\) 与 \(y^{1-n}\) 两块.注意 \(\bigl(y^{1-n}\bigr)'=(1-n)y^{-n}y'\)，正好把这两块统一成同一个新未知量 \(z=y^{1-n}\) 及其导数——线性化因此成功.</p>
+<p><span class="stp">第一步：同除 \(y^{n}\).</span>在 \(y
+eq0\) 的区间上，方程两端除以 \(y^{n}\)（\(n
+eq0,1\)）：</p>
+\[y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)\,y^{1-n}=Q(x).\]
+<p><span class="stp">第二步：作代换.</span>令 \(z=y^{1-n}\).因 \(n
+eq1\)，\(z\) 与 \(y\) 在 \(y\gt0\)（或适当区间）上一一对应.由复合函数求导</p>
+\[\frac{\mathrm{d}z}{\mathrm{d}x}=(1-n)\,y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}\qquad\Longrightarrow\qquad y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{1}{1-n}\frac{\mathrm{d}z}{\mathrm{d}x}.\]
+<p><span class="stp">第三步：化为线性方程.</span>把上式代入第一步，并两端乘以 \(1-n\)：</p>
+\[\frac{1}{1-n}\frac{\mathrm{d}z}{\mathrm{d}x}+P(x)z=Q(x)\quad\Longrightarrow\quad \frac{\mathrm{d}z}{\mathrm{d}x}+(1-n)P(x)\,z=(1-n)Q(x),\]
+<p>这是关于 \(z\) 的一阶线性方程.</p>
+<p><span class="stp">第四步：求解并回代.</span>由定理 7.4，记 \(\tilde P=(1-n)P,\ \tilde Q=(1-n)Q\)，得</p>
+\[z=\mathrm{e}^{-\int \tilde P\mathrm{d}x}\Bigl[\int \tilde Q\,\mathrm{e}^{\int \tilde P\mathrm{d}x}\,\mathrm{d}x+C\Bigr],\]
+<p>再由 \(z=y^{1-n}\) 得 \(y=z^{\frac{1}{1-n}}\)，即为原方程通解.</p>
+<p><span class="stp">第五步：补上 \(y\equiv0\).</span>第一步的除法要求 \(y
+eq0\).当 \(n\gt0\) 时，\(y\equiv0\) 直接满足原方程（两端皆为 \(0\)），它一般不含于上述通解之中，应单独指出.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 7.17　考研经典伯努利方程</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}+\dfrac yx=a\,(\ln x)\,y^{2}\ (a
+eq0)\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>这里 \(n=2\)，令 \(z=y^{1-2}=y^{-1}\).由定理 7.5，方程化为</p>
+  \[\frac{\mathrm{d}z}{\mathrm{d}x}+(1-2)\cdot\frac1x\,z=(1-2)\,a\ln x,
+   \qquad\text{即}\qquad
+   \frac{\mathrm{d}z}{\mathrm{d}x}-\frac zx=-a\ln x .\]
+  <p>这是一阶线性方程，\(P=-\dfrac1x\)，积分因子 \(\mathrm{e}^{-\ln x}=\dfrac1x\).两端乘 \(\dfrac1x\)：</p>
+  \[\Bigl(\frac zx\Bigr)'=-\frac{a\ln x}{x}
+   \;\Longrightarrow\;\frac zx=-a\int\frac{\ln x}{x}\,\mathrm{d}x+C=-\frac a2\ln^2x+C .\]
+  <p>故 \(z=x\Bigl(C-\dfrac a2\ln^2x\Bigr)\)，回代 \(z=\dfrac1y\)：</p>
+  \[\frac1y=x\Bigl(C-\frac a2\ln^2x\Bigr),\qquad\text{即}\qquad
+    y=\frac{1}{x\bigl(C-\frac a2\ln^2 x\bigr)} .\]
+  <p class="muted">此外 \(y\equiv0\) 也是原方程的解（在除以 \(y^2\) 时被丢掉了），应单独补上.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.18　伯努利方程（\(n=3\)）</div>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}-y=x\,y^{3}\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>\(n=3\)，令 \(z=y^{-2}\)，则</p>
+  \[\frac{\mathrm{d}z}{\mathrm{d}x}+(1-3)(-1)z=(1-3)x,
+   \qquad\text{即}\qquad
+   \frac{\mathrm{d}z}{\mathrm{d}x}+2z=-2x .\]
+  <p>积分因子 \(\mathrm{e}^{2x}\)：\(\bigl(z\mathrm{e}^{2x}\bigr)'=-2x\mathrm{e}^{2x}\).分部积分</p>
+  \[\int-2x\mathrm{e}^{2x}\mathrm{d}x=-x\mathrm{e}^{2x}+\int\mathrm{e}^{2x}\mathrm{d}x=-x\mathrm{e}^{2x}+\frac12\mathrm{e}^{2x}+C .\]
+  <p>故 \(z=-x+\dfrac12+C\mathrm{e}^{-2x}\)，即</p>
+  \[\frac{1}{y^{2}}=C\mathrm{e}^{-2x}-x+\frac12 .\]
+</div>
+
+<h3>五、全微分方程简介</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.6</span>全微分方程的判别与求解</div>
+  <p>设方程写成 \(P(x,y)\,\mathrm{d}x+Q(x,y)\,\mathrm{d}y=0\).若在单连通区域内 \(P,Q\) 有连续偏导数且</p>
+  \[\frac{\partial P}{\partial y}=\frac{\partial Q}{\partial x},\]
+  <p>则左端恰是某个二元函数 \(u(x,y)\) 的<b>全微分</b>：\(\mathrm{d}u=P\mathrm{d}x+Q\mathrm{d}y\)，此时方程称为<b>全微分方程</b>（恰当方程），其通解为</p>
+  \[u(x,y)=C .\]
+  <p>求 \(u\) 的方法：先由 \(\dfrac{\partial u}{\partial x}=P\) 关于 \(x\) 积分得 \(u=\displaystyle\int P\,\mathrm{d}x+\varphi(y)\)，再由 \(\dfrac{\partial u}{\partial y}=Q\) 定出 \(\varphi(y)\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：条件的必要性.</span>先看反面.若确有 \(u\) 使 \(\mathrm{d}u=P\mathrm{d}x+Q\mathrm{d}y\)，则 \(u_x=P,\ u_y=Q\).由 \(P,Q\) 有连续偏导数知 \(u\) 有连续的二阶混合偏导数，于是由混合偏导数与次序无关（克莱罗定理）</p>
+\[\frac{\partial P}{\partial y}=\frac{\partial^2u}{\partial y\partial x}=\frac{\partial^2u}{\partial x\partial y}=\frac{\partial Q}{\partial x}.\]
+<p>可见 \(P_y=Q_x\) 是"能凑成全微分"的<b>必要</b>条件——这也解释了这个判别式的来历.</p>
+<p><span class="stp">第二步：条件的充分性（构造 \(u\)）.</span>设在单连通区域 \(D\) 内 \(P_y=Q_x\).固定 \(x\)，把 \(P\) 关于 \(x\) 积分，令</p>
+\[u(x,y)=\int P(x,y)\,\mathrm{d}x+\varphi(y),\]
+<p>这里 \(\int P\mathrm{d}x\) 表示视 \(y\) 为参数求得的一个原函数，故自动有 \(u_x=P\)；而"积分常数"关于 \(x\) 是常数、关于 \(y\) 却可任意，因此写成待定函数 \(\varphi(y)\).</p>
+<p><span class="stp">第三步：定出 \(\varphi(y)\).</span>要求 \(u_y=Q\)，即</p>
+\[\frac{\partial}{\partial y}\int P\,\mathrm{d}x+\varphi'(y)=Q\quad\Longrightarrow\quad \varphi'(y)=Q-\frac{\partial}{\partial y}\int P\,\mathrm{d}x .\]
+<p>关键是要说明右端<b>确实只含 \(y\)</b>，否则 \(\varphi'(y)\) 无法定义.为此对右端关于 \(x\) 求偏导（在 \(P\) 有连续偏导的前提下可交换求导次序）：</p>
+\[\frac{\partial}{\partial x}\Bigl[Q-\frac{\partial}{\partial y}\int P\,\mathrm{d}x\Bigr]=\frac{\partial Q}{\partial x}-\frac{\partial}{\partial y}\frac{\partial}{\partial x}\int P\,\mathrm{d}x=\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}=0 .\]
+<p>故右端与 \(x\) 无关，记为 \(\psi(y)\)，取 \(\varphi(y)=\int\psi(y)\mathrm{d}y\) 即可.这样得到的 \(u\) 满足 \(u_x=P,\ u_y=Q\)，即 \(\mathrm{d}u=P\mathrm{d}x+Q\mathrm{d}y\).</p>
+<p><span class="stp">第四步：通解为 \(u(x,y)=C\).</span>设 \(y=y(x)\) 是方程 \(P\mathrm{d}x+Q\mathrm{d}y=0\) 的解，即 \(P+Qy'=0\).考察复合函数 \(x\mapsto u\bigl(x,y(x)\bigr)\)，由链式法则</p>
+\[\frac{\mathrm{d}}{\mathrm{d}x}u\bigl(x,y(x)\bigr)=u_x+u_y\,y'=P+Q\,y'=0 ,\]
+<p>故 \(u\bigl(x,y(x)\bigr)\equiv C\).反之，若 \(y(x)\) 由 \(u(x,y)=C\) 隐式确定且 \(u_y=Q
+eq0\)，对该式求导即得 \(P+Qy'=0\).两方面合起来说明 \(u(x,y)=C\) 恰是方程的通解.</p>
+<p><span class="stp">补注：</span>"单连通"这一条件保证了第二步中的构造在整个区域上无障碍（等价地保证曲线积分 \(\int P\mathrm{d}x+Q\mathrm{d}y\) 与路径无关，可取 \(u(x,y)=\int_{(x_0,y_0)}^{(x,y)}P\mathrm{d}x+Q\mathrm{d}y\)）.区域若有"洞"，\(P_y=Q_x\) 仍可能推不出全局的 \(u\) 存在.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 7.19　全微分方程</div>
+  <p class="stmt">求解 \((3x^2+6xy^2)\,\mathrm{d}x+(6x^2y+4y^3)\,\mathrm{d}y=0\).</p>
+  <p class="sol"><span class="mk">解</span><b>先判别：</b>\(P=3x^2+6xy^2,\ Q=6x^2y+4y^3\)，</p>
+  \[\frac{\partial P}{\partial y}=12xy,\qquad \frac{\partial Q}{\partial x}=12xy .\]
+  <p>相等，故为全微分方程.</p>
+  <p><b>再求 \(u\)：</b>由 \(\dfrac{\partial u}{\partial x}=3x^2+6xy^2\) 关于 \(x\) 积分（把 \(y\) 视为常数）：</p>
+  \[u=x^3+3x^2y^2+\varphi(y).\]
+  <p>对 \(y\) 求偏导并与 \(Q\) 比较：</p>
+  \[\frac{\partial u}{\partial y}=6x^2y+\varphi'(y)=6x^2y+4y^3
+   \;\Longrightarrow\;\varphi'(y)=4y^3\;\Longrightarrow\;\varphi(y)=y^4 .\]
+  <p>故通解为</p>
+  \[x^3+3x^2y^2+y^4=C .\]
+</div>
+
+<div class="note"><b>一阶方程解法速查（先判类型，再选方法）：</b><br>
+① 能把 \(x\) 与 \(y\) 拆到两边 → <b>可分离变量</b>，直接积分；<br>
+② 右端只含 \(\dfrac yx\) → <b>齐次</b>，令 \(u=\dfrac yx\)；<br>
+③ 形如 \(y'+Py=Q\) → <b>一阶线性</b>，套通解公式或用积分因子 \(\mathrm{e}^{\int P\mathrm{d}x}\)；<br>
+④ 形如 \(y'+Py=Qy^{n}\) → <b>伯努利</b>，令 \(z=y^{1-n}\)；<br>
+⑤ \(P\mathrm{d}x+Q\mathrm{d}y=0\) 且 \(P_y=Q_x\) → <b>全微分</b>，求原函数；<br>
+⑥ 以上都不像 → 试试<b>把 \(x\) 看作 \(y\) 的函数</b>（例 7.15）.</div>
+
+<div class="case"><div class="lab">应用探微 · 静脉滴注给药：一阶线性方程决定的用药方案</div>
+  <details><summary>展开查看：从药动学方程算出稳态血药浓度与达标时间</summary>
+  <div class="body">
+    <p><b>场景：</b> 病房里，输液泵以 \(50\ \mathrm{mg/h}\) 匀速滴注，护士每隔半小时抽一次血测浓度.医生最担心两件事：血药浓度多久才能到稳态？病人肝肾功能差一档，会不会直接冲进中毒区间？把人体看作<b>一室模型</b>（一个均匀混合的容器），设药量为 \(X(t)\)（\(\mathrm{mg}\)）、表观分布容积 \(V=35\,\mathrm{L}\)、浓度 \(C=\dfrac XV\)，药物按一级动力学消除，消除速率常数为 \(k_e\).</p>
+    <p><b>一、建立方程.</b>"体内药量的变化率 = 输入速率 − 消除速率"：</p>
+    \[\frac{\mathrm{d}X}{\mathrm{d}t}=k_0-k_eX .\]
+    <p>两端除以 \(V\)，化为浓度形式的<b>一阶线性方程</b>：</p>
+    \[\frac{\mathrm{d}C}{\mathrm{d}t}+k_eC=\frac{k_0}{V}.\]
+    <p><b>二、参数标定.</b>该药半衰期 \(t_{1/2}=6\,\mathrm{h}\)，由 \(k_e=\dfrac{\ln2}{t_{1/2}}\) 得</p>
+    \[k_e=\frac{0.6931}{6}=0.1155\ \mathrm{h^{-1}}.\]
+    <p><b>三、求解.</b>\(P=k_e\) 为常数，积分因子 \(\mathrm{e}^{k_et}\)：</p>
+    \[\bigl(C\mathrm{e}^{k_et}\bigr)'=\frac{k_0}{V}\mathrm{e}^{k_et}
+     \;\Longrightarrow\;C\mathrm{e}^{k_et}=\frac{k_0}{Vk_e}\mathrm{e}^{k_et}+A .\]
+    <p>由初始条件 \(C(0)=0\) 得 \(A=-\dfrac{k_0}{Vk_e}\)，故</p>
+    \[C(t)=\frac{k_0}{Vk_e}\bigl(1-\mathrm{e}^{-k_et}\bigr)=C_{ss}\bigl(1-\mathrm{e}^{-k_et}\bigr).\]
+    <p><b>四、稳态浓度.</b></p>
+    \[C_{ss}=\frac{k_0}{Vk_e}=\frac{50}{35\times0.1155}=\frac{50}{4.0425}=12.37\ \mathrm{mg/L}.\]
+    <p><b>五、达标进程表.</b></p>
+    <table class="dt">
+      <tr><th>滴注时间 \(t\)（h）</th><th>相当于几个半衰期</th><th>\(1-\mathrm{e}^{-k_et}\)</th><th>血药浓度 \(C\)（mg/L）</th></tr>
+      <tr><td>6</td><td>1</td><td>0.500</td><td>6.18</td></tr>
+      <tr><td>12</td><td>2</td><td>0.750</td><td>9.28</td></tr>
+      <tr><td>18</td><td>3</td><td>0.875</td><td>10.82</td></tr>
+      <tr><td>24</td><td>4</td><td>0.938</td><td>11.59</td></tr>
+      <tr><td>30</td><td>5</td><td>0.969</td><td>11.98</td></tr>
+    </table>
+    <p><b>六、临床结论.</b>方程告诉我们两件关键的事：</p>
+    <p>（1）<b>稳态浓度与滴注速率成正比、与 \(k_e\) 成反比</b>.若病人肝肾功能不全使 \(k_e\) 减半，\(C_{ss}\) 将<b>翻倍</b>至 \(24.7\,\mathrm{mg/L}\)——很可能进入中毒区间.这就是为什么临床必须按肌酐清除率调整剂量.</p>
+    <p>（2）<b>达到稳态需要约 5 个半衰期（本例 30 小时），且这个时间与滴注速率无关</b>——加大速率只会抬高 \(C_{ss}\)，不会更快达到"各自的稳态".因此危重病人需要先给一次<b>负荷剂量</b> \(X_0=C_{ss}\cdot V=12.37\times35=433\,\mathrm{mg}\) 快速冲到目标浓度，再转恒速维持.</p>
+    <p><b>一个 \(\mathrm{e}^{-k_et}\)，撑起了整套给药方案.</b>这正是本节一阶线性方程通解公式在生命科学中的直接兑现.</p>
+    <p class="cn-point">\(k_e\) 减半、稳态浓度翻倍到 \(24.7\ \mathrm{mg/L}\)——这个由 \(C_{ss}=k_0/(Vk_e)\) 算出的风险线，正是临床按肌酐清除率调剂量的依据.合理用药的底线不是经验，而是一条一阶线性方程.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §7.3 ============ -->
+<div class="labx">
+  <div class="lab">一阶方程 · 方向场</div>
+  <div class="desc">(\(\dfrac{\mathrm{d}y}{\mathrm{d}x}=x-y\)) 的方向场，解曲线沿箭头走向.</div>
+  <canvas id="cv_p73" width="720" height="320"></canvas>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p73'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var W=cv.width,H=cv.height;
+    var xmin=-4,xmax=4,ymin=-4,ymax=4;
+    function f(x,y){ return x - y; }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+    var step=0.5;
+    ctx.strokeStyle='rgba(94,234,212,.75)';ctx.lineWidth=1.6;
+    for(var x=xmin;x<=xmax+1e-9;x+=step){
+      for(var y=ymin;y<=ymax+1e-9;y+=step){
+        var m=f(x,y);
+        if(!isFinite(m))continue;
+        var ang=Math.atan(m);
+        var L=0.34;
+        var x1=x-L*Math.cos(ang), y1=y-L*Math.sin(ang);
+        var x2=x+L*Math.cos(ang), y2=y+L*Math.sin(ang);
+        ctx.beginPath();ctx.moveTo(X(x1),Y(y1));ctx.lineTo(X(x2),Y(y2));ctx.stroke();
+        ctx.fillStyle='rgba(94,234,212,.9)';
+        ctx.beginPath();ctx.arc(X(x2),Y(y2),1.6,0,7);ctx.fill();
+      }
+    }
+  })();
+  </script>
+</div>
+
+<div class="labx">
+  <div class="lab">交互 · 二阶振动：阻尼弹簧系统</div>
+  <div class="desc">mx''+cx'+kx=0 描述阻尼振动.调阻尼比 ζ：ζ&lt;1 欠阻尼振荡、ζ=1 临界、ζ&gt;1 过阻尼.</div>
+  <div class="row"><canvas id="viz-spring" width="520" height="240" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">ζ = <span id="viz-zeta-val" style="font-weight:700;color:#2dd4bf">0.15</span></label>
+    <input type="range" id="viz-zeta" min="0" max="2" step="0.05" value="0.15" style="flex:1;min-width:100px;accent-color:#2dd4bf">
+    <span id="viz-mode-lbl" style="font-size:12px;color:#6b8179">欠阻尼振荡</span>
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-spring'),ctx=c.getContext('2d');
+  var zS=document.getElementById('viz-zeta'),zV=document.getElementById('viz-zeta-val'),mL=document.getElementById('viz-mode-lbl');
+  function draw(){var z=parseFloat(zS.value);zV.textContent=z.toFixed(2);
+    mL.textContent=z<1?'欠阻尼振荡':z===1?'临界阻尼':'过阻尼';var W=c.width,H=c.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/20){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/10){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();
+    for(var px=0;px<=W;px+=2){var t=px/W*25;var y;
+      if(z<1){var wd=Math.sqrt(1-z*z);y=Math.exp(-z*t)*Math.cos(wd*t*5);}
+      else if(z===1){y=Math.exp(-t)*(1+t);}
+      else{var r1=-z+Math.sqrt(z*z-1),r2=-z-Math.sqrt(z*z-1);y=0.5*(Math.exp(r1*t)+Math.exp(r2*t));}
+      var py=H*0.5-y*H*0.28;ctx[px===0?'moveTo':'lineTo'](px,py);}ctx.stroke();
+    ctx.fillStyle='#33473f';ctx.font='11px sans-serif';ctx.fillText(mL,W*0.68,H*0.1);
+  }requestAnimationFrame(function(){draw();});zS.addEventListener('input',draw);
+})();
+</script>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 动力电池 RC 等效电路：极化电压如何毁掉 SOC 估计</summary>
+<p><b>场景：</b> 高速服务区的充电桩前，仪表盘显示还剩 \(30\%\) 电量——可你刚深踩过几脚油门，真实电量可能已经悄悄跌掉 \(6\%\).BMS 测不到 SOC，只能测端电压再反查 OCV 曲线，但端电压里混着由电荷转移与扩散产生的<b>极化电压</b> \(U_p\)（一阶 RC 并联环节）.设 \(50\ \mathrm{A\cdot h}\) 三元锂电芯以 \(1\mathrm{C}\)（\(50\ \mathrm{A}\)）恒流放电，看 \(U_p(t)\) 怎样污染 SOC 估计.由基尔霍夫定律</p>
+\[C_{p}\frac{\mathrm{d}U_{p}}{\mathrm{d}t}+\frac{U_{p}}{R_{p}}=I
+ \qquad\Longleftrightarrow\qquad
+ \frac{\mathrm{d}U_{p}}{\mathrm{d}t}+\frac{1}{R_{p}C_{p}}U_{p}=\frac{I}{C_{p}} .\]
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>极化电阻</td><td>\(R_p\)</td><td>1.2 mΩ</td></tr>
+<tr><td>极化电容</td><td>\(C_p\)</td><td>15000 F</td></tr>
+<tr><td>时间常数 \(R_pC_p\)</td><td>\(\tau\)</td><td>18 s</td></tr>
+<tr><td>放电电流</td><td>\(I\)</td><td>50 A</td></tr>
+<tr><td>平台区 OCV 斜率</td><td>\(k_{\text{ocv}}\)</td><td>8 mV / %SOC</td></tr>
+</table>
+<p class="sol"> 这是标准的一阶线性方程，\(P=\dfrac{1}{\tau}\) 为常数，积分因子 \(\mathrm{e}^{t/\tau}\)：</p>
+\[\bigl(U_{p}\mathrm{e}^{t/\tau}\bigr)'=\frac{I}{C_{p}}\mathrm{e}^{t/\tau}
+ \;\Longrightarrow\;U_{p}\mathrm{e}^{t/\tau}=IR_{p}\mathrm{e}^{t/\tau}+A .\]
+<p>由 \(U_{p}(0)=0\) 得 \(A=-IR_{p}\)，故</p>
+\[U_{p}(t)=IR_{p}\bigl(1-\mathrm{e}^{-t/\tau}\bigr)=0.060\bigl(1-\mathrm{e}^{-t/18}\bigr)\ \mathrm{V}.\]
+<table class="dt">
+<tr><th>放电时长 \(t\)（s）</th><th>18</th><th>30</th><th>36</th><th>54</th><th>\(\to\infty\)</th></tr>
+<tr><th>\(U_p\)（mV）</th><th>37.9</th><th>48.7</th><th>51.9</th><th>57.0</th><th>60.0</th></tr>
+<tr><th>折算 SOC 误差</th><th>4.7%</th><th>6.1%</th><th>6.5%</th><th>7.1%</th><th>7.5%</th></tr>
+</table>
+<p>放电 \(30\ \mathrm{s}\) 后极化电压已达 \(48.7\ \mathrm{mV}\)，按 \(8\ \mathrm{mV/\%SOC}\) 折算，相当于 <b>\(6.1\%\) 的 SOC 虚假下跌</b>.</p>
+<p><b>静置恢复：</b>停止放电后 \(I=0\)，方程退化为齐次的 \(U_{p}'+U_{p}/\tau=0\)，解为 \(U_{p}=48.7\,\mathrm{e}^{-t/18}\ \mathrm{mV}\).静置 \(5\tau=90\ \mathrm{s}\) 后残余 \(48.7\times\mathrm{e}^{-5}=0.33\ \mathrm{mV}\)，可以忽略.</p>
+<p><b>工程结论：</b> 两条硬性规范由此而来.其一，<b>整车行驶中绝不能用端电压直接查表估 SOC</b>，必须先用同一条微分方程在线预测并扣除 \(U_p\)；\(6\%\) 的 SOC 误差在 \(500\ \mathrm{km}\) 续航车型上就是 \(30\ \mathrm{km}\) 的里程焦虑.其二，<b>标定 OCV 必须静置 \(5\tau\) 以上</b>——这就是电池测试规程规定"充放电后静置至少 1 小时再测 OCV"的数学来源（实车 \(\tau\) 因扩散过程更长，可达数百秒）.此外，稳态值 \(IR_p\) 与电流成正比：\(3\mathrm{C}\) 快充时 \(U_p\) 升至 \(180\ \mathrm{mV}\)，若不补偿会提前触发过压保护，白白损失充电功率.</p>
+<p class="cn-point">放电 \(30\ \mathrm{s}\) 就藏出 \(6.1\%\) 的 SOC 假跌——中国新能源车续航表上每一公里的可信度，都靠 BMS 在线求解这条一阶方程把 \(U_p\) 扣干净.国产电池能扛住极寒极热的口碑，一半来自电化学，一半来自这类"算得清"的补偿算法.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch7-rc" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>放电电流 <input type="range" id="ch7-rc-i" min="0.5" max="3" step="0.1" value="1" style="width:180px;accent-color:#0F6E56"> <b id="ch7-rc-i-t"></b> C</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch7-rc-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch7-rc'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var Rp=0.0012, Cp=15000, tau=18;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=60,mR=14,mT=26,mB=38,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var Crate=+document.getElementById('ch7-rc-i').value;
+      var I=Crate*50; // A
+      var Uinf=I*Rp;
+      var tmax=120;
+      function X(t){ return mL+t/tmax*pW; }
+      function Y(u){ return mT+pH - u/0.18*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 稳态虚线
+      ctx.strokeStyle='#0e7c7c';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(mL,Y(Uinf));ctx.lineTo(W-mR,Y(Uinf));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#0e7c7c';ctx.font='bold 10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('稳态 IR_p='+(Uinf*1000).toFixed(0)+' mV',W-mR-2,Y(Uinf)-4);
+      // 曲线
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var t=0;t<=tmax;t+=0.5){ var xx=X(t),yy=Y(Uinf*(1-Math.exp(-t/tau))); t===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 30s 标记
+      var u30=Uinf*(1-Math.exp(-30/tau));
+      ctx.fillStyle='#eab308';
+      ctx.beginPath();ctx.arc(X(30),Y(u30),5,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(X(30),Y(u30));ctx.lineTo(X(30),mT+pH);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#ca8a04';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('30s',X(30),mT+pH+16);
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('0',mL-6,Y(0));
+      ctx.textAlign='center';ctx.fillText('t (s)',(mL+W-mR)/2,mT+pH+28);
+      ctx.save();ctx.translate(14,(mT+pH)/2);ctx.rotate(-Math.PI/2);
+      ctx.textAlign='center';ctx.fillText('U_p (mV)',0,0);ctx.restore();
+      // 数值
+      var socDrop=u30*1000/8;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('I = '+Crate.toFixed(1)+'C ('+I.toFixed(0)+' A)   30 s 时 U_p = '+(u30*1000).toFixed(1)+' mV',mL,mT+13);
+      var out=document.getElementById('ch7-rc-out');
+      var tip = socDrop>=6 ? '⚠ 按 8 mV/%SOC 折算 ≈ '+socDrop.toFixed(1)+'% SOC 虚假下跌——端电压直读会骗你' : '极化电压小，SOC 估计误差可控';
+      out.textContent = tip;
+    }
+    document.getElementById('ch7-rc-i').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 低轨卫星的轨道衰减：可分离变量方程算出自然陨落寿命</summary>
+<p><b>场景：</b> 测控值班室的屏幕上，一颗 \(400\ \mathrm{km}\) 轨道上的卫星半长轴正以每天 \(372\ \mathrm{m}\) 的速度往下掉——大气虽稀薄，日积月累却决定它何时坠回地面.星座运营商要在"多花一笔钱装离轨装置"和"让它自然陨落"之间做决策，而寿命的答案，全在轨道能量 \(E=-\dfrac{\mu m}{2a}\) 与阻力功率 \(\dfrac{\mathrm{d}E}{\mathrm{d}t}=-Dv\)（\(D=\dfrac12\rho C_{d}Av^{2}\)，\(v=\sqrt{\mu/a}\)）这两个式子里.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>地球引力常数</td><td>\(\mu\)</td><td>\(3.986\times10^{14}\ \mathrm{m^3/s^2}\)</td></tr>
+<tr><td>初始半长轴（400 km）</td><td>\(a_0\)</td><td>\(6.771\times10^{6}\ \mathrm{m}\)</td></tr>
+<tr><td>卫星质量</td><td>\(m\)</td><td>260 kg</td></tr>
+<tr><td>迎风面积</td><td>\(A\)</td><td>3.5 m²</td></tr>
+<tr><td>阻力系数</td><td>\(C_d\)</td><td>2.2</td></tr>
+<tr><td>大气密度（取平均）</td><td>\(\rho\)</td><td>\(2.8\times10^{-12}\ \mathrm{kg/m^3}\)</td></tr>
+</table>
+<p class="sol"> <b>第一步：化成一阶方程.</b>由 \(E=-\dfrac{\mu m}{2a}\) 得 \(\dfrac{\mathrm{d}E}{\mathrm{d}a}=\dfrac{\mu m}{2a^{2}}\)，故</p>
+\[\frac{\mathrm{d}a}{\mathrm{d}t}=\frac{-Dv}{\mu m/(2a^{2})}=-\frac{2a^{2}Dv}{\mu m}.\]
+<p>代入 \(D=\dfrac12\rho C_{d}A\cdot\dfrac{\mu}{a}\) 与 \(v=\sqrt{\mu/a}\)，各项化简后 \(a\) 的幂次合并为</p>
+\[\frac{\mathrm{d}a}{\mathrm{d}t}=-K\sqrt{a},\qquad
+  K=\frac{\rho C_{d}A\sqrt{\mu}}{m}
+  =\frac{2.8\times10^{-12}\times2.2\times3.5\times1.9965\times10^{7}}{260}=1.656\times10^{-6}.\]
+<p><b>第二步：分离变量.</b></p>
+\[\frac{\mathrm{d}a}{\sqrt a}=-K\,\mathrm{d}t
+ \;\Longrightarrow\;2\sqrt a=2\sqrt{a_{0}}-Kt
+ \;\Longrightarrow\;t=\frac{2\bigl(\sqrt{a_{0}}-\sqrt{a}\bigr)}{K}.\]
+<p><b>第三步：代入数值.</b>当前衰减速率</p>
+\[\left.\frac{\mathrm{d}a}{\mathrm{d}t}\right|_{a_{0}}=-1.656\times10^{-6}\times2602.1=-4.31\times10^{-3}\ \mathrm{m/s}=-372\ \mathrm{m/天}.\]
+<p>降到 \(200\ \mathrm{km}\)（\(a=6.571\times10^{6}\ \mathrm{m}\)，此后数天内即再入）所需时间</p>
+\[t=\frac{2\,(2602.11-2563.40)}{1.656\times10^{-6}}=\frac{77.42}{1.656\times10^{-6}}=4.68\times10^{7}\ \mathrm{s}=541\ \mathrm{天}\approx1.48\ \mathrm{年}.\]
+<p><b>工程结论：</b> 三条工程判断.① 该卫星<b>无需专门离轨装置</b>即可在 \(1.5\) 年内自然陨落，远优于国际通行的"低轨航天器 25 年内离轨"规则——这正是巨型星座普遍选择 \(400\ \mathrm{km}\) 以下高度的合规理由.② 反过来说，要维持轨道就必须持续补推：每年抬升 \(372\times365=136\ \mathrm{km}\) 所需速度增量约 \(\Delta v\approx\dfrac{v}{2a}\Delta a=\dfrac{7673}{2\times6.771\times10^{6}}\times1.36\times10^{5}=77\ \mathrm{m/s}\)，这就是星座卫星必须配备电推进的原因.③ 本模型把 \(\rho\) 当成常数，而真实大气密度随高度<b>指数</b>增长、且随太阳活动可波动一个数量级——所以工程上还要把 \(\rho=\rho(a)\) 代回去重新分离变量，太阳风暴期间的实际寿命可能只有估算值的一半.<b>模型的每一次精化，都是在同一条可分离变量方程上做文章.</b></p>
+<p class="cn-point">"25 年内离轨"的合规线，是用 \(t=\dfrac{2(\sqrt{a_0}-\sqrt a)}{K}\) 一条可分离方程算出来的——中国星网、千帆星座把轨道定在 \(400\ \mathrm{km}\) 附近，既是频率与覆盖的考量，更是一笔算到天的"太空环保"账.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch7-sat" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>初始高度 h₀ <input type="range" id="ch7-sat-h" min="300" max="600" step="5" value="400" style="width:220px;accent-color:#0F6E56"> <b id="ch7-sat-h-t"></b> km</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch7-sat-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch7-sat'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var K=1.656e-6, Re=6371000;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=60,mR=14,mT=26,mB=38,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var h0=+document.getElementById('ch7-sat-h').value*1000; // m
+      var a0=Re+h0;
+      // 寿命：从 a0 衰减到 a_f (Re+120km) —— t = 2(√a0-√af)/K
+      var af=Re+120000;
+      var lifeDays=2*(Math.sqrt(a0)-Math.sqrt(af))/K/86400;
+      var tmax=lifeDays*86400;
+      function X(t){ return mL+t/tmax*pW; }
+      function Yv(a){ return mT+pH - (a-(Re+100000))/400000*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 曲线 a(t) = (√a0 - Kt/2)²
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var i=0;i<=300;i++){
+        var tt=tmax*i/300;
+        var sq=Math.sqrt(a0)-K*tt/2;
+        var aa=sq>0?sq*sq:af;
+        var xx=X(tt),yy=Yv(aa);
+        i===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('h₀',mL-6,Yv(a0));
+      ctx.textAlign='center';ctx.fillText('t (天)',(mL+W-mR)/2,mT+pH+28);
+      ctx.save();ctx.translate(14,(mT+pH)/2);ctx.rotate(-Math.PI/2);
+      ctx.textAlign='center';ctx.fillText('轨道高度 a-Rₑ',0,0);ctx.restore();
+      // 数值
+      var dropRate=372*(h0/400)*(h0/400)*0; // 简化
+      var drate=K*Math.sqrt(a0);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('h₀ = '+h0.toFixed(0)+' km  自然陨落寿命 ≈ '+(lifeDays/365).toFixed(2)+' 年（'+lifeDays.toFixed(0)+' 天）',mL,mT+13);
+      var out=document.getElementById('ch7-sat-out');
+      var tip = lifeDays<730 ? '✔ 低于"25 年内离轨"合规线一个量级，巨型星座选低轨的合规理由' : '⚠ 寿命偏长，可能需要额外离轨装置';
+      out.textContent = tip + '（国际规则：低轨航天器 25 年内必须离轨）';
+    }
+    document.getElementById('ch7-sat-h').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s072" data-ch="7" data-n="5"></div>
+<h2 id="s073"><span class="num">§7.3</span>二阶线性微分方程</h2>
+    
+<div class="ex"><div class="lab">引例　机器人关节的 PD 控制：三种阻尼，三种"性格"</div>
+  <p class="stmt">协作机器人的一个关节在 PD 控制下，其误差 \(x(t)\)（偏离目标位置的量）满足二阶方程</p>
+  \[m\frac{\mathrm{d}^2x}{\mathrm{d}t^2}+c\frac{\mathrm{d}x}{\mathrm{d}t}+kx=0,\]
+  <p>其中等效质量 \(m=2\,\mathrm{kg}\)、位置增益（等效刚度）\(k=200\,\mathrm{N/m}\)，速度增益（等效阻尼）\(c\) 可由工程师自由整定.设关节被外力推离目标 \(x(0)=0.05\,\mathrm{m}\) 后松手（\(x'(0)=0\)）.问 \(c\) 取多少最好？</p>
+  <p class="sol"><span class="mk">解</span>把 \(x=\mathrm{e}^{rt}\) 代入方程（这个尝试的合理性见本节定理 7.11），得 <b>特征方程</b></p>
+  \[2r^2+cr+200=0,\qquad \Delta=c^2-1600 .\]
+  <p>先算两个基准量：<b>无阻尼固有频率</b> \(\omega_n=\sqrt{\dfrac km}=\sqrt{100}=10\,\mathrm{rad/s}\)；<b>临界阻尼系数</b> \(c_c=2\sqrt{mk}=2\sqrt{400}=40\,\mathrm{N\cdot s/m}\).记<b>阻尼比</b> \(\zeta=\dfrac{c}{c_c}\).</p>
+  <p><b>情形 A：\(c=16\)（\(\zeta=0.4\)，欠阻尼）.</b>\(\Delta=256-1600\lt0\)，特征根为共轭复数</p>
+  \[r_{1,2}=\frac{-16\pm\sqrt{-1344}}{4}=-4\pm 9.165\,\mathrm{i}.\]
+  <p>通解 \(x=\mathrm{e}^{-4t}\bigl(C_1\cos9.165t+C_2\sin9.165t\bigr)\).代入初始条件：\(C_1=0.05\)；由 \(x'(0)=-4C_1+9.165C_2=0\) 得 \(C_2=0.02182\).故</p>
+  \[x(t)=\mathrm{e}^{-4t}\bigl(0.05\cos9.165t+0.02182\sin9.165t\bigr)
+        =0.05455\,\mathrm{e}^{-4t}\cos(9.165t-0.4115).\]
+  <p><b>超调量</b>（第一次反向摆过的最大幅度与初始偏差之比）为</p>
+  \[M_p=\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}=\mathrm{e}^{-\pi\times0.4/0.9165}=\mathrm{e}^{-1.3711}=0.2538,\]
+  <p>即 \(25.4\%\)，对应绝对超调 \(0.05\times0.2538=12.7\,\mathrm{mm}\).</p>
+  <p><b>情形 B：\(c=40\)（\(\zeta=1\)，临界阻尼）.</b>\(\Delta=0\)，二重根 \(r=-10\).通解 \(x=(C_1+C_2t)\mathrm{e}^{-10t}\)，由条件得 \(C_1=0.05,\ C_2=0.5\)：</p>
+  \[x(t)=(0.05+0.5t)\,\mathrm{e}^{-10t}.\]
+  <p><b>无任何超调</b>，单调趋于 0.</p>
+  <p><b>情形 C：\(c=60\)（\(\zeta=1.5\)，过阻尼）.</b>\(\Delta=3600-1600=2000\gt0\)，两个不同实根</p>
+  \[r_{1,2}=\frac{-60\pm44.72}{4}=-3.820,\ -26.180 .\]
+  <p>通解 \(x=C_1\mathrm{e}^{-3.820t}+C_2\mathrm{e}^{-26.180t}\)，解得 \(C_1=0.04363,\ C_2=0.00637\).也无超调，但衰减由<b>较慢的那个根</b> \(-3.820\) 主导，反而更"拖沓".</p>
+  <table class="dt">
+    <tr><th>阻尼 \(c\)（N·s/m）</th><th>\(\zeta\)</th><th>判别式 \(\Delta\)</th><th>特征根</th><th>超调量</th><th>调节时间（±2%）</th></tr>
+    <tr><td>16</td><td>0.4</td><td>\(\lt0\)</td><td>\(-4\pm9.165\mathrm{i}\)</td><td>25.4%</td><td>1.00 s</td></tr>
+    <tr><td>40</td><td>1.0</td><td>\(=0\)</td><td>\(-10\)（二重）</td><td>0</td><td>0.59 s</td></tr>
+    <tr><td>60</td><td>1.5</td><td>\(\gt0\)</td><td>\(-3.82,\ -26.18\)</td><td>0</td><td>0.99 s</td></tr>
+  </table>
+  <p><b>工程结论：临界阻尼 \(c=40\) 是最优选择</b>——既无超调（不会撞到工件），又最快稳定.实践中因存在建模误差，常取 \(\zeta=0.7\sim0.8\) 留出裕度.</p>
+  <p><b>请注意：</b>上表中的三种"性格"，完全由特征方程判别式 \(\Delta\) 的符号决定.这不是巧合——<b>本节要建立的，正是"特征根 → 通解形式"的完整对应关系</b>.</p>
+</div>
+
+<h3>一、二阶线性微分方程解的结构</h3>
+<p>二阶线性微分方程的一般形式为</p>
+\[\frac{\mathrm{d}^2y}{\mathrm{d}x^2}+P(x)\frac{\mathrm{d}y}{\mathrm{d}x}+Q(x)y=f(x).\]
+<p>当 \(f(x)\equiv0\) 时称为<b>齐次</b>的，否则称为<b>非齐次</b>的，\(f(x)\) 称为<b>自由项</b>.</p>
+
+<div class="def"><div class="lab"><span class="n">定理 7.7</span>齐次方程解的叠加原理</div>
+  <p>若 \(y_1(x),y_2(x)\) 都是齐次方程 \(y''+Py'+Qy=0\) 的解，则对任意常数 \(C_1,C_2\)，</p>
+  \[y=C_1y_1(x)+C_2y_2(x)\]
+  <p>也是该方程的解.</p>
+  <p class="muted"><b>证明：</b>代入左端，利用求导的线性性，\(\bigl(C_1y_1+C_2y_2\bigr)''+P\bigl(C_1y_1+C_2y_2\bigr)'+Q\bigl(C_1y_1+C_2y_2\bigr)=C_1(y_1''+Py_1'+Qy_1)+C_2(y_2''+Py_2'+Qy_2)=0+0=0\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>把方程左端看成一个"加工机器"——<b>线性微分算子</b></p>
+\[L[y]:=y''+P(x)y'+Q(x)y .\]
+<p>方程即 \(L[y]=0\).要证的结论无非是：这台机器对"数乘"和"求和"是<b>透明</b>的.</p>
+<p><span class="stp">第一步：验证 \(L\) 的线性性.</span>设 \(y_1,y_2\) 二阶可导，\(C_1,C_2\) 为常数.由求导运算的线性性 \((C_1y_1+C_2y_2)'=C_1y_1'+C_2y_2'\)，再求导一次得 \((C_1y_1+C_2y_2)''=C_1y_1''+C_2y_2''\).于是</p>
+\[L[C_1y_1+C_2y_2]=\bigl(C_1y_1''+C_2y_2''\bigr)+P\bigl(C_1y_1'+C_2y_2'\bigr)+Q\bigl(C_1y_1+C_2y_2\bigr).\]
+<p><span class="stp">第二步：按 \(y_1,y_2\) 归并同类项.</span>把含 \(C_1\) 的三项与含 \(C_2\) 的三项各自合并：</p>
+\[L[C_1y_1+C_2y_2]=C_1\bigl(y_1''+Py_1'+Qy_1\bigr)+C_2\bigl(y_2''+Py_2'+Qy_2\bigr)=C_1L[y_1]+C_2L[y_2].\]
+<p><span class="stp">第三步：代入条件.</span>已知 \(L[y_1]=0,\ L[y_2]=0\)，故</p>
+\[L\bigl[C_1y_1+C_2y_2\bigr]=C_1\cdot0+C_2\cdot0=0,\]
+<p>即 \(y=C_1y_1+C_2y_2\) 也是齐次方程的解.</p>
+<p><span class="stp">注：</span>整个论证只用到了 \(L\) 的线性，与 \(P,Q\) 的具体形式无关，因此结论对任意阶齐次线性方程、以及任意有限多个解的线性组合都成立.注意"齐次"这一条不可少：若右端不为零，第三步会得到 \((C_1+C_2)f(x)\) 而非 \(f(x)\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定义 7.5</span>线性相关与线性无关</div>
+  <p>设 \(y_1,y_2\) 在区间 \(I\) 上有定义.若存在不全为零的常数 \(k_1,k_2\)，使 \(k_1y_1(x)+k_2y_2(x)\equiv0\) 在 \(I\) 上成立，则称二者<b>线性相关</b>；否则称<b>线性无关</b>.</p>
+  <p>对两个函数而言，线性无关 \(\Longleftrightarrow\) 比值 \(\dfrac{y_1}{y_2}\) 不恒为常数.</p>
+  <p>更一般的判据是<b>朗斯基行列式</b></p>
+  \[W(x)=\begin{vmatrix}y_1&y_2\\ y_1'&y_2'\end{vmatrix}=y_1y_2'-y_1'y_2 .\]
+  <p>若 \(y_1,y_2\) 是同一齐次方程的解，则它们线性无关当且仅当 \(W(x)
+eq0\).</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 7.8</span>齐次方程通解的结构</div>
+  <p>若 \(y_1,y_2\) 是二阶齐次线性方程的两个<b>线性无关</b>的特解，则</p>
+  \[Y=C_1y_1+C_2y_2\qquad(C_1,C_2\ \text{为任意常数})\]
+  <p>是该方程的<b>通解</b>.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>"通解"的含义是<b>把所有解一网打尽</b>.由定理 7.7 已知 \(Y=C_1y_1+C_2y_2\) 总是解，剩下要证的是"没有漏网之鱼".工具是二阶线性方程的解的唯一性：给定 \(y(x_0),y'(x_0)\) 这两个初始数据，解就被完全钉死.因此只需说明：<b>任意一组初始数据都可以由适当的 \(C_1,C_2\) 配出来</b>.</p>
+<p>以下设 \(y_1,y_2\) 是 \(L[y]=y''+Py'+Qy=0\) 在区间 \(I\) 上的两个线性无关解（即 \(y_2/y_1\) 不是常数），\(P,Q\) 在 \(I\) 上连续，\(x_0\in I\).记朗斯基行列式</p>
+\[W(x)=\begin{vmatrix}y_1(x)&y_2(x)\\ y_1'(x)&y_2'(x)\end{vmatrix}=y_1y_2'-y_1'y_2 .\]
+<p><span class="stp">第一步：证 \(W(x_0)
+eq0\).</span>用反证法.若 \(W(x_0)=0\)，则齐次线性代数方程组</p>
+\[\begin{cases}k_1y_1(x_0)+k_2y_2(x_0)=0,\\ k_1y_1'(x_0)+k_2y_2'(x_0)=0\end{cases}\]
+<p>的系数行列式为零，故有非零解 \((k_1,k_2)
+eq(0,0)\).令 \(z(x)=k_1y_1(x)+k_2y_2(x)\).由定理 7.7，\(z\) 是齐次方程的解，且由上式 \(z(x_0)=0,\ z'(x_0)=0\).而零函数 \(z\equiv0\) 显然也是满足这组初值的解，由解的唯一性（定理 7.1 对线性方程的应用）得 \(z\equiv0\)，即 \(k_1y_1+k_2y_2\equiv0\) 而 \((k_1,k_2)\) 不全为零——这与 \(y_1,y_2\) 线性无关矛盾.故 \(W(x_0)
+eq0\).</p>
+<p><span class="stp">第二步：任一解都能表示出来.</span>设 \(y(x)\) 是齐次方程的任意一个解，记 \(a=y(x_0),\ b=y'(x_0)\).考虑关于 \(C_1,C_2\) 的线性方程组</p>
+\[\begin{cases}C_1y_1(x_0)+C_2y_2(x_0)=a,\\ C_1y_1'(x_0)+C_2y_2'(x_0)=b .\end{cases}\]
+<p>其系数行列式恰为 \(W(x_0)
+eq0\)，由克拉默法则存在唯一解 \((C_1,C_2)\).</p>
+<p><span class="stp">第三步：用唯一性合拢.</span>取这组 \(C_1,C_2\)，令 \(\tilde y=C_1y_1+C_2y_2\).由定理 7.7 它是解，且 \(\tilde y(x_0)=a=y(x_0),\ \tilde y'(x_0)=b=y'(x_0)\).两个解满足同一组初值，由唯一性定理得 \(y\equiv\tilde y\)，即</p>
+\[y=C_1y_1+C_2y_2 .\]
+<p>综上：\(Y=C_1y_1+C_2y_2\) 既全是解，又含尽了全部解，且含两个独立的任意常数，故为通解.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 7.9</span>非齐次方程通解的结构</div>
+  <p>设 \(y^{*}\) 是非齐次方程 \(y''+Py'+Qy=f(x)\) 的<b>一个</b>特解，\(Y=C_1y_1+C_2y_2\) 是对应齐次方程的通解，则非齐次方程的通解为</p>
+  \[y=Y+y^{*}=C_1y_1+C_2y_2+y^{*}.\]
+  <p class="muted"><b>证明要点：</b>设 \(y\) 是非齐次方程的任一解，则 \((y-y^{*})''+P(y-y^{*})'+Q(y-y^{*})=f-f=0\)，即 \(y-y^{*}\) 是齐次方程的解，故可写成 \(C_1y_1+C_2y_2\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>仍记 \(L[y]=y''+Py'+Qy\)，由定理 7.7 的推导知 \(L\) 是线性算子.已知 \(L[y^{*}]=f\)，\(Y=C_1y_1+C_2y_2\) 是 \(L[y]=0\) 的通解.</p>
+<p><span class="stp">第一步：\(Y+y^{*}\) 确是非齐次方程的解.</span>由线性性</p>
+\[L\bigl[Y+y^{*}\bigr]=L[Y]+L[y^{*}]=0+f(x)=f(x).\]
+<p><span class="stp">第二步：非齐次方程的解只有这一种形状.</span>设 \(y\) 是 \(L[y]=f\) 的任一解，考察差 \(z=y-y^{*}\).由线性性</p>
+\[L[z]=L[y]-L[y^{*}]=f(x)-f(x)=0,\]
+<p>即 \(z\) 是<b>对应齐次方程</b>的解.由定理 7.8，齐次方程的任一解都可写成 \(C_1y_1+C_2y_2\)，故存在常数 \(C_1,C_2\) 使 \(z=C_1y_1+C_2y_2\)，从而</p>
+\[y=z+y^{*}=C_1y_1+C_2y_2+y^{*}=Y+y^{*}.\]
+<p><span class="stp">第三步：结论.</span>两步合起来说明：形如 \(Y+y^{*}\) 的函数全是解，且全部解都形如 \(Y+y^{*}\)，其中含两个独立任意常数，故它是通解.</p>
+<p><span class="stp">直观理解：</span>非齐次方程的解集是把齐次解集（一个二维的"解空间"）整体<b>平移</b>一个特解 \(y^{*}\) 得到的；\(y^{*}\) 取哪一个特解都行，因为不同特解之差本身就落在齐次解集中，平移的结果相同.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 7.10</span>非齐次方程的叠加原理</div>
+  <p>若 \(y_1^{*}\) 是 \(y''+Py'+Qy=f_1(x)\) 的特解，\(y_2^{*}\) 是 \(y''+Py'+Qy=f_2(x)\) 的特解，则 \(y_1^{*}+y_2^{*}\) 是</p>
+  \[y''+Py'+Qy=f_1(x)+f_2(x)\]
+  <p>的特解.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>记 \(L[y]=y''+Py'+Qy\).由定理 7.7 的第一、二步，\(L\) 满足 \(L[u+v]=L[u]+L[v]\).</p>
+<p><span class="stp">直接计算：</span>已知 \(L[y_1^{*}]=f_1(x),\ L[y_2^{*}]=f_2(x)\)，于是</p>
+\[L\bigl[y_1^{*}+y_2^{*}\bigr]=L[y_1^{*}]+L[y_2^{*}]=f_1(x)+f_2(x),\]
+<p>这正说明 \(y_1^{*}+y_2^{*}\) 是方程 \(y''+Py'+Qy=f_1(x)+f_2(x)\) 的一个特解.</p>
+<p><span class="stp">推广与用途：</span>同样的一行计算给出更一般的结论：若 \(L[y_i^{*}]=f_i\ (i=1,\dots,s)\)，则对任意常数 \(k_i\) 有 \(L\bigl[\sum k_iy_i^{*}\bigr]=\sum k_if_i\).这条性质的实用价值在于<b>把复杂的右端拆开各个击破</b>：例如求 \(y''+y=x+\mathrm{e}^{2x}\) 的特解，可分别求 \(y''+y=x\) 与 \(y''+y=\mathrm{e}^{2x}\) 的特解再相加，从而两次都能套用定理 7.12 的标准型.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>解的结构定理的工程语言：</b>齐次通解 \(Y\) 是系统的<b>自由响应</b>（由初始状态激发，形状由系统自身参数决定）；特解 \(y^{*}\) 是<b>强迫响应</b>（跟随外部激励 \(f\)）.定理 7.10 则对应<b>线性系统的可叠加性</b>——多个激励同时作用时，响应等于各自响应之和.这条性质是信号与系统、电路分析、结构动力学的全部基础，也正是"线性"二字的价值所在.</div>
+
+<h3>二、二阶常系数齐次线性方程</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.11</span>特征方程法</div>
+  <p>考虑<b>常系数</b>齐次方程</p>
+  \[y''+py'+qy=0\qquad(p,q\ \text{为常数}).\]
+  <p>尝试解 \(y=\mathrm{e}^{rx}\)，代入得 \(\mathrm{e}^{rx}(r^2+pr+q)=0\).因 \(\mathrm{e}^{rx}
+eq0\)，故 \(r\) 必须满足</p>
+  \[r^2+pr+q=0,\]
+  <p>称为该方程的<b>特征方程</b>，其根称为<b>特征根</b>.按判别式 \(\Delta=p^2-4q\) 的符号，通解如下表：</p>
+  <table class="dt">
+    <tr><th>判别式</th><th>特征根情形</th><th>两个线性无关特解</th><th>通解 \(Y\)</th></tr>
+    <tr><td>\(\Delta\gt0\)</td><td>两个不相等实根 \(r_1
+eq r_2\)</td><td>\(\mathrm{e}^{r_1x},\ \mathrm{e}^{r_2x}\)</td><td>\(C_1\mathrm{e}^{r_1x}+C_2\mathrm{e}^{r_2x}\)</td></tr>
+    <tr><td>\(\Delta=0\)</td><td>二重实根 \(r_1=r_2=r\)</td><td>\(\mathrm{e}^{rx},\ x\mathrm{e}^{rx}\)</td><td>\((C_1+C_2x)\,\mathrm{e}^{rx}\)</td></tr>
+    <tr><td>\(\Delta\lt0\)</td><td>共轭复根 \(r_{1,2}=\alpha\pm\beta\mathrm{i}\)</td><td>\(\mathrm{e}^{\alpha x}\cos\beta x,\ \mathrm{e}^{\alpha x}\sin\beta x\)</td><td>\(\mathrm{e}^{\alpha x}\bigl(C_1\cos\beta x+C_2\sin\beta x\bigr)\)</td></tr>
+  </table>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>方程 \(y''+py'+qy=0\) 的系数是常数，这意味着"求导"不改变函数的"种类"，只改变系数.什么函数求导后还是它自己的常数倍？指数函数 \(\mathrm{e}^{rx}\).所以拿 \(y=\mathrm{e}^{rx}\) 去试，是最自然的一步.</p>
+<p><span class="stp">第一步：导出特征方程.</span>设 \(y=\mathrm{e}^{rx}\)，则 \(y'=r\mathrm{e}^{rx},\ y''=r^2\mathrm{e}^{rx}\)，代入得</p>
+\[\mathrm{e}^{rx}\bigl(r^{2}+pr+q\bigr)=0 .\]
+<p>因 \(\mathrm{e}^{rx}
+eq0\)，故 \(y=\mathrm{e}^{rx}\) 是解 \(\Longleftrightarrow\) \(r^{2}+pr+q=0\).这就是<b>特征方程</b>，其根为特征根.记 \(\Delta=p^{2}-4q\).</p>
+<p><span class="stp">第二步：\(\Delta\gt0\)，两个不等实根 \(r_1
+eq r_2\).</span>由第一步，\(y_1=\mathrm{e}^{r_1x},\ y_2=\mathrm{e}^{r_2x}\) 都是解.它们线性无关，因为</p>
+\[\frac{y_2}{y_1}=\mathrm{e}^{(r_2-r_1)x}\]
+<p>不是常数（\(r_2-r_1
+eq0\)）.由定理 7.8，通解为 \(Y=C_1\mathrm{e}^{r_1x}+C_2\mathrm{e}^{r_2x}\).</p>
+<p><span class="stp">第三步：\(\Delta=0\)，二重实根 \(r=-\dfrac p2\).</span>此时第一步只给出<b>一个</b>解 \(\mathrm{e}^{rx}\)，还缺一个.断言 \(y_2=x\mathrm{e}^{rx}\) 也是解.验证：</p>
+\[y_2'=(1+rx)\mathrm{e}^{rx},\qquad y_2''=\bigl(2r+r^{2}x\bigr)\mathrm{e}^{rx},\]
+<p>代入左端并按 \(x\) 的幂次归并：</p>
+\[y_2''+py_2'+qy_2=\mathrm{e}^{rx}\Bigl[x\bigl(r^{2}+pr+q\bigr)+\bigl(2r+p\bigr)\Bigr].\]
+<p>由 \(r\) 是根知第一个括号为零；由 \(r=-\dfrac p2\) 知 \(2r+p=0\)，第二个括号也为零.故 \(y_2''+py_2'+qy_2=0\).又 \(y_2/y_1=x\) 不是常数，故 \(\mathrm{e}^{rx},x\mathrm{e}^{rx}\) 线性无关，通解为 \(Y=(C_1+C_2x)\mathrm{e}^{rx}\).</p>
+<p><span class="stp">第四步：\(\Delta\lt0\)，共轭复根 \(r_{1,2}=\alpha\pm\beta\mathrm{i}\ (\beta
+eq0)\).</span>形式上仍得两个复值解 \(\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\) 与 \(\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\)，但我们要的是<b>实值</b>解.由欧拉公式</p>
+\[\mathrm{e}^{(\alpha+\beta\mathrm{i})x}=\mathrm{e}^{\alpha x}\bigl(\cos\beta x+\mathrm{i}\sin\beta x\bigr)=u(x)+\mathrm{i}\,v(x),\]
+<p>其中 \(u=\mathrm{e}^{\alpha x}\cos\beta x,\ v=\mathrm{e}^{\alpha x}\sin\beta x\).由于 \(p,q\) 是<b>实数</b>，把 \(y=u+\mathrm{i}v\) 代入方程后，实部与虚部各自成立：</p>
+\[\bigl(u''+pu'+qu\bigr)+\mathrm{i}\bigl(v''+pv'+qv\bigr)=0\ \Longrightarrow\ u''+pu'+qu=0,\quad v''+pv'+qv=0 .\]
+<p>故 \(u,v\) 都是实值解.又 \(v/u=\tan\beta x\) 不是常数，二者线性无关.由定理 7.8，通解为</p>
+\[Y=\mathrm{e}^{\alpha x}\bigl(C_1\cos\beta x+C_2\sin\beta x\bigr).\]
+<p>三种情形合起来即为表中结论.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 二重根为什么要乘 \(x\)？复根为什么变成三角函数？</div>
+  <details><summary>展开查看：两个"意外情形"的来龙去脉</summary>
+  <div class="body">
+    <p><b>（一）二重根：第二个解 \(x\mathrm{e}^{rx}\) 从哪来.</b>当 \(\Delta=0\) 时特征方程只给出一个解 \(\mathrm{e}^{rx}\)，但二阶方程的通解需要<b>两个</b>线性无关的解.用<b>常数变易法</b>去找：设 \(y_2=u(x)\mathrm{e}^{rx}\)，则</p>
+    \[y_2'=(u'+ru)\mathrm{e}^{rx},\qquad y_2''=(u''+2ru'+r^2u)\mathrm{e}^{rx}.\]
+    <p>代入 \(y''+py'+qy=0\) 并约去 \(\mathrm{e}^{rx}\)：</p>
+    \[u''+(2r+p)u'+(r^2+pr+q)u=0 .\]
+    <p>末项系数为 0（因 \(r\) 是特征根）；又因 \(r=-\dfrac p2\) 是二重根，\(2r+p=0\)，中间项也为 0.于是方程退化为</p>
+    \[u''=0\;\Longrightarrow\;u=C_1x+C_2 .\]
+    <p>取最简单的 \(u=x\)，即得第二个解 \(y_2=x\mathrm{e}^{rx}\).验证线性无关：\(\dfrac{y_2}{y_1}=x\) 不是常数，无关.</p>
+    <p><b>（二）复根：为什么答案里没有虚数.</b>当 \(r_{1,2}=\alpha\pm\beta\mathrm{i}\) 时，形式解为 \(\mathrm{e}^{(\alpha\pm\beta\mathrm{i})x}\).由<b>欧拉公式</b> \(\mathrm{e}^{\mathrm{i}\theta}=\cos\theta+\mathrm{i}\sin\theta\)：</p>
+    \[\mathrm{e}^{(\alpha+\beta\mathrm{i})x}=\mathrm{e}^{\alpha x}(\cos\beta x+\mathrm{i}\sin\beta x),\qquad
+      \mathrm{e}^{(\alpha-\beta\mathrm{i})x}=\mathrm{e}^{\alpha x}(\cos\beta x-\mathrm{i}\sin\beta x).\]
+    <p>由叠加原理，它们的线性组合仍是解.取</p>
+    \[\frac{1}{2}\bigl(\mathrm{e}^{(\alpha+\beta\mathrm{i})x}+\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\bigr)=\mathrm{e}^{\alpha x}\cos\beta x,\qquad
+      \frac{1}{2\mathrm{i}}\bigl(\mathrm{e}^{(\alpha+\beta\mathrm{i})x}-\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\bigr)=\mathrm{e}^{\alpha x}\sin\beta x,\]
+    <p>得到两个<b>实值</b>的线性无关解.虚数只是中间的脚手架，最终答案完全是实的.</p>
+    <p><b>物理解读：</b>\(\alpha\) 是衰减率（引例中的 \(-4\)），决定振动"消失得多快"；\(\beta\) 是振荡角频率（引例中的 \(9.165\)），决定"抖多快".<b>所有振动系统的稳定性判据，归结为一句话：全部特征根的实部必须为负.</b></p>
+  </div>
+  </details>
+</div>
+
+<div class="ex"><div class="lab">例 7.20　相异实根</div>
+  <p class="stmt">求 \(y''-5y'+6y=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>特征方程 \(r^2-5r+6=0\)，即 \((r-2)(r-3)=0\)，得 \(r_1=2,r_2=3\)（相异实根）.故通解</p>
+  \[y=C_1\mathrm{e}^{2x}+C_2\mathrm{e}^{3x}.\]
+</div>
+
+<div class="ex"><div class="lab">例 7.21　二重根 + 初值问题</div>
+  <p class="stmt">求 \(y''+4y'+4y=0\) 满足 \(y(0)=1,\ y'(0)=-3\) 的特解.</p>
+  <p class="sol"><span class="mk">解</span>特征方程 \(r^2+4r+4=(r+2)^2=0\)，二重根 \(r=-2\).通解</p>
+  \[y=(C_1+C_2x)\,\mathrm{e}^{-2x}.\]
+  <p>求导：\(y'=C_2\mathrm{e}^{-2x}-2(C_1+C_2x)\mathrm{e}^{-2x}\).代入初始条件：</p>
+  \[y(0)=C_1=1,\qquad y'(0)=C_2-2C_1=-3\;\Longrightarrow\;C_2=-1 .\]
+  <p>故特解 \(y=(1-x)\,\mathrm{e}^{-2x}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.22　共轭复根</div>
+  <p class="stmt">求 \(y''-2y'+5y=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>特征方程 \(r^2-2r+5=0\)，\(\Delta=4-20=-16\lt0\)，</p>
+  \[r_{1,2}=\frac{2\pm\sqrt{-16}}{2}=1\pm2\mathrm{i},\qquad \alpha=1,\ \beta=2 .\]
+  <p>故通解</p>
+  \[y=\mathrm{e}^{x}\bigl(C_1\cos2x+C_2\sin2x\bigr).\]
+  <p class="muted">注意 \(\alpha=1\gt0\)，振幅按 \(\mathrm{e}^{x}\) <b>发散</b>——这是一个不稳定系统.若这是某控制回路的误差方程，说明增益整定错误，误差会指数放大.</p>
+</div>
+
+<h3>三、二阶常系数非齐次线性方程</h3>
+<p>由定理 7.9，求 \(y''+py'+qy=f(x)\) 的通解只需两步：① 求齐次通解 \(Y\)（已由定理 7.11 解决）；② 求一个特解 \(y^{*}\).当 \(f(x)\) 具有特殊形式时，可用<b>待定系数法</b>直接"猜"出 \(y^{*}\) 的形状.</p>
+
+<div class="def"><div class="lab"><span class="n">定理 7.12</span>\(f(x)=P_m(x)\mathrm{e}^{\lambda x}\) 型</div>
+  <p>设 \(P_m(x)\) 是 \(m\) 次多项式，\(\lambda\) 为常数.则方程 \(y''+py'+qy=P_m(x)\mathrm{e}^{\lambda x}\) 有形如</p>
+  \[y^{*}=x^{k}\,Q_m(x)\,\mathrm{e}^{\lambda x}\]
+  <p>的特解，其中 \(Q_m(x)\) 是与 \(P_m\) <b>同次</b>的待定多项式，而</p>
+  \[k=\begin{cases}0,&\lambda\ \text{不是特征根},\\ 1,&\lambda\ \text{是特征方程的单根},\\ 2,&\lambda\ \text{是特征方程的二重根}.\end{cases}\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>右端是"多项式 \(\times\) 指数".指数函数求导后不变形，多项式求导后仍是多项式，所以整台机器 \(L[y]=y''+py'+qy\) 作用在"多项式 \(\times\mathrm{e}^{\lambda x}\)"上，出来的还是"多项式 \(\times\mathrm{e}^{\lambda x}\)".于是设特解为 \(y^{*}=u(x)\mathrm{e}^{\lambda x}\)，把问题转化为求多项式 \(u\)，剩下的只是"次数够不够"的问题.</p>
+<p><span class="stp">第一步：剥离指数因子.</span>令 \(y=u(x)\mathrm{e}^{\lambda x}\)，则</p>
+\[y'=\bigl(u'+\lambda u\bigr)\mathrm{e}^{\lambda x},\qquad y''=\bigl(u''+2\lambda u'+\lambda^{2}u\bigr)\mathrm{e}^{\lambda x}.\]
+<p>代入 \(y''+py'+qy=P_m(x)\mathrm{e}^{\lambda x}\)，约去处处非零的 \(\mathrm{e}^{\lambda x}\)，并按 \(u'',u',u\) 归并，得<b>等价方程</b></p>
+\[u''+\bigl(2\lambda+p\bigr)u'+\bigl(\lambda^{2}+p\lambda+q\bigr)u=P_m(x).\qquad(\ast)\]
+<p>注意两个括号的含义：记特征多项式 \(F(r)=r^{2}+pr+q\)，则 \(\lambda^{2}+p\lambda+q=F(\lambda)\)，\(2\lambda+p=F'(\lambda)\).<b>系数是否为零，恰好取决于 \(\lambda\) 是不是特征根、是几重根</b>——这就是分类的根源.</p>
+<p><span class="stp">第二步：\(\lambda\) 不是特征根，即 \(F(\lambda)
+eq0\).</span>此时 \((\ast)\) 中 \(u\) 的系数非零.若设 \(u=Q_m\) 为 \(m\) 次多项式，则 \((\ast)\) 左端最高次项来自 \(F(\lambda)Q_m\)，次数恰为 \(m\)，与右端 \(P_m\) 的次数吻合.逐次比较 \(x^{m},x^{m-1},\dots,x^{0}\) 的系数，得到关于 \(Q_m\) 的 \(m+1\) 个待定系数的线性方程组，其系数矩阵是上三角的、主对角元全为 \(F(\lambda)
+eq0\)，故可唯一解出.于是 \(k=0\)，\(y^{*}=Q_m(x)\mathrm{e}^{\lambda x}\).</p>
+<p><span class="stp">第三步：\(\lambda\) 是单根，即 \(F(\lambda)=0,\ F'(\lambda)=2\lambda+p
+eq0\).</span>此时 \((\ast)\) 退化为</p>
+\[u''+\bigl(2\lambda+p\bigr)u'=P_m(x),\]
+<p>方程中<b>只出现 \(u\) 的导数</b>.若仍取 \(u\) 为 \(m\) 次多项式，则 \(u'\) 只有 \(m-1\) 次，左端次数不足，无法与 \(m\) 次的右端相配.把上式看成关于 \(w=u'\) 的方程 \(w'+(2\lambda+p)w=P_m\)，由第二步的论证（\(w\) 的系数 \(2\lambda+p
+eq0\)）知它有 \(m\) 次多项式解 \(w=Q_m\).再积分一次得 \(u=\int Q_m\mathrm{d}x\)，是 \(m+1\) 次多项式且常数项可取为 \(0\)（常数项对应齐次解 \(\mathrm{e}^{\lambda x}\)，并入通解即可），即 \(u=x\,Q_m(x)\) 的形式.故 \(k=1\).</p>
+<p><span class="stp">第四步：\(\lambda\) 是二重根，即 \(F(\lambda)=0,\ F'(\lambda)=0\).</span>此时 \((\ast)\) 进一步退化为</p>
+\[u''=P_m(x).\]
+<p>连续积分两次得 \(u\) 为 \(m+2\) 次多项式，其常数项与一次项分别对应齐次解 \(\mathrm{e}^{\lambda x}\) 与 \(x\mathrm{e}^{\lambda x}\)，可取为零，故 \(u=x^{2}Q_m(x)\)，即 \(k=2\).</p>
+<p><span class="stp">第五步：回答"为什么要乘 \(x^{k}\)".</span>症结在于：当 \(\lambda\) 是 \(k\) 重特征根时，\(\mathrm{e}^{\lambda x},x\mathrm{e}^{\lambda x},\dots,x^{k-1}\mathrm{e}^{\lambda x}\) 已经是<b>齐次</b>方程的解，算子 \(L\) 把它们全部"打成零".因此若不乘 \(x^k\)，待定多项式中最低的 \(k\) 项在代入后会全部消失，剩下的方程配不出 \(m\) 次的右端.乘上 \(x^{k}\) 恰好把这 \(k\) 个"失效"的自由度顶掉，使次数重新对齐.由此归纳出统一结论</p>
+\[y^{*}=x^{k}Q_m(x)\mathrm{e}^{\lambda x},\qquad k=\begin{cases}0,&F(\lambda)
+eq0,\\ 1,&\lambda\ \text{为单根},\\ 2,&\lambda\ \text{为二重根}.\end{cases}\]
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定理 7.13</span>\(f(x)=\mathrm{e}^{\alpha x}\bigl[P_l(x)\cos\beta x+Q_n(x)\sin\beta x\bigr]\) 型</div>
+  <p>此时方程有形如</p>
+  \[y^{*}=x^{k}\,\mathrm{e}^{\alpha x}\bigl[R_m(x)\cos\beta x+S_m(x)\sin\beta x\bigr]\]
+  <p>的特解，其中 \(m=\max\{l,n\}\)，\(R_m,S_m\) 都是 \(m\) 次待定多项式，而</p>
+  \[k=\begin{cases}0,&\alpha\pm\beta\mathrm{i}\ \text{不是特征根},\\ 1,&\alpha\pm\beta\mathrm{i}\ \text{是特征根}.\end{cases}\]
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>三角函数看似与定理 7.12 的指数型无关，但欧拉公式告诉我们 \(\cos\beta x,\sin\beta x\) 不过是 \(\mathrm{e}^{\pm\beta\mathrm{i}x}\) 的组合.于是把右端<b>复化</b>，问题就完全归结为已经解决的定理 7.12，最后再取实部回到实数世界.</p>
+<p><span class="stp">第一步：把右端写成复指数形式.</span>由 \(\cos\beta x=\dfrac{\mathrm{e}^{\beta\mathrm{i}x}+\mathrm{e}^{-\beta\mathrm{i}x}}{2},\ \sin\beta x=\dfrac{\mathrm{e}^{\beta\mathrm{i}x}-\mathrm{e}^{-\beta\mathrm{i}x}}{2\mathrm{i}}\)，代入整理得</p>
+\[f(x)=A_m(x)\,\mathrm{e}^{(\alpha+\beta\mathrm{i})x}+\overline{A_m(x)}\,\mathrm{e}^{(\alpha-\beta\mathrm{i})x},\]
+<p>其中 \(A_m=\dfrac{P_l}{2}+\dfrac{Q_n}{2\mathrm{i}}=\dfrac{P_l}{2}-\dfrac{Q_n}{2}\mathrm{i}\) 是次数 \(m=\max\{l,n\}\) 的复系数多项式，\(\overline{A_m}\) 表示其系数取共轭.</p>
+<p><span class="stp">第二步：对两项分别用定理 7.12.</span>由定理 7.10（叠加原理），只需分别求</p>
+\[L[y]=A_m(x)\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\qquad\text{与}\qquad L[y]=\overline{A_m(x)}\,\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\]
+<p>的特解再相加.定理 7.12 的推导（剥离指数因子后比较多项式次数）对复数 \(\lambda\) 逐字成立，故第一个方程有特解</p>
+\[y_1^{*}=x^{k}B_m(x)\,\mathrm{e}^{(\alpha+\beta\mathrm{i})x},\]
+<p>其中 \(B_m\) 为 \(m\) 次复系数多项式，而 \(k\) 由 \(\lambda=\alpha+\beta\mathrm{i}\) 是否为特征根决定.<b>注意 \(\beta
+eq0\) 时，实系数二次特征方程的复根必成共轭对且各为单根</b>，故只可能 \(k=0\) 或 \(k=1\)，这正是定理中 \(k\) 只取两个值的原因.</p>
+<p><span class="stp">第三步：第二项取共轭即可.</span>由于 \(L\) 的系数 \(p,q\) 是实数，对 \(L[y_1^{*}]=A_m\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\) 两端取共轭得 \(L\bigl[\overline{y_1^{*}}\bigr]=\overline{A_m}\,\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\).故第二个方程的特解可取 \(y_2^{*}=\overline{y_1^{*}}\).</p>
+<p><span class="stp">第四步：相加得实值特解.</span>由叠加原理，\(y^{*}=y_1^{*}+\overline{y_1^{*}}=2\operatorname{Re}y_1^{*}\) 是原方程的特解，且<b>自动是实值的</b>.展开：记 \(B_m(x)=R(x)+\mathrm{i}\,S(x)\)（\(R,S\) 为实系数 \(m\) 次多项式），由欧拉公式</p>
+\[2\operatorname{Re}\Bigl[x^{k}\bigl(R+\mathrm{i}S\bigr)\mathrm{e}^{\alpha x}\bigl(\cos\beta x+\mathrm{i}\sin\beta x\bigr)\Bigr]
+=2x^{k}\mathrm{e}^{\alpha x}\bigl[R(x)\cos\beta x-S(x)\sin\beta x\bigr].\]
+<p>把常数 \(2\) 与符号并入待定多项式，即得所断言的形式</p>
+\[y^{*}=x^{k}\mathrm{e}^{\alpha x}\bigl[R_m(x)\cos\beta x+S_m(x)\sin\beta x\bigr],\qquad m=\max\{l,n\}.\]
+<p><span class="stp">第五步：两点说明.</span>其一，即使原式中只出现 \(\cos\beta x\)（相当于 \(Q_n\equiv0\)），第四步的结果中 \(\sin\beta x\) 项一般<b>不会消失</b>，故设特解时 \(\cos\) 与 \(\sin\) 必须<b>同时</b>写上，且两个多项式都取 \(m\) 次.其二，乘 \(x^{k}\) 的理由与定理 7.12 第五步完全相同：当 \(\alpha\pm\beta\mathrm{i}\) 是特征根时，\(\mathrm{e}^{\alpha x}\cos\beta x,\ \mathrm{e}^{\alpha x}\sin\beta x\) 已被算子 \(L\) 打成零，必须乘 \(x\) 顶掉这两个失效的自由度.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="note"><b>关于 \(k\) 的取法（本节最易错处）：</b><br>
+· \(k\) 就是"<b>共振重数</b>"——自由项中隐含的指数 \(\lambda\)（或 \(\alpha+\beta\mathrm{i}\)）与特征根重合了几次，\(k\) 就取几.<br>
+· 判断 \(\lambda\) 时要看<b>整个指数因子</b>：\(f=x^2\) 相当于 \(\lambda=0\)；\(f=\sin3x\) 相当于 \(\alpha=0,\beta=3\).<br>
+· <b>二阶方程中复根最多是单重的，故第二型的 \(k\) 只能是 0 或 1.</b><br>
+· 无论 \(f\) 中 \(\cos\) 或 \(\sin\) 是否缺项，\(y^{*}\) 中<b>两项都必须写全</b>（例 7.25 中 \(f\) 只有 \(\sin x\)，但仍要设 \(x(A\cos x+B\sin x)\)）.</div>
+
+<div class="ex"><div class="lab">例 7.23　\(k=0\) 的基础情形</div>
+  <p class="stmt">求 \(y''-2y'-3y=3x+1\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span><b>齐次部分：</b>\(r^2-2r-3=(r-3)(r+1)=0\)，得 \(r=3,-1\)，故 \(Y=C_1\mathrm{e}^{3x}+C_2\mathrm{e}^{-x}\).</p>
+  <p><b>特解：</b>\(f(x)=(3x+1)\mathrm{e}^{0\cdot x}\)，即 \(\lambda=0,\ m=1\).因 \(0\) 不是特征根，\(k=0\)，设</p>
+  \[y^{*}=ax+b,\qquad y^{*\prime}=a,\qquad y^{*\prime\prime}=0 .\]
+  <p>代入方程：\(0-2a-3(ax+b)=3x+1\)，即 \(-3ax+(-2a-3b)=3x+1\).比较系数：</p>
+  \[-3a=3\Rightarrow a=-1;\qquad -2(-1)-3b=1\Rightarrow b=\frac13 .\]
+  <p>故通解</p>
+  \[y=C_1\mathrm{e}^{3x}+C_2\mathrm{e}^{-x}-x+\frac13 .\]
+</div>
+
+<div class="ex"><div class="lab">例 7.24　考研经典：\(k=1\) 的共振情形</div>
+  <p class="stmt">求 \(y''-5y'+6y=x\mathrm{e}^{2x}\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span><b>齐次部分：</b>由例 7.20，特征根 \(r=2,3\)，\(Y=C_1\mathrm{e}^{2x}+C_2\mathrm{e}^{3x}\).</p>
+  <p><b>确定 \(k\)：</b>\(f=x\mathrm{e}^{2x}\)，\(\lambda=2\) 恰是特征方程的<b>单根</b>，故 \(k=1\).又 \(m=1\)，设</p>
+  \[y^{*}=x(ax+b)\,\mathrm{e}^{2x}=(ax^2+bx)\,\mathrm{e}^{2x}.\]
+  <p><b>技巧：作代换 \(y=u\mathrm{e}^{2x}\) 可大幅简化求导.</b>此时</p>
+  \[y'=\mathrm{e}^{2x}(2u+u'),\qquad y''=\mathrm{e}^{2x}(4u+4u'+u''),\]
+  \[y''-5y'+6y=\mathrm{e}^{2x}\bigl[(4u+4u'+u'')-5(2u+u')+6u\bigr]=\mathrm{e}^{2x}\bigl(u''-u'\bigr).\]
+  <p>方程化为 \(u''-u'=x\).设 \(u=ax^2+bx\)，则 \(u'=2ax+b,\ u''=2a\)：</p>
+  \[2a-(2ax+b)=-2ax+(2a-b)=x .\]
+  <p>比较系数：\(-2a=1\Rightarrow a=-\dfrac12\)；\(2a-b=0\Rightarrow b=-1\).故</p>
+  \[y^{*}=-\Bigl(\frac{x^2}{2}+x\Bigr)\mathrm{e}^{2x},\qquad
+    y=C_1\mathrm{e}^{2x}+C_2\mathrm{e}^{3x}-\Bigl(\frac{x^2}{2}+x\Bigr)\mathrm{e}^{2x}.\]
+  <p class="muted"><b>若忘记乘 \(x\)</b>（错设 \(y^{*}=(ax+b)\mathrm{e}^{2x}\)），代入后会得到矛盾方程组"无解"——这正是共振的信号：外部激励的频率与系统固有模态一致，响应必须含 \(x\) 的因子才能"追上".</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.25　考研经典：三角函数共振</div>
+  <p class="stmt">求 \(y''+y=\sin x\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span><b>齐次部分：</b>\(r^2+1=0\Rightarrow r=\pm\mathrm{i}\)，故 \(Y=C_1\cos x+C_2\sin x\).</p>
+  <p><b>确定 \(k\)：</b>\(f=\sin x\) 对应 \(\alpha=0,\beta=1\)，而 \(\alpha+\beta\mathrm{i}=\mathrm{i}\) <b>正是特征根</b>，故 \(k=1\).设（两项必须写全）</p>
+  \[y^{*}=x\,(A\cos x+B\sin x).\]
+  <p>求导：</p>
+  \[y^{*\prime}=A\cos x+B\sin x+x(-A\sin x+B\cos x),\]
+  \[y^{*\prime\prime}=-2A\sin x+2B\cos x-x(A\cos x+B\sin x).\]
+  <p>相加时含 \(x\) 的项恰好抵消：</p>
+  \[y^{*\prime\prime}+y^{*}=-2A\sin x+2B\cos x=\sin x .\]
+  <p>比较系数：\(-2A=1\Rightarrow A=-\dfrac12\)，\(2B=0\Rightarrow B=0\).故</p>
+  \[y=C_1\cos x+C_2\sin x-\frac{x}{2}\cos x .\]
+  <p class="muted"><b>共振的物理灾难：</b>特解 \(-\dfrac x2\cos x\) 的振幅随 \(x\) <b>线性无界增长</b>.这就是无阻尼系统在固有频率上被激励时的<b>共振</b>现象——1940 年塔科马海峡大桥的坍塌、行军队伍过桥必须便步走，根源都在这个 \(x\) 因子上.真实系统总有阻尼（\(\alpha\lt0\)），振幅有限但仍可能极大，所以任何旋转机械的工作转速都必须避开临界转速.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.26　考研经典：复数共振（\(\alpha
+eq0\)）</div>
+  <p class="stmt">求 \(y''-2y'+5y=\mathrm{e}^{x}\cos2x\) 的一个特解.</p>
+  <p class="sol"><span class="mk">解</span>由例 7.22，特征根为 \(1\pm2\mathrm{i}\).而自由项对应 \(\alpha=1,\beta=2\)，即 \(\alpha+\beta\mathrm{i}=1+2\mathrm{i}\) <b>正是特征根</b>，故 \(k=1\)，设</p>
+  \[y^{*}=x\,\mathrm{e}^{x}\bigl(A\cos2x+B\sin2x\bigr).\]
+  <p><b>用代换简化：</b>令 \(y=\mathrm{e}^{x}u\)，则 \(y'=\mathrm{e}^{x}(u+u'),\ y''=\mathrm{e}^{x}(u+2u'+u'')\)，</p>
+  \[y''-2y'+5y=\mathrm{e}^{x}\bigl[(u+2u'+u'')-2(u+u')+5u\bigr]=\mathrm{e}^{x}\bigl(u''+4u\bigr).\]
+  <p>方程化为 \(u''+4u=\cos2x\).这是例 7.25 的同型问题：\(\pm2\mathrm{i}\) 是 \(u\) 方程的特征根，设 \(u=x(A\cos2x+B\sin2x)\)，仿照例 7.25 的求导可得</p>
+  \[u''+4u=-4A\sin2x+4B\cos2x=\cos2x .\]
+  <p>故 \(A=0,\ B=\dfrac14\)，即 \(u=\dfrac{x}{4}\sin2x\).回代得</p>
+  \[y^{*}=\frac{x}{4}\,\mathrm{e}^{x}\sin2x .\]
+</div>
+
+<div class="ex"><div class="lab">例 7.27　叠加原理的应用</div>
+  <p class="stmt">求 \(y''+y'=x^2+2\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span><b>齐次部分：</b>\(r^2+r=r(r+1)=0\)，得 \(r=0,-1\)，故 \(Y=C_1+C_2\mathrm{e}^{-x}\).</p>
+  <p><b>确定 \(k\)：</b>\(f=x^2+2=(x^2+2)\mathrm{e}^{0\cdot x}\)，\(\lambda=0\) <b>是特征方程的单根</b>（注意 \(r=0\)！），故 \(k=1\)，\(m=2\)，设</p>
+  \[y^{*}=x(ax^2+bx+c)=ax^3+bx^2+cx .\]
+  <p>求导：\(y^{*\prime}=3ax^2+2bx+c,\ y^{*\prime\prime}=6ax+2b\).代入：</p>
+  \[y^{*\prime\prime}+y^{*\prime}=3ax^2+(6a+2b)x+(2b+c)=x^2+0\cdot x+2 .\]
+  <p>比较系数：</p>
+  \[3a=1\Rightarrow a=\frac13;\quad 6a+2b=0\Rightarrow b=-1;\quad 2b+c=2\Rightarrow c=4 .\]
+  <p>故通解</p>
+  \[y=C_1+C_2\mathrm{e}^{-x}+\frac{x^3}{3}-x^2+4x .\]
+  <p class="muted"><b>最容易失分的一步：</b>看到 \(f=x^2+2\) 是多项式就以为 \(k=0\).但特征根中含 \(r=0\)，而多项式对应的正是 \(\lambda=0\)，因此<b>必须乘 \(x\)</b>.凡是特征方程缺常数项（\(q=0\)）的题目，都要提高警惕.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 汽车悬架的阻尼整定：舒适性与操控性的数学权衡</div>
+  <details><summary>展开查看：从二阶方程算出减振器该多"硬"</summary>
+  <div class="body">
+    <p><b>场景：</b> 车速 60，前轮碾过一条 \(0.04\ \mathrm{m}\) 的减速带，车身先被顶起再猛地回弹——减振器够不够"硬"，直接决定后排乘客是皱眉还是继续打盹.取"四分之一车"模型，簧上质量（车身分摊到一个轮子的质量）\(m=320\,\mathrm{kg}\)，弹簧刚度 \(k=22000\,\mathrm{N/m}\)，减振器阻尼系数 \(c\) 待定.车身垂向位移 \(x(t)\) 满足</p>
+    \[m\ddot x+c\dot x+kx=0 .\]
+    <p><b>一、基准参数.</b></p>
+    \[\omega_n=\sqrt{\frac km}=\sqrt{\frac{22000}{320}}=\sqrt{68.75}=8.292\ \mathrm{rad/s},\qquad
+      f_n=\frac{\omega_n}{2\pi}=1.32\ \mathrm{Hz}.\]
+    <p>（人体对 \(1\sim2\,\mathrm{Hz}\) 的垂向振动最敏感——这正是悬架固有频率被刻意设计在此附近又要靠阻尼压制的原因.）</p>
+    \[c_c=2\sqrt{mk}=2\sqrt{320\times22000}=2\sqrt{7.04\times10^{6}}=2\times2653.3=5306.6\ \mathrm{N\cdot s/m}.\]
+    <p><b>二、三种整定方案对比.</b>阻尼比 \(\zeta=\dfrac{c}{c_c}\)，超调量 \(M_p=\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^2}}\)，调节时间（\(\pm2\%\)）\(t_s\approx\dfrac{4}{\zeta\omega_n}\).</p>
+    <table class="dt">
+      <tr><th>方案</th><th>\(\zeta\)</th><th>\(c\)（N·s/m）</th><th>特征根</th><th>超调 \(M_p\)</th><th>\(t_s\)（s）</th><th>主观感受</th></tr>
+      <tr><td>软</td><td>0.20</td><td>1061</td><td>\(-1.66\pm8.12\mathrm{i}\)</td><td>52.7%</td><td>2.41</td><td>晃悠，"船感"</td></tr>
+      <tr><td>舒适取向</td><td>0.30</td><td>1592</td><td>\(-2.49\pm7.91\mathrm{i}\)</td><td>37.2%</td><td>1.61</td><td>柔和但有余振</td></tr>
+      <tr><td>运动取向</td><td>0.70</td><td>3715</td><td>\(-5.80\pm5.92\mathrm{i}\)</td><td>4.6%</td><td>0.69</td><td>紧绷，路感清晰</td></tr>
+    </table>
+    <p><b>三、以 \(\zeta=0.3\) 为例写出完整解.</b>\(\alpha=-\zeta\omega_n=-2.488\)，\(\beta=\omega_n\sqrt{1-\zeta^2}=8.292\times0.9539=7.910\).设车轮压过 \(0.04\,\mathrm{m}\) 的减速带后车身获得初始位移 \(x(0)=0.04\,\mathrm{m}\)、\(\dot x(0)=0\)，则</p>
+    \[x(t)=\mathrm{e}^{-2.488t}\bigl(0.04\cos7.910t+0.01258\sin7.910t\bigr)
+          =0.04193\,\mathrm{e}^{-2.488t}\cos(7.910t-0.3047).\]
+    <p>（其中 \(C_2=\dfrac{\zeta\omega_n}{\beta}C_1=\dfrac{2.488}{7.910}\times0.04=0.01258\)，合成振幅 \(\dfrac{0.04}{\sqrt{1-\zeta^2}}=0.04193\).）</p>
+    <p><b>四、关键指标计算.</b>第一次反向峰值出现在 \(t_p=\dfrac{\pi}{\beta}=\dfrac{3.1416}{7.910}=0.397\,\mathrm{s}\)，幅度</p>
+    \[|x(t_p)|=0.04\times M_p=0.04\times0.372=0.0149\ \mathrm{m}=14.9\ \mathrm{mm}.\]
+    <p>车身在 \(0.4\) 秒后会向下"回弹" \(15\,\mathrm{mm}\).若改用 \(\zeta=0.7\)，回弹仅 \(1.8\,\mathrm{mm}\)，且 \(0.69\,\mathrm{s}\) 内完全平息.</p>
+    <p><b>五、工程决断.</b>豪华轿车取 \(\zeta\approx0.25\sim0.35\)（重舒适），跑车取 \(\zeta\approx0.6\sim0.8\)（重操控）.<b>现代电控可变阻尼减振器</b>（CDC / 磁流变）能在 \(10\,\mathrm{ms}\) 内改变 \(c\) 值，本质上就是让 \(\zeta\) 随路况实时切换——车载 MCU 每秒钟求解上千次这个二阶方程的特征根，来决定下一毫秒的阻尼电流.</p>
+    <p><b>一条 \(m\ddot x+c\dot x+kx=0\)，一张特征根表，就是整个悬架标定工程的数学内核.</b></p>
+    <p class="cn-point">同样的 \(\zeta=0.3\) 会带来 \(37.2\%\) 的超调与 \(14.9\ \mathrm{mm}\) 的回弹——国产智能汽车能把"底盘质感"做成卖点，靠的正是 MCU 每毫秒按特征根重算一次 \(c\)，让 \(\zeta\) 随路况实时切换.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §7.4 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 无人驾驶线控悬架：从二阶方程整定阻尼比与超调量</summary>
+<p><b>场景：</b> L4 无人驾驶接驳车里，后排乘客正对着屏幕开视频会，车辆以 \(30\ \mathrm{km/h}\) 碾过减速带——没有驾驶员预判减速，一个 \(30\ \mathrm{mm}\) 的颠簸就可能让整场会议前功尽弃.取四分之一车模型，簧上质量 \(m=380\ \mathrm{kg}\)、弹簧刚度 \(k=28000\ \mathrm{N/m}\)，电控减振器的阻尼 \(c\) 由 MCU 实时给定.车身垂向位移 \(x(t)\) 满足</p>
+\[m\ddot x+c\dot x+kx=0 .\]
+<p>请整定 \(c\)，使车辆压过 \(30\ \mathrm{mm}\) 减速带后既不"发飘"也不"发颠".</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>簧上质量</td><td>\(m\)</td><td>380 kg</td></tr>
+<tr><td>悬架刚度</td><td>\(k\)</td><td>28000 N/m</td></tr>
+<tr><td>初始位移</td><td>\(x(0)\)</td><td>0.030 m</td></tr>
+<tr><td>初始速度</td><td>\(\dot x(0)\)</td><td>0</td></tr>
+</table>
+<p class="sol"> <b>第一步：基准量.</b>特征方程 \(380r^{2}+cr+28000=0\)，据此定义</p>
+\[\omega_{n}=\sqrt{\frac km}=\sqrt{73.684}=8.584\ \mathrm{rad/s}\ \ (f_{n}=1.366\ \mathrm{Hz}),\qquad
+  c_{c}=2\sqrt{mk}=2\sqrt{1.064\times10^{7}}=6524\ \mathrm{N\cdot s/m}.\]
+<p><b>第二步：四种整定方案对比.</b>阻尼比 \(\zeta=c/c_{c}\)，超调量 \(M_{p}=\mathrm{e}^{-\pi\zeta/\sqrt{1-\zeta^{2}}}\)，调节时间 \(t_{s}\approx\dfrac{4}{\zeta\omega_{n}}\).</p>
+<table class="dt">
+<tr><th>\(\zeta\)</th><th>\(c\)（N·s/m）</th><th>特征根</th><th>超调 \(M_p\)</th><th>回弹量（mm）</th><th>\(t_s\)（s）</th></tr>
+<tr><td>0.25</td><td>1631</td><td>\(-2.15\pm8.31\mathrm{i}\)</td><td>44.4%</td><td>13.3</td><td>1.86</td></tr>
+<tr><td>0.50</td><td>3262</td><td>\(-4.29\pm7.43\mathrm{i}\)</td><td>16.3%</td><td>4.9</td><td>0.93</td></tr>
+<tr><td>0.70</td><td>4567</td><td>\(-6.01\pm6.13\mathrm{i}\)</td><td>4.6%</td><td>1.4</td><td>0.67</td></tr>
+<tr><td>1.00</td><td>6524</td><td>\(-8.58\)（二重）</td><td>0</td><td>0</td><td>0.47</td></tr>
+</table>
+<p><b>第三步：写出 \(\zeta=0.7\) 的完整解.</b>此时 \(\Delta\lt0\)，\(\alpha=-\zeta\omega_{n}=-6.009\)，\(\beta=\omega_{n}\sqrt{1-\zeta^{2}}=8.584\times0.7141=6.130\).通解 \(x=\mathrm{e}^{\alpha t}(C_{1}\cos\beta t+C_{2}\sin\beta t)\)，代入初始条件得 \(C_{1}=0.030\)，\(C_{2}=\dfrac{\zeta\omega_{n}}{\beta}C_{1}=\dfrac{6.009}{6.130}\times0.030=0.02941\)，故</p>
+\[x(t)=\mathrm{e}^{-6.009t}\bigl(0.030\cos6.130t+0.02941\sin6.130t\bigr)
+      =0.04201\,\mathrm{e}^{-6.009t}\cos\bigl(6.130t-0.7752\bigr).\]
+<p>第一次反向峰值出现在 \(t_{p}=\dfrac{\pi}{\beta}=0.512\ \mathrm{s}\)，幅度 \(0.030\times0.046=1.4\ \mathrm{mm}\).</p>
+<p><b>工程结论：</b> 三点决断.① 传统燃油车常取 \(\zeta=0.25\sim0.35\)（"舒适"取向），但那会带来 \(13\ \mathrm{mm}\)、持续近 \(2\ \mathrm{s}\) 的余振——对正在看屏幕的乘员而言恰恰是最容易晕车的低频摇晃.无人驾驶场景应选 \(\zeta\approx0.7\)：回弹只有 \(1.4\ \mathrm{mm}\)，\(0.67\ \mathrm{s}\) 内平息.② 不取 \(\zeta=1\) 的原因是留裕度：载客数变化会使 \(m\) 在 \(320\sim460\ \mathrm{kg}\) 间波动，\(\zeta=c/(2\sqrt{mk})\) 随之漂移，取 \(0.7\) 可保证满载时仍不小于 \(0.65\)、空载时不进入过阻尼.③ 作动器带宽须覆盖 \(5f_{n}\approx7\ \mathrm{Hz}\)；磁流变减振器 \(10\ \mathrm{ms}\) 的响应时间恰好对应 \(100\ \mathrm{Hz}\)，绰绰有余.<b>整个标定流程，就是在特征根的实部（衰减快慢）与虚部（振荡频率）之间做取舍.</b></p>
+<p class="cn-point">把 \(\zeta\) 从 \(0.25\) 调到 \(0.7\)，回弹从 \(13.3\ \mathrm{mm}\) 压到 \(1.4\ \mathrm{mm}\)——无人驾驶时代的国产汽车正靠这类"每秒上千次特征根求解"的电控悬架，把"晕车"这项乘客差评逐出名单.自动化要做的不是取代驾驶，而是让每次出行都算得足够稳.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch7-sus" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>阻尼比 ζ <input type="range" id="ch7-sus-z" min="0.2" max="1.0" step="0.02" value="0.7" style="width:220px;accent-color:#0F6E56"> <b id="ch7-sus-z-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch7-sus-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch7-sus'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var wn=8.584, x0=0.03;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=60,mR=14,mT=26,mB=38,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var z=+document.getElementById('ch7-sus-z').value;
+      var tmax=2.0;
+      function X(t){ return mL+t/tmax*pW; }
+      function Yv(x){ return mT+pH - x/0.04*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 零线
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,Yv(0));ctx.lineTo(W-mR,Yv(0));ctx.stroke();
+      // 响应曲线 x(t)=x0 e^{-zwnt} cos(wd t)（欠阻尼）
+      var wd=z<1?wn*Math.sqrt(1-z*z):0;
+      var Mp=z<1?Math.exp(-Math.PI*z/Math.sqrt(1-z*z)):0;
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var i=0;i<=400;i++){
+        var tt=tmax*i/400;
+        var xx=X(tt), xv;
+        if(z<1){ xv=x0*Math.exp(-z*wn*tt)*Math.cos(wd*tt); }
+        else if(z===1){ xv=x0*(1+wn*tt)*Math.exp(-wn*tt); }
+        else {
+          var s1=-z*wn+wn*Math.sqrt(z*z-1), s2=-z*wn-wn*Math.sqrt(z*z-1);
+          xv=x0*(s2*Math.exp(s1*tt)-s1*Math.exp(s2*tt))/(s2-s1);
+        }
+        var yy=Yv(xv);
+        i===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      // 包络（欠阻尼）
+      if(z<1){
+        ctx.strokeStyle='rgba(14,124,124,0.5)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+        ctx.beginPath();
+        for(var i2=0;i2<=400;i2++){
+          var t2=tmax*i2/400;
+          var xx2=X(t2), yy2=Yv(x0*Math.exp(-z*wn*t2));
+          i2===0?ctx.moveTo(xx2,yy2):ctx.lineTo(xx2,yy2);
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        for(var i3=0;i3<=400;i3++){
+          var t3=tmax*i3/400;
+          var xx3=X(t3), yy3=Yv(-x0*Math.exp(-z*wn*t3));
+          i3===0?ctx.moveTo(xx3,yy3):ctx.lineTo(xx3,yy3);
+        }
+        ctx.stroke();ctx.setLineDash([]);
+      }
+      // 轴
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('30',mL-6,Yv(0.03)); ctx.fillText('0',mL-6,Yv(0));
+      ctx.textAlign='center';ctx.fillText('t (s)',(mL+W-mR)/2,mT+pH+28);
+      ctx.save();ctx.translate(14,(mT+pH)/2);ctx.rotate(-Math.PI/2);
+      ctx.textAlign='center';ctx.fillText('x (mm)',0,0);ctx.restore();
+      // 数值
+      var ts=4/(z*wn);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('ζ = '+z.toFixed(2)+'  超调 '+(Mp*100).toFixed(0)+'%  调节时间 t_s ≈ '+(ts*1000).toFixed(0)+' ms',mL,mT+13);
+      var out=document.getElementById('ch7-sus-out');
+      var tip = z<0.35 ? '传统"舒适"取向：余振大、易晕车——屏幕前的乘员最怕这种低频晃' : (z>=0.6&&z<=0.8 ? '✔ 无人驾驶推荐区间：回弹小、收敛快，办公乘员几乎无感' : '过阻尼：回弹慢半拍，路感发闷');
+      out.textContent = tip;
+    }
+    document.getElementById('ch7-sus-z').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 卫星柔性太阳翼：为什么成像卫星要等 7 分钟才能拍照</summary>
+<p><b>场景：</b> 高分遥感卫星刚完成一次 \(40^{\circ}\) 的姿态机动，镜头已经对好目标，可十余米长的太阳翼还在真空里像钓鱼竿一样颤个不停——\(20\ \mathrm{mm}\) 的残余振动，就能让一张高分影像糊成一片.取其一阶弯曲模态，用模态坐标 \(q(t)\) 描述</p>
+\[m_{e}\ddot q+c_{e}\dot q+k_{e}q=0 .\]
+<p>关键在于：真空中没有空气阻尼，结构阻尼比 \(\zeta\) 只有千分之几.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>模态质量</td><td>\(m_e\)</td><td>12 kg</td></tr>
+<tr><td>模态刚度</td><td>\(k_e\)</td><td>48 N/m</td></tr>
+<tr><td>结构阻尼比</td><td>\(\zeta\)</td><td>0.005</td></tr>
+<tr><td>机动后初始振幅</td><td>\(q(0)\)</td><td>0.020 m</td></tr>
+<tr><td>成像允许残余振幅</td><td>—</td><td>0.4 mm（即 2%）</td></tr>
+</table>
+<p class="sol"> 固有频率与等效阻尼系数</p>
+\[\omega_{n}=\sqrt{\frac{48}{12}}=2.000\ \mathrm{rad/s}\ \ (f_{n}=0.318\ \mathrm{Hz}),\qquad
+  c_{e}=2\zeta\sqrt{m_{e}k_{e}}=2\times0.005\times24=0.240\ \mathrm{N\cdot s/m}.\]
+<p>特征方程 \(12r^{2}+0.24r+48=0\)，\(\Delta=0.0576-2304\lt0\)，共轭复根</p>
+\[r_{1,2}=-\zeta\omega_{n}\pm\mathrm{i}\,\omega_{n}\sqrt{1-\zeta^{2}}=-0.0100\pm1.99997\,\mathrm{i}.\]
+<p>故 \(q(t)=0.020\,\mathrm{e}^{-0.01t}\cos(2t+\varphi)\)（相位 \(\varphi\) 由初速度定，此处近似为 0）.振幅衰减时间常数 \(\tau=\dfrac{1}{\zeta\omega_{n}}=100\ \mathrm{s}\).衰减到 \(2\%\) 需</p>
+\[\mathrm{e}^{-t/100}=0.02\;\Longrightarrow\;t=100\ln 50=391\ \mathrm{s}=6.5\ \mathrm{分钟}.\]
+<p><b>加入主动阻尼后：</b>在翼根粘贴压电作动器构成速度反馈回路，等效于把 \(c_e\) 增大到 \(2.40\ \mathrm{N\cdot s/m}\)，即 \(\zeta=0.05\).此时 \(\tau=\dfrac{1}{0.05\times2}=10\ \mathrm{s}\)，衰减到 \(2\%\) 仅需 \(10\ln50=39\ \mathrm{s}\).</p>
+<p><b>工程结论：</b> 特征根的<b>实部</b> \(-\zeta\omega_{n}\) 直接决定了卫星的"翻身速度"：被动状态下每次姿态机动后要白等 \(6.5\) 分钟，一轨（约 \(95\) 分钟）内只能完成十来次成像；主动阻尼把这个数字压到 \(39\) 秒后，单轨成像次数提升近十倍，卫星的商业价值也随之数倍增长.这里还藏着一个反直觉之处：<b>虚部（振荡频率 \(2\ \mathrm{rad/s}\)）几乎不受阻尼影响</b>（\(\sqrt{1-\zeta^{2}}=0.99999\)），所以"抖多快"改不了，能改的只有"多久停".控制系统能做的一切，都写在特征根实部这一个数字里.</p>
+<p class="cn-point">\(6.5\) 分钟与 \(39\) 秒的差距，全部写在特征根实部 \(-\zeta\omega_n\) 一个数字里——高分、资源、遥感系列每一条"转身就能拍"的轨道，背后都是这类主动阻尼把时间常数 \(\tau\) 从 \(100\ \mathrm{s}\) 压到 \(10\ \mathrm{s}\) 的力学账.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s073" data-ch="7" data-n="5"></div>
+<h2 id="s074"><span class="num">§7.4</span>高阶微分方程的解法</h2>
+    
+<div class="ex"><div class="lab">引例一　无人机机翼会下垂多少：四阶梁弯曲方程</div>
+  <p class="stmt">大展弦比无人机的机翼可简化为<b>悬臂梁</b>：根部固支、翼尖自由，承受均布气动载荷 \(q\).由材料力学，挠度 \(y(x)\)（向下为正）满足<b>四阶</b>微分方程</p>
+  \[EI\,\frac{\mathrm{d}^4y}{\mathrm{d}x^4}=q,\]
+  <p>其中 \(EI\) 为抗弯刚度.取碳纤维机翼 \(L=1.2\,\mathrm{m}\)、\(q=60\,\mathrm{N/m}\)、\(EI=400\,\mathrm{N\cdot m^2}\).求翼尖挠度.</p>
+  <p class="sol"><span class="mk">解</span>右端只含 \(x\)（此处为常数），属于 \(y^{(n)}=f(x)\) 型，<b>逐次积分四次</b>即可.记 \(\dfrac{q}{EI}=\dfrac{60}{400}=0.15\)：</p>
+  \[y^{(4)}=0.15,\quad y'''=0.15x+C_1,\quad y''=0.075x^2+C_1x+C_2,\]
+  \[y'=0.025x^3+\tfrac12C_1x^2+C_2x+C_3,\quad
+    y=0.00625x^4+\tfrac16C_1x^3+\tfrac12C_2x^2+C_3x+C_4 .\]
+  <p><b>四个常数需要四个边界条件</b>（这与"阶数 = 常数个数"完全一致）：根部固支 \(y(0)=0,\ y'(0)=0\)；翼尖自由（弯矩与剪力为零）\(y''(L)=0,\ y'''(L)=0\).</p>
+  <p>由 \(y(0)=0\) 得 \(C_4=0\)；由 \(y'(0)=0\) 得 \(C_3=0\)；由 \(y'''(L)=0\) 得 \(C_1=-0.15L=-0.18\)；由 \(y''(L)=0\) 得</p>
+  \[0.075L^2+C_1L+C_2=0\;\Longrightarrow\;C_2=-0.075\times1.44+0.18\times1.2=-0.108+0.216=0.108 .\]
+  <p>故</p>
+  \[y(x)=0.00625x^4-0.03x^3+0.054x^2
+        =\frac{q}{24EI}\bigl(x^4-4Lx^3+6L^2x^2\bigr).\]
+  <table class="dt">
+    <tr><th>展向位置 \(x\)（m）</th><th>0.3</th><th>0.6</th><th>0.9</th><th>1.2（翼尖）</th></tr>
+    <tr><th>挠度 \(y\)（mm）</th><th>4.10</th><th>13.77</th><th>25.97</th><th>38.88</th></tr>
+  </table>
+  <p>翼尖下垂 \(38.9\,\mathrm{mm}\)，可用简洁公式校核：\(y(L)=\dfrac{qL^4}{8EI}=\dfrac{60\times1.2^4}{8\times400}=\dfrac{124.416}{3200}=0.03888\,\mathrm{m}\)，一致.</p>
+  <p><b>本引例的启示：</b>四阶方程看似吓人，但因为右端<b>不含 \(y\) 及其低阶导数</b>，只需连续积分四次.这正是本节第一类"可降阶方程".</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　高阶滤波器为什么"更陡峭"：四阶巴特沃斯的特征根</div>
+  <p class="stmt">5G 基站射频前端的抗混叠滤波器常用<b>四阶巴特沃斯低通</b>，其归一化微分方程（截止角频率 \(\omega_c\)）对应特征方程</p>
+  \[\Bigl(\frac{r}{\omega_c}\Bigr)^4+2.6131\Bigl(\frac{r}{\omega_c}\Bigr)^3+3.4142\Bigl(\frac{r}{\omega_c}\Bigr)^2+2.6131\frac{r}{\omega_c}+1=0 .\]
+  <p>其四个根均匀分布在左半平面单位圆上：</p>
+  \[\frac{r}{\omega_c}=-0.3827\pm0.9239\mathrm{i},\qquad -0.9239\pm0.3827\mathrm{i}.\]
+  <p>取截止频率 \(f_c=1\,\mathrm{kHz}\)（\(\omega_c=6283.2\,\mathrm{rad/s}\)），求该滤波器阶跃响应的暂态衰减时间.</p>
+  <p class="sol"><span class="mk">解</span>由本节定理 7.14，四个复根分成两对共轭，齐次通解为</p>
+  \[y=\mathrm{e}^{-2404.6t}\bigl(C_1\cos5805.1t+C_2\sin5805.1t\bigr)
+    +\mathrm{e}^{-5805.1t}\bigl(C_3\cos2404.6t+C_4\sin2404.6t\bigr),\]
+  <p>其中 \(0.3827\times6283.2=2404.6\)，\(0.9239\times6283.2=5805.1\).</p>
+  <p>两个衰减时间常数为</p>
+  \[\tau_1=\frac{1}{2404.6}=0.416\ \mathrm{ms},\qquad \tau_2=\frac{1}{5805.1}=0.172\ \mathrm{ms}.\]
+  <p>暂态由<b>较慢的 \(\tau_1\)</b> 主导，按 \(4\tau_1\) 估算，滤波器约 \(1.66\,\mathrm{ms}\) 后进入稳态.</p>
+  <p class="muted">阶数越高，阻带衰减越陡（四阶为 \(-80\,\mathrm{dB/十倍频}\)），但特征根越靠近虚轴、暂态越长、群延迟越大.<b>"陡峭度"与"响应速度"的矛盾，在特征根的位置上一目了然</b>——这就是滤波器设计的核心权衡.</p>
+</div>
+
+<h3>一、可降阶的高阶微分方程</h3>
+<p>高阶方程一般难解，但有三类可通过<b>换元降阶</b>转化为一阶方程.</p>
+
+<div class="def"><div class="lab"><span class="n">类型一</span>\(y^{(n)}=f(x)\) 型</div>
+  <p>右端只含自变量 \(x\).<b>连续积分 \(n\) 次</b>即得含 \(n\) 个任意常数的通解：</p>
+  \[y^{(n-1)}=\int f(x)\,\mathrm{d}x+C_1,\qquad y^{(n-2)}=\int\Bigl[\int f\,\mathrm{d}x+C_1\Bigr]\mathrm{d}x+C_2,\qquad\cdots\]
+</div>
+
+<div class="ex"><div class="lab">例 7.28　逐次积分</div>
+  <p class="stmt">求 \(y'''=\mathrm{e}^{2x}-\cos x\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>连续积分三次：</p>
+  \[y''=\frac12\mathrm{e}^{2x}-\sin x+C_1,\]
+  \[y'=\frac14\mathrm{e}^{2x}+\cos x+C_1x+C_2,\]
+  \[y=\frac18\mathrm{e}^{2x}+\sin x+\frac{C_1}{2}x^2+C_2x+C_3 .\]
+  <p>把 \(\dfrac{C_1}{2}\) 重记为 \(C_1\)（仍是任意常数），得</p>
+  \[y=\frac18\mathrm{e}^{2x}+\sin x+C_1x^2+C_2x+C_3 .\]
+</div>
+
+<div class="def"><div class="lab"><span class="n">类型二</span>\(y''=f(x,y')\) 型（不显含 \(y\)）</div>
+  <p>令 \(p=y'\)，则 \(y''=\dfrac{\mathrm{d}p}{\mathrm{d}x}=p'\)，原方程降为关于 \(p\) 的<b>一阶方程</b></p>
+  \[\frac{\mathrm{d}p}{\mathrm{d}x}=f(x,p).\]
+  <p>解出 \(p=\varphi(x,C_1)\) 后，再积分一次 \(y=\displaystyle\int\varphi(x,C_1)\,\mathrm{d}x+C_2\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.29　不显含 \(y\)</div>
+  <p class="stmt">求 \((1+x^2)y''=2xy'\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>方程中不出现 \(y\)，令 \(p=y'\)：</p>
+  \[(1+x^2)\frac{\mathrm{d}p}{\mathrm{d}x}=2xp
+   \;\Longrightarrow\;\frac{\mathrm{d}p}{p}=\frac{2x\,\mathrm{d}x}{1+x^2}
+   \;\Longrightarrow\;\ln|p|=\ln(1+x^2)+C .\]
+  <p>故 \(p=C_1(1+x^2)\)，即 \(y'=C_1(1+x^2)\).再积分：</p>
+  \[y=C_1\Bigl(x+\frac{x^3}{3}\Bigr)+C_2 .\]
+</div>
+
+<div class="def"><div class="lab"><span class="n">类型三</span>\(y''=f(y,y')\) 型（不显含 \(x\)）</div>
+  <p>令 \(p=y'\)，但这次<b>把 \(p\) 看作 \(y\) 的函数</b>.由复合函数求导法则</p>
+  \[y''=\frac{\mathrm{d}p}{\mathrm{d}x}=\frac{\mathrm{d}p}{\mathrm{d}y}\cdot\frac{\mathrm{d}y}{\mathrm{d}x}=p\,\frac{\mathrm{d}p}{\mathrm{d}y},\]
+  <p>原方程化为关于 \(p(y)\) 的一阶方程 \(p\dfrac{\mathrm{d}p}{\mathrm{d}y}=f(y,p)\).解出 \(p=\varphi(y,C_1)\) 后，再由 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\varphi(y,C_1)\) 分离变量求 \(y\).</p>
+</div>
+
+<div class="note"><b>两类换元的区别，务必分清：</b><br>
+· 不显含 \(y\) → \(p\) 是 \(x\) 的函数，\(y''=\dfrac{\mathrm{d}p}{\mathrm{d}x}\)；<br>
+· 不显含 \(x\) → \(p\) 是 \(y\) 的函数，\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\)（<b>多一个因子 \(p\)</b>）.<br>
+写错这一步，后面全错.判据很简单：<b>看方程里缺哪个变量，就把剩下的那个当自变量.</b></div>
+
+<div class="ex"><div class="lab">例 7.30　不显含 \(x\)</div>
+  <p class="stmt">求 \(y\,y''-(y')^2=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>方程中不出现 \(x\)，令 \(p=y'\)，\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\)：</p>
+  \[y\,p\frac{\mathrm{d}p}{\mathrm{d}y}-p^2=0\;\Longrightarrow\;p\Bigl(y\frac{\mathrm{d}p}{\mathrm{d}y}-p\Bigr)=0 .\]
+  <p>若 \(p=0\)，得 \(y=\)常数，是解（可并入下面的结果）.若 \(p
+eq0\)：</p>
+  \[y\frac{\mathrm{d}p}{\mathrm{d}y}=p\;\Longrightarrow\;\frac{\mathrm{d}p}{p}=\frac{\mathrm{d}y}{y}
+   \;\Longrightarrow\;p=C_1y .\]
+  <p>再由 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=C_1y\) 分离变量得</p>
+  \[y=C_2\,\mathrm{e}^{C_1x}.\]
+</div>
+
+<div class="ex"><div class="lab">例 7.31　初值问题：追踪曲线的雏形</div>
+  <p class="stmt">求 \(y''=1+(y')^2\) 满足 \(y(0)=0,\ y'(0)=0\) 的特解.</p>
+  <p class="sol"><span class="mk">解</span>不显含 \(y\)，令 \(p=y'\)：</p>
+  \[\frac{\mathrm{d}p}{\mathrm{d}x}=1+p^2\;\Longrightarrow\;\frac{\mathrm{d}p}{1+p^2}=\mathrm{d}x
+   \;\Longrightarrow\;\arctan p=x+C_1 .\]
+  <p>由 \(p(0)=y'(0)=0\) 得 \(C_1=0\)，故 \(p=\tan x\)，即 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\tan x\).再积分：</p>
+  \[y=-\ln|\cos x|+C_2 .\]
+  <p>由 \(y(0)=0\) 得 \(C_2=0\).故特解</p>
+  \[y=-\ln|\cos x|\qquad\Bigl(|x|\lt\frac{\pi}{2}\Bigr).\]
+  <p class="muted">注意解的定义区间只能是 \(\Bigl(-\dfrac{\pi}{2},\dfrac{\pi}{2}\Bigr)\)：虽然方程右端处处光滑，解却在有限时刻"爆破".这提醒我们，<b>定理 7.1 的唯一性只是局部的</b>，全局解未必存在.</p>
+</div>
+
+<div class="ex"><div class="lab">例 7.32　经典：悬链线方程的推导</div>
+  <p class="stmt">一条柔软、不可伸长的均质链条（或输电导线）自然下垂，设最低点处水平张力为 \(H\)、单位长度重量为 \(w\)，记 \(a=\dfrac Hw\).由力学分析可得曲线满足</p>
+  \[\frac{\mathrm{d}^2y}{\mathrm{d}x^2}=\frac1a\sqrt{1+\Bigl(\frac{\mathrm{d}y}{\mathrm{d}x}\Bigr)^2}.\]
+  <p>取最低点为 \((0,a)\)，此处切线水平，即 \(y(0)=a,\ y'(0)=0\).求曲线方程.</p>
+  <p class="sol"><span class="mk">解</span>不显含 \(y\)，令 \(p=y'\)：</p>
+  \[\frac{\mathrm{d}p}{\mathrm{d}x}=\frac{\sqrt{1+p^2}}{a}
+   \;\Longrightarrow\;\frac{\mathrm{d}p}{\sqrt{1+p^2}}=\frac{\mathrm{d}x}{a}.\]
+  <p>左端积分为 \(\ln\bigl(p+\sqrt{1+p^2}\bigr)=\operatorname{arsinh}p\)，故</p>
+  \[\operatorname{arsinh}p=\frac xa+C_1 .\]
+  <p>由 \(p(0)=0\) 得 \(C_1=0\)，即 \(p=\sinh\dfrac xa\).再积分：</p>
+  \[y=a\cosh\frac xa+C_2 .\]
+  <p>由 \(y(0)=a\)：\(a\cosh0+C_2=a+C_2=a\)，得 \(C_2=0\).故</p>
+  \[y=a\cosh\frac xa .\]
+  <p class="muted"><b>这就是"悬链线"</b>——它不是抛物线（伽利略曾误认为是），而是双曲余弦曲线.第 6 章例 6.16 已用它算过输电线弧长；本节则从力学第一性原理把它<b>推导</b>了出来.倒过来的悬链线是最理想的<b>受压拱形</b>（只受轧压不受弯矩），这正是高迪的圣家堂与中国古代虹桥的力学秘密.</p>
+</div>
+
+<h3>二、\(n\) 阶常系数线性微分方程</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.14</span>\(n\) 阶常系数齐次方程的特征根法</div>
+  <p>对 \(n\) 阶常系数齐次线性方程</p>
+  \[y^{(n)}+p_1y^{(n-1)}+\cdots+p_{n-1}y'+p_ny=0,\]
+  <p>其<b>特征方程</b>为</p>
+  \[r^{n}+p_1r^{n-1}+\cdots+p_{n-1}r+p_n=0 .\]
+  <p>按特征根的类型给出线性无关特解，共 \(n\) 个，其线性组合即为通解：</p>
+  <table class="dt">
+    <tr><th>特征根情形</th><th>对应的线性无关特解</th><th>贡献的通解项</th></tr>
+    <tr><td>单实根 \(r\)</td><td>\(\mathrm{e}^{rx}\)</td><td>\(C\mathrm{e}^{rx}\)</td></tr>
+    <tr><td>\(k\) 重实根 \(r\)</td><td>\(\mathrm{e}^{rx},x\mathrm{e}^{rx},\dots,x^{k-1}\mathrm{e}^{rx}\)</td><td>\(\bigl(C_1+C_2x+\cdots+C_kx^{k-1}\bigr)\mathrm{e}^{rx}\)</td></tr>
+    <tr><td>单重共轭复根 \(\alpha\pm\beta\mathrm{i}\)</td><td>\(\mathrm{e}^{\alpha x}\cos\beta x,\ \mathrm{e}^{\alpha x}\sin\beta x\)</td><td>\(\mathrm{e}^{\alpha x}\bigl(C_1\cos\beta x+C_2\sin\beta x\bigr)\)</td></tr>
+    <tr><td>\(k\) 重共轭复根 \(\alpha\pm\beta\mathrm{i}\)</td><td>\(x^{j}\mathrm{e}^{\alpha x}\cos\beta x,\ x^{j}\mathrm{e}^{\alpha x}\sin\beta x\ (j=0,\dots,k-1)\)</td><td>\(\mathrm{e}^{\alpha x}\bigl[(C_1+\cdots+C_kx^{k-1})\cos\beta x+(D_1+\cdots+D_kx^{k-1})\sin\beta x\bigr]\)</td></tr>
+  </table>
+  <p class="muted">计数校验：一个 \(k\) 重实根贡献 \(k\) 个解，一对 \(k\) 重复根贡献 \(2k\) 个解.所有情形加起来恰好 \(n\) 个，与阶数吻合.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>记算子 \(L[y]=y^{(n)}+p_1y^{(n-1)}+\cdots+p_{n-1}y'+p_ny\)，特征多项式</p>
+\[F(r)=r^{n}+p_1r^{n-1}+\cdots+p_{n-1}r+p_n .\]
+<p><span class="stp">第一步：基本恒等式.</span>由 \(\dfrac{\mathrm{d}^{j}}{\mathrm{d}x^{j}}\mathrm{e}^{rx}=r^{j}\mathrm{e}^{rx}\) 逐项代入得</p>
+\[L\bigl[\mathrm{e}^{rx}\bigr]=F(r)\,\mathrm{e}^{rx}.\qquad(\ast)\]
+<p>因 \(\mathrm{e}^{rx}
+eq0\)，故 \(\mathrm{e}^{rx}\) 是解当且仅当 \(F(r)=0\)，即 \(r\) 是<b>特征根</b>.这就证明了单实根情形对应特解 \(\mathrm{e}^{rx}\).</p>
+<p><span class="stp">思路（如何处理重根）：</span>把 \((\ast)\) 中的 \(r\) 看作<b>参数</b>，对它求导.左端 \(L\) 只对 \(x\) 求导，与对 \(r\) 求导可交换次序，而 \(\dfrac{\partial}{\partial r}\mathrm{e}^{rx}=x\mathrm{e}^{rx}\)——每对 \(r\) 求一次导，就在解里"生出一个 \(x\)".这正是重根为什么会带来 \(x^{j}\mathrm{e}^{rx}\) 的根本原因.</p>
+<p><span class="stp">第二步：\(k\) 重实根.</span>对 \((\ast)\) 两端关于 \(r\) 求 \(j\) 阶偏导.左端得 \(L\bigl[x^{j}\mathrm{e}^{rx}\bigr]\)；右端由莱布尼茨公式得</p>
+\[\frac{\partial^{j}}{\partial r^{j}}\bigl[F(r)\mathrm{e}^{rx}\bigr]=\sum_{i=0}^{j}\binom{j}{i}F^{(i)}(r)\,x^{\,j-i}\,\mathrm{e}^{rx}.\]
+<p>于是</p>
+\[L\bigl[x^{j}\mathrm{e}^{rx}\bigr]=\mathrm{e}^{rx}\sum_{i=0}^{j}\binom{j}{i}F^{(i)}(r)\,x^{\,j-i}.\]
+<p>若 \(r\) 是 \(F\) 的 \(k\) 重根，则 \(F(r)=F'(r)=\cdots=F^{(k-1)}(r)=0\).当 \(j\le k-1\) 时，上式右端求和中出现的全是 \(F^{(i)}(r)\ (i\le j\le k-1)\)，故整个和为零，即</p>
+\[L\bigl[x^{j}\mathrm{e}^{rx}\bigr]=0,\qquad j=0,1,\dots,k-1 .\]
+<p>这就严格证明了 \(k\) 重实根 \(r\) 提供 \(k\) 个解 \(\mathrm{e}^{rx},x\mathrm{e}^{rx},\dots,x^{k-1}\mathrm{e}^{rx}\).</p>
+<p><span class="stp">第三步：复根情形.</span>上述推导对复数 \(r\) 同样成立.设 \(\alpha\pm\beta\mathrm{i}\ (\beta
+eq0)\) 是 \(k\) 重共轭复根，则 \(x^{j}\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\ (j\le k-1)\) 是复值解.由欧拉公式</p>
+\[x^{j}\mathrm{e}^{(\alpha+\beta\mathrm{i})x}=x^{j}\mathrm{e}^{\alpha x}\cos\beta x+\mathrm{i}\,x^{j}\mathrm{e}^{\alpha x}\sin\beta x .\]
+<p>因 \(p_1,\dots,p_n\) 为实数，把复值解代入 \(L\) 后实部与虚部各自为零，故</p>
+\[x^{j}\mathrm{e}^{\alpha x}\cos\beta x,\qquad x^{j}\mathrm{e}^{\alpha x}\sin\beta x\qquad(j=0,\dots,k-1)\]
+<p>都是<b>实值</b>解，共 \(2k\) 个.共轭根 \(\alpha-\beta\mathrm{i}\) 不再产生新的实值解（它给出的实部虚部与上面相同，至多相差符号），故一对 \(k\) 重复根恰贡献 \(2k\) 个解，与表中一致.</p>
+<p><span class="stp">第四步：线性无关性与计数.</span>可以证明：形如 \(x^{j}\mathrm{e}^{r_ix}\)（\(r_i\) 互不相同，\(j\) 取相应的重数范围）的这一组函数线性无关.理由是：若它们的某个线性组合恒为零，则把该组合除以其中一个指数因子后令 \(x\to+\infty\) 比较增长阶，可依次逼出各多项式系数全为零.由代数基本定理，\(n\) 次特征方程 \(F(r)=0\) 在复数域内<b>连重数计恰有 \(n\) 个根</b>；由第二、三步，每个 \(k\) 重实根贡献 \(k\) 个解，每对 \(k\) 重复根（占去 \(2k\) 个根位）贡献 \(2k\) 个解.因此上述解的总数恰为 \(n\).</p>
+<p><span class="stp">第五步：结论.</span>把定理 7.8 的论证推广到 \(n\) 阶（初值由 \(y(x_0),y'(x_0),\dots,y^{(n-1)}(x_0)\) 这 \(n\) 个数据确定，相应的 \(n\) 阶朗斯基行列式非零），即知这 \(n\) 个线性无关解的一切线性组合</p>
+\[y=C_1y_1+C_2y_2+\cdots+C_ny_n\]
+<p>就是 \(n\) 阶齐次方程的通解，按根的类型归并即得表中各行.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 7.33　四阶方程：实根与复根并存</div>
+  <p class="stmt">求 \(y^{(4)}-y=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>特征方程 \(r^4-1=0\)，分解为</p>
+  \[(r^2-1)(r^2+1)=0\;\Longrightarrow\;r=1,\ -1,\ \pm\mathrm{i}.\]
+  <p>两个单实根贡献 \(C_1\mathrm{e}^{x}+C_2\mathrm{e}^{-x}\)；一对单重复根（\(\alpha=0,\beta=1\)）贡献 \(C_3\cos x+C_4\sin x\).故</p>
+  \[y=C_1\mathrm{e}^{x}+C_2\mathrm{e}^{-x}+C_3\cos x+C_4\sin x .\]
+</div>
+
+<div class="ex"><div class="lab">例 7.34　三阶方程：含二重根</div>
+  <p class="stmt">求 \(y'''-y''-y'+y=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>特征方程 \(r^3-r^2-r+1=0\).分组分解：</p>
+  \[r^2(r-1)-(r-1)=(r-1)(r^2-1)=(r-1)^2(r+1)=0 .\]
+  <p>故 \(r=1\)（二重）、\(r=-1\)（单重）.二重根贡献 \((C_1+C_2x)\mathrm{e}^{x}\)，单根贡献 \(C_3\mathrm{e}^{-x}\)：</p>
+  \[y=(C_1+C_2x)\,\mathrm{e}^{x}+C_3\,\mathrm{e}^{-x}.\]
+</div>
+
+<div class="ex"><div class="lab">例 7.35　四阶方程：二重复根</div>
+  <p class="stmt">求 \(y^{(4)}+2y''+y=0\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>特征方程 \(r^4+2r^2+1=(r^2+1)^2=0\)，故 \(r=\pm\mathrm{i}\) 是<b>二重</b>共轭复根（\(\alpha=0,\beta=1,k=2\)）.由定理 7.14，</p>
+  \[y=(C_1+C_2x)\cos x+(C_3+C_4x)\sin x .\]
+  <p class="muted">解中出现 \(x\cos x,\ x\sin x\) 这类<b>振幅线性增长</b>的项——这是"双重共振"的数学表现.在结构动力学中，若两个子系统的固有频率完全相同且耦合，就会出现这种危险的响应模式，工程上必须通过"调频"刻意错开.</p>
+</div>
+
+<h3>三、欧拉方程</h3>
+<div class="def"><div class="lab"><span class="n">定理 7.15</span>欧拉方程与换元 \(x=\mathrm{e}^{t}\)</div>
+  <p>形如</p>
+  \[x^{n}y^{(n)}+p_1x^{n-1}y^{(n-1)}+\cdots+p_{n-1}xy'+p_ny=f(x)\qquad(p_i\ \text{为常数})\]
+  <p>的方程称为<b>欧拉方程</b>.其特点是：<b>每一项中 \(x\) 的幂次与求导阶数相同</b>.</p>
+  <p>作换元 \(x=\mathrm{e}^{t}\)（设 \(x\gt0\)，即 \(t=\ln x\)），记 \(D=\dfrac{\mathrm{d}}{\mathrm{d}t}\)，则可证</p>
+  \[xy'=Dy,\qquad x^2y''=D(D-1)y,\qquad x^3y'''=D(D-1)(D-2)y,\ \dots\]
+  <p>一般地 \(x^{k}y^{(k)}=D(D-1)\cdots(D-k+1)y\).代入后方程变为<b>以 \(t\) 为自变量的常系数线性方程</b>，可用特征根法求解，最后回代 \(t=\ln x\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>欧拉方程的"变系数"其实很有规律：第 \(k\) 项总是 \(x^{k}y^{(k)}\).而对指数换元 \(x=\mathrm{e}^{t}\) 来说，\(\dfrac{\mathrm{d}t}{\mathrm{d}x}=\dfrac1x\)——<b>每求一次导就自动吐出一个 \(\dfrac1x\)</b>，恰好被 \(x^{k}\) 中的一个 \(x\) 抵消.所以换元后 \(x\) 会被消得干干净净，只剩常系数.</p>
+<p>设 \(x\gt0\)，令 \(x=\mathrm{e}^{t}\)，即 \(t=\ln x\)，记 \(D=\dfrac{\mathrm{d}}{\mathrm{d}t}\).</p>
+<p><span class="stp">第一步：\(k=1\) 的情形.</span>由复合函数求导法则 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{\mathrm{d}y}{\mathrm{d}t}\cdot\dfrac{\mathrm{d}t}{\mathrm{d}x}=\dfrac1x\,Dy\)，故</p>
+\[x\,y'=Dy .\]
+<p><span class="stp">第二步：归纳假设与归纳步骤.</span>设对某个 \(k\ge1\) 已有</p>
+\[x^{k}y^{(k)}=D(D-1)\cdots(D-k+1)\,y=:g(t).\]
+<p>把这个等式两端看作 \(x\) 的函数并关于 \(x\) 求导.左端由乘积法则</p>
+\[\frac{\mathrm{d}}{\mathrm{d}x}\bigl(x^{k}y^{(k)}\bigr)=k\,x^{k-1}y^{(k)}+x^{k}y^{(k+1)};\]
+<p>右端由第一步的链式关系</p>
+\[\frac{\mathrm{d}}{\mathrm{d}x}g(t)=\frac{1}{x}\,Dg .\]
+<p>两端同乘 \(x\)：</p>
+\[k\,x^{k}y^{(k)}+x^{k+1}y^{(k+1)}=Dg .\]
+<p>把归纳假设 \(x^{k}y^{(k)}=g\) 代入并移项，得</p>
+\[x^{k+1}y^{(k+1)}=Dg-k\,g=(D-k)\,g=(D-k)D(D-1)\cdots(D-k+1)\,y .\]
+<p>由于 \(D\) 与常数的加减可交换（都是常系数算子），可把因子重排为</p>
+\[x^{k+1}y^{(k+1)}=D(D-1)\cdots(D-k+1)(D-k)\,y ,\]
+<p>这正是 \(k+1\) 时的公式.由数学归纳法，对一切 \(k\ge1\) 有</p>
+\[x^{k}y^{(k)}=D(D-1)\cdots(D-k+1)\,y .\]
+<p>特别地 \(x^{2}y''=D(D-1)y=D^2y-Dy\)，\(x^{3}y'''=D(D-1)(D-2)y\)，与定理所列一致.</p>
+<p><span class="stp">第三步：方程化为常系数.</span>把上式代入欧拉方程</p>
+\[x^{n}y^{(n)}+p_1x^{n-1}y^{(n-1)}+\cdots+p_{n-1}xy'+p_ny=f(x),\]
+<p>每一项都变成 \(D\) 的<b>常系数</b>多项式作用于 \(y\)，右端变为 \(f(\mathrm{e}^{t})\).合并同类项后得</p>
+\[\Bigl[D(D-1)\cdots(D-n+1)+p_1D(D-1)\cdots(D-n+2)+\cdots+p_n\Bigr]y=f(\mathrm{e}^{t}),\]
+<p>展开即为以 \(t\) 为自变量、以 \(y\) 为未知函数的 \(n\) 阶<b>常系数</b>线性微分方程，可用定理 7.14（齐次部分）与定理 7.12、7.13（特解）求解.</p>
+<p><span class="stp">第四步：回代.</span>求得 \(y=y(t)\) 后，以 \(t=\ln x\) 代回即得原方程在 \(x\gt0\) 上的通解.若 \(x\lt0\)，令 \(x=-\mathrm{e}^{t}\)（即 \(t=\ln|x|\)）重复同样计算，所得关于 \(D\) 的方程完全相同，故通解只需把 \(\ln x\) 换成 \(\ln|x|\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<div class="ex"><div class="lab">例 7.36　二阶欧拉方程</div>
+  <p class="stmt">求 \(x^2y''+xy'-y=0\ (x\gt0)\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>令 \(x=\mathrm{e}^{t}\).代入 \(xy'=Dy,\ x^2y''=D(D-1)y\)：</p>
+  \[D(D-1)y+Dy-y=0\;\Longrightarrow\;D^2y-Dy+Dy-y=0\;\Longrightarrow\;D^2y-y=0 .\]
+  <p>即 \(\dfrac{\mathrm{d}^2y}{\mathrm{d}t^2}-y=0\)，特征方程 \(r^2-1=0\)，\(r=\pm1\)，故 \(y=C_1\mathrm{e}^{t}+C_2\mathrm{e}^{-t}\).回代 \(\mathrm{e}^{t}=x\)：</p>
+  \[y=C_1x+\frac{C_2}{x}.\]
+</div>
+
+<div class="ex"><div class="lab">例 7.37　非齐次欧拉方程（含共振）</div>
+  <p class="stmt">求 \(x^2y''-xy'+y=2x\ (x\gt0)\) 的通解.</p>
+  <p class="sol"><span class="mk">解</span>令 \(x=\mathrm{e}^{t}\)，则 \(2x=2\mathrm{e}^{t}\)，方程化为</p>
+  \[D(D-1)y-Dy+y=2\mathrm{e}^{t}\;\Longrightarrow\;\bigl(D^2-2D+1\bigr)y=2\mathrm{e}^{t}.\]
+  <p><b>齐次部分：</b>特征方程 \(r^2-2r+1=(r-1)^2=0\)，二重根 \(r=1\)，故 \(Y=(C_1+C_2t)\mathrm{e}^{t}\).</p>
+  <p><b>特解：</b>自由项 \(2\mathrm{e}^{t}\) 中 \(\lambda=1\) 恰是<b>二重</b>特征根，由定理 7.12 取 \(k=2\)，设 \(y^{*}=At^2\mathrm{e}^{t}\).计算</p>
+  \[y^{*\prime}=A(2t+t^2)\mathrm{e}^{t},\qquad y^{*\prime\prime}=A(2+4t+t^2)\mathrm{e}^{t},\]
+  \[y^{*\prime\prime}-2y^{*\prime}+y^{*}=A\mathrm{e}^{t}\bigl[(2+4t+t^2)-2(2t+t^2)+t^2\bigr]=2A\mathrm{e}^{t}=2\mathrm{e}^{t}.\]
+  <p>故 \(A=1\)，\(y^{*}=t^2\mathrm{e}^{t}\).合并并回代 \(t=\ln x,\ \mathrm{e}^{t}=x\)：</p>
+  \[y=\bigl(C_1+C_2t+t^2\bigr)\mathrm{e}^{t}
+   =x\bigl(C_1+C_2\ln x+\ln^2x\bigr).\]
+</div>
+
+<div class="note"><b>本章方法总览：</b><br>
+· <b>一阶</b>：可分离 → 齐次 → 线性 → 伯努利 → 全微分（§7.2）；<br>
+· <b>二阶常系数</b>：特征方程定齐次通解，待定系数法定特解（§7.3）；<br>
+· <b>高阶</b>：先看能否降阶（缺 \(y\) 或缺 \(x\)），再看是否常系数（特征根法），最后看是否欧拉型（换元 \(x=\mathrm{e}^{t}\)）.<br>
+遇到新方程，<b>第一件事永远是"判型"</b>，而不是急着动笔积分.</div>
+
+<div class="case"><div class="lab">应用探微 · 特高压输电线的弧垂计算：从悬链线方程到施工放线</div>
+  <details><summary>展开查看：一条二阶方程如何决定铁塔高度与导线用量</summary>
+  <div class="body">
+    <p><b>场景：</b> 盛夏午后，特高压巡线员仰头看天——\(400\ \mathrm{m}\) 的档距之间，导线在热浪里明显松弛，弧垂每多一米，离树梢和地面的安全距离就少一米.这条 \(500\,\mathrm{kV}\) 线路导线单位长度重 \(w=16.5\,\mathrm{N/m}\)、设计水平张力 \(H=30000\,\mathrm{N}\)，工程要报出三个数字：<b>弧垂</b>（定塔高与对地安全距离）、<b>导线实长</b>（定采购量）、<b>温度变化的影响</b>.</p>
+    <p><b>一、建立并求解方程.</b>由例 7.32，取档距中点（最低点）正下方为原点上方 \(a\) 处，则</p>
+    \[a=\frac Hw=\frac{30000}{16.5}=1818.18\ \mathrm{m},\qquad y=a\cosh\frac xa,\qquad -200\le x\le 200 .\]
+    <p><b>二、弧垂计算.</b>弧垂 \(f\) 是悬挂点与最低点的高差：</p>
+    \[f=y\Bigl(\frac L2\Bigr)-y(0)=a\Bigl[\cosh\frac{L}{2a}-1\Bigr].\]
+    <p>其中 \(\dfrac{L}{2a}=\dfrac{200}{1818.18}=0.11000\).用级数 \(\cosh u=1+\dfrac{u^2}{2}+\dfrac{u^4}{24}+\cdots\)：</p>
+    \[\cosh 0.11=1+0.0060500+0.0000061=1.0060561 .\]
+    \[f=1818.18\times0.0060561=11.011\ \mathrm{m}.\]
+    <p><b>工程近似校核：</b>当 \(\dfrac{L}{2a}\ll1\) 时保留 \(\cosh\) 的二次项即得抛物线近似</p>
+    \[f\approx a\cdot\frac{1}{2}\Bigl(\frac{L}{2a}\Bigr)^2=\frac{L^2}{8a}=\frac{wL^2}{8H}=\frac{16.5\times160000}{8\times30000}=11.00\ \mathrm{m}.\]
+    <p>与精确值仅差 \(11\,\mathrm{mm}\)（\(0.1\%\)）——这就是电力规程允许用抛物线公式的数学依据.<b>但请注意：这个近似只在 \(f/L\lt1/25\) 时成立</b>，大跨越（如跨江档距 \(2000\,\mathrm{m}\)）必须用双曲余弦精确计算.</p>
+    <p><b>三、导线实长.</b>由第 6 章弧长公式与例 6.16：</p>
+    \[s=2a\sinh\frac{L}{2a}=2\times1818.18\times\sinh0.11 .\]
+    <p>\(\sinh0.11=0.11+\dfrac{0.11^3}{6}+\cdots=0.11+0.00022183=0.11022196\)，故</p>
+    \[s=3636.36\times0.11022196=400.807\ \mathrm{m}.\]
+    <p>比档距长 \(0.807\,\mathrm{m}\).一条 \(100\,\mathrm{km}\) 的线路有 250 档，仅"弧垂余量"就要多用导线</p>
+    \[250\times0.807\times 4\ \text{分裂}\times3\ \text{相}=2421\ \mathrm{m}.\]
+    <p>按每米 \(45\) 元计，仅此一项就是 \(10.9\) 万元的材料预算.</p>
+    <p><b>四、温度影响（为什么夏天电线更松）.</b>导线线膨胀系数 \(\alpha_T=1.9\times10^{-5}\,{}^\circ\mathrm{C}^{-1}\).气温从 \(-5\,{}^{\circ}\mathrm{C}\) 升到 \(40\,{}^{\circ}\mathrm{C}\)（\(\Delta T=45\,{}^{\circ}\mathrm{C}\)），线长增加</p>
+    \[\Delta s=s\,\alpha_T\Delta T=400.807\times1.9\times10^{-5}\times45=0.343\ \mathrm{m}.\]
+    <p>由抛物线近似 \(s\approx L+\dfrac{8f^2}{3L}\)，对 \(f\) 求微分得 \(\Delta s\approx\dfrac{16f}{3L}\Delta f\)，故</p>
+    \[\Delta f=\frac{3L}{16f}\Delta s=\frac{3\times400}{16\times11.011}\times0.343=\frac{1200}{176.18}\times0.343=2.34\ \mathrm{m}.\]
+    <p><b>弧垂从 \(11.0\,\mathrm{m}\) 增大到 \(13.3\,\mathrm{m}\)</b>——这就是为什么盛夏高负荷时段线路更容易发生"对树放电"事故，也是杆塔高度必须按最高气温工况校核的原因.</p>
+    <p><b>回顾这条计算链：</b>力学分析给出二阶微分方程 → 降阶法解出 \(y=a\cosh\dfrac xa\) → 定积分算弧长 → 微分算温度敏感度.<b>第 6 章与第 7 章的工具，在这里被一次性全部用上了.</b></p>
+    <p class="cn-point">气温升 \(45^{\circ}\mathrm{C}\)，弧垂从 \(11.0\ \mathrm{m}\) 涨到 \(13.3\ \mathrm{m}\)——"西电东送"的大网里每一基铁塔的高度，都按这个差分余量校核过.把 \(\Delta f=\dfrac{3L}{16f}\Delta s\) 算准，就是亿万人家夏天不断电的底气.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch7-catenary" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>档距 L <input type="range" id="ch7-cat-l" min="200" max="800" step="10" value="400" style="width:150px;accent-color:#0F6E56"> <b id="ch7-cat-l-t"></b> m</label>
+<label>水平张力 H <input type="range" id="ch7-cat-h" min="20000" max="40000" step="500" value="30000" style="width:150px;accent-color:#0F6E56"> <b id="ch7-cat-h-t"></b> N</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch7-catenary-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch7-catenary'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    var w0=16.5;
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var mL=60,mR=14,mT=26,mB=38,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      var L=+document.getElementById('ch7-cat-l').value;
+      var H=+document.getElementById('ch7-cat-h').value;
+      var a=H/w0;
+      var f=a*(Math.cosh(L/(2*a))-1);
+      var sLen=2*a*Math.sinh(L/(2*a));
+      var fmax=f*1.6;
+      function X(x){ return mL+(x+L/2)/L*pW; }
+      function Yv(y){ return mT+pH - y/fmax*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 悬链线
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var i=0;i<=200;i++){
+        var xx=-L/2+L*i/200;
+        var yy=a*(Math.cosh(xx/a)-1);
+        var px=X(xx), py=Yv(yy);
+        i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+      }
+      ctx.stroke();
+      // 悬挂点 + 最低点
+      ctx.fillStyle='#0e7c7c';
+      ctx.beginPath();ctx.arc(X(-L/2),Yv(0),4,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(X(L/2),Yv(0),4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#eab308';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(X(0),Yv(0));ctx.lineTo(X(0),Yv(f));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#ca8a04';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText('弧垂 f='+f.toFixed(1)+' m',X(0),Yv(f/2)-6);
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('档距 L='+L.toFixed(0)+' m',(mL+W-mR)/2,mT+pH+28);
+      // 数值
+      var ds=sLen-L;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('弧垂 f = '+f.toFixed(2)+' m   导线实长 s = '+sLen.toFixed(2)+' m（比档距长 '+ds.toFixed(3)+' m）',mL,mT+13);
+      var out=document.getElementById('ch7-catenary-out');
+      var tip = f>18 ? '⚠ 弧垂过大：盛夏高温 ΔT=45°C 会再涨 '+(3*L/(16*f)*sLen*1.9e-5*45).toFixed(2)+' m，对地安全距离告急' : '弧垂在安全范围内，杆塔高度按最高气温工况校核即可';
+      out.textContent = tip;
+    }
+    document.getElementById('ch7-cat-l').addEventListener('input', draw);
+    document.getElementById('ch7-cat-h').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+  </div>
+  </details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 从开普勒到牛顿：微分方程如何解释天体运行</summary>
+
+<p>1600 年的布拉格城外，一位视力糟糕却极其固执的德国青年敲开了丹麦天文学家第谷·布拉赫的大门.第谷用二十年时间、以肉眼观测的极限精度记录了行星位置，误差不超过 2 弧分；这位青年叫<b>约翰内斯·开普勒</b>，他要做的是把这堆数字变成规律.</p>
+<p>开普勒选中了火星——因为它的轨道最"不圆"，最难对付.他先后尝试了七十多种圆轨道组合方案，每一次都要做上百页的手工计算.终于有一次，他的模型与观测只差 <b>8 弧分</b>.按当时的标准，这已经完全可以宣布胜利了；但开普勒知道第谷的数据精度是 2 弧分，于是他写下一句让后世动容的话：<b>"这 8 分的误差不容忽视，它指引我们去彻底改造整个天文学."</b>正是这 8 弧分，逼他放弃了统治西方两千年的"完美圆周"信条，转而尝试椭圆.</p>
+<p>1609 年的《新天文学》给出前两条定律：行星沿椭圆运行、太阳位于一个焦点；行星与太阳的连线在相等时间内扫过相等面积.1619 年的《世界的和谐》给出第三条：周期的平方与半长轴的立方成正比.三条定律，全部来自数据拟合——开普勒知道<b>行星怎样运动</b>，却不知道<b>为什么</b>.</p>
+<p>答案要等到 1684 年那个著名的下午.天文学家哈雷登门拜访剑桥的<b>牛顿</b>，问道：若太阳的引力按距离平方反比衰减，行星的轨道会是什么形状？牛顿几乎不假思索地回答："椭圆."哈雷大为惊愕，追问何以知之.牛顿说："我算过."——而当他去翻找草稿时，竟然找不到了.哈雷的追问最终催生了 1687 年出版的《自然哲学的数学原理》，人类科学史上影响最大的一部著作.</p>
+<p>牛顿真正做的事，用今天的语言说就是<b>解一个二阶微分方程组</b>.设行星位置矢量为 \(\boldsymbol r\)，由第二定律与万有引力定律</p>
+\[\frac{\mathrm{d}^{2}\boldsymbol r}{\mathrm{d}t^{2}}=-\frac{GM}{r^{3}}\boldsymbol r .\]
+<p>这个方程妙不可言.先用叉乘得到 \(\boldsymbol r\times\dot{\boldsymbol r}=\boldsymbol h\) 为常矢量——这一步立刻给出两个结论：运动限于一个平面，且面积速度 \(\dfrac12 h\) 恒定，<b>开普勒第二定律被"解"了出来</b>.再引入极坐标并作代换 \(u=\dfrac1r\)、以 \(\theta\) 为自变量，一番整理后方程变成</p>
+\[\frac{\mathrm{d}^{2}u}{\mathrm{d}\theta^{2}}+u=\frac{GM}{h^{2}} .\]
+<p>看到这里，学完 §7.3 的读者应该会心一笑：这不正是<b>二阶常系数非齐次线性方程</b>吗？特征根 \(\pm\mathrm{i}\) 给出齐次通解 \(A\cos(\theta-\theta_{0})\)，常数自由项给出特解 \(GM/h^{2}\)，于是</p>
+\[\frac1r=\frac{GM}{h^{2}}\bigl[1+e\cos(\theta-\theta_{0})\bigr],\]
+<p>这正是圆锥曲线的极坐标标准方程！离心率 \(e\lt1\) 是椭圆（行星）、\(e=1\) 是抛物线、\(e\gt1\) 是双曲线（掠日彗星与星际来客）.<b>开普勒用二十年数据总结出的第一定律，在牛顿这里成了一个非齐次方程通解结构的直接推论.</b></p>
+<p>更震撼的还在后面.微分方程一旦建立，就不只能解释，还能<b>预言</b>.1846 年，法国人勒威耶发现天王星的实测轨道与理论值有微小偏差，他假定这是一颗未知行星的引力摄动，反解摄动方程算出了它应在的位置，并写信给柏林天文台.当晚，伽勒把望远镜指向那个方向，在偏离预报不到 1 度处找到了<b>海王星</b>.人们说，这是"用笔尖发现的行星".</p>
+<p>今天，同样的方程仍在运转：北斗卫星的轨道预报、嫦娥探测器的地月转移、天问一号的火星捕获，其内核都是这条二阶常微分方程加上摄动项的数值积分.从开普勒的 8 弧分，到牛顿的 \(u''+u=GM/h^{2}\)，再到今天航天测控中心屏幕上跳动的轨道根数——<b>微分方程完成了人类认识自然的一次根本转变：从记录现象，到掌握规律，再到预言未来.</b></p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] M. Kline《古今数学思想》，上海科学技术出版社；[2] I. Newton, <i>Philosophiæ Naturalis Principia Mathematica</i>, 1687；[3] J. Kepler, <i>Astronomia Nova</i>, 1609；[4] Wikipedia 词条 "Kepler's laws of planetary motion" 与 "Discovery of Neptune".</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 欧拉：史上最多产的数学家</summary>
+
+<p>1707 年，<b>莱昂哈德·欧拉</b>生于瑞士巴塞尔.父亲是位牧师，本希望儿子继承神职，但巴塞尔大学有一位约翰·伯努利——当时欧洲最好的数学家之一.老伯努利每周六下午给这个少年单独辅导一小时，很快便告诉那位牧师父亲：这孩子注定要成为伟大的数学家.</p>
+<p>1727 年，二十岁的欧拉受邀前往圣彼得堡科学院.此后半个世纪，他辗转于圣彼得堡与柏林之间，写下了人类历史上任何个人都难以企及的著作量.《欧拉全集》(<i>Opera Omnia</i>) 自 1911 年开始编纂，至今已出版逾八十卷，仍未完全出齐.据统计，在他生命的最后几十年里，平均每年产出约八百页论文——而这段时间，他的眼睛已经看不见了.</p>
+<p>1738 年，欧拉右眼失明，据说与长期观测太阳有关.1771 年，白内障手术失败，他彻底陷入黑暗.任何人都会以为他的学术生涯就此终结，但欧拉的反应是：<b>"现在我可以少一些分心了."</b>此后十二年，他靠着超人的记忆与心算能力口述，由儿子和助手笔录，完成了全部著作的近一半.他能背诵整部《埃涅阿斯纪》，能在脑中做五十位数的运算.1783 年 9 月 18 日下午，他一边喝茶一边和孙子玩耍，同时口算天王星的轨道；烟斗从手中滑落，他说了一句"我死了"，随即停止了计算与生命.</p>
+<p>今天的数学生活在欧拉设计的房子里.自然对数底 \(\mathrm{e}\)、虚数单位 \(\mathrm{i}\)、函数记号 \(f(x)\)、求和号 \(\Sigma\)、三角函数的现代写法 \(\sin\)、\(\cos\)，全部由他确立或推广.他解决了困扰整个伯努利家族多年的巴塞尔问题</p>
+\[\sum_{n=1}^{\infty}\frac{1}{n^{2}}=\frac{\pi^{2}}{6},\]
+<p>创立了变分法、图论（哥尼斯堡七桥）、拓扑学的雏形（多面体公式 \(V-E+F=2\)），并把数论从业余爱好变成了严肃学科.</p>
+<p>而对本章而言，欧拉的名字出现得尤其密集.<b>其一，特征根法.</b>1739 年，他在给约翰·伯努利的信中系统给出了常系数线性微分方程的完整解法：设 \(y=\mathrm{e}^{rx}\)，把微分方程变成代数方程；重根时补上 \(x\mathrm{e}^{rx},x^{2}\mathrm{e}^{rx},\dots\).§7.3 与 §7.4 的整套方法，两百八十多年来几乎未做改动.<b>其二，欧拉公式.</b></p>
+\[\mathrm{e}^{\mathrm{i}\theta}=\cos\theta+\mathrm{i}\sin\theta\]
+<p>——正是它把共轭复根 \(\alpha\pm\beta\mathrm{i}\) 对应的复指数翻译成实值的 \(\mathrm{e}^{\alpha x}\cos\beta x\) 与 \(\mathrm{e}^{\alpha x}\sin\beta x\).没有这座桥，本章所有振动问题的解都会挂着虚数尾巴.取 \(\theta=\pi\) 得到的 \(\mathrm{e}^{\mathrm{i}\pi}+1=0\)，被公认为最美的数学公式.<b>其三，欧拉方程</b> \(x^{n}y^{(n)}+\cdots+p_{n}y=f(x)\)，以及<b>其四，欧拉折线法</b>——最早的常微分方程数值解法，今天它以"前向欧拉格式"的名义活跃在每一个物理引擎、每一次电路仿真中，甚至如本章 §7.1 案例所示，成了 Neural ODE 与深度残差网络之间的翻译词典.</p>
+<p>拉普拉斯对后辈说过一句话，可以作为这篇短文的结尾：<b>"读欧拉，读欧拉，他是我们所有人的老师."</b>当你在 §7.3 写下特征方程、在 §7.4 令 \(x=\mathrm{e}^{t}\)、在计算机上跑一次显式积分时，你都在重复一位失明老人两百多年前在圣彼得堡口述过的句子.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] W. Dunham, <i>Euler: The Master of Us All</i>, Mathematical Association of America, 1999；[2] L. Euler, <i>Opera Omnia</i>, Birkhäuser（自 1911 年起陆续出版）；[3] M. Kline《古今数学思想》，上海科学技术出版社；[4] Wikipedia 词条 "Leonhard Euler".</p>
+</details>
+</div>
+
+<div class="ky" id="adv7">
+<div class="ky-hd">🎯 考研选讲 · 第七章 常微分方程</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题，数学一、二常考）求微分方程 \(y'+y=y^{2}\bigl(\cos x-\sin x\bigr)\) 的通解.</p>
+<p class="ky-hint"><b>思路点拨.</b> 右端含 \(y^{2}\)，是<b>伯努利方程</b>（\(n=2\)）.标准动作：两端同除 \(y^{2}\)，令 \(z=y^{1-n}=y^{-1}\).<b>两个陷阱</b>：① 代换后 \(z'=-y^{-2}y'\)，负号极易丢；② 除以 \(y^{2}\) 时丢掉了 \(y\equiv0\) 这个解，答案要补上.</p>
+<p class="sol"><span class="mk">解</span> 令 \(z=y^{-1}\).由定理 7.5，方程化为</p>
+\[\frac{\mathrm{d}z}{\mathrm{d}x}+(1-2)\cdot1\cdot z=(1-2)\bigl(\cos x-\sin x\bigr),
+ \qquad\text{即}\qquad
+ z'-z=\sin x-\cos x .\]
+<p>这是一阶线性方程，\(P=-1\)，积分因子 \(\mathrm{e}^{-x}\)：</p>
+\[\bigl(z\mathrm{e}^{-x}\bigr)'=\bigl(\sin x-\cos x\bigr)\mathrm{e}^{-x}.\]
+<p>利用 \(\displaystyle\int\mathrm{e}^{-x}\sin x\,\mathrm{d}x=-\frac{\mathrm{e}^{-x}}{2}(\sin x+\cos x)\) 与 \(\displaystyle\int\mathrm{e}^{-x}\cos x\,\mathrm{d}x=\frac{\mathrm{e}^{-x}}{2}(\sin x-\cos x)\)，两式相减恰好合并为</p>
+\[\int\bigl(\sin x-\cos x\bigr)\mathrm{e}^{-x}\,\mathrm{d}x=-\mathrm{e}^{-x}\sin x+C .\]
+<p>故 \(z\mathrm{e}^{-x}=-\mathrm{e}^{-x}\sin x+C\)，即 \(z=C\mathrm{e}^{x}-\sin x\).回代 \(z=\dfrac1y\)：</p>
+\[\frac{1}{y}=C\mathrm{e}^{x}-\sin x
+ \qquad\text{即}\qquad
+ y=\frac{1}{C\mathrm{e}^{x}-\sin x},\]
+<p>此外 \(y\equiv0\) 也是解.</p>
+<p class="ky-idea"><b>命题意图.</b> 考查伯努利方程的标准流程，同时检验 \(\displaystyle\int\mathrm{e}^{ax}\sin bx\,\mathrm{d}x\) 型积分（分部积分两次或复数法）的熟练度.命题人特意把自由项设成 \(\cos x-\sin x\)，使结果异常简洁——若算出一堆三角项，多半是符号出了错.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题，数学一常考）求微分方程 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=\dfrac{1}{x\cos y+\sin 2y}\) 的通解.</p>
+<p class="ky-hint"><b>思路点拨.</b> 以 \(y\) 为未知函数时，方程既不可分离、也非齐次、更不是线性的——这是明确的信号：<b>把 \(x\) 看作 \(y\) 的函数</b>.判据是：取倒数后，\(x\) 与 \(\dfrac{\mathrm{d}x}{\mathrm{d}y}\) 是否都只出现一次幂.</p>
+<p class="sol"><span class="mk">解</span> 由反函数求导法则取倒数：</p>
+\[\frac{\mathrm{d}x}{\mathrm{d}y}=x\cos y+\sin 2y
+ \qquad\Longrightarrow\qquad
+ \frac{\mathrm{d}x}{\mathrm{d}y}-\bigl(\cos y\bigr)x=2\sin y\cos y .\]
+<p>这是以 \(y\) 为自变量的一阶线性方程，\(P(y)=-\cos y\)，积分因子 \(\mathrm{e}^{-\sin y}\)：</p>
+\[\bigl(x\,\mathrm{e}^{-\sin y}\bigr)'=2\sin y\cos y\,\mathrm{e}^{-\sin y}.\]
+<p>令 \(u=\sin y\)（则 \(\mathrm{d}u=\cos y\,\mathrm{d}y\)），右端积分为</p>
+\[\int 2u\,\mathrm{e}^{-u}\,\mathrm{d}u=-2(u+1)\mathrm{e}^{-u}+C=-2(\sin y+1)\mathrm{e}^{-\sin y}+C .\]
+<p>故 \(x\mathrm{e}^{-\sin y}=-2(1+\sin y)\mathrm{e}^{-\sin y}+C\)，通解为</p>
+\[x=C\,\mathrm{e}^{\sin y}-2\bigl(1+\sin y\bigr).\]
+<p class="ky-idea"><b>命题意图.</b> 这是"互换自变量与因变量"的经典载体，几乎每隔几年就会换个外衣重考一次.真正的考点有三：识别时机、正确写出 \(P(y),Q(y)\)、以及分部积分 \(\displaystyle\int u\mathrm{e}^{-u}\mathrm{d}u\).凡是 \(y'\) 的表达式呈"分母含 \(x\) 的一次式"形状，都应立刻想到这一招.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题，数学一、二常考）设二阶常系数非齐次线性方程 \(y''-4y'+4y=x^{2}\mathrm{e}^{2x}+\sin 2x\).<b>只需写出</b>其特解 \(y^{*}\) 的形式（含待定系数，不必求出系数值）.</p>
+<p class="ky-hint"><b>思路点拨.</b> 自由项由两部分组成，用<b>叠加原理</b>（定理 7.10）分别处理.核心是两个 \(k\) 的判定：第一部分 \(\lambda=2\) 与特征根的重合次数；第二部分 \(\alpha+\beta\mathrm{i}=2\mathrm{i}\) 是否为特征根.<b>最常见的错误是漏乘 \(x^{2}\)</b>，以及在 \(\sin 2x\) 的特解里只写 \(\sin\) 不写 \(\cos\).</p>
+<p class="sol"><span class="mk">解</span> 特征方程 \(r^{2}-4r+4=(r-2)^{2}=0\)，得 \(r=2\) 为<b>二重根</b>，齐次通解 \(Y=(C_{1}+C_{2}x)\mathrm{e}^{2x}\).</p>
+<p><b>第一部分</b> \(f_{1}=x^{2}\mathrm{e}^{2x}\)：\(\lambda=2\) 恰是二重特征根，取 \(k=2\)；\(P_m\) 为 2 次，故设</p>
+\[y_{1}^{*}=x^{2}\bigl(ax^{2}+bx+c\bigr)\mathrm{e}^{2x}.\]
+<p><b>第二部分</b> \(f_{2}=\sin 2x\)：对应 \(\alpha=0,\ \beta=2\)，而 \(\alpha+\beta\mathrm{i}=2\mathrm{i}\) <b>不是</b>特征根（特征根是实数 2），故 \(k=0\)，且余弦项必须补全：</p>
+\[y_{2}^{*}=A\cos 2x+B\sin 2x .\]
+<p>由叠加原理，所求形式为</p>
+\[y^{*}=x^{2}\bigl(ax^{2}+bx+c\bigr)\mathrm{e}^{2x}+A\cos 2x+B\sin 2x .\]
+<p class="ky-idea"><b>命题意图.</b> "只写形式不求系数"是近年选择题与填空题的标准出法，用最小的计算量精确考查对 \(k\) 的理解.请牢记两条：\(k\) 就是<b>共振重数</b>；二阶方程中复特征根最多单重，故三角型的 \(k\) 只能取 0 或 1.另外注意本题的 \(2\) 与 \(2\mathrm{i}\) 是完全不同的两个复数，不要因为"都有 2"就误判共振.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题，数学一、二常考）求微分方程 \(y\,y''+\bigl(y'\bigr)^{2}=0\) 满足 \(y(0)=1,\ y'(0)=\dfrac12\) 的特解.</p>
+<p class="ky-hint"><b>思路点拨.</b> 方程不显含 \(x\)，按类型三令 \(p=y'\)、\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\) 可解.但本题还藏着一条<b>更快的路</b>：注意 \(\bigl(yy'\bigr)'=y'y'+yy''=yy''+(y')^{2}\)，左端恰是一个完全导数——凡见到 \(yy''+(y')^{2}\)，应立刻联想到 \((yy')'\).</p>
+<p class="sol"><span class="mk">解</span> <b>解法一（凑全导数）.</b>原方程即 \(\bigl(yy'\bigr)'=0\)，故 \(yy'=C_{1}\).由初始条件 \(C_{1}=y(0)y'(0)=1\times\dfrac12=\dfrac12\).于是</p>
+\[y\,\mathrm{d}y=\frac12\,\mathrm{d}x\;\Longrightarrow\;\frac{y^{2}}{2}=\frac{x}{2}+C_{2}
+ \;\Longrightarrow\;y^{2}=x+C_{2}' .\]
+<p>代入 \(y(0)=1\) 得 \(C_{2}'=1\)，故特解为</p>
+\[y=\sqrt{x+1}\qquad(x\gt-1).\]
+<p><b>解法二（标准降阶，用于校验）.</b>令 \(p=y'\)，\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\)，方程成为 \(yp\dfrac{\mathrm{d}p}{\mathrm{d}y}+p^{2}=0\).当 \(p
+eq0\) 时 \(\dfrac{\mathrm{d}p}{p}=-\dfrac{\mathrm{d}y}{y}\)，得 \(p=\dfrac{C_{1}}{y}\)，即 \(yy'=C_{1}\)，与解法一一致.</p>
+<p class="ky-idea"><b>命题意图.</b> 一考可降阶方程的两类换元（缺 \(y\) 用 \(\mathrm{d}p/\mathrm{d}x\)，缺 \(x\) 用 \(p\,\mathrm{d}p/\mathrm{d}y\)，多出的那个因子 \(p\) 是失分重灾区），二考对"完全导数结构"的敏感度.考场上若能一眼看出 \((yy')'\)，可省下三分之二的时间.最后别忘了根据初始条件与根式定义域交代解的存在区间.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 5】</b>（考研典型题，数学一常考）设函数 \(\varphi(x)\) 连续，且满足积分方程</p>
+\[\varphi(x)=\int_{0}^{2x}\varphi\Bigl(\frac t2\Bigr)\mathrm{d}t+\ln 2 .\]
+<p class="stmt">求 \(\varphi(x)\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 微分方程与积分方程的互化，是数学一的常青考点.<b>关键第一步不是求导，而是先换元把变限积分整理成 \(\displaystyle\int_{0}^{x}\varphi(u)\,\mathrm{d}u\) 的标准形状</b>——若直接对 \(\displaystyle\int_{0}^{2x}\varphi(t/2)\mathrm{d}t\) 求导，容易在链式法则上出错.另外别忘了从原方程读出初始条件.</p>
+<p class="sol"><span class="mk">解</span> <b>第一步：换元.</b>令 \(u=\dfrac t2\)，则 \(\mathrm{d}t=2\,\mathrm{d}u\)，当 \(t:0\to 2x\) 时 \(u:0\to x\).原方程化为</p>
+\[\varphi(x)=2\int_{0}^{x}\varphi(u)\,\mathrm{d}u+\ln 2 .\]
+<p><b>第二步：读初始条件.</b>令 \(x=0\)，积分为 0，得 \(\varphi(0)=\ln 2\).</p>
+<p><b>第三步：求导化为微分方程.</b>由 \(\varphi\) 连续知右端可导，两端对 \(x\) 求导：</p>
+\[\varphi'(x)=2\varphi(x).\]
+<p>这是可分离变量（也是一阶线性齐次）方程，通解 \(\varphi(x)=C\mathrm{e}^{2x}\).由 \(\varphi(0)=\ln 2\) 得 \(C=\ln 2\)，故</p>
+\[\varphi(x)=\bigl(\ln 2\bigr)\mathrm{e}^{2x}.\]
+<p><b>回代检验：</b>\(\displaystyle 2\int_{0}^{x}(\ln2)\mathrm{e}^{2u}\mathrm{d}u+\ln2=(\ln2)\bigl(\mathrm{e}^{2x}-1\bigr)+\ln2=(\ln2)\mathrm{e}^{2x}\)，与左端相符.</p>
+<p class="ky-idea"><b>命题意图.</b> 三步定式必须形成肌肉记忆：<b>换元整形 → 代入特殊点取初值 → 求导降为微分方程</b>.命题人用 \(\varphi(t/2)\) 与上限 \(2x\) 制造干扰，就是要检验考生会不会盲目套用变限积分求导公式.此类题还有一个变体：若积分号内出现 \((x-t)\varphi(t)\)，则需先把 \(x\) 提到积分号外，再求导<b>两次</b>，化为二阶方程——原理完全相同.</p>
+</div>
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 5G 射频前端：四阶巴特沃斯滤波器的暂态与群延迟预算</summary>
+<p><b>场景：</b> 5G 基站板卡调试间，频谱仪上 ADC 输入端冒出一簇镜像峰——采样率 \(122.88\ \mathrm{MSPS}\) 再高，带外信号照样被"折叠"进带内.工程师选了四阶巴特沃斯、截止频率 \(f_{c}=40\ \mathrm{MHz}\) 的抗混叠滤波器，却被两个新问题缠住：阶跃后多久才能稳定？信号相位又被拖慢多少？其归一化特征方程为</p>
+\[s^{4}+2.6131s^{3}+3.4142s^{2}+2.6131s+1=0,\qquad s=\frac{r}{\omega_{c}},\]
+<p>四个根均匀分布在左半平面单位圆上：\(s=-0.3827\pm0.9239\mathrm{i}\) 与 \(s=-0.9239\pm0.3827\mathrm{i}\).系统设计需要两个数：<b>暂态建立时间</b>与<b>群延迟</b>.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>截止频率</td><td>\(f_c\)</td><td>40 MHz</td></tr>
+<tr><td>截止角频率</td><td>\(\omega_c\)</td><td>\(2.5133\times10^{8}\ \mathrm{rad/s}\)</td></tr>
+<tr><td>阻带斜率（4 阶）</td><td>—</td><td>\(-80\ \mathrm{dB}\) / 十倍频</td></tr>
+<tr><td>OFDM 符号长度（30 kHz SCS）</td><td>\(T_u\)</td><td>33.3 μs</td></tr>
+</table>
+<p class="sol"> <b>第一步：齐次通解.</b>由定理 7.14，两对共轭复根各贡献一个衰减振荡项：</p>
+\[y=\mathrm{e}^{-\alpha_{1}t}\bigl(C_{1}\cos\beta_{1}t+C_{2}\sin\beta_{1}t\bigr)
+   +\mathrm{e}^{-\alpha_{2}t}\bigl(C_{3}\cos\beta_{2}t+C_{4}\sin\beta_{2}t\bigr),\]
+<p>其中 \(\alpha_{1}=0.3827\omega_{c}=9.618\times10^{7}\ \mathrm{s^{-1}}\)，\(\alpha_{2}=0.9239\omega_{c}=2.322\times10^{8}\ \mathrm{s^{-1}}\).两个时间常数</p>
+\[\tau_{1}=\frac{1}{\alpha_{1}}=10.40\ \mathrm{ns},\qquad
+  \tau_{2}=\frac{1}{\alpha_{2}}=4.31\ \mathrm{ns}.\]
+<p>暂态由较慢的 \(\tau_1\) 主导，按 \(4\tau_{1}\) 估算，阶跃后 \(41.6\ \mathrm{ns}\) 进入稳态.</p>
+<p><b>第二步：群延迟.</b>记 \(D(\mathrm{j}\omega)=A+\mathrm{j}B\)，其中（归一化频率 \(\omega\)）</p>
+\[A=\omega^{4}-3.4142\omega^{2}+1,\qquad B=2.6131\,\omega\bigl(1-\omega^{2}\bigr).\]
+<p>群延迟 \(\tau_{g}=\dfrac{AB'-BA'}{A^{2}+B^{2}}\Big/\omega_{c}\).在直流处 \(\omega\to0\)：\(A\to1,\ B\to2.6131\omega\)，故</p>
+\[\tau_{g}(0)=\frac{2.6131}{\omega_{c}}=10.40\ \mathrm{ns}.\]
+<p>在截止频率处 \(\omega=1\)：\(A=-1.4142,\ A'=-2.8284,\ B=0,\ B'=-5.2262\)，</p>
+\[\tau_{g}(\omega_{c})=\frac{(-1.4142)(-5.2262)}{2.0000}\Big/\omega_{c}=\frac{3.6955}{\omega_{c}}=14.70\ \mathrm{ns}.\]
+<p>带内群延迟波动 \(\Delta\tau_{g}=4.30\ \mathrm{ns}\)，相对波动 \(41\%\).</p>
+<p><b>工程结论：</b> ① 绝对延迟 \(10\sim15\ \mathrm{ns}\) 相对于 OFDM 符号 \(33.3\ \mathrm{\mu s}\) 只占 \(0.04\%\)，对定时同步无影响.② 真正要命的是 \(4.3\ \mathrm{ns}\) 的<b>群延迟波动</b>：对 \(100\ \mathrm{MHz}\) 带宽的载波，带边子载波比带心多滞后 \(4.3\ \mathrm{ns}\)，等效于额外引入约 \(1.5^{\circ}\) 的相位斜率误差，直接抬高 EVM.因此基带侧必须部署频域均衡器，用出厂标定的相位曲线做反卷积.③ 若追求群延迟平坦，可改用贝塞尔滤波器（群延迟波动 \(\lt5\%\)），但阻带滚降退化到约 \(-45\ \mathrm{dB}\)/十倍频，抗混叠余量不足，只能靠提高采样率补偿.<b>阶数越高、根越靠近虚轴，选择性越好而暂态越长——高阶方程的特征根位置，就是射频前端所有权衡的坐标图.</b></p>
+<p class="cn-point">\(4.3\ \mathrm{ns}\) 的群延迟波动，只占 OFDM 符号的 \(0.04\%\)，却要吃走 \(1.5^{\circ}\) 的相位预算——中国 5G 网络能铺进每一座城市，靠的就是把这类特征根预算算到纳秒级.通信强国，先强在每条方程都有人算清.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 欧拉方程的现身：GPU 均热板的径向温度分布</summary>
+<p><b>场景：</b> 算力中心里，一块 \(350\ \mathrm{W}\) 的 GPU 满载半小时后，芯片中心已逼近 \(85^{\circ}\mathrm{C}\)——再往上每升几度，风扇的啸叫和强制降频就会同时到来.热量贴着铜质圆形均热板（半径 \(R_{2}=25\ \mathrm{mm}\)、芯片贴合区 \(R_{1}=5\ \mathrm{mm}\)、厚 \(\delta=2\ \mathrm{mm}\)、\(\lambda=380\ \mathrm{W/(m\cdot K)}\)）径向扩散，环形区域无内热源，稳态导热方程为</p>
+\[\frac{1}{r}\frac{\mathrm{d}}{\mathrm{d}r}\Bigl(r\frac{\mathrm{d}T}{\mathrm{d}r}\Bigr)=0
+ \qquad\Longleftrightarrow\qquad
+ r^{2}T''+rT'=0 .\]
+<p>请注意左端：\(r^{2}\) 配二阶导、\(r\) 配一阶导——<b>幂次与求导阶数完全对应，这正是欧拉方程</b>.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>内半径（芯片区）</td><td>\(R_1\)</td><td>0.005 m</td></tr>
+<tr><td>外半径</td><td>\(R_2\)</td><td>0.025 m</td></tr>
+<tr><td>板厚</td><td>\(\delta\)</td><td>0.002 m</td></tr>
+<tr><td>铜导热系数</td><td>\(\lambda\)</td><td>380 W/(m·K)</td></tr>
+<tr><td>内边界温度</td><td>\(T_1\)</td><td>\(85\ ^{\circ}\mathrm{C}\)</td></tr>
+<tr><td>外边界温度</td><td>\(T_2\)</td><td>\(60\ ^{\circ}\mathrm{C}\)</td></tr>
+</table>
+<p class="sol"> <b>第一步：解欧拉方程.</b>令 \(r=\mathrm{e}^{t}\)，由定理 7.15，\(rT'=DT\)，\(r^{2}T''=D(D-1)T\)，方程化为</p>
+\[D(D-1)T+DT=D^{2}T=0
+ \;\Longrightarrow\;\frac{\mathrm{d}^{2}T}{\mathrm{d}t^{2}}=0
+ \;\Longrightarrow\;T=C_{1}+C_{2}t=C_{1}+C_{2}\ln r .\]
+<p><b>温度沿半径按对数分布，而不是线性分布</b>——这是本例最关键的结论.</p>
+<p><b>第二步：定常数.</b>由两个边界条件</p>
+\[C_{2}=\frac{T_{2}-T_{1}}{\ln(R_{2}/R_{1})}=\frac{60-85}{\ln 5}=\frac{-25}{1.6094}=-15.534\ \mathrm{K}.\]
+<p><b>第三步：算导热量与热阻.</b>由傅里叶定律，通过半径 \(r\) 处圆柱面的热流</p>
+\[Q=-\lambda\,(2\pi r\delta)\frac{\mathrm{d}T}{\mathrm{d}r}=-2\pi\lambda\delta\,C_{2}
+ =2\pi\times380\times0.002\times15.534=74.2\ \mathrm{W}.\]
+<p>（注意 \(Q\) 与 \(r\) 无关，正是稳态无源的必然结果，可作为解的校验.）扩散热阻</p>
+\[R_{th}=\frac{T_{1}-T_{2}}{Q}=\frac{25}{74.2}=0.337\ \mathrm{K/W}.\]
+<p><b>与"展开成平板"的粗略近似对比：</b>取平均周长 \(2\pi\times0.015=0.0942\ \mathrm{m}\)、导热长度 \(0.020\ \mathrm{m}\)，则 \(R_{th}'=\dfrac{0.020}{380\times0.0942\times0.002}=0.279\ \mathrm{K/W}\)，比真实值<b>低估 \(17\%\)</b>.</p>
+<p class="cn-point">扩散热阻 \(0.337\ \mathrm{K/W}\) 与平板近似的 \(0.279\ \mathrm{K/W}\) 相差 \(17\%\)——"东数西算"机房里的每一颗算力芯片，散热能不能按 \(T=C_1+C_2\ln r\) 的对数分布算准，直接决定它稳在 \(85^{\circ}\mathrm{C}\) 还是被迫降频.算力强国的底气，一半在制程，一半在这样"算得细"的热设计.</p>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC7">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq7" data-ch=7><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第7章 · 常微分方程</div>
+<a href="#s071">7.1 常微分方程的基本概念</a>
+<a href="#s072">7.2 一阶微分方程的常见类型及解法</a>
+<a href="#s073">7.3 二阶线性微分方程</a>
+<a href="#s074">7.4 高阶微分方程的解法</a>
+<a href="ch7.html#adv7">考研选讲</a>
+<a href="ch7.html#cq7">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 7, "list": [["s071", "7.1 常微分方程的基本概念"], ["s072", "7.2 一阶微分方程的常见类型及解法"], ["s073", "7.3 二阶线性微分方程"], ["s074", "7.4 高阶微分方程的解法"], ["adv7", "考研选讲"], ["cq7", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>

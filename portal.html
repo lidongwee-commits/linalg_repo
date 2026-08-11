@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学 · 数字教材</title>
+<style>
+  :root{
+    --gdsx:#22b392;     /* 高等数学 · 青绿 */
+    --gdsx-d:#0f8f72;
+    --linalg:#4f86e8;   /* 线性代数 · 蓝 */
+    --linalg-d:#2f5bb8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#0a0e2a;color:#e8eaf6;min-height:100vh;overflow-x:hidden}
+  /* ---------- 背景氛围：星空 + 光斑 + 科技网格 ---------- */
+  .bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1200px 800px at 18% -8%,#1b2350 0%,transparent 55%),radial-gradient(1000px 700px at 108% 112%,#241a4d 0%,transparent 55%),linear-gradient(160deg,#0a0e2a,#0d1238 55%,#131040)}
+  .gridbg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 42%,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse 70% 60% at 50% 42%,#000 25%,transparent 78%)}
+  .glow{position:absolute;border-radius:50%;filter:blur(95px);animation:drift 26s ease-in-out infinite alternate}
+  .glow.g1{width:440px;height:440px;background:#3f5ad6;top:-130px;left:-90px;opacity:.34}
+  .glow.g2{width:400px;height:400px;background:#6e3fd6;bottom:-120px;right:-70px;opacity:.28;animation-delay:-9s}
+  .glow.g3{width:320px;height:320px;background:#17a086;top:42%;left:56%;opacity:.16;animation-delay:-16s}
+  .glow.g4{width:240px;height:240px;background:#8a6ae8;top:12%;right:22%;opacity:.2;animation-delay:-5s}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(46px,-34px) scale(1.18)}}
+  .stars{position:absolute;inset:0}
+  .stars i{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--td,3.2s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+  @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.85}}
+
+  /* ---------- 主体 ---------- */
+  .wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:64px 24px 30px;width:100%;min-height:100vh;display:flex;flex-direction:column}
+  header{text-align:center;margin-bottom:44px}
+  header .kicker{display:inline-block;font-size:12px;letter-spacing:4px;color:#aab3e6;margin-bottom:18px;padding:6px 18px;border-radius:999px;border:1px solid rgba(170,179,230,.22);background:rgba(255,255,255,.05);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-transform:uppercase}
+  header h1{font-size:34px;font-weight:600;letter-spacing:3px;background:linear-gradient(115deg,#ffffff 20%,#cfd6ff 48%,#9fe8d4 80%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 26px rgba(140,160,255,.4))}
+  header .sub{color:#8f97c4;margin-top:12px;font-size:13.5px;letter-spacing:.5px}
+  header .rule{display:flex;align-items:center;gap:14px;justify-content:center;margin-top:22px}
+  header .rule::before,header .rule::after{content:"";width:56px;height:1px;background:linear-gradient(90deg,transparent,rgba(160,175,255,.5));}
+  header .rule::after{background:linear-gradient(90deg,rgba(160,175,255,.5),transparent)}
+  header .rule i{width:5px;height:5px;border-radius:50%;background:#8fa3ff;box-shadow:0 0 10px #8fa3ff}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+  .card{border-radius:22px;padding:28px 28px 24px;position:relative;overflow:hidden;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 10px 44px rgba(2,6,28,.5),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-direction:column;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;opacity:.85;transition:opacity .25s}
+  .card.gdsx::before{background:linear-gradient(90deg,transparent,var(--gdsx),transparent);box-shadow:0 0 18px rgba(34,179,146,.65)}
+  .card.linalg::before{background:linear-gradient(90deg,transparent,var(--linalg),transparent);box-shadow:0 0 18px rgba(79,134,232,.65)}
+  .card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.22);box-shadow:0 16px 52px rgba(2,6,28,.62),inset 0 1px 0 rgba(255,255,255,.12)}
+  .card:hover::before{opacity:1}
+  .card .name-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+  .card .name{font-size:22px;font-weight:600;letter-spacing:1px}
+  .card.gdsx .name{color:#d9fff4;text-shadow:0 0 22px rgba(34,179,146,.45)}
+  .card.linalg .name{color:#dce8ff;text-shadow:0 0 22px rgba(79,134,232,.45)}
+  .card .badge{font-size:11px;letter-spacing:1px;padding:4px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:#b9c0e8;background:rgba(255,255,255,.06)}
+  .card .meta{font-size:12.5px;color:#99a1cd;margin:9px 0 18px;line-height:1.75}
+  .card .chapters{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:13px;color:#c6cbeb;line-height:1.85;flex:1;align-content:start}
+  .card .chapters li{display:flex;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card .chapters li i{flex:0 0 auto;width:5px;height:5px;border-radius:50%;transform:translateY(-1px);box-shadow:0 0 8px currentColor}
+  .card.gdsx .chapters li i{background:var(--gdsx);color:var(--gdsx)}
+  .card.linalg .chapters li i{background:var(--linalg);color:var(--linalg)}
+  .card .enter{margin-top:22px;display:flex;align-items:center;justify-content:center;gap:9px;padding:14px 0;border-radius:14px;font-size:15px;font-weight:500;letter-spacing:1px;color:#fff;text-decoration:none;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.14);transition:transform .2s,box-shadow .2s}
+  .card .resume{display:none;margin-top:16px;font-size:11.5px;color:#8f97c4;text-align:center;letter-spacing:.4px}
+  .card .resume b{color:#cfe4ff;font-weight:500}
+  .card .enter::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.3),transparent 45%);opacity:0;transition:opacity .25s}
+  .card .enter:hover::before{opacity:1}
+  .card .enter .arrow{transition:transform .25s;flex:0 0 auto}
+  .card .enter:hover .arrow{transform:translateX(5px)}
+  .card .enter:active{transform:translateY(1px) scale(.99)}
+  .card.gdsx .enter{background:linear-gradient(135deg,rgba(34,179,146,.92),rgba(15,143,114,.95));box-shadow:0 6px 26px rgba(15,143,114,.32),inset 0 1px 0 rgba(255,255,255,.18)}
+  .card.gdsx .enter:hover{box-shadow:0 10px 34px rgba(15,143,114,.5),0 0 26px rgba(34,179,146,.3)}
+  .card.linalg .enter{background:linear-gradient(135deg,rgba(79,134,232,.92),rgba(47,91,184,.95));box-shadow:0 6px 26px rgba(47,91,184,.32),inset 0 1px 0 rgba(255,255,255,.18)}
+  .card.linalg .enter:hover{box-shadow:0 10px 34px rgba(47,91,184,.5),0 0 26px rgba(79,134,232,.3)}
+  footer{margin-top:44px;text-align:center;font-size:12px;color:#6f77a3;line-height:2}
+  footer .deploy-note{display:none;max-width:640px;margin:0 auto 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px 18px;color:#9aa2d0;text-align:left;backdrop-filter:blur(10px)}
+  footer .deploy-note code{background:rgba(255,255,255,.09);border-radius:4px;padding:1px 7px;font-size:11.5px;color:#cfd6ff}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}.wrap{padding:40px 16px 24px}header h1{font-size:26px}.glow{filter:blur(70px)}}
+
+  /* ---------- 穿越时空：迷雾渐浓 · 教材隐隐浮现 ---------- */
+  #warp{position:fixed;inset:0;z-index:999;pointer-events:none;visibility:hidden}
+  body.warping #warp{visibility:visible}
+  /* 迷雾层：从透明到全屏浓雾 */
+  #warp .mist{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#c9d4f0 0%,#7a82a8 35%,#3b3f5c 65%,#16132b 100%);opacity:0;transition:opacity 1.6s ease-in-out}
+  body.warping #warp .mist{opacity:.95}
+  /* 雾中微光粒子（缓慢飘动） */
+  #warp .mist i{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(1.5px);animation:floatUp var(--fd,4s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+  @keyframes floatUp{0%,100%{transform:translateY(0) scale(1);opacity:.2}50%{transform:translateY(-28px) scale(1.4);opacity:.5}}
+  /* Portal 内容在雾后淡出 */
+  body.warping .wrap{transition:opacity .8s ease-in;opacity:0}
+</style>
+</head>
+<body>
+<div class="bgfx" aria-hidden="true">
+  <div class="gridbg"></div>
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div><div class="glow g4"></div>
+  <div class="stars" id="stars"></div>
+</div>
+
+<div class="wrap">
+  <header>
+    <span class="kicker">Digital Textbook</span>
+    <h1>数学 · 数字教材</h1>
+    <div class="sub">李 · ldwmath@163.com · 交互式数字教材（内含知识之塔学习系统）</div>
+    <div class="rule"><i></i></div>
+  </header>
+
+  <div class="cards">
+    <div class="card gdsx">
+      <div class="name-row">
+        <div class="name">高等数学</div>
+        <div class="badge">13 章</div>
+      </div>
+      <div class="meta">涵盖极限、微积分、微分方程、级数等核心内容，配套互动案例与可视化演示</div>
+      <ul class="chapters">
+        <li><i></i>函数</li>
+        <li><i></i>极限与连续</li>
+        <li><i></i>一元函数微分学</li>
+        <li><i></i>微分学的应用</li>
+        <li><i></i>一元函数积分学</li>
+        <li><i></i>积分学的应用</li>
+        <li><i></i>常微分方程</li>
+        <li><i></i>空间解析几何</li>
+        <li><i></i>多元函数微分学</li>
+        <li><i></i>重积分</li>
+        <li><i></i>曲线积分</li>
+        <li><i></i>曲面积分</li>
+        <li><i></i>无穷级数</li>
+      </ul>
+      <div class="resume" id="resumeGdsx"></div>
+      <a class="enter" id="gdsxLink" href="#"><span>进入《高等数学》</span><svg class="arrow" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
+    </div>
+
+    <div class="card linalg">
+      <div class="name-row">
+        <div class="name">线性代数</div>
+        <div class="badge">5 章</div>
+      </div>
+      <div class="meta">涵盖行列式、矩阵、向量组、线性方程组、二次型，配套互动案例与可视化演示</div>
+      <ul class="chapters">
+        <li><i></i>行列式</li>
+        <li><i></i>矩阵及其运算</li>
+        <li><i></i>向量组</li>
+        <li><i></i>线性方程组</li>
+        <li><i></i>相似矩阵与二次型</li>
+      </ul>
+      <div class="resume" id="resumeLinalg"></div>
+      <a class="enter" id="linalgLink" href="#"><span>进入《线性代数》</span><svg class="arrow" viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg></a>
+    </div>
+  </div>
+
+  <footer>
+    <div>学习进度保存在本机浏览器（study_v1）· 可用「知识之塔 → 能量 → 同步码」跨设备同步</div>
+    <div>数学数字教材 · 仅供学习使用</div>
+  </footer>
+</div>
+
+<div id="warp"><div class="mist" id="warpMist"></div></div>
+
+<script>
+(function(){
+  var isFile = location.protocol === 'file:';
+  var CH_NAMES = {
+    gdsx: {1:'函数',2:'极限与连续',3:'一元函数微分学',4:'微分学的应用',5:'一元函数积分学',6:'积分学的应用',7:'常微分方程',8:'空间解析几何',9:'多元函数微分学',10:'重积分',11:'曲线积分',12:'曲面积分',13:'无穷级数'},
+    linalg: {1:'行列式',2:'矩阵及其运算',3:'向量组',4:'线性方程组',5:'相似矩阵与二次型'}
+  };
+  function lastRead(book) {
+    try {
+      var r = JSON.parse(localStorage.getItem('hfut_lastread'));
+      return (r && r.book === book && r.ch) ? r : null;
+    } catch (e) { return null; }
+  }
+  function enterTarget(book) {
+    var base = book === 'linalg'
+      ? (isFile ? '线性代数/教材发布/' : '线性代数/教材发布/')
+      : (isFile ? '高等数学/教材发布/' : '高等数学/教材发布/');
+    var r = lastRead(book);
+    if (r) return base + r.ch + '.html' + (r.anchor ? '#' + r.anchor : '');
+    return base + 'index.html';
+  }
+  document.getElementById('gdsxLink').setAttribute('data-target', enterTarget('gdsx'));
+  document.getElementById('linalgLink').setAttribute('data-target', enterTarget('linalg'));
+  // 续读提示：按钮上方显示上次读到哪
+  (function () {
+    var cfg = [['gdsx', 'resumeGdsx'], ['linalg', 'resumeLinalg']];
+    for (var i = 0; i < cfg.length; i++) {
+      var r = lastRead(cfg[i][0]);
+      var el = document.getElementById(cfg[i][1]);
+      if (r && el) {
+        var n = r.ch.replace('ch', '');
+        el.innerHTML = '上次读到：第 ' + n + ' 章 · <b>' + (CH_NAMES[cfg[i][0]][n] || '') + '</b>';
+        el.style.display = 'block';
+      }
+    }
+  })();
+  // 部署提示已移除（对学生无用，保留此行防止后续误加回 deployNote 引用崩溃）
+  // if (!isFile) document.getElementById('deployNote').style.display = 'block');
+
+  // 星空：随机星点（梦幻感）
+  (function(){
+    var box = document.getElementById('stars');
+    if (!box) return;
+    var n = 56, html = '';
+    for (var i = 0; i < n; i++) {
+      var x = Math.random() * 100, y = Math.random() * 100;
+      var s = (Math.random() * 1.7 + 0.8).toFixed(1);
+      var o = (Math.random() * 0.5 + 0.3).toFixed(2);
+      var td = (Math.random() * 4 + 2.4).toFixed(2);
+      var dl = (Math.random() * 5).toFixed(2);
+      var glow = i % 9 === 0 ? ';box-shadow:0 0 8px rgba(255,255,255,.8)' : '';
+      html += '<i style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;width:' + s + 'px;height:' + s + 'px;opacity:' + o + ';--td:' + td + 's;--dl:-' + dl + 's' + glow + '"></i>';
+    }
+    box.innerHTML = html;
+  })();
+
+  // 点击进入：云雾 + 慢速旋涡穿越
+  var links = document.querySelectorAll('.enter');
+  for (var i = 0; i < links.length; i++) {
+    links[i].addEventListener('click', function (e) {
+      var href = this.getAttribute('data-target') || this.getAttribute('href');
+      if (!href || href === '#') return;
+      e.preventDefault();
+      // 迷雾渐浓：生成微光粒子 + 触发 CSS 过渡
+      var mist = document.getElementById('warpMist');
+      if (mist) {
+        var html = '';
+        for (var p = 0; p < 28; p++) {
+          var px = Math.random() * 100, py = Math.random() * 100;
+          var sz = (Math.random() * 2.5 + 1).toFixed(1);
+          var fd = (Math.random() * 5 + 3).toFixed(1);
+          var dl = (Math.random() * 6).toFixed(1);
+          html += '<i style="left:' + px.toFixed(1) + '%;top:' + py.toFixed(1) + '%;width:' + sz + 'px;height:' + sz + 'px;--fd:' + fd + 's;--dl:-' + dl + 's"></i>';
+        }
+        mist.innerHTML = html;
+      }
+      document.body.classList.add('warping');
+      setTimeout(function () { location.href = href; }, 1700);
+    });
+  }
+})();
+</script>
+</body>
+</html>

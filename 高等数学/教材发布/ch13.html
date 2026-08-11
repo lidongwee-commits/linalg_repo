@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第13章 · 无穷级数</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="energy_bar.css">
+<link rel="stylesheet" href="night.css">
+<link rel="stylesheet" href="tower.css">
+<script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
+<script src="katex/katex.min.js"></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="theme.js" defer></script>
+<script src="katex/auto-render.min.js"></script>
+<script src="mist-enter.js"></script>
+</head>
+<body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第13章</span><div id="eb-slot-m"></div></div>
+<div class="layout">
+<aside class="side">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div id="eb-slot"></div>
+<div id="tower-slot"></div>
+<div class="ch">第13章 · 无穷级数</div>
+<a href="ch13.html">整章</a>
+<a href="ch13.html#adv13">考研选讲</a>
+<a href="ch13.html#cq13">本章测试</a>
+</aside>
+<div class="page"><div class="col">
+<!-- CH13 -->
+<div class="kicker">Chapter 13</div>
+<h1 class="title">无穷级数<span class="en">Infinite Series</span></h1>
+<p class="lede">无穷级数是表示函数与逼近计算的强有力工具.本章从常数项级数出发，建立正项级数审敛法、绝对收敛与条件收敛，进而研究幂级数与函数的幂级数展开，最后介绍傅里叶级数.</p>
+<div class="aiguide">
+  <div class="ag-lab">应用导览</div>
+  <ul>
+<li><b>常数项级数</b> → 无穷级数求期望</li>
+<li><b>正项级数</b> → 训练误差的上界</li>
+<li><b>交错级数</b> → 神经网络初始化符号交替</li>
+<li><b>幂级数</b> → 任意函数局部近似</li>
+<li><b>泰勒展开</b> → 激活函数多项式近似</li>
+<li><b>傅里叶级数</b> → 图像压缩（JPEG）/语音识别</li>
+  </ul>
+</div>
+
+    <!-- ============ §13.1 ============ -->
+<div class="labx">
+  <div class="lab">交互 · 数项级数部分和 (\(S_n\))</div>
+  <div class="desc">Σ(1/n²) 收敛于 π²/6 ≈ 1.645.逐项累加观察 (\(S_n\)) 如何逐步逼近极限值.</div>
+  <div class="row"><canvas id="viz-series" width="520" height="250" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">n = <b id="viz-sn-val" style="color:#2dd4bf;font-size:14px">20</b></label>
+    <input type="range" id="viz-sn" min="2" max="80" step="1" value="20" style="flex:1;min-width:100px;accent-color:#2dd4bf">
+    <span style="font-size:12px;color:#6b8179">S_n ≈ <b id="viz-sval" style="color:#fbbf24">1.596</b></span>
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-series'),ctx=c.getContext('2d');
+  var snS=document.getElementById('viz-sn'),snV=document.getElementById('viz-sn-val'),sv=document.getElementById('viz-sval');
+  var LIM=Math.PI*Math.PI/6;
+  function draw(){var n=parseInt(snS.value);snV.textContent=n;var sum=0;
+    for(var k=1;k<=n;k++)sum+=1/(k*k);sv.textContent=sum.toFixed(3);
+    var W=c.width,H=c.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/20){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/10){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.setLineDash([4,3]);ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.beginPath();
+    ctx.moveTo(0,H*0.5-LIM*H*0.26);ctx.lineTo(W,H*0.5-LIM*H*0.26);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#0F6E56';ctx.beginPath();var ps=0;
+    for(var k=1;k<=n;k++){ps+=1/(k*k);var px=k/n*W*0.88+W*0.06,py=H*0.5-ps*H*0.26;
+      ctx[k===1?'moveTo':'lineTo'](px,py);}ctx.lineTo(W*0.94,H*0.5-LIM*H*0.26);
+    ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle='#fbbf24';ctx.font='11px sans-serif';ctx.fillStyle='#33473f';ctx.fillText('π²/6≈'+LIM.toFixed(4),W*0.6,H*0.1);
+    ctx.fillStyle='#33473f';ctx.fillText('Σ1/k² (p级数 p=2>1 收敛)',W*0.06,H*0.86);
+  }requestAnimationFrame(function(){draw();});snS.addEventListener('input',draw);
+})();
+</script>
+
+    <h2 id="s131"><span class="num">§13.1</span>常数项级数的概念与性质</h2>
+    
+<div class="ex"><div class="lab">引例一　自动驾驶 AEB 追及：芝诺"悖论"其实是等比级数</div>
+  <p class="stmt">一辆自动驾驶汽车以 \(v_a=20\,\mathrm{m/s}\) 接近前方以 \(v_t=2\,\mathrm{m/s}\) 行驶的慢车，初始间距 \(d_0=18\,\mathrm{m}\).芝诺式的问题是：为了"追上"慢车，本车要先到达慢车刚才的位置，而此时慢车又前进了一段；如此无限细分，本车似乎永远追不上.把每次要补的路程列出来，看它到底收敛到多少.</p>
+  <p>本车每次补程与慢车移动距离之比恒为 \(v_t/v_a=0.1\)，于是各段路程构成等比级数：</p>
+  \[d_0,\ d_0\cdot0.1,\ d_0\cdot0.1^2,\ d_0\cdot0.1^3,\ \dots\]
+  <p><b>具体模拟计算</b>（前几项部分和）：</p>
+  <table class="dt">
+    <tr><th>\(k\)</th><th>第 \(k\) 段 \(d_0\cdot0.1^{k-1}\)（m）</th><th>累计 \(S_k\)（m）</th></tr>
+    <tr><td>1</td><td>18.0000</td><td>18.0000</td></tr>
+    <tr><td>2</td><td>1.8000</td><td>19.8000</td></tr>
+    <tr><td>3</td><td>0.1800</td><td>19.9800</td></tr>
+    <tr><td>4</td><td>0.0180</td><td>19.9980</td></tr>
+    <tr><td>5</td><td>0.0018</td><td>19.9998</td></tr>
+  </table>
+  <p>这正是首项 \(a=18\)、公比 \(r=0.1\) 的等比级数，其和为</p>
+  \[S=\sum_{k=1}^{\infty}d_0\cdot0.1^{\,k-1}=\frac{18}{1-0.1}=20\ \mathrm{m}.\]
+  <p>本车以 \(20\,\mathrm{m/s}\) 走完 \(20\,\mathrm{m}\) 恰需 \(1\,\mathrm{s}\)，而慢车 \(1\,\mathrm{s}\) 走 \(2\,\mathrm{m}\)，从 \(18\,\mathrm{m}\) 外追到同一位置——<b>"无限段路程"的和却是有限值</b>.无穷多个数相加，未必发散到无穷，这正是常数项级数要研究的核心.</p>
+</div>
+
+  <p><b>具体模拟计算</b>（从顶层往下累加前 \(n\) 层）：</p>
+  <table class="dt">
+    <tr><th>已累加层数 \(n\)</th><th>\(\rho=0.9\) 时部分和 \(S_n\)</th><th>\(\rho=1.1\) 时部分和 \(S_n\)</th></tr>
+    <tr><td>5</td><td>0.0414</td><td>0.0611</td></tr>
+    <tr><td>15</td><td>0.0743</td><td>0.3179</td></tr>
+    <tr><td>30</td><td>0.0928</td><td>1.9036</td></tr>
+    <tr><td>50</td><td>0.0995</td><td>11.6417</td></tr>
+  </table>
+  <p>当 \(\rho=0.9\lt1\) 时，</p>
+  \[S_\infty=
+abla L\,\frac{1-\rho^{L}}{1-\rho}=0.01\cdot\frac{1-0.9^{50}}{0.1}\approx0.0995,\]
+
+
+<h3>一、常数项级数的基本概念</h3>
+<p>把一串数 \(u_1,u_2,\dots,u_n,\dots\) 用加号连成一串：</p>
+\[\sum_{n=1}^{\infty}u_n=u_1+u_2+\cdots+u_n+\cdots\]
+<p>称为（无穷）常数项级数，第 \(n\) 项 \(u_n\) 称为<b>通项</b>.它不是普通的和，而是"有限和的极限".</p>
+
+<div class="def"><div class="lab"><span class="n">定义 13.1</span>常数项级数</div>
+  <p>设 \(\{u_n\}\) 为常数数列，称符号 \(\displaystyle\sum_{n=1}^{\infty}u_n\) 为常数项级数.令</p>
+  \[S_n=\sum_{k=1}^{n}u_k=u_1+u_2+\cdots+u_n\]
+  <p>为它的<b>前 \(n\) 项部分和</b>（部分和数列记为 \(\{S_n\}\)）.</p>
+</div>
+
+<div class="def"><div class="lab"><span class="n">定义 13.2</span>收敛与发散</div>
+  <p>若 \(\lim\limits_{n\to\infty}S_n=S\) 存在（有限），则称级数<b>收敛</b>，称 \(S\) 为级数的<b>和</b>，记作 \(\displaystyle\sum_{n=1}^{\infty}u_n=S\)；否则称级数<b>发散</b>.当级数收敛时，称 \(r_n=S-S_n=\sum\limits_{k=n+1}^{\infty}u_k\) 为<b>余项</b>.</p>
+</div>
+
+<h3>二、收敛的充要条件与柯西准则</h3>
+<div class="def"><div class="lab"><span class="n">性质 13.1</span>线性性</div>
+  <p>若 \(\sum u_n=S,\ \sum v_n=T\) 均收敛，则对任意常数 \(\alpha,\beta\)，有 \(\displaystyle\sum(\alpha u_n+\beta v_n)=\alpha S+\beta T\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(\sum u_n=S,\ \sum v_n=T\)，部分和分别为 \(S_n=\sum\limits_{k=1}^{n}u_k,\ T_n=\sum\limits_{k=1}^{n}v_k\)，则 \(S_n\to S,\ T_n\to T\).</p>
+<p><span class="stp">第一步：</span>考虑线性组合级数的部分和</p>
+\[W_n=\sum_{k=1}^{n}(\alpha u_k+\beta v_k)=\alpha S_n+\beta T_n.\]
+<p><span class="stp">第二步：</span>取极限，利用数列极限的四则运算（常数可提出、和的极限等于极限的和）：</p>
+\[\lim_{n\to\infty}W_n=\alpha\lim_{n\to\infty}S_n+\beta\lim_{n\to\infty}T_n=\alpha S+\beta T.\]
+<p>故 \(\sum(\alpha u_n+\beta v_n)\) 收敛，且其和为 \(\alpha S+\beta T\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 13.2</span>去掉、增加或改变有限项</div>
+  <p>在级数前段添加、删去或改动有限项，不改变级数的敛散性（但收敛时和会改变）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">思路：</span>只改动前有限项，相当于在部分和里"加一个固定的常数偏移"，极限是否存在只取决于尾部，故敛散性不变（但收敛时的和会变）.</p>
+<p>设原级数为 \(\sum u_n\)，部分和 \(S_n\).不妨设改动前 \(m\) 项，得到新级数 \(\sum w_n\)，其中当 \(n\gt m\) 时 \(w_n=u_n\)，而前 \(m\) 项可任意（增、删、改都归结为只动前有限项）.</p>
+<p><span class="stp">第一步：</span>对 \(n\gt m\)，新级数的部分和为</p>
+\[W_n=\sum_{k=1}^{n}w_k=W_m+\sum_{k=m+1}^{n}u_k=W_m+(S_n-S_m).\]
+<p><span class="stp">第二步：</span>当 \(n\to\infty\) 时，若原级数收敛 \(S_n\to S\)，则</p>
+\[\lim_{n\to\infty}W_n=W_m+(S-S_m),\]
+<p>为有限值，故新级数也收敛（但和一般变为 \(W_m+S-S_m\)）.若原级数发散，则 \(S_n\) 无有限极限，\(W_n\) 也无有限极限，新级数同样发散.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 13.3</span>加括号</div>
+  <p>若级数收敛，则任意加括号后所得级数仍收敛且和不变.注意：加括号后收敛，<b>原级数未必收敛</b>（如 \((1-1)+(1-1)+\cdots=0\)，但 \(1-1+1-1+\cdots\) 发散）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">第一步：</span>设原级数收敛于 \(S\)，部分和 \(S_n\to S\).加括号后得到新级数，其第 \(k\) 项是一段连续项的和，例如</p>
+\[T_k=u_{n_{k-1}+1}+u_{n_{k-1}+2}+\cdots+u_{n_k}\quad(n_0=0,\ n_k\ \text{严格递增}).\]
+<p>显然 \(T_k\) 恰好是原函数列的部分和 \(S_{n_k}\)，即 \(T_k=S_{n_k}\).</p>
+<p><span class="stp">第二步：</span>因为 \(\{S_n\}\) 收敛于 \(S\)，它的任意子列也收敛于同一极限，故</p>
+\[\lim_{k\to\infty}T_k=\lim_{k\to\infty}S_{n_k}=S.\]
+<p>所以加括号后的级数仍收敛于 \(S\).</p>
+<p><span class="stp">注意（不可逆）：</span>加括号后收敛，<b>原级数未必收敛</b>.反例：</p>
+\[1-1+1-1+\cdots\]
+<p>是发散的（部分和在 \(0,1\) 间跳动）；但加括号后</p>
+\[(1-1)+(1-1)+\cdots=0+0+\cdots=0\]
+<p>却收敛.这说明"加括号收敛"只是原级数收敛的<b>必要非充分</b>条件.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">性质 13.4</span>收敛的必要条件</div>
+  <p>若 \(\sum u_n\) 收敛，则 \(\lim\limits_{n\to\infty}u_n=0\).等价地，若 \(\lim u_n
+eq0\) 或极限不存在，则级数必发散.注意：\(\lim u_n=0\) 只是<b>必要非充分</b>条件.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(\sum u_n\) 收敛于 \(S\)，部分和为 \(S_n\)，则 \(S_n\to S\) 且 \(S_{n-1}\to S\).</p>
+<p><span class="stp">第一步：</span>注意到通项可写成相邻两项部分和之差：</p>
+\[u_n=S_n-S_{n-1}.\]
+<p><span class="stp">第二步：</span>两边取极限，由极限的四则运算得</p>
+\[\lim_{n\to\infty}u_n=\lim_{n\to\infty}S_n-\lim_{n\to\infty}S_{n-1}=S-S=0.\]
+<p>故收敛级数的通项必趋于 \(0\).</p>
+<p><span class="stp">必要非充分：</span>反之不成立.调和级数 \(\sum\dfrac1n\) 的通项 \(\dfrac1n\to0\)，但级数发散.因此 \(\lim u_n=0\) 只是收敛的必要条件，不是充分条件——判断敛散还需借助正项级数判别法等工具.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>口诀：先看通项趋于零否.</b>拿到一个级数，先算 \(\lim u_n\).若不为零（如 \(u_n=\frac{n}{n+1}\to1\)），立刻判定发散，省去后续所有判别法.但若为零，必须继续判别.</div>
+
+<div class="def"><div class="lab"><span class="n">定理 13.1</span>柯西收敛准则</div>
+  <p>级数 \(\sum u_n\) 收敛的充要条件是：对任意 \(\varepsilon\gt0\)，存在 \(N\)，当 \(n\gt N\) 时，对任意 \(p\in\mathbb{N}^+\)，都有</p>
+  \[\left|u_{n+1}+u_{n+2}+\cdots+u_{n+p}\right|\lt\varepsilon.\]
+  <p>换句话说，尾部任意一段"连续和"的绝对值可以任意小.</p>
+<details class="prf prf-idea"><summary>证明思路（严格证明需实数完备性，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">必要性（若收敛则满足柯西条件）：</span>设 \(\sum u_n\) 收敛于 \(S\)，即部分和 \(S_n\to S\).则对任意 \(\varepsilon\gt0\)，存在 \(N\)，当 \(m,n\gt N\) 时 \(|S_m-S_n|\lt\varepsilon\).取 \(m=n+p\)，得</p>
+\[|u_{n+1}+u_{n+2}+\cdots+u_{n+p}|=|S_{n+p}-S_n|\lt\varepsilon.\]
+<p>这正是柯西条件的叙述.</p>
+<p><span class="stp">充分性（满足柯西条件则收敛）：</span>由柯西条件，固定 \(p=1\) 可知当 \(n\) 充分大时 \(|u_{n+1}|\lt\varepsilon\)，即 \(u_n\to0\)；更一般地，部分和数列 \(\{S_n\}\) 满足：对任意 \(\varepsilon\gt0\)，存在 \(N\)，当 \(n\gt N\) 且任意正整数 \(p\) 时 \(|S_{n+p}-S_n|\lt\varepsilon\).这正是<b>柯西列（基本列）</b>的定义.</p>
+<div class="bey"><b>为什么说"超纲"：</b>要把"柯西列"推成"收敛列"，必须依赖<b>实数的完备性</b>（例如柯西收敛原理本身、或确界原理、或区间套定理）——这是《数学分析》中关于实数系的公理基础，工科《高等数学》默认其成立而不予证明.在理解层面，你只需记住：柯西准则把"级数收敛"翻译成了"尾部任意一段连续和可以任意小"，它不依赖级数的和 \(S\)，因此特别适合用来<b>判定发散</b>（只要找到某段连续和始终大于某正数）.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<h3>三、两个重要级数</h3>
+<div class="def"><div class="lab"><span class="n">几何级数（等比级数）</span>敛散结论</div>
+  <p>形如 \(\sum\limits_{n=0}^{\infty}ar^n=a+ar+ar^2+\cdots\) 的级数：</p>
+  <p><b>(1)</b> 当 \(|r|\lt1\) 时收敛，和为 \(\dfrac{a}{1-r}\)；</p>
+  <p><b>(2)</b> 当 \(|r|\ge1\) 时发散（\(r=1\) 时部分和趋于无穷，\(|r|\gt1\) 或 \(r=-1\) 时通项不趋于零）.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">调和级数</span>敛散结论</div>
+  <p>\(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n}=1+\frac12+\frac13+\cdots\) <b>发散</b>.证明（奥雷斯姆分组法）：把第 \(2^k+1\) 到 \(2^{k+1}\) 项分为一组，每组至少含 \(2^k\) 项，每项 \(\ge\dfrac{1}{2^{k+1}}\)，故每组和 \(\ge\dfrac12\).从而部分和 \(S_{2^m}\ge1+\dfrac{m}{2}\to\infty\).</p>
+</div>
+<div class="note">调和级数是"<b>通项趋于零却发散</b>"的标准反例——它警示我们：必要性 \(\lim u_n=0\) 远不足以推出收敛.</div>
+
+<h3>四、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.1　等比级数的判敛与求和</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=0}^{\infty}\frac{3}{2^n}\) 的敛散性；若收敛，求其和.</p>
+  <p class="sol"><span class="mk">解</span>这是首项 \(a=3\)、公比 \(r=\dfrac12\) 的等比级数.因 \(|r|=\dfrac12\lt1\)，故收敛，和为</p>
+  \[S=\frac{a}{1-r}=\frac{3}{1-\frac12}=6.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.2　用必要条件判定发散</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{n}{2n+1}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>通项 \(u_n=\dfrac{n}{2n+1}\to\dfrac12
+eq0\)，不满足收敛必要条件，故级数<b>发散</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.3　裂项相消求和</div>
+  <p class="stmt">求 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n(n+1)}\) 的和.</p>
+  <p class="sol"><span class="mk">解</span>因 \(\dfrac{1}{n(n+1)}=\dfrac{1}{n}-\dfrac{1}{n+1}\)，故部分和</p>
+  \[S_n=\sum_{k=1}^{n}\left(\frac{1}{k}-\frac{1}{k+1}\right)=1-\frac{1}{n+1}.\]
+  <p>令 \(n\to\infty\) 得 \(S=1\)，级数收敛于 \(1\).这是"<b>望远镜求和</b>"的典型技巧.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.4　调和级数的发散（标准结论运用）</div>
+  <p class="stmt">证明 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{2n-1}=1+\frac13+\frac15+\cdots\) 发散.</p>
+  <p class="sol"><span class="mk">解</span>前 \(n\) 项部分和 \(T_n=\sum\limits_{k=1}^{n}\frac{1}{2k-1}\).注意到</p>
+  \[T_n\gt\sum_{k=1}^{n}\frac{1}{2k}=\frac12\sum_{k=1}^{n}\frac{1}{k}.\]
+  <p>右端为调和级数前 \(n\) 项的一半，随 \(n\to\infty\) 发散到无穷，故 \(T_n\to\infty\)，原级数发散.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.5　等比求和的工程应用（呼应引例一）</div>
+  <p class="stmt">将引例一的追及问题一般化：本车速度 \(v_a\)、慢车速度 \(v_t\)（\(v_a\gt v_t\)）、初始间距 \(d_0\)，求本车追及所需的总补程与总时间.</p>
+  <p class="sol"><span class="mk">解</span>各段路程公比为 \(r=v_t/v_a\lt1\)，总补程为等比级数和</p>
+  \[S=\frac{d_0}{1-r}=\frac{d_0}{1-v_t/v_a}=\frac{d_0\,v_a}{v_a-v_t}.\]
+  <p>本车以 \(v_a\) 走完 \(S\) 所需时间为 \(t=S/v_a=\dfrac{d_0}{v_a-v_t}\).代入 \(v_a=20,\ v_t=2,\ d_0=18\) 得 \(t=18/18=1\,\mathrm{s}\)，与引例吻合.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.6　收敛级数的线性组合（考研常考）</div>
+  <p class="stmt">设 \(\sum u_n\) 收敛，证明 \(\sum(u_n+u_{n+1})\) 也收敛，并求其和（用 \(\sum u_n\) 的和表示）.</p>
+  <p class="sol"><span class="mk">证</span>设 \(\sum u_n=S\)，其前 \(n\) 项部分和为 \(S_n\).新级数前 \(n\) 项部分和为</p>
+  \[\sigma_n=\sum_{k=1}^{n}(u_k+u_{k+1})=S_n+(S_{n+1}-u_1).\]
+  <p>当 \(n\to\infty\)，\(S_n\to S\)、\(S_{n+1}\to S\)，故 \(\sigma_n\to2S-u_1\).因此新级数收敛，且和为 \(2S-u_1\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.7　望远镜型发散（考研常考）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\ln\frac{n+1}{n}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>通项 \(\ln\dfrac{n+1}{n}=\ln(n+1)-\ln n\)，部分和</p>
+  \[S_n=\sum_{k=1}^{n}\bigl(\ln(k+1)-\ln k\bigr)=\ln(n+1)-\ln1=\ln(n+1).\]
+  <p>当 \(n\to\infty\)，\(S_n\to\infty\)，故级数<b>发散</b>.虽通项 \(\ln\frac{n+1}{n}\to0\)，仍发散——再次印证必要性非充分.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 5G 自适应回声消除中的等比截断</div>
+  <details><summary>展开查看：为什么 FIR 能近似无限长信道</summary>
+  <div class="body">
+    <p>你在会议室开着 5G VoLTE 免提会议，对面刚开口，你自己的回声已经隔着一拍绕回耳里——声学回声路径可建模为无限长冲激响应（IIR）\(h_n=\alpha^n\)（\(0\lt\alpha\lt1\)），这条尾巴理论上要叠到无穷远.自适应滤波器只有 \(N\) 个抽头，截断误差就是等比级数的尾部和</p>
+    \[E_N=\sum_{n=N}^{\infty}\alpha^n=\frac{\alpha^N}{1-\alpha}.\]
+    <p>取 \(\alpha=0.9\)、\(N=20\)，则 \(E_{20}=\dfrac{0.9^{20}}{0.1}\approx\dfrac{0.1216}{0.1}=1.216\)；取 \(N=40\)，\(E_{40}\approx\dfrac{0.0148}{0.1}=0.148\).误差按等比尾部指数衰减，故有限长滤波器即可把回声压到工程容限以下.这正是等比级数求和公式在通信中的直接应用.</p>
+    <p class="cn-point">一次 VoLTE 通话靠 \(0.9^{40}\approx0.015\) 的等比尾巴把回声压进工程容限——国产 5G 基站每天处理上亿次这样的截断，让「无限长信道」变得可用的，正是等比级数那条有限的尾巴.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §13.2 ============ -->
+<div class="labx">
+  <div class="lab">数项级数 · 部分和</div>
+  <div class="desc">拖动 (\(n\)) 观察部分和 (\((S_n)=\sum_{k=1}^{n}\dfrac{1}{k^{2}}(收敛到 )\pi^{2}/6pprox1.645.</div>
+  <canvas id="cv_p132" width="720" height="320"></canvas>
+  <div class="ctrl"><label>项数 n = <span id="vo_p132">20</span></label>
+  <input type="range" id="rg_p132" min="1" max="60" step="1" value="20"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p132'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p132');
+    var vo=document.getElementById('vo_p132');
+    var W=cv.width,H=cv.height;
+    var xmin=-1,xmax=1,ymin=0,ymax=1.8;
+    function term(k,x){ return 1/(k*k); }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var n=parseInt(rg.value,10); if(vo)vo.textContent=n;
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(X(xmin),Y(0));ctx.lineTo(X(xmax),Y(0));ctx.stroke();
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();var fi=true;
+      for(var px=0;px<=W;px++){var x=xmin+px/W*(xmax-xmin);var s=0;
+        for(var k=1;k<=n;k++){s+=term(k,x);}
+        if(!isFinite(s)){fi=true;continue;}
+        var py=Y(s);
+        if(fi){ctx.moveTo(px,py);fi=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 圆周率高精度算法：从莱布尼茨到马青公式</summary>
+<p><b>场景：</b> 圆周率 \(\pi\) 的高精度计算，本质是求一个<b>常数项级数</b>的和.最经典的莱布尼茨级数 \(\pi/4=1-\frac13+\frac15-\frac17+\cdots\) 收敛极慢（要上亿项才到 7 位）.工程上用收敛快得多的<b>马青公式（Machin）</b>：\(\pi=16\arctan(1/5)-4\arctan(1/239)\)，其中 \(\arctan x=x-\frac{x^{3}}{3}+\frac{x^{5}}{5}-\cdots\).我们截断级数，看几项能拿到几位 \(\pi\).</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>第一项角</td><td>\(x_{1}\)</td><td>\(1/5=0.2\)</td></tr>
+<tr><td>第二项角</td><td>\(x_{2}\)</td><td>\(1/239\approx0.004184\)</td></tr>
+<tr><td>截断项数</td><td>\(N\)</td><td>\(4\)</td></tr>
+</table>
+<p class="sol"> 展开 \(\arctan(1/5)\)（取前 4 项）：</p>
+\[\arctan\frac15\approx\frac15-\frac{1}{3\cdot5^{3}}+\frac{1}{5\cdot5^{5}}-\frac{1}{7\cdot5^{7}}
+ =0.2-0.0026667+0.0000640-0.0000018=0.1973955.\]
+<p>乘以 16 得 \(3.158328\).再算 \(\arctan(1/239)\approx1/239=0.0041841\)（第 2 项已小到 \(2.4\times10^{-8}\) 可忽略），乘以 4 得 \(0.016736\).于是</p>
+\[\pi\approx16\times0.1973955-4\times0.0041841=3.158328-0.016736=3.141592.\]
+<p>真值 \(\pi=3.14159265\cdots\)，已精确到第 6 位小数，误差约 \(5\times10^{-7}\)，仅用 4 项.</p>
+<p><b>工程结论：</b> 同样的「常数项级数求和」，选不同的级数（莱布尼茨 vs 马青）收敛速度差上万倍.现代 \(\pi\) 计算（万亿位纪录）用的也是级数求和——只是换成更快的迭代/AGM 级数.对 AI 与科学计算而言，<b>「用哪个级数、截断几项」直接决定精度与算力</b>；马青公式正说明：把缓收敛级数换成快收敛级数，是数值算法设计的第一性原理.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch13-pi" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>项数 N <input type="range" id="ch13-pi-n" min="1" max="200" step="1" value="10" style="width:220px;accent-color:#0F6E56"> <b id="ch13-pi-n-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch13-pi-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch13-pi'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function leibniz(N){ var s=0; for(var k=0;k<N;k++) s += (k%2? -1:1)/(2*k+1); return 4*s; }
+    function machin(N){
+      var at5=0, at239=0;
+      for(var k=0;k<N;k++){ var t=2*k+1; at5 += (k%2?-1:1)/(t*Math.pow(5,t)); at239 += (k%2?-1:1)/(t*Math.pow(239,t)); }
+      return 16*at5-4*at239;
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var N=+document.getElementById('ch13-pi-n').value;
+      var mL=60,mR=16,mT=40,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      function X(n){ return mL+Math.log10(n)/6*pW; }
+      function Y(err){ return mT+pH - (Math.log10(err)+10)/10*pH; }
+      // 参考：误差 10^-10
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 莱布尼茨误差曲线（~1/N）
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var n=1;n<=1e6;n*=1.3){
+        var errL=Math.abs(leibniz(Math.min(n,1e6))-Math.PI);
+        if(errL<1e-10) errL=1e-10;
+        var xx=X(n), yy=Y(errL);
+        n===1?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      // 马青误差（~1/5^(2N) 更快）
+      ctx.strokeStyle='#eab308';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var n2=1;n2<=100;n2+=1){
+        var errM=Math.abs(machin(n2)-Math.PI);
+        if(errM<1e-10) errM=1e-10;
+        var xx2=X(n2), yy2=Y(errM);
+        n2===1?ctx.moveTo(xx2,yy2):ctx.lineTo(xx2,yy2);
+      }
+      ctx.stroke();
+      // 当前点
+      var eL=Math.abs(leibniz(N)-Math.PI), eM=Math.abs(machin(N)-Math.PI);
+      ctx.fillStyle='#0F6E56';
+      ctx.beginPath();ctx.arc(X(N),Y(eL),5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ca8a04';
+      ctx.beginPath();ctx.arc(X(N),Y(eM),5,0,Math.PI*2);ctx.fill();
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='9px sans-serif';ctx.textAlign='right';
+      ctx.fillText('10⁻¹⁰',mL-4,mT+pH+10); ctx.fillText('10⁰',mL-4,mT+4);
+      ctx.textAlign='center';ctx.fillText('项数 N（对数刻度）',(mL+W-mR)/2,mT+pH+26);
+      // 图例
+      ctx.font='bold 11px sans-serif';ctx.textAlign='left';
+      ctx.fillStyle='#0F6E56';ctx.fillText('— 莱布尼茨（误差 ~1/N）',mL,mT+12);
+      ctx.fillStyle='#ca8a04';ctx.fillText('— 马青（误差 ~1/5²ᴺ）',mL,mT+26);
+      // 数值
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';
+      ctx.fillText('N = '+N.toFixed(0)+'  莱布尼茨误差 '+(eL).toExponential(2)+'   马青误差 '+(eM).toExponential(2),mL,mT+pH+42);
+      var out=document.getElementById('ch13-pi-out');
+      out.textContent = eM<eL ? '马青比莱布尼茨快 '+(eL/eM).toExponential(1)+' 倍——换级数比硬加项有效' : '项数太少，两者都没到位';
+    }
+    document.getElementById('ch13-pi-n').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 深度学习：softmax 中指数的级数近似</summary>
+<p><b>场景：</b> 深夜你在一颗没有浮点单元的国产 MCU 上调识别模型，最后一步要算 softmax 概率 \(s_{i}=\dfrac{\mathrm{e}^{x_{i}}}{\sum_{j}\mathrm{e}^{x_{j}}}\)——没有 FPU，只有乘加 MAC，\(\mathrm{e}^{x}\) 只能靠泰勒级数 \(\mathrm{e}^{x}=\sum_{n=0}^{\infty}\dfrac{x^{n}}{n!}\) 一项项乘出来.截断到 \(N\) 项，误差由余项规定.取 \(x=1\)（典型 logit 幅度），看 \(N\) 取多大才能到单精度要求.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>输入</td><td>\(x\)</td><td>\(1.0\)</td></tr>
+<tr><td>截断项数</td><td>\(N\)</td><td>\(10\)</td></tr>
+<tr><th>真值</th><th>\(\mathrm{e}^{1}\)</th><th>\(2.7182818\)</th></tr>
+</table>
+<p class="sol"> 取前 10 项（\(n=0\sim9\)）：</p>
+\[S_{10}=1+1+\frac12+\frac16+\frac1{24}+\frac1{120}+\frac1{720}+\frac1{5040}+\frac1{40320}+\frac1{362880}.\]
+<p>逐项相加：</p>
+\[S_{10}=2+0.5+0.166667+0.041667+0.008333+0.001389+0.000198+0.000025+0.000003=2.718282.\]
+<p>与真值 \(2.7182818\) 相比，相对误差</p>
+\[\frac{|S_{10}-\mathrm{e}|}{\mathrm{e}}\approx\frac{2.8\times10^{-7}}{2.718}\approx1.0\times10^{-7}.\]
+<p>由拉格朗日余项，下一项上界 \(\dfrac{\mathrm{e}^{1}}{10!}\approx2.76\times10^{-7}\)，与实测一致.</p>
+<p><b>工程结论：</b> 边缘芯片算 \(\mathrm{e}^{x}\) 就是做常数项级数求和：本例 10 项即达 \(10^{-7}\) 相对误差，满足单精度.关键是<b>「截断项数 \(N\)」是精度–算力旋钮</b>——把 \(N\) 从 10 降到 6（误差 ~\(10^{-4}\)）可省 40% 乘加、换取近实时性，这正是 NPU 里「近似计算换吞吐」的数学依据.softmax 的数值稳定性（减最大值防溢出）也建立在「级数收敛」这个前提上.</p>
+<p class="cn-point">没有浮点单元的国产 MCU 上，softmax 靠 10 项泰勒级数撑起整个边缘 AI 推理——"截断几项"就是"精度与算力"的旋钮.别人卡我们的高端芯片，我们就先把每一条级数算到极致.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch13-softmax" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>截断项数 N <input type="range" id="ch13-softmax-n" min="1" max="15" step="1" value="10" style="width:220px;accent-color:#0F6E56"> <b id="ch13-softmax-n-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch13-softmax-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch13-softmax'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var N=+document.getElementById('ch13-softmax-n').value;
+      var mL=60,mR=16,mT=40,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 画 e^x 与泰勒多项式
+      function X(x){ return mL+(x+2)/6*pW; }
+      function Y(v){ return mT+pH - v/8*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // e^x 真值
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var x=-2;x<=4;x+=0.05){ var xx=X(x),yy=Y(Math.exp(x)); x===-2?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 泰勒多项式
+      ctx.strokeStyle='#eab308';ctx.lineWidth=2;
+      ctx.beginPath();
+      for(var x2=-2;x2<=4;x2+=0.05){
+        var s=1, term=1;
+        for(var k=1;k<=N;k++){ term*=x2/k; s+=term; }
+        var xx2=X(x2),yy2=Y(s);
+        x2===-2?ctx.moveTo(xx2,yy2):ctx.lineTo(xx2,yy2);
+      }
+      ctx.stroke();
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('8',mL-6,Y(8)); ctx.fillText('0',mL-6,Y(0));
+      ctx.textAlign='center';ctx.fillText('x',W-mR+10,mT+pH+15);
+      // 图例
+      ctx.font='bold 11px sans-serif';ctx.textAlign='left';
+      ctx.fillStyle='#0F6E56';ctx.fillText('— eˣ',mL,mT+12);
+      ctx.fillStyle='#ca8a04';ctx.fillText('— 泰勒 N='+N.toFixed(0),mL,mT+26);
+      // 数值
+      var err=Math.abs(Math.exp(1)-(function(){ var s=1,term=1; for(var k=1;k<=N;k++){term/=k;s+=term;} return s; })())/Math.E;
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';
+      ctx.fillText('x=1 处相对误差 ≈ '+(err).toExponential(2)+'（拉格朗日余项 ≤ e/(N+1)!）',mL,mT+pH+20);
+      var out=document.getElementById('ch13-softmax-out');
+      var tip = N>=10 ? '✔ 10 项达 10⁻⁷ 满足单精度——softmax 在边缘 NPU 上就是这么算的' : 'N 小误差大：N 是"精度–算力旋钮"，降到 6 项可省 40% 乘加';
+      out.textContent = tip;
+    }
+    document.getElementById('ch13-softmax-n').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s131" data-ch="13" data-n="5"></div>
+<h2 id="s132"><span class="num">§13.2</span>正项级数及其审敛法</h2>
+    
+<div class="ex"><div class="lab">引例一　新能源光伏阵列：25 年总发电量是有限值吗</div>
+  <p class="stmt">某光伏组件首年发电 \(a_0=1000\,\mathrm{kWh}\)，之后每年因衰减保留率 \(q=0.98\)（即第 \(n\) 年发电 \(a_n=a_0 q^{\,n-1}\)）.问 25 年总发电量是否有限，并估算其和.</p>
+  <p>这是公比 \(q=0.98\lt1\) 的等比级数，必有有限和.给出前若干年累计：</p>
+  <table class="dt">
+    <tr><th>年数 \(n\)</th><th>当年发电 \(a_n\)（kWh）</th><th>累计 \(S_n\)（kWh）</th></tr>
+    <tr><td>1</td><td>1000.00</td><td>1000.00</td></tr>
+    <tr><td>5</td><td>922.37</td><td>4694.40</td></tr>
+    <tr><td>10</td><td>817.07</td><td>9176.96</td></tr>
+    <tr><td>25</td><td>638.70</td><td>19770.19</td></tr>
+  </table>
+  <p>25 年总量</p>
+  \[S_{25}=a_0\frac{1-q^{25}}{1-q}=1000\cdot\frac{1-0.98^{25}}{0.02}\approx19770\ \mathrm{kWh}.\]
+  <p>若无限年限，\(\sum a_n=\dfrac{1000}{0.02}=50000\,\mathrm{kWh}\) 仍有限.但<b>并非所有"逐年减小"的序列都收敛</b>——下面引例二说明衰减速度的关键作用.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　芯片有限元仿真：网格越密误差越小，但"误差总和"收敛吗</div>
+  <p class="stmt">某芯片热仿真用网格尺寸 \(h_n=1/n\) 加密，离散误差量级约为 \(e_n\propto h_n^2=1/n^2\).工程师担心：把所有网格层级的误差累加，会不会无限大？对比两种衰减：① \(a_n=1/n\)；② \(b_n=1/n^2\).</p>
+  <p><b>具体模拟计算</b>：</p>
+  <table class="dt">
+    <tr><th>\(n\)</th><th>\(a_n=1/n\)</th><th>累计 \(A_n\)</th><th>\(b_n=1/n^2\)</th><th>累计 \(B_n\)</th></tr>
+    <tr><td>10</td><td>0.1000</td><td>2.9290</td><td>0.0100</td><td>1.5498</td></tr>
+    <tr><td>100</td><td>0.0100</td><td>5.1874</td><td>0.0001</td><td>1.6350</td></tr>
+    <tr><td>1000</td><td>0.0010</td><td>7.4855</td><td>0.000001</td><td>1.6439</td></tr>
+  </table>
+  <p>累加 \(1/n\)（调和级数）随 \(n\) 持续增大、无上界；而 \(1/n^2\) 的累计快速稳定在约 \(1.645\).差别在于<b>衰减速度</b>：慢于某个临界速度的"递减正项"仍发散，快于它的才收敛.把"递减正项"与已知级数比较，正是本节比较判别法的思想.</p>
+</div>
+
+<h3>一、正项级数及其基本定理</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.3</span>正项级数</div>
+  <p>若级数的每项 \(u_n\ge0\)，则称 \(\sum u_n\) 为<b>正项级数</b>.此时部分和数列 \(\{S_n\}\) 单调不减.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.2</span>正项级数基本定理</div>
+  <p>正项级数 \(\sum u_n\) 收敛的充要条件是：它的部分和数列 \(\{S_n\}\) 有上界.换言之，正项级数要么收敛于有限和，要么发散到 \(+\infty\)（不存在"振荡发散"）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(\sum u_n\) 为正项级数，即 \(u_n\ge0\)，部分和 \(S_n=\sum\limits_{k=1}^{n}u_k\).</p>
+<p><span class="stp">第一步：</span>由于每一项非负，部分和数列单调不减：</p>
+\[S_{n+1}=S_n+u_{n+1}\ge S_n.\]
+<p><span class="stp">第二步：</span>由数列的<b>单调有界准则</b>，单调不减数列收敛的充要条件是它有上界.因此</p>
+\[\text{\(\{S_n\}\) 有上界}\quad\Longleftrightarrow\quad S_n\ \text{收敛（于有限值）}\quad\Longleftrightarrow\quad\sum u_n\ \text{收敛}.\]
+<p><span class="stp">第三步：</span>若 \(\{S_n\}\) 无上界，则因它单调不减，必有 \(S_n\to+\infty\)，即级数发散到 \(+\infty\).正项级数不会出现"上上下下振荡"式的发散——要么收敛于有限和，要么单调冲向 \(+\infty\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>二、比较判别法</h3>
+<div class="def"><div class="lab"><span class="n">定理 13.3</span>比较判别法</div>
+  <p>设 \(\sum u_n,\ \sum v_n\) 均为正项级数，且存在 \(N\)，当 \(n\gt N\) 时恒有 \(0\le u_n\le v_n\).则</p>
+  <p><b>(1)</b> 若 \(\sum v_n\) 收敛，则 \(\sum u_n\) 收敛；</p>
+  <p><b>(2)</b> 若 \(\sum u_n\) 发散，则 \(\sum v_n\) 发散.</p>
+  <p>即"<b>大的收敛则小的收敛，小的发散则大的发散</b>".</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(\sum u_n,\ \sum v_n\) 均为正项级数，且存在 \(N\)，当 \(n\gt N\) 时 \(0\le u_n\le v_n\).</p>
+<p><span class="stp">第一步：</span>记部分和 \(S_n=\sum\limits_{k=1}^{n}u_k,\ T_n=\sum\limits_{k=1}^{n}v_k\).由 \(u_k\le v_k\) 知对一切 \(n\) 有</p>
+\[S_n\le T_n.\]
+<p><span class="stp">第二步（证 (1)）：</span>若 \(\sum v_n\) 收敛，则 \(\{T_n\}\) 有界，设 \(T_n\le M\).于是</p>
+\[S_n\le T_n\le M,\]
+<p>故 \(\{S_n\}\) 也有上界.由定理 13.2（正项级数基本定理），\(\sum u_n\) 收敛.</p>
+<p><span class="stp">第三步（证 (2)）：</span>(2) 是 (1) 的逆否命题：若 \(\sum u_n\) 发散，而 \(\sum v_n\) 收敛，则由已证的 (1) 会推出 \(\sum u_n\) 收敛，矛盾.故 \(\sum v_n\) 必发散.</p>
+<p>通俗地说：<b>大的收敛，则小的也收敛；小的发散，则大的也发散</b>.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.4</span>比较判别法的极限形式</div>
+  <p>设 \(u_n\gt0,\ v_n\gt0\)，且 \(\lim\limits_{n\to\infty}\dfrac{u_n}{v_n}=l\)（\(0\lt l\lt+\infty\)），则 \(\sum u_n\) 与 \(\sum v_n\) <b>同敛散</b>.若 \(l=0\) 且 \(\sum v_n\) 收敛，则 \(\sum u_n\) 收敛；若 \(l=+\infty\) 且 \(\sum v_n\) 发散，则 \(\sum u_n\) 发散.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(u_n\gt0,\ v_n\gt0\)，且 \(\lim\limits_{n\to\infty}\dfrac{u_n}{v_n}=l\).</p>
+<p><span class="stp">情形一：\(0\lt l\lt+\infty\).</span>取 \(\varepsilon=\dfrac{l}{2}\gt0\)，存在 \(N\)，当 \(n\gt N\) 时</p>
+\[\left|\frac{u_n}{v_n}-l\right|\lt\frac{l}{2},\quad\text{即}\quad \frac{l}{2}\lt\frac{u_n}{v_n}\lt\frac{3l}{2}.\]
+<p>于是 \(\dfrac{l}{2}v_n\lt u_n\lt\dfrac{3l}{2}v_n\).由定理 13.3（比较判别法），\(\sum u_n\) 与 \(\sum v_n\) 同敛散.</p>
+<p><span class="stp">情形二：\(l=0\).</span>此时存在 \(N\)，当 \(n\gt N\) 时 \(\dfrac{u_n}{v_n}\lt1\)，即 \(u_n\lt v_n\).若 \(\sum v_n\) 收敛，则由比较判别法 \(\sum u_n\) 收敛.</p>
+<p><span class="stp">情形三：\(l=+\infty\).</span>此时 \(\dfrac{v_n}{u_n}\to0\)，故存在 \(N\)，当 \(n\gt N\) 时 \(\dfrac{v_n}{u_n}\lt1\)，即 \(v_n\lt u_n\).若 \(\sum v_n\) 发散，则由比较判别法（小的发散则大的发散）知 \(\sum u_n\) 发散.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">推论</span>\(p\) 级数</div>
+  <p>\(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n^p}\) 当 \(p\gt1\) 时收敛，当 \(p\le1\) 时发散.它是比较判别法最常用的"标杆"：能找到 \(u_n\sim C/n^p\) 且 \(p\gt1\)，则收敛；若 \(p\le1\)，则发散.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>考察 \(p\) 级数 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n^p}\ (p\gt0)\).其通项 \(a_n=\dfrac1{n^p}\) 为正且单调不增，可用<b>柯西凝聚法</b>.</p>
+<p><span class="stp">第一步（凝聚）：</span>对递减正项级数，\(\sum a_n\) 与凝聚级数 \(\sum 2^k a_{2^k}\) 同敛散.这里</p>
+\[2^k a_{2^k}=2^k\cdot\frac{1}{(2^k)^p}=2^{k(1-p)}=\bigl(2^{1-p}\bigr)^k.\]
+<p><span class="stp">第二步（等比级数判敛）：</span>\(\sum\limits_{k=1}^{\infty}\bigl(2^{1-p}\bigr)^k\) 是公比为 \(q=2^{1-p}\) 的几何级数，收敛当且仅当 \(|q|\lt1\)，即</p>
+\[2^{1-p}\lt1\quad\Longleftrightarrow\quad1-p\lt0\quad\Longleftrightarrow\quad p\gt1.\]
+<p><span class="stp">第三步：</span>故 \(p\gt1\) 时原级数收敛；\(0\lt p\le1\) 时凝聚级数发散，原级数也发散.当 \(p\le0\) 时通项 \(\dfrac1{n^p}
+ot\to0\)，显然发散.</p>
+<p>综上，\(\sum\dfrac1{n^p}\) 当 \(p\gt1\) 收敛，当 \(p\le1\) 发散.它是对比判别法最重要的"标杆级数".</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>比较法怎么选标杆？</b>看通项 \(u_n\) 当 \(n\to\infty\) 的"主部阶"：分子分母最高次幂相减得 \(1/n^\alpha\)；有对数因子 \(\ln n\) 时通常不改变 \(p\) 级数的敛散（\(\ln n\) 比任何正幂 \(n^\varepsilon\) 都慢）.</div>
+
+<h3>三、比值判别法与根值判别法</h3>
+<div class="def"><div class="lab"><span class="n">定理 13.5</span>比值判别法（达朗贝尔）</div>
+  <p>设正项级数 \(\sum u_n\)，且 \(\lim\limits_{n\to\infty}\dfrac{u_{n+1}}{u_n}=\rho\).则</p>
+  <p><b>(1)</b> 当 \(\rho\lt1\) 时级数收敛；</p>
+  <p><b>(2)</b> 当 \(\rho\gt1\)（含 \(+\infty\)）时级数发散；</p>
+  <p><b>(3)</b> 当 \(\rho=1\) 时判别法失效（如 \(\sum1/n\) 与 \(\sum1/n^2\) 比值极限都是 \(1\)，却一散一敛）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设正项级数 \(\sum u_n\)，且 \(\lim\limits_{n\to\infty}\dfrac{u_{n+1}}{u_n}=\rho\).</p>
+<p><span class="stp">思路：</span>利用极限值 \(\rho\) 与 \(1\) 的"缝隙"，从某项起把 \(u_n\) 放缩成一个收敛的等比级数来比较.</p>
+<p><span class="stp">(1) 当 \(\rho\lt1\)：</span>取实数 \(r\) 使 \(\rho\lt r\lt1\).由极限定义，存在 \(N\)，当 \(n\ge N\) 时</p>
+\[\frac{u_{n+1}}{u_n}\lt r.\]
+<p>于是递推得</p>
+\[u_{N+1}\lt r u_N,\quad u_{N+2}\lt r u_{N+1}\lt r^2 u_N,\quad \cdots\quad u_{N+k}\lt r^k u_N.\]
+<p>即 \(n\ge N\) 时 \(u_n\lt u_N r^{\,n-N}\).等比级数 \(\sum u_N r^{\,n-N}\) 因 \(0\lt r\lt1\) 而收敛，由比较判别法 \(\sum u_n\) 收敛.</p>
+<p><span class="stp">(2) 当 \(\rho\gt1\)（含 \(+\infty\)）：</span>取 \(r\) 使 \(1\lt r\lt\rho\)（\(\rho=+\infty\) 时直接取 \(r\gt1\)）.存在 \(N\)，当 \(n\ge N\) 时 \(\dfrac{u_{n+1}}{u_n}\gt r\gt1\)，故 \(u_{n+1}\gt u_n\)，即 \(\{u_n\}\) 从某项起严格递增，从而 \(u_n
+ot\to0\).由性质 13.4（收敛必要条件）知级数发散.</p>
+<p><span class="stp">(3) 当 \(\rho=1\)：</span>判别法失效.例如 \(\sum\dfrac1n\) 与 \(\sum\dfrac1{n^2}\) 的比值极限都是 \(1\)，但前者发散、后者收敛，故无法判定.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.6</span>根值判别法（柯西）</div>
+  <p>设正项级数 \(\sum u_n\)，且 \(\lim\limits_{n\to\infty}\sqrt[n]{u_n}=\rho\).则敛散结论与比值法完全相同：\(\rho\lt1\) 收敛，\(\rho\gt1\) 发散，\(\rho=1\) 失效.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设正项级数 \(\sum u_n\)，且 \(\lim\limits_{n\to\infty}\sqrt[n]{u_n}=\rho\).</p>
+<p><span class="stp">思路：</span>与比值法同构，仍利用极限与 \(1\) 的缝隙，把 \(u_n\) 直接放缩成等比级数.</p>
+<p><span class="stp">(1) 当 \(\rho\lt1\)：</span>取 \(r\) 使 \(\rho\lt r\lt1\).存在 \(N\)，当 \(n\ge N\) 时</p>
+\[\sqrt[n]{u_n}\lt r\quad\Longrightarrow\quad u_n\lt r^n.\]
+<p>等比级数 \(\sum r^n\)（\(0\lt r\lt1\)）收敛，由比较判别法 \(\sum u_n\) 收敛.</p>
+<p><span class="stp">(2) 当 \(\rho\gt1\)（含 \(+\infty\)）：</span>存在 \(N\)，当 \(n\ge N\) 时 \(\sqrt[n]{u_n}\gt1\)，即 \(u_n\gt1\)，从而 \(u_n
+ot\to0\)，由性质 13.4 知级数发散.</p>
+<p><span class="stp">(3) 当 \(\rho=1\)：</span>同样失效：\(\sum\dfrac1n\) 与 \(\sum\dfrac1{n^2}\) 的 \(n\) 次根极限均为 \(1\)，却一散一敛.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>比值法 vs 根值法怎么选？</b>通项含 \(n!\)、\(a^n\) 优先比值法；含 \(n^n\)、\([f(n)]^n\) 优先根值法.根值法适用范围更广（比值极限不存在时根值仍可能有效）.</div>
+
+<h3>四、积分判别法</h3>
+<div class="def"><div class="lab"><span class="n">定理 13.7</span>积分判别法（柯西—马克劳林）</div>
+  <p>设 \(f(x)\) 在 \([1,+\infty)\) 上非负、连续、单调不增，且 \(u_n=f(n)\)，则级数 \(\sum u_n\) 与反常积分 \(\displaystyle\int_1^{+\infty}f(x)\,\mathrm{d}x\) <b>同敛散</b>.常用于含对数的级数.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(f(x)\) 在 \([1,+\infty)\) 上非负、连续、单调不增，且 \(u_n=f(n)\).</p>
+<p><span class="stp">第一步（夹逼）：</span>对任意 \(x\in[n,n+1]\)，由 \(f\) 单调不增，</p>
+\[f(n+1)\le f(x)\le f(n),\quad\text{即}\quad u_{n+1}\le f(x)\le u_n.\]
+<p>在区间 \([n,n+1]\) 上积分，得</p>
+\[u_{n+1}=\int_n^{n+1}f(n+1)\,\mathrm{d}x\le\int_n^{n+1}f(x)\,\mathrm{d}x\le\int_n^{n+1}f(n)\,\mathrm{d}x=u_n.\]
+<p><span class="stp">第二步（求和）：</span>把上式从 \(n=1\) 到 \(N-1\) 累加.左边：</p>
+\[\sum_{n=1}^{N-1}u_{n+1}=\sum_{k=2}^{N}u_k=S_N-u_1;\]
+<p>右边积分相加为 \(\int_1^{N}f(x)\,\mathrm{d}x\)；右端为</p>
+\[\sum_{n=1}^{N-1}u_n=S_{N-1}.\]
+<p>于是</p>
+\[S_N-u_1\le\int_1^{N}f(x)\,\mathrm{d}x\le S_{N-1}.\]
+<p><span class="stp">第三步（同敛散）：</span>若反常积分 \(\int_1^{+\infty}f(x)\,\mathrm{d}x\) 收敛于有限值 \(I\)，则 \(\int_1^{N}f\le I\)，从而 \(S_N\le I+u_1\)，部分和数列有上界，级数收敛；反之若积分发散到 \(+\infty\)，则 \(S_{N-1}\ge\int_1^{N}f\to+\infty\)，级数发散.故二者同敛散.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>五、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.8　比较法（标杆 \(1/n^2\)）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n^2+1}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>因 \(0\lt\dfrac{1}{n^2+1}\lt\dfrac{1}{n^2}\)，而 \(\sum1/n^2\)（\(p=2\gt1\)）收敛，由比较判别法原级数<b>收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.9　比较法极限形式（与调和同散）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\sin\frac{1}{n}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>取 \(v_n=1/n\).因 \(\lim\limits_{n\to\infty}\dfrac{\sin(1/n)}{1/n}=1\in(0,+\infty)\)，二者同敛散；而 \(\sum1/n\) 发散，故原级数<b>发散</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.10　比值法（含指数）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{n}{2^n}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>设 \(u_n=n/2^n\)，则</p>
+  \[\lim_{n\to\infty}\frac{u_{n+1}}{u_n}=\lim_{n\to\infty}\frac{n+1}{2^{n+1}}\cdot\frac{2^n}{n}
+    =\lim_{n\to\infty}\frac{n+1}{2n}=\frac12\lt1.\]
+  <p>由比值判别法级数<b>收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.11　根值法（含 \(n\) 次幂）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\left(\frac{n}{3n-2}\right)^{\!n}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>设 \(u_n=\left(\dfrac{n}{3n-2}\right)^n\)，则</p>
+  \[\lim_{n\to\infty}\sqrt[n]{u_n}=\lim_{n\to\infty}\frac{n}{3n-2}=\frac13\lt1.\]
+  <p>由根值判别法级数<b>收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.12　积分判别法（含对数，考研常考）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=2}^{\infty}\frac{1}{n\ln n}\) 与 \(\displaystyle\sum_{n=2}^{\infty}\frac{1}{n(\ln n)^2}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>对 \(f(x)=\dfrac{1}{x\ln x}\)，有 \(\displaystyle\int_2^{+\infty}\frac{\mathrm{d}x}{x\ln x}=\bigl[\ln\ln x\bigr]_2^{+\infty}=+\infty\)，故 \(\sum\dfrac{1}{n\ln n}\) <b>发散</b>.而 \(\displaystyle\int_2^{+\infty}\frac{\mathrm{d}x}{x(\ln x)^2}=\bigl[-\frac{1}{\ln x}\bigr]_2^{+\infty}=\frac{1}{\ln2}\) 收敛，故 \(\sum\dfrac{1}{n(\ln n)^2}\) <b>收敛</b>.可见对数因子被平方后才足以挽救敛散性.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.13　\(p\) 级数直接判定</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n\sqrt{n}}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>通项 \(\dfrac{1}{n\sqrt{n}}=\dfrac{1}{n^{3/2}}\)，属 \(p\) 级数且 \(p=\dfrac32\gt1\)，故级数<b>收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.14　比较极限形式（考研综合）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n}\sin\frac{1}{n}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>取 \(v_n=1/n^2\).因 \(\sin\dfrac{1}{n}\sim\dfrac{1}{n}\)，故</p>
+  \[\lim_{n\to\infty}\frac{\frac{1}{n}\sin\frac{1}{n}}{1/n^2}
+    =\lim_{n\to\infty}\frac{\sin(1/n)}{1/n}=1\in(0,+\infty).\]
+  <p>而 \(\sum1/n^2\) 收敛，由极限形式知原级数<b>收敛</b>.</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 5G IIR 信道截断误差的等比尾部</div>
+  <details><summary>展开查看：用根值/比值法验证滤波器稳定</summary>
+  <div class="body">
+    <p>凌晨的基站机房，运维工程师盯着均衡器的误码率曲线——信道不是一条干净的直线，而是拖着一条无限长的尾巴 \(c_n=\alpha^n\)（\(0\lt\alpha\lt1\)）.要判断截断之后滤波器稳不稳，就把误差尾部 \(\sum_{n=N}^{\infty}\alpha^n\) 看作正项级数，用比值法：</p>
+    \[\lim_{n\to\infty}\frac{c_{n+1}}{c_n}=\alpha\lt1,\]
+    <p>故该尾部级数<b>收敛</b>，即截断误差有限——滤波器<b>稳定</b>.若 \(\alpha\ge1\)，比值 \(\ge1\)，尾部发散，滤波器失稳.这正是比值判别法在通信系统稳定性分析中的直接应用.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §13.3 ============ -->
+<div class="labx">
+  <div class="lab">交互 · 幂级数收敛半径 (\(R\))</div>
+  <div class="desc">幂级数 Σc_nx^n 在 (-R,R) 内绝对收敛、R 外发散.切换不同级数观察收敛域变化.</div>
+  <div class="row"><canvas id="viz-power" width="520" height="240" style="width:100%;height:auto;display:block;border-radius:10px"></canvas></div>
+  <div class="row" style="align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap">
+    <label style="font-size:13px;color:#33473f">级数：</label>
+    <select id="viz-psel" style="background:#13202c;color:#33473f;border:1px solid #2a4a48;border-radius:8px;padding:5px 10px;font-size:12px">
+      <option value="0">Σx^n/n! (e^x, R=∞)</option><option value="1">Σx^n (1/(1-x), R=1)</option>
+      <option value="2">Σx^n/n (-ln(1-x), R=1)</option><option value="3">Σn!x^n (R=0)</option>
+    </select>
+  </div>
+</div>
+<script data-ia>
+(function(){
+  var c=document.getElementById('viz-power'),ctx=c.getContext('2d');var sel=document.getElementById('viz-psel');
+  var coeff=[[function(n){return 1;},'∞'],[function(n){return 1;},'1'],[function(n){return n>0?1/n:0;},'1'],[function(n){var r=1;for(var i=2;i<=n;i++)r*=i;return r;},'0']];
+  function draw(){var fi=parseInt(sel.value),fn=coeff[fi][0],R=coeff[fi][1],W=c.width,H=c.height;
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+    for(var x=0;x<=W;x+=W/20){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<=H;y+=H/10){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    var xlim=R==='∞'?3:(R==='0'?0.4:1.3);
+    ctx.fillStyle='rgba(45,212,191,0.06)';ctx.fillRect(W*0.5-W*0.35,0,W*0.7,H);
+    ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();
+    for(var px=0;px<=W;px+=2){var x=(px/W-0.5)*xlim*2,sum=0,t=1;
+      for(var n=0;n<25;n++){sum+=t;t*=x*fn(n+1)/(fn(n)+0.0001);}
+      var py=H*0.5-sum*H*0.13;if(!isFinite(sum)||Math.abs(sum)>8)continue;
+      ctx[px===0?'moveTo':'lineTo'](px,py);}ctx.stroke();
+    ctx.fillStyle='#33473f';ctx.font='11px sans-serif';ctx.fillStyle='#33473f';ctx.fillText('收敛半径 R='+R,W*0.5,H*0.09);
+  }requestAnimationFrame(function(){draw();});sel.addEventListener('change',draw);
+})();
+</script>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · AI 加速器：乘加舍入误差的 p 级数上界</summary>
+<p><b>场景：</b> NPU 跑第 1000 层推理时，工程师最怕误差悄悄叠加——每一层乘加（MAC）都会留下一点舍入误差，设第 \(n\) 层的单步相对误差上界为 \(b_{n}=B/n^{1.3}\)（越深层、残差越小）.累计 \(L\) 层的总相对误差 \(E=\sum_{n=1}^{L}b_{n}\) 是一个<b>正项级数</b>，用<b>积分判别法</b>（比较判别的连续版）给 \(E\) 一个可保证的上界，判断网络会不会因误差累积而失效.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>误差系数</td><td>\(B\)</td><td>\(0.01\)</td></tr>
+<tr><td>衰减指数</td><td>\(p\)</td><td>\(1.3\)</td></tr>
+<tr><td>层数</td><td>\(L\)</td><td>\(1000\)</td></tr>
+</table>
+<p class="sol"> 由积分判别法，对递减正项 \(b_{n}=B n^{-p}\)：</p>
+\[E=\sum_{n=1}^{L}B n^{-p}\lt B\int_{0}^{L}x^{-p}\,\mathrm{d}x
+ =B\Bigl[\frac{x^{1-p}}{1-p}\Bigr]_{0}^{L}
+ =\frac{B}{p-1}L^{1-p}\quad(p\gt1).\]
+<p>代入 \(B=0.01,\ p=1.3,\ L=1000\)：</p>
+\[E\lt\frac{0.01}{0.3}\times1000^{-0.3}
+ =\frac{0.01}{0.3}\times10^{-0.9}
+ =0.03333\times0.12589=0.00420=0.42\%.\]
+<p>若误用调和级数模型（\(p=1\)，发散）会错误预言误差无限累积；而这里 \(p=1.3\gt1\)，级数收敛，总误差被牢牢压在 \(0.42\%\) 以内.</p>
+<p><b>工程结论：</b> 正项级数的<b>比较判别 / 积分判别</b>给芯片可靠性提供硬保证：只要每层误差按 \(1/n^{p}\ (p\gt1)\) 衰减，深层网络的总误差有界、不会爆炸.反之若某层误差是常数级（\(p=1\)），误差随层数线性增长、百层即失控.因此 NPU 设计把「每层量化误差必须超线性衰减」写进架构规范——这正是 §13.2 判别法落进硅片的实例.</p>
+<p class="cn-point">\(p=1.3\) 时总误差被压在 \(0.42\%\) 以内——这组数字就是国产 NPU 敢把「每层误差必须超线性衰减」写进架构规范的底气.高端制程被卡，我们就把每一层的误差衰减律算到可证明.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s132" data-ch="13" data-n="5"></div>
+<h2 id="s133"><span class="num">§13.3</span>级数的绝对收敛与条件收敛</h2>
+    
+<div class="ex"><div class="lab">引例一　电池电压纹波：正负交替的脉冲是否"相互抵消"</div>
+  <p class="stmt">某锂电池管理芯片测得的电压纹波可建模为交错级数 \(u_n=0.5\cdot\dfrac{(-1)^{n+1}}{n}\)（单位 V）.判断这串正负交替、幅度递减的纹波总电压是否收敛，并看部分和在区间内如何摆动.</p>
+  <p><b>具体模拟计算</b>：</p>
+  <table class="dt">
+    <tr><th>\(n\)</th><th>第 \(n\) 项 \(u_n\)（V）</th><th>部分和 \(S_n\)（V）</th></tr>
+    <tr><td>1</td><td>0.5000</td><td>0.5000</td></tr>
+    <tr><td>2</td><td>−0.2500</td><td>0.2500</td></tr>
+    <tr><td>3</td><td>0.1667</td><td>0.4167</td></tr>
+    <tr><td>4</td><td>−0.1250</td><td>0.2917</td></tr>
+    <tr><td>10</td><td>−0.0500</td><td>0.3453</td></tr>
+  </table>
+  <p>部分和在区间 \([0.25,\,0.50]\) 内上下摆动并逐步收窄，极限约为 \(\dfrac12\ln2\approx0.3466\,\mathrm{V}\).幅度递减趋于零、正负交替，正是<b>交错级数收敛</b>的标准形态（莱布尼茨判别法）.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　卫星姿态脉冲修正：为何有的修正"绝对安全"</div>
+  <p class="stmt">卫星姿控计算机用一系列脉冲修正角速度偏差，第 \(n\) 次修正量 \(w_n=(-1)^{n+1}\dfrac{c}{n^2}\)（\(c=0.1\,\mathrm{rad/s}\)）.它与引例一的区别在于分母平方——判断其敛散，并对比"换成 \(1/n\)"会怎样.</p>
+  <p>取绝对值后 \(\sum|w_n|=c\sum1/n^2\) 收敛（\(p=2\gt1\)），故该修正级数<b>绝对收敛</b>，总修正量严格有界；若改为 \(1/n\) 则仅条件收敛，重排可能改变总和.具体部分和与引例一同形但收敛更快，十项已稳定到 \(0.1\times(\pi^2/6-1)\approx0.048\).可见<b>绝对收敛比条件收敛"更稳"</b>.</p>
+</div>
+
+<h3>一、交错级数与绝对收敛</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.4</span>交错级数</div>
+  <p>形如 \(\sum\limits_{n=1}^{\infty}(-1)^{n-1}u_n=u_1-u_2+u_3-\cdots\)（或 \((-1)^n u_n\)，其中 \(u_n\gt0\)）的级数称为<b>交错级数</b>.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定义 13.5</span>绝对收敛与条件收敛</div>
+  <p>若 \(\sum|u_n|\) 收敛，则称 \(\sum u_n\) <b>绝对收敛</b>；若 \(\sum u_n\) 收敛但 \(\sum|u_n|\) 发散，则称 \(\sum u_n\) <b>条件收敛</b>.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.8</span>绝对收敛必收敛</div>
+  <p>若级数绝对收敛，则它一定收敛.这是因为 \(0\le u_n+|u_n|\le2|u_n|\)，由比较判别法 \(\sum(u_n+|u_n|)\) 收敛，从而 \(\sum u_n=\sum(u_n+|u_n|)-\sum|u_n|\) 收敛.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(\sum u_n\) 绝对收敛，即 \(\sum|u_n|\) 收敛.</p>
+<p><span class="stp">第一步：</span>对任意 \(n\)，有</p>
+\[0\le u_n+|u_n|\le 2|u_n|.\]
+<p><span class="stp">第二步：</span>因为 \(\sum|u_n|\) 收敛，由比较判别法，正项级数 \(\sum(u_n+|u_n|)\) 也收敛.</p>
+<p><span class="stp">第三步：</span>注意到</p>
+\[u_n=(u_n+|u_n|)-|u_n|,\]
+<p>于是</p>
+\[\sum u_n=\sum(u_n+|u_n|)-\sum|u_n|.\]
+<p>右端两个级数都收敛，故 \(\sum u_n\) 收敛.即绝对收敛必收敛.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>二、莱布尼茨判别法</h3>
+<div class="def"><div class="lab"><span class="n">定理 13.9</span>莱布尼茨判别法</div>
+  <p>若交错级数 \(\sum(-1)^{n-1}u_n\) 满足：<b>(1)</b> \(u_n\ge u_{n+1}\,(n=1,2,\dots)\)（单调不增）；<b>(2)</b> \(\lim\limits_{n\to\infty}u_n=0\)，则该级数收敛，且其和 \(S\le u_1\)，余项满足 \(|r_n|\le u_{n+1}\).</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>考察交错级数 \(\sum(-1)^{n-1}u_n\)，其中 \(u_n\ge0\)，且 (1) \(u_n\ge u_{n+1}\)（单调不增）；(2) \(\lim\limits_{n\to\infty}u_n=0\).</p>
+<p><span class="stp">第一步（偶数项部分和）：</span>记 \(S_{2m}=\sum\limits_{k=1}^{2m}(-1)^{k-1}u_k\).两两项配对：</p>
+\[S_{2m}=(u_1-u_2)+(u_3-u_4)+\cdots+(u_{2m-1}-u_{2m}).\]
+<p>因 \(u_k\ge u_{k+1}\)，每对非负，故 \(S_{2m}\ge0\).又</p>
+\[S_{2m}=u_1-(u_2-u_3)-(u_4-u_5)-\cdots-(u_{2m-2}-u_{2m-1})-u_{2m}\le u_1,\]
+<p>所以 \(\{S_{2m}\}\) 有上界 \(u_1\).再看</p>
+\[S_{2(m+1)}-S_{2m}=u_{2m+1}-u_{2m+2}\ge0,\]
+<p>故 \(\{S_{2m}\}\) 单调不减且有上界，从而收敛，设 \(\lim\limits_{m\to\infty}S_{2m}=S\le u_1\).</p>
+<p><span class="stp">第二步（奇数项部分和）：</span>\(S_{2m+1}=S_{2m}+u_{2m+1}\).由 \(u_{2m+1}\to0\)，得</p>
+\[\lim_{m\to\infty}S_{2m+1}=\lim_{m\to\infty}S_{2m}+0=S.\]
+<p>偶、奇子列同趋于 \(S\)，故整个部分和数列 \(S_n\to S\)，级数收敛.</p>
+<p><span class="stp">第三步（余项估计）：</span>余项 \(r_n=S-S_n\).以 \(n=2m\) 为例，</p>
+\[r_{2m}=u_{2m+1}-u_{2m+2}+u_{2m+3}-u_{2m+4}+\cdots,\]
+<p>它仍是一个满足莱布尼茨条件的交错级数，其绝对值不超过第一项，即 \(|r_{2m}|\le u_{2m+1}\)；奇数 \(n\) 同理.总之 \(|r_n|\le u_{n+1}\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>误差估计口诀：交错级数取前 \(n\) 项和，误差不超过被丢掉的"第一项" \(u_{n+1}\).</b>这是工程近似中最常用的误差界.</div>
+
+<h3>三、绝对收敛级数的性质</h3>
+<div class="def"><div class="lab"><span class="n">定理 13.10</span>重排定理</div>
+  <p><b>(1)</b> 若级数绝对收敛，则任意重排后所得级数仍绝对收敛且和不变（可交换性）.</p>
+  <p><b>(2)</b> 若级数条件收敛，则由<b>黎曼重排定理</b>：可重排使其收敛于任意指定实数，或发散到 \(\pm\infty\).因此条件收敛级数的"求和顺序"极其敏感——数值计算中务必小心.</p>
+<details class="prf prf-idea"><summary>证明思路（黎曼重排定理，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">结论 (1)（绝对收敛可任意重排）：</span>若 \(\sum|u_n|\) 收敛，则任意重排后新级数仍绝对收敛且和不变.直观上是因为"无论先加哪一块，总绝对用量有限"，严格证明依赖<b>绝对收敛级数的可交换性与乘法定理</b>（数学分析内容）.</p>
+<p><span class="stp">结论 (2)（条件收敛的惊人事实）：</span>若 \(\sum u_n\) 条件收敛，则把正项与负项分开：记正项构成子列 \(p_1,p_2,\dots\)，负项的绝对值构成 \(q_1,q_2,\dots\).由于原级数收敛但非绝对收敛，必有</p>
+\[\sum p_k=+\infty,\qquad \sum q_k=+\infty.\]
+<p><b>重排构造（黎曼）：</b>欲使其收敛于指定实数 \(A\)，先依次取正项相加，直到和首次超过 \(A\)；再依次取负项相减，直到和首次低于 \(A\)；再取正项使和超过 \(A\)……如此往复.因为 \(p_k\to0,\ q_k\to0\)，每次"越过 \(A\)"的幅度越来越小，于是部分和将在 \(A\) 附近来回逼近，最终收敛于 \(A\).同理也可让重排后的级数发散到 \(+\infty\) 或 \(-\infty\).</p>
+<div class="bey"><b>为什么说"超纲"：</b>黎曼重排定理的严格证明需要把级数拆成正、负两部分并研究其部分和的精细增长，属于《数学分析》级数论的内容；工科《高等数学》只要求<b>记住结论、建立直觉</b>——条件收敛级数的求和顺序极其敏感，数值计算中应尽量避免依赖重排.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<h3>四、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.15　莱布尼茨判别法 + 条件收敛</div>
+  <p class="stmt">证明 \(\displaystyle\sum_{n=1}^{\infty}(-1)^{n-1}\frac{1}{n}\) 条件收敛.</p>
+  <p class="sol"><span class="mk">解</span>\(u_n=1/n\) 单调减且 \(\lim u_n=0\)，由莱布尼茨法判别级数收敛.但 \(\sum|u_n|=\sum1/n\) 为调和级数发散，故原级数<b>条件收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.16　分母开方仍条件收敛</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{(-1)^n}{\sqrt{n}}\) 的敛散性与类型.</p>
+  <p class="sol"><span class="mk">解</span>\(u_n=1/\sqrt{n}\) 单调减且趋于零，莱布尼茨法得收敛.绝对值级数 \(\sum1/\sqrt{n}\) 为 \(p\) 级数 \(p=1/2\le1\)，发散，故原级数<b>条件收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.17　平方后绝对收敛</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{(-1)^n}{n^2}\) 的敛散性与类型.</p>
+  <p class="sol"><span class="mk">解</span>绝对值级数 \(\sum1/n^2\) 收敛（\(p=2\gt1\)），故原级数<b>绝对收敛</b>.莱布尼茨条件也满足，但"绝对收敛"是更强、更稳妥的结论.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.18　用放缩判绝对收敛</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{\sin n}{n^2}\) 的敛散性.</p>
+  <p class="sol"><span class="mk">解</span>因 \(\left|\dfrac{\sin n}{n^2}\right|\le\dfrac{1}{n^2}\)，而 \(\sum1/n^2\) 收敛，由比较判别法 \(\sum\left|\dfrac{\sin n}{n^2}\right|\) 收敛，故原级数<b>绝对收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.19　含 \(n\) 次幂 + 交错（考研综合）</div>
+  <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}(-1)^n\left(\frac{n}{2n+1}\right)^{\!n}\) 的绝对敛散性.</p>
+  <p class="sol"><span class="mk">解</span>先看绝对值级数.设 \(a_n=\left(\dfrac{n}{2n+1}\right)^n\)，则</p>
+  \[\lim_{n\to\infty}\sqrt[n]{a_n}=\lim_{n\to\infty}\frac{n}{2n+1}=\frac12\lt1.\]
+  <p>由根值判别法 \(\sum a_n\) 收敛，故原级数<b>绝对收敛</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.20　绝对收敛推出平方收敛（考研经典）</div>
+  <p class="stmt">若 \(\sum|u_n|\) 收敛，证明 \(\sum u_n^2\) 也收敛.</p>
+  <p class="sol"><span class="mk">证</span>由收敛必要条件，\(|u_n|\to0\)，故存在 \(N\)，当 \(n\gt N\) 时 \(|u_n|\lt1\).此时 \(u_n^2=|u_n|^2\le|u_n|\).而 \(\sum|u_n|\) 收敛，由比较判别法 \(\sum u_n^2\) 收敛.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.21　柯西不等式与绝对收敛（考研综合）</div>
+  <p class="stmt">设 \(\sum a_n^2\) 与 \(\sum b_n^2\) 均收敛，证明 \(\sum|a_n b_n|\) 收敛，从而 \(\sum a_n b_n\) 绝对收敛.</p>
+  <p class="sol"><span class="mk">证</span>由不等式 \(|a_n b_n|\le\dfrac{a_n^2+b_n^2}{2}\).因 \(\sum a_n^2\)、\(\sum b_n^2\) 收敛，其线性组合 \(\sum\dfrac{a_n^2+b_n^2}{2}\) 收敛；由比较判别法 \(\sum|a_n b_n|\) 收敛，故 \(\sum a_n b_n\) 绝对收敛.这是信号处理中"<b>能量有限信号相乘仍能量有限</b>"的数学依据.</p>
+</div>
+
+<div class="case">
+  <div class="lab">应用探微 · 学习率该多快衰减：绝对收敛保训练稳定</div>
+  <details open><summary>展开：为什么 α&gt;1 才收敛</summary>
+  <div class="body">
+    <p class="stmt">随机梯度下降第 \(t\) 步的学习率常取 \(\eta_t=\dfrac{c}{t^\alpha}\).整段训练是否"累计收敛"，取决于级数 \(\sum\eta_t\) 的敛散——这正是常数项级数的绝对收敛问题.</p>
+    <p>由 \(p\) 级数结论，\(\sum_{t=1}^\infty \dfrac1{t^\alpha}\) 当 \(\alpha>1\) 收敛、\(\alpha\le1\) 发散.</p>
+    <p><b>情形 A（稳定）：</b>取 \(c=0.1,\ \alpha=1.1\).则</p>
+    \[\sum_{t=1}^\infty\frac{0.1}{t^{1.1}}=0.1\,\zeta(1.1)\approx0.1	\times10.58=1.058.\]
+    <p>级数绝对收敛，学习率平稳衰减到 0，损失曲线平滑下降.</p>
+    <p><b>情形 B（震荡）：</b>取 \(\alpha=0.9\).\(\sum t^{-0.9}\) 发散，学习率衰减太慢，后期步长仍大，损失在最优值附近持续抖动、难以真正收敛.可见"绝对收敛"不是纯数学游戏，而是训练能否收敛的硬指标.</p>
+  </div></details>
+</div>
+
+    <!-- ============ §13.4 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 动力电池：库仑计数的莱布尼茨误差界</summary>
+<p><b>场景：</b> 电动汽车仪表盘上，剩余续航每跳一次数字，背后都是 BMS 在库仑计数：\(\mathrm{SOC}=\mathrm{SOC}_{0}-\dfrac{1}{C}\int I(t)\,\mathrm{d}t\).走走停停、再生制动时电流正负交替，离散采样后的积分误差正好是一个<b>交错、单调递减趋于零</b>的余项序列.按<b>莱布尼茨判别法</b>，截断到 \(N\) 步的误差永远不超过第一个被舍去项的绝对值，给 SOC 一个可信的误差上界.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>峰值电流</td><td>\(I_{\max}\)</td><td>\(5\ \mathrm{A}\)</td></tr>
+<tr><td>采样间隔</td><td>\(\Delta t\)</td><td>\(0.1\ \mathrm{s}\)</td></tr>
+<tr><td>电池容量</td><td>\(C\)</td><td>\(50\ \mathrm{Ah}=1.8\times10^{5}\ \mathrm{C}\)</td></tr>
+</table>
+<p class="sol"> 交替充放电使余项呈交错递减，单步电荷误差上界</p>
+\[|q_{N+1}|\le I_{\max}\Delta t=5\times0.1=0.5\ \mathrm{C}.\]
+<p>按莱布尼茨误差估计，截断后电量估计误差（库仑）</p>
+\[|\Delta Q|\le|q_{N+1}|\le0.5\ \mathrm{C}.\]
+<p>折合 SOC 误差</p>
+\[\frac{0.5}{1.8\times10^{5}}=2.78\times10^{-6}=0.00028\%.\]
+<p>若改用最保守的「绝对值求和」界（把交错当同号），上界会变成所有余项之和，远大于此——莱布尼茨界因「正负相消」而锐利得多.</p>
+<p><b>工程结论：</b> 莱布尼茨判别法给 BMS 一个<b>免费且极紧的误差界</b>：只要电流残差是单调递减趋于零的交错序列，SOC 误差 ≤ 第一个舍去项，本例仅 \(2.8\times10^{-6}\).这比「全当成误差累加」保守模型小三个量级，让电量显示敢标到 1% 精度.<b>「条件收敛序列的截断误差 = 首舍项」</b>是嵌入式数值积分里最划算的保险丝.</p>
+<p class="cn-point">\(2.8\times10^{-6}\) 的 SOC 误差界，让国产电动车的电量显示敢标到 1% 精度——每次「还能跑多少公里」背后，都站着一条正负相消、免费又极紧的莱布尼茨保险丝.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch13-bms" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>I_max <input type="range" id="ch13-bms-i" min="1" max="10" step="0.5" value="5" style="width:130px;accent-color:#0F6E56"> <b id="ch13-bms-i-t"></b> A</label>
+<label>Δt <input type="range" id="ch13-bms-dt" min="0.02" max="0.5" step="0.02" value="0.1" style="width:130px;accent-color:#0F6E56"> <b id="ch13-bms-dt-t"></b> s</label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch13-bms-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch13-bms'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var Imax=+document.getElementById('ch13-bms-i').value;
+      var dt=+document.getElementById('ch13-bms-dt').value;
+      var qErr=Imax*dt; // C
+      var cap=50*3600; // 50 Ah
+      var socErr=qErr/cap;
+      var mL=60,mR=16,mT=40,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      // 电流采样序列（交错：+Imax/-Imax 递减）
+      var N=20;
+      function X(k){ return mL+k/(N-1)*pW; }
+      function Yv(v){ return mT+pH - (v+6)/(12)*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 交错序列
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;
+      ctx.beginPath();
+      for(var k=0;k<N;k++){
+        var v=Imax*(N-k)/N*(k%2?-1:1);
+        var xx=X(k), yy=Yv(v);
+        k===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      // 首舍项标注
+      var q1=Imax/N;
+      ctx.fillStyle='#dc2626';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('首舍项 |q|=I_max·Δt='+qErr.toFixed(2)+' C',X(N-1),Yv(0)-10);
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('+I',mL-6,Yv(Imax)); ctx.fillText('0',mL-6,Yv(0)); ctx.fillText('−I',mL-6,Yv(-Imax));
+      ctx.textAlign='center';ctx.fillText('采样序号 k',(mL+W-mR)/2,mT+pH+15);
+      // 数值
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('I_max = '+Imax.toFixed(1)+' A, Δt = '+dt.toFixed(2)+' s  →  误差 ≤ I_max·Δt = '+qErr.toFixed(2)+' C = '+socErr.toExponential(1)+' 的 SOC',20,22);
+      var out=document.getElementById('ch13-bms-out');
+      out.textContent = '莱布尼茨界比"全绝对值求和"小 3 个量级——正负相消是免费的精度';
+    }
+    document.getElementById('ch13-bms-i').addEventListener('input', draw);
+    document.getElementById('ch13-bms-dt').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s133" data-ch="13" data-n="5"></div>
+<h2 id="s134"><span class="num">§13.4</span>幂级数</h2>
+    
+<div class="ex"><div class="lab">引例一　自动驾驶 GPS 信号衰减模型的有效范围</div>
+  <p class="stmt">某 GPS 定位算法把信号随距离的衰减建模为幂级数 \(\sum\limits_{n=0}^{\infty}\left(\dfrac{x-1}{2}\right)^{\!n}\)，其中 \(x\) 是归一化距离.问：模型在哪些 \(x\) 上给出有限、稳定的预测？这等价于求该幂级数的收敛域.</p>
+  <p>这是公比 \(r=\dfrac{x-1}{2}\) 的等比型级数.由 \(|r|\lt1\) 得 \(|x-1|\lt2\)，即 \(-1\lt x\lt3\).给出该区间内若干点的部分和：</p>
+  <table class="dt">
+    <tr><th>\(x\)</th><th>理论极限 \(1/(1-r)\)</th><th>前 10 项部分和</th></tr>
+    <tr><td>0</td><td>0.6667</td><td>0.6660</td></tr>
+    <tr><td>1</td><td>1.0000</td><td>1.0000</td></tr>
+    <tr><td>2</td><td>2.0000</td><td>2.0000</td></tr>
+    <tr><td>2.9</td><td>20.0000</td><td>12.7388</td></tr>
+  </table>
+  <p>当 \(x\to3^-\) 时极限趋于无穷，模型失效——<b>收敛半径 \(R=2\) 划出了模型的"可信边界"</b>.这正是幂级数收敛半径的物理意义.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　芯片缓存命中率的稳定条件</div>
+  <p class="stmt">某缓存模型的命中率随访问深度展开为 \(\sum p^n\)（\(0\lt p\lt1\)），其和函数 \(H(p)=\dfrac{1}{1-p}\).要保证系统稳定，需 \(p\lt1\).把 \(p\) 视为变量，这就是幂级数 \(\sum p^n\)，其收敛半径为 \(1\)，收敛域为 \((-1,1)\).</p>
+  <p>当 \(|p|\ge1\) 时部分和发散，缓存命中率无定义——工程上务必将缓存淘汰参数控制在收敛域内.</p>
+</div>
+
+<h3>一、幂级数的概念</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.6</span>幂级数</div>
+  <p>形如 \(\displaystyle\sum_{n=0}^{\infty}a_n(x-x_0)^n=a_0+a_1(x-x_0)+a_2(x-x_0)^2+\cdots\) 的级数称为（中心在 \(x_0\) 的）<b>幂级数</b>，\(a_n\) 称为<b>系数</b>.当 \(x_0=0\) 时记为 \(\sum a_n x^n\).</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定义 13.7</span>收敛域与收敛半径</div>
+  <p>使幂级数收敛的 \(x\) 的集合称为<b>收敛域</b>.幂级数的收敛性只有三种可能：① 只在 \(x=x_0\) 收敛；② 在全体实数收敛；③ 存在 \(R\gt0\)，在 \(|x-x_0|\lt R\) 绝对收敛，在 \(|x-x_0|\gt R\) 发散，\(x=x_0\pm R\) 需单独判别.这里 \(R\) 称为<b>收敛半径</b>，收敛区间指 \((x_0-R,\,x_0+R)\).</p>
+</div>
+
+<h3>二、阿贝尔定理与收敛半径公式</h3>
+<div class="def"><div class="lab"><span class="n">定理 13.12</span>阿贝尔定理（Abel）</div>
+  <p><b>(1)</b> 若幂级数在 \(x=x_1\,(x_1
+eq x_0)\) 处收敛，则对满足 \(|x-x_0|\lt|x_1-x_0|\) 的一切 \(x\)，级数<b>绝对收敛</b>；</p>
+  <p><b>(2)</b> 若幂级数在 \(x=x_2\) 处发散，则对满足 \(|x-x_0|\gt|x_2-x_0|\) 的一切 \(x\)，级数也<b>发散</b>.</p>
+  <p>这说明收敛点集必是一个以 \(x_0\) 为中心的区间（可能退化为一点或全空间）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>为记号简明，把幂级数写作 \(\sum a_n(x-x_0)^n\)；设它在 \(x=x_1\ (x_1
+eq x_0)\) 处收敛.</p>
+<p><span class="stp">第一步（收敛 ⇒ 通项有界）：</span>因级数 \(\sum a_n(x_1-x_0)^n\) 收敛，由性质 13.4（收敛必要条件），其通项趋于 \(0\)，故数列 \(\{a_n(x_1-x_0)^n\}\) 有界：存在 \(M\gt0\)，对一切 \(n\) 有</p>
+\[|a_n(x_1-x_0)^n|\le M.\]
+<p><span class="stp">第二步（与等比级数比较）：</span>任取 \(x\) 满足 \(|x-x_0|\lt|x_1-x_0|\)，令</p>
+\[q=\frac{|x-x_0|}{|x_1-x_0|}\lt1.\]
+<p>则</p>
+\[|a_n(x-x_0)^n|=|a_n(x_1-x_0)^n|\cdot\left(\frac{|x-x_0|}{|x_1-x_0|}\right)^n\le M q^n.\]
+<p>级数 \(\sum M q^n\) 是公比 \(q\in(0,1)\) 的等比级数，收敛.由比较判别法，\(\sum|a_n(x-x_0)^n|\) 收敛，即原幂级数在 \(x\) 处<b>绝对收敛</b>.这就证得 (1).</p>
+<p><span class="stp">第三步（证 (2)）：</span>(2) 是 (1) 的逆否命题.假设存在 \(x^*\) 满足 \(|x^*-x_0|\gt|x_2-x_0|\) 且级数在 \(x^*\) 收敛.由 (1)，级数在一切满足 \(|x-x_0|\lt|x^*-x_0|\) 的点绝对收敛；而 \(x_2\) 满足 \(|x_2-x_0|\lt|x^*-x_0|\)，故在 \(x_2\) 必收敛，与"在 \(x_2\) 发散"矛盾.因此对所有 \(|x-x_0|\gt|x_2-x_0|\) 的点，级数必发散.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.13</span>收敛半径公式</div>
+  <p>对幂级数 \(\sum a_n x^n\)，设</p>
+  \[\rho=\lim_{n\to\infty}\left|\frac{a_{n+1}}{a_n}\right|
+    \quad\text{或}\quad
+    \rho=\limsup_{n\to\infty}\sqrt[n]{|a_n|},\]
+  <p>则收敛半径 \(R=\dfrac{1}{\rho}\)（\(\rho=0\) 时 \(R=+\infty\)；\(\rho=+\infty\) 时 \(R=0\)）.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>对幂级数 \(\sum a_n x^n\)（中心取 \(x_0=0\)，中心偏移情形同理），考察其绝对收敛性，即用正项级数判别法判别 \(\sum|a_n x^n|\).</p>
+<p><span class="stp">比值法路线：</span>设 \(\lim\limits_{n\to\infty}\left|\dfrac{a_{n+1}}{a_n}\right|=\rho\).则</p>
+\[\lim_{n\to\infty}\frac{|a_{n+1}x^{n+1}|}{|a_n x^n|}=|x|\cdot\lim_{n\to\infty}\left|\frac{a_{n+1}}{a_n}\right|=|x|\,\rho.\]
+<p>由比值判别法，当 \(|x|\rho\lt1\) 即 \(|x|\lt\dfrac1\rho\) 时绝对收敛；当 \(|x|\rho\gt1\) 时发散.故收敛半径 \(R=\dfrac1\rho\).</p>
+<p><span class="stp">根值法路线：</span>设 \(\rho=\limsup\limits_{n\to\infty}\sqrt[n]{|a_n|}\).则</p>
+\[\limsup_{n\to\infty}\sqrt[n]{|a_n x^n|}=|x|\cdot\limsup_{n\to\infty}\sqrt[n]{|a_n|}=|x|\,\rho.\]
+<p>当 \(|x|\rho\lt1\) 即 \(|x|\lt\dfrac1\rho\) 时绝对收敛，故同样 \(R=\dfrac1\rho\).</p>
+<p><span class="stp">边界情形：</span>\(\rho=0\) 时对任意 \(x\) 都有 \(|x|\rho=0\lt1\)，故 \(R=+\infty\)；\(\rho=+\infty\) 时除 \(x=0\) 外均发散，故 \(R=0\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>口诀：系数比值（或根值）的极限取倒数，就是收敛半径.</b>端点 \(x=\pm R\) 必须单独代入原级数判别.</div>
+
+<h3>三、幂级数的运算与和函数性质</h3>
+<div class="def"><div class="lab"><span class="n">性质</span>四则运算</div>
+  <p>两个收敛半径分别为 \(R_1,R_2\) 的幂级数，在相同 \(x\) 处可逐项相加，收敛半径至少为 \(\min(R_1,R_2)\)；乘法（柯西乘积）收敛半径也至少为较小者.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p><span class="stp">加法（可严格证明）：</span>设 \(\sum a_n x^n\)、\(\sum b_n x^n\) 收敛半径分别为 \(R_1,R_2\).在两者都收敛的公共区间 \(|x|\lt\min(R_1,R_2)\) 内，两个级数都收敛，故可逐项相加：</p>
+\[(f+g)(x)=\sum_{n=0}^{\infty}(a_n+b_n)x^n.\]
+<p>该和级数的收敛半径至少为 \(\min(R_1,R_2)\).</p>
+<p><span class="stp">乘法（柯西乘积，思路）：</span>在公共收敛区间内，乘积展开为</p>
+\[f(x)g(x)=\sum_{n=0}^{\infty}c_n x^n,\qquad c_n=\sum_{k=0}^{n}a_k b_{n-k}.\]
+<p>这种系数卷积称为<b>柯西乘积</b>.</p>
+<div class="bey"><b>超纲说明：</b>乘法公式严格成立，需要<b>绝对收敛级数的乘法定理</b>（两个绝对收敛级数可逐项相乘，且乘积级数的系数恰为柯西乘积）——该定理属《数学分析》内容.在工科教材中，可直接把收敛半径内（绝对收敛开区间内）的逐项相乘作为结论使用；其收敛半径同样至少为 \(\min(R_1,R_2)\).</div>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.14</span>和函数的分析性质</div>
+  <p>设幂级数 \(\sum a_n x^n\) 的收敛半径 \(R\gt0\)，其和函数 \(S(x)\) 在 \((-R,R)\) 内：<b>(1)</b> 连续；<b>(2)</b> 可逐项求导，\(S'(x)=\sum n a_n x^{n-1}\)，收敛半径不变；<b>(3)</b> 可逐项积分，\(\displaystyle\int_0^x S(t)\,\mathrm{d}t=\sum\frac{a_n}{n+1}x^{n+1}\)，收敛半径不变.逐项求导/积分是"<b>求和函数</b>"的核心武器.</p>
+<details class="prf prf-idea"><summary>证明思路（需一致收敛理论，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">结论回顾：</span>设幂级数 \(\sum a_n x^n\) 收敛半径 \(R\gt0\)，和函数 \(S(x)=\sum a_n x^n\) 在 \((-R,R)\) 内：(1) 连续；(2) 可逐项求导，且 \(S'(x)=\sum n a_n x^{n-1}\)，收敛半径不变；(3) 可逐项积分，且 \(\int_0^x S(t)\,\mathrm{d}t=\sum\dfrac{a_n}{n+1}x^{n+1}\)，收敛半径不变.</p>
+<p><span class="stp">证明骨架：</span>核心工具是<b>函数项级数的一致收敛</b>与<b>一致收敛下的极限交换定理</b>.</p>
+<p>(i) 任取 \(0\lt r\lt R\)，幂级数在 \([-r,r]\) 上级数被等比级数控制：存在 \(M_n\) 使 \(|a_n x^n|\le M_n r^n\) 且 \(\sum M_n r^n\) 收敛（魏尔斯特拉斯 \(M\) 判别法），故在 \([-r,r]\) 上<b>一致收敛</b>，从而和函数连续.因 \(r\) 任意，连续性在整个 \((-R,R)\) 成立.</p>
+<p>(ii) 逐项求导需<b>更强条件</b>：仅靠原级数一致收敛不够，必须要求<b>导函数项级数 \(\sum n a_n x^{n-1}\) 也一致收敛</b>.可证该导级数在 \([-r,r]\) 上同样一致收敛（其收敛半径恰为 \(R\)），于是极限与求导可交换，得到 \(S'(x)=\sum n a_n x^{n-1}\).</p>
+<p>(iii) 逐项积分相对"温和"：连续函数项级数的一致收敛即可交换积分与求和，故</p>
+\[\int_0^x S(t)\,\mathrm{d}t=\sum\int_0^x a_n t^n\,\mathrm{d}t=\sum\frac{a_n}{n+1}x^{n+1}.\]
+<p><span class="stp">要点：</span>"为什么逐项求导需要额外条件"——求导是<b>局部放大</b>操作（差商分母趋于 0），若只有原级数一致收敛，导数的极限未必等于极限的导数；必须保证导级数本身一致收敛，交换才合法.</p>
+<div class="bey"><b>为什么说"超纲"：</b>一致收敛的定义、魏尔斯特拉斯 \(M\) 判别法、以及一致收敛下连续/求导/积分的极限交换定理，整条理论属于《数学分析》的"函数项级数"章.工科《高等数学》直接把三条结论作为工具使用，重点在于<b>会用来求和函数</b>.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+
+<h3>四、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.22　求收敛域（比值法，\(R=1\)）</div>
+  <p class="stmt">求幂级数 \(\displaystyle\sum_{n=1}^{\infty}n x^n\) 的收敛域.</p>
+  <p class="sol"><span class="mk">解</span>\(\rho=\lim\left|\dfrac{a_{n+1}}{a_n}\right|=\lim\dfrac{n+1}{n}=1\)，故 \(R=1\).端点：\(x=1\) 时 \(\sum n\) 发散；\(x=-1\) 时 \(\sum n(-1)^n\) 通项不趋于零，发散.收敛域为 \((-1,1)\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.23　收敛半径为无穷（指数型）</div>
+  <p class="stmt">求 \(\displaystyle\sum_{n=0}^{\infty}\frac{x^n}{n!}\) 的收敛域.</p>
+  <p class="sol"><span class="mk">解</span>\(\rho=\lim\dfrac{1/(n+1)!}{1/n!}=\lim\dfrac{1}{n+1}=0\)，故 \(R=+\infty\)，收敛域为 \((-\infty,+\infty)\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.24　收敛半径为 0</div>
+  <p class="stmt">求 \(\displaystyle\sum_{n=0}^{\infty}n^n x^n\) 的收敛半径.</p>
+  <p class="sol"><span class="mk">解</span>用根值：\(\sqrt[n]{|a_n|}=n\to+\infty\)，故 \(\rho=+\infty\)，\(R=0\)，级数只在 \(x=0\) 收敛.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.25　带平移与端点判别</div>
+  <p class="stmt">求 \(\displaystyle\sum_{n=1}^{\infty}\frac{(x-2)^n}{n}\) 的收敛域.</p>
+  <p class="sol"><span class="mk">解</span>令 \(t=x-2\)，级数化为 \(\sum t^n/n\).\(\rho=\lim\dfrac{n}{n+1}=1\)，\(R=1\).端点：\(t=1\) 时为 \(\sum1/n\) 发散；\(t=-1\) 时为 \(\sum(-1)^n/n\) 条件收敛.故 \(t\in[-1,1)\)，即 \(x\in[1,3)\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.26　上极限求收敛半径</div>
+  <p class="stmt">求 \(\displaystyle\sum_{n=1}^{\infty}\frac{2^n+(-1)^n}{n^2}x^n\) 的收敛半径.</p>
+  <p class="sol"><span class="mk">解</span>\(\sqrt[n]{|a_n|}=\sqrt[n]{\dfrac{2^n+(-1)^n}{n^2}}\to2\)（因 \(2^n\) 主导），故 \(\rho=2\)，\(R=\dfrac12\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.27　逐项求导求和函数（考研经典）</div>
+  <p class="stmt">已知 \(\displaystyle S(x)=\sum_{n=0}^{\infty}x^n=\frac{1}{1-x}\ (|x|\lt1)\)，求 \(\sum\limits_{n=1}^{\infty}n x^{n-1}\) 与 \(\sum\limits_{n=1}^{\infty}n x^n\) 的和函数.</p>
+  <p class="sol"><span class="mk">解</span>对已知式两边逐项求导：</p>
+  \[S'(x)=\sum_{n=1}^{\infty}n x^{n-1}=\frac{1}{(1-x)^2},\qquad |x|\lt1.\]
+  <p>乘以 \(x\) 得</p>
+  \[\sum_{n=1}^{\infty}n x^n=\frac{x}{(1-x)^2},\qquad |x|\lt1.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.28　逐项积分求和函数</div>
+  <p class="stmt">求 \(\displaystyle\sum_{n=0}^{\infty}\frac{(-1)^n}{2n+1}x^{2n+1}\) 的和函数（\(|x|\lt1\)）.</p>
+  <p class="sol"><span class="mk">解</span>设 \(S(x)=\sum\limits_{n=0}^{\infty}\dfrac{(-1)^n}{2n+1}x^{2n+1}\).逐项求导：</p>
+  \[S'(x)=\sum_{n=0}^{\infty}(-1)^n x^{2n}=\frac{1}{1+x^2}.\]
+  <p>又 \(S(0)=0\)，故 \(S(x)=\displaystyle\int_0^x\frac{\mathrm{d}t}{1+t^2}=\arctan x\)，即该幂级数的和函数为 \(\arctan x\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 阿贝尔定理与信号系统的稳定性（Z 变换）</div>
+  <details><summary>展开查看：收敛域如何决定因果稳定系统</summary>
+  <div class="body">
+    <p>离散时间 LTI 系统的冲激响应 \(h[n]\) 的 Z 变换 \(H(z)=\sum h[n]z^{-n}\) 本质是幂级数（令 \(x=z^{-1}\)）.<b>阿贝尔定理</b>告诉我们：若系统在某个 \(z\) 值收敛，则在更靠近原点的一侧必绝对收敛.工程上"<b>收敛域包含单位圆 \(|z|=1\)</b>"正是系统<b>稳定</b>的判据——与幂级数收敛半径的几何直观完全一致.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §13.5 ============ -->
+<div class="labx">
+  <div class="lab">傅里叶级数 · 方波</div>
+  <div class="desc">方波的傅里叶部分和 (\(S_n)=\sum_{k=1}^{n}\dfrac{\sin((2k-1)x)}{2k-1} 随项数增加逼近方波（跳变处可见吉布斯现象）.</div>
+  <canvas id="cv_p135" width="720" height="320"></canvas>
+  <div class="ctrl"><label>项数 n = <span id="vo_p135">5</span></label>
+  <input type="range" id="rg_p135" min="1" max="25" step="1" value="5"></div>
+  <script data-ia>
+  (function(){
+    var cv=document.getElementById('cv_p135'); if(!cv) return;
+    var ctx=cv.getContext('2d');
+    var rg=document.getElementById('rg_p135');
+    var vo=document.getElementById('vo_p135');
+    var W=cv.width,H=cv.height;
+    var xmin=-3.2,xmax=3.2,ymin=-1.4,ymax=1.4;
+    function term(k,x){ return Math.sin((2*k-1)*x)/(2*k-1); }
+    function X(x){return (x-xmin)/(xmax-xmin)*W;}
+    function Y(y){return H-(y-ymin)/(ymax-ymin)*H;}
+    function draw(){
+      var n=parseInt(rg.value,10); if(vo)vo.textContent=n;
+      ctx.clearRect(0,0,W,H);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+      ctx.fillStyle='#fafcfa';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(X(xmin),Y(0));ctx.lineTo(X(xmax),Y(0));ctx.stroke();
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;ctx.beginPath();var fi=true;
+      for(var px=0;px<=W;px++){var x=xmin+px/W*(xmax-xmin);var s=0;
+        for(var k=1;k<=n;k++){s+=term(k,x);}
+        if(!isFinite(s)){fi=true;continue;}
+        var py=Y(s);
+        if(fi){ctx.moveTo(px,py);fi=false;}else{ctx.lineTo(px,py);}}
+      ctx.stroke();
+    }
+    if(rg)rg.addEventListener('input',draw); requestAnimationFrame(function(){draw();});
+  })();
+  </script>
+</div>
+
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 控制系统：z 变换幂级数与收敛域</summary>
+<p><b>场景：</b> 你在仿真软件里搭一个数字电流环，采样率定了，最担心它调大增益就振荡——因果 LTI 系统的冲激响应 \(h[n]=a^{n}u[n]\) 的 z 变换 \(H(z)=\sum_{n=0}^{\infty}a^{n}z^{-n}\) 正是一个<b>幂级数</b>.由比值判别法可判定其收敛域与收敛半径；\(H(z)\) 作为「和函数」在 \(z=1\)（直流）处的取值就是系统直流增益.取 \(a=0.9\)（稳定极点）算收敛半径与直流增益.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>极点位置</td><td>\(a\)</td><td>\(0.9\)</td></tr>
+<tr><td>代入点</td><td>\(z\)</td><td>\(1\)（直流）</td></tr>
+</table>
+<p class="sol"> 幂级数 \(H(z)=\sum_{n=0}^{\infty}a^{n}z^{-n}\)，相邻项比</p>
+\[\left|\frac{a^{n+1}z^{-(n+1)}}{a^{n}z^{-n}}\right|=\frac{|a|}{|z|}.\]
+<p>比值判别法：收敛当且仅当 \(|a|/|z|\lt1\)，即 \(|z|\gt|a|=0.9\)，故<b>收敛半径</b> \(R=0.9\).</p>
+<p>和函数（几何级数求和）：</p>
+\[H(z)=\frac{1}{1-az^{-1}}=\frac{z}{z-a},\qquad |z|\gt0.9.\]
+<p>直流增益（代入 \(z=1\)）：</p>
+\[H(1)=\frac{1}{1-0.9}=10.\]
+<p><b>工程结论：</b> z 变换就是「以 \(z^{-1}\) 为变量的幂级数」；<b>收敛半径 = 最远极点到原点的距离</b>（本例 0.9），极点落于单位圆内（\(|a|\lt1\)）才稳定.和函数 \(z/(z-a)\) 让「频域增益」一键可得：直流增益 10 倍意味着该环节对恒定输入有十倍稳态放大.控制工程师调 PID 时，本质是在挪这些极点、从而改变幂级数的收敛半径与和函数形状.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s134" data-ch="13" data-n="5"></div>
+<h2 id="s135"><span class="num">§13.5</span>函数的幂级数展开式</h2>
+    
+<div class="ex"><div class="lab">引例一　芯片浮点单元：用 8 项泰勒展开算 \(e^x\) 够不够准</div>
+  <p class="stmt">芯片中的自然指数指令常以有限项麦克劳林展开实现.取 \(x=1\)，用前 \(N\) 项</p>
+  \[e\approx\sum_{k=0}^{N-1}\frac{1}{k!}\]
+  <p>逼近真值 \(e=2.718281828\cdots\).看 \(N=8\) 时误差有多大.</p>
+  <p><b>具体模拟计算</b>：</p>
+  <table class="dt">
+    <tr><th>项数 \(N\)</th><th>部分和</th><th>绝对误差</th></tr>
+    <tr><td>3</td><td>2.500000</td><td>2.18e−1</td></tr>
+    <tr><td>5</td><td>2.708333</td><td>9.95e−3</td></tr>
+    <tr><td>8</td><td>2.718279</td><td>3.06e−6</td></tr>
+    <tr><td>10</td><td>2.718282</td><td>2.73e−8</td></tr>
+  </table>
+  <p>\(N=8\) 时误差已小于 \(3.1\times10^{-6}\)，满足单精度浮点要求.这背后是 \(e^x=\sum x^n/n!\) 的麦克劳林展开——<b>函数被"写成幂级数"，硬件才能用加法器算超越函数</b>.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　机器人逆运动学：用麦克劳林展开近似 \(\sin x\)</div>
+  <p class="stmt">机械臂逆解中常用 \(\sin\theta\approx\theta-\theta^3/6\).取 \(\theta=0.3\,\mathrm{rad}\)，看三阶近似误差.</p>
+  <p>真值 \(\sin0.3=0.295520\)；三阶近似 \(0.3-0.3^3/6=0.3-0.0045=0.2955\)，误差约 \(2\times10^{-5}\).这是由 \(\sin x=\sum(-1)^n x^{2n+1}/(2n+1)!\) 截断得到的——再次说明<b>把函数展开成幂级数即可做快速近似计算</b>.</p>
+</div>
+
+<h3>一、泰勒级数与展开定理</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.8</span>泰勒级数 / 麦克劳林级数</div>
+  <p>若 \(f(x)\) 在 \(x_0\) 的某邻域内有任意阶导数，则称级数</p>
+  \[\sum_{n=0}^{\infty}\frac{f^{(n)}(x_0)}{n!}(x-x_0)^n\]
+  <p>为 \(f(x)\) 在 \(x_0\) 处的<b>泰勒级数</b>；当 \(x_0=0\) 时称为<b>麦克劳林级数</b>.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.15</span>泰勒展开定理</div>
+  <p>\(f(x)\) 能在 \(x_0\) 邻域内展开成泰勒级数（即泰勒级数收敛于 \(f(x)\)）的充要条件是：余项</p>
+  \[R_n(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}(x-x_0)^{n+1}\to0\quad(n\to\infty).\]
+  <p>常用拉格朗日型余项估计截断误差.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设 \(f(x)\) 在 \(x_0\) 邻域内有任意阶导数，其 \(n\) 阶泰勒公式为</p>
+\[f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k+R_n(x),\]
+<p>其中 \(R_n(x)\) 为余项.</p>
+<p><span class="stp">第一步（必要性）：</span>若 \(f(x)\) 在该邻域内可展开成泰勒级数，即</p>
+\[f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k,\]
+<p>则部分和 \(S_n(x)=\sum\limits_{k=0}^{n}\dfrac{f^{(k)}(x_0)}{k!}(x-x_0)^k\) 满足 \(S_n(x)\to f(x)\).由泰勒公式 \(f(x)=S_n(x)+R_n(x)\)，得</p>
+\[R_n(x)=f(x)-S_n(x)\to f(x)-f(x)=0\quad(n\to\infty).\]
+<p>故余项必趋于 \(0\).</p>
+<p><span class="stp">第二步（充分性）：</span>若 \(R_n(x)\to0\)，则</p>
+\[S_n(x)=f(x)-R_n(x)\to f(x)\quad(n\to\infty),\]
+<p>即泰勒级数收敛于 \(f(x)\)，也就是 \(f(x)\) 可展开成该泰勒级数.</p>
+<p>综上，展开成泰勒级数的充要条件是余项 \(R_n(x)\to0\).</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.16</span>展开的唯一性</div>
+  <p>若 \(f(x)\) 在某区间内能展开成幂级数 \(\sum a_n(x-x_0)^n\)，则系数必为 \(a_n=\dfrac{f^{(n)}(x_0)}{n!}\).即展开式唯一，可用任何简便方法（代换、逐项求导/积分）求得.</p>
+<details class="prf"><summary>证明</summary>
+<div class="prf-b">
+<p>设在 \(x_0\) 的某邻域内</p>
+\[f(x)=\sum_{n=0}^{\infty}a_n(x-x_0)^n.\]
+<p><span class="stp">第一步：</span>幂级数在其收敛区间内和函数连续，且可<b>逐项求导</b>（定理 13.14）.先令 \(x=x_0\)，得</p>
+\[f(x_0)=a_0.\]
+<p><span class="stp">第二步（逐次求导）：</span>对等式两边在收敛区间内逐项求导：</p>
+\[f'(x)=\sum_{n=1}^{\infty}n a_n(x-x_0)^{n-1}.\]
+<p>再令 \(x=x_0\)，除 \(n=1\) 项外其余含 \((x-x_0)\) 的项均为 \(0\)，故</p>
+\[f'(x_0)=a_1.\]
+<p><span class="stp">第三步（归纳）：</span>继续逐次求导，第 \(k\) 次求导后令 \(x=x_0\)，得</p>
+\[f^{(k)}(x_0)=k!\,a_k,\quad\text{即}\quad a_k=\frac{f^{(k)}(x_0)}{k!}.\]
+<p>所有系数被唯一确定，故展开式唯一.因此可用任何简便方法（代换、逐项求导/积分）求得泰勒展开.</p>
+<p class="qed">证毕</p>
+</div>
+</details>
+</div>
+
+<h3>二、五个基本展开式</h3>
+<div class="def"><div class="lab"><span class="n">基本展开式</span>麦克劳林展开（牢记）</div>
+  <p>以下均在所示收敛域内成立（多为 \(|x|\lt1\) 或全体实数）：</p>
+  <p><b>(1)</b> \(\displaystyle \frac{1}{1-x}=\sum_{n=0}^{\infty}x^n=1+x+x^2+\cdots\quad(|x|\lt1)\)；</p>
+  <p><b>(2)</b> \(\displaystyle e^x=\sum_{n=0}^{\infty}\frac{x^n}{n!}=1+x+\frac{x^2}{2!}+\cdots\quad(x\in\mathbb{R})\)；</p>
+  <p><b>(3)</b> \(\displaystyle \sin x=\sum_{n=0}^{\infty}\frac{(-1)^n}{(2n+1)!}x^{2n+1}=x-\frac{x^3}{3!}+\frac{x^5}{5!}-\cdots\quad(x\in\mathbb{R})\)；</p>
+  <p><b>(4)</b> \(\displaystyle \cos x=\sum_{n=0}^{\infty}\frac{(-1)^n}{(2n)!}x^{2n}=1-\frac{x^2}{2!}+\frac{x^4}{4!}-\cdots\quad(x\in\mathbb{R})\)；</p>
+  <p><b>(5)</b> \(\displaystyle \ln(1+x)=\sum_{n=1}^{\infty}\frac{(-1)^{n-1}}{n}x^n=x-\frac{x^2}{2}+\frac{x^3}{3}-\cdots\quad(-1\lt x\le1)\)；</p>
+  <p><b>(5')</b> \(\displaystyle (1+x)^\alpha=1+\alpha x+\frac{\alpha(\alpha-1)}{2!}x^2+\cdots\quad(|x|\lt1)\)，其中 \(\alpha\) 为任意实数（\(\alpha=-1\) 即式 (1)，\(\alpha=1/2\) 给出 \(\sqrt{1+x}\)）.</p>
+</div>
+<div class="note"><b>记忆要诀：</b>① 等比展开是所有展开的基础；② \(e^x\)、\(\sin x\)、\(\cos x\) 全是"整函数"，收敛域为全体实数；③ \(\ln(1+x)\)、\((1+x)^\alpha\) 在 \(x=\pm1\) 需单独判别；④ 奇偶对称：\(\sin x\) 只含奇次幂，\(\cos x\) 只含偶次幂.</div>
+
+<h3>三、间接展开法</h3>
+<p>多数情形不直接套泰勒公式算高阶导数，而是用<b>变量代换、四则运算、逐项求导/积分</b>，从基本展开式"变"出来.</p>
+
+<h3>四、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.29　代换法：\(e^{-x}\)</div>
+  <p class="stmt">将 \(f(x)=e^{-x}\) 展开为麦克劳林级数.</p>
+  <p class="sol"><span class="mk">解</span>在 \(e^x=\sum x^n/n!\) 中令 \(x\mapsto -x\)：</p>
+  \[e^{-x}=\sum_{n=0}^{\infty}\frac{(-x)^n}{n!}=\sum_{n=0}^{\infty}\frac{(-1)^n}{n!}x^n,\qquad x\in\mathbb{R}.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.30　代换法：\(1/(1+x^2)\)</div>
+  <p class="stmt">将 \(f(x)=\dfrac{1}{1+x^2}\) 展开为麦克劳林级数，并指出收敛域.</p>
+  <p class="sol"><span class="mk">解</span>在 \(\dfrac{1}{1-t}=\sum t^n\)（\(|t|\lt1\)）中令 \(t=-x^2\)：</p>
+  \[\frac{1}{1+x^2}=\sum_{n=0}^{\infty}(-1)^n x^{2n},\qquad |x|\lt1.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.31　复合代换：\(\sin x^2\)</div>
+  <p class="stmt">将 \(f(x)=\sin x^2\) 展开为麦克劳林级数.</p>
+  <p class="sol"><span class="mk">解</span>在 \(\sin t=\sum\dfrac{(-1)^n}{(2n+1)!}t^{2n+1}\) 中令 \(t=x^2\)：</p>
+  \[\sin x^2=\sum_{n=0}^{\infty}\frac{(-1)^n}{(2n+1)!}x^{4n+2},\qquad x\in\mathbb{R}.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.32　逐项积分导出 \(\ln(1+x)\)</div>
+  <p class="stmt">由 \(\dfrac{1}{1+x}=\sum(-1)^n x^n\ (|x|\lt1)\)，导出 \(\ln(1+x)\) 的展开式.</p>
+  <p class="sol"><span class="mk">解</span>两边从 \(0\) 到 \(x\) 逐项积分：</p>
+  \[\ln(1+x)=\int_0^x\frac{\mathrm{d}t}{1+t}=\sum_{n=0}^{\infty}(-1)^n\int_0^x t^n\,\mathrm{d}t
+    =\sum_{n=0}^{\infty}\frac{(-1)^n}{n+1}x^{n+1}=\sum_{n=1}^{\infty}\frac{(-1)^{n-1}}{n}x^n.\]
+  <p>收敛域为 \(-1\lt x\le1\)（端点 \(x=1\) 由莱布尼茨法收敛）.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.33　逐项积分导出 \(\arctan x\)</div>
+  <p class="stmt">将 \(f(x)=\arctan x\) 展开为麦克劳林级数.</p>
+  <p class="sol"><span class="mk">解</span>由 \(\dfrac{1}{1+t^2}=\sum(-1)^n t^{2n}\) 从 \(0\) 到 \(x\) 积分：</p>
+  \[\arctan x=\sum_{n=0}^{\infty}\frac{(-1)^n}{2n+1}x^{2n+1}=x-\frac{x^3}{3}+\frac{x^5}{5}-\cdots,\quad |x|\le1.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.34　二项展开：\(\sqrt{1+x}\)</div>
+  <p class="stmt">将 \(f(x)=\sqrt{1+x}\) 展开到 \(x^3\) 项.</p>
+  <p class="sol"><span class="mk">解</span>取 \((1+x)^\alpha\) 中 \(\alpha=1/2\)：</p>
+  \[\sqrt{1+x}=1+\frac12 x+\frac{\frac12(-\frac12)}{2!}x^2+\frac{\frac12(-\frac12)(-\frac32)}{3!}x^3+\cdots
+    =1+\frac{x}{2}-\frac{x^2}{8}+\frac{x^3}{16}+\cdots,\quad |x|\lt1.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.35　分式展开（考研综合）</div>
+  <p class="stmt">将 \(f(x)=\dfrac{x}{1-x^2}\) 展开为麦克劳林级数.</p>
+  <p class="sol"><span class="mk">解</span>先拆项：\(\dfrac{x}{1-x^2}=\dfrac12\left(\dfrac{1}{1-x}-\dfrac{1}{1+x}\right)\).分别展开：</p>
+  \[\frac{1}{1-x}=\sum x^n,\qquad \frac{1}{1+x}=\sum(-1)^n x^n\quad(|x|\lt1).\]
+  <p>相减得 \(\dfrac{1}{1-x}-\dfrac{1}{1+x}=\sum\bigl(1-(-1)^n\bigr)x^n=2\sum_{k=0}^{\infty}x^{2k+1}\)，故</p>
+  \[\frac{x}{1-x^2}=\sum_{k=0}^{\infty}x^{2k+1}=x+x^3+x^5+\cdots,\qquad |x|\lt1.\]
+</div>
+
+<div class="case"><div class="lab">应用探微 · 泰勒展开的截断误差如何受控</div>
+  <details><summary>展开查看：用拉格朗日余项估计芯片计算误差</summary>
+  <div class="body">
+    <p>以 \(e^x\) 在 \(x=1\) 处取前 \(N\) 项为例，拉格朗日余项</p>
+    \[R_{N-1}=\frac{e^\xi}{N!},\qquad 0\lt\xi\lt1.\]
+    <p>因 \(e^\xi\lt e\lt3\)，截断误差上界为 \(\dfrac{3}{N!}\).取 \(N=8\) 时 \(\dfrac{3}{8!}=\dfrac{3}{40320}\approx7.4\times10^{-5}\)，与引例一实测误差同量级（实测更小，因 \(\xi\lt1\) 偏保守）.<b>余项公式让硬件工程师能反推"需要几项才满足精度"</b>.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §13.6 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 芯片设计：sin/exp 的泰勒查表实现</summary>
+<p><b>场景：</b> 传感器里的 MCU 没有浮点单元，可固件里处处要算 \(\sin\)、\(\exp\)，只能靠「小角度查表 + 泰勒修正」：先在 ROM 存几个基准点，再用麦克劳林多项式 \(\sin x=\sum_{k=0}^{n}(-1)^{k}\dfrac{x^{2k+1}}{(2k+1)!}\) 在基准附近插值.取 \(x=\pi/6\approx0.5236\)（\(30^{\circ}\)），看截断到几项能达到所需精度——这直接决定 ROM 规模与乘加级数.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>输入角</td><td>\(x\)</td><td>\(\pi/6\approx0.5236\)</td></tr>
+<tr><td>截断阶数</td><td>\(n\)</td><td>\(3\)（到 \(x^{5}\) 项）</td></tr>
+<tr><th>真值</th><th>\(\sin(\pi/6)\)</th><th>\(0.500000\)</th></tr>
+</table>
+<p class="sol"> 麦克劳林取前 3 项：</p>
+\[\sin x\approx x-\frac{x^{3}}{3!}+\frac{x^{5}}{5!}.\]
+<p>代入 \(x=0.5236\)：</p>
+\[x^{3}=0.14355,\quad \frac{x^{3}}{6}=0.023925;\qquad x^{5}=0.03935,\quad \frac{x^{5}}{120}=0.0003279.\]
+\[T_{3}=0.5236-0.023925+0.0003279=0.500003.\]
+<p>与真值 \(0.5\) 相差 \(3\times10^{-6}\).拉格朗日余项</p>
+\[|R_{3}|\le\frac{|x|^{7}}{7!}=\frac{0.5236^{7}}{5040}\approx1.2\times10^{-7},\]
+<p>实测误差在其内.</p>
+<p><b>工程结论：</b> 仅需 3 项泰勒（2 次乘加 + 1 次除法）就把 \(\sin30^{\circ}\) 算到 \(10^{-6}\)，证明<b>「查表打底 + 低阶泰勒修正」是芯片三角函数的最优性价比方案</b>.阶数 \(n\) 即「硬件乘加级数」——把 \(n\) 从 3 提到 5 精度再升 4 个量级但多耗 2 级流水线.这就是 §13.5「函数展开成幂级数」在硅片上的物理形态.</p>
+<p class="cn-point">3 项泰勒、2 次乘加就把 \(\sin30^{\circ}\) 算到 \(10^{-6}\)——在浮点单元受限的国产芯片上，级数就是最硬的算力.ROM 里每多存一个基准点，都是往自主芯片的账上加一分.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch13-taylor" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>泰勒阶数 n <input type="range" id="ch13-taylor-n" min="1" max="6" step="1" value="3" style="width:220px;accent-color:#0F6E56"> <b id="ch13-taylor-n-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch13-taylor-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch13-taylor'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var n=+document.getElementById('ch13-taylor-n').value;
+      var mL=60,mR=16,mT=40,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      function X(x){ return mL+(x+1.2)/3.4*pW; }
+      function Y(v){ return mT+pH - (v+1.2)/2.6*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // sin 真值
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2.5;
+      ctx.beginPath();
+      for(var x=-1.2;x<=2.2;x+=0.03){ var xx=X(x),yy=Y(Math.sin(x)); x===-1.2?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy); }
+      ctx.stroke();
+      // 泰勒多项式（奇数项）
+      ctx.strokeStyle='#eab308';ctx.lineWidth=2;
+      ctx.beginPath();
+      for(var x2=-1.2;x2<=2.2;x2+=0.03){
+        var s=x2, term=x2;
+        for(var k=1;k<=n;k++){ term*=-x2*x2/((2*k)*(2*k+1)); s+=term; }
+        var xx2=X(x2),yy2=Y(s);
+        x2===-1.2?ctx.moveTo(xx2,yy2):ctx.lineTo(xx2,yy2);
+      }
+      ctx.stroke();
+      // x=π/6 标记
+      var xp=Math.PI/6, sx=xp, term2=xp;
+      for(var k2=1;k2<=n;k2++){ term2*=-xp*xp/((2*k2)*(2*k2+1)); sx+=term2; }
+      ctx.fillStyle='#dc2626';
+      ctx.beginPath();ctx.arc(X(xp),Y(sx),5,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#dc2626';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(X(xp),Y(sx));ctx.lineTo(X(xp),Y(0));ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#dc2626';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('x=π/6',X(xp),Y(0)+14);
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('1',mL-6,Y(1)); ctx.fillText('0',mL-6,Y(0));
+      ctx.textAlign='center';ctx.fillText('x',W-mR+10,mT+pH+15);
+      // 数值
+      var err=Math.abs(sx-0.5);
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('N='+n.toFixed(0)+' 项   sin(π/6) ≈ '+sx.toFixed(6)+'   误差 '+err.toExponential(2),20,22);
+      var out=document.getElementById('ch13-taylor-out');
+      var tip = err<1e-5 ? '✔ 3 项即可达 10⁻⁶——查表打底 + 低阶泰勒修正就是芯片三角函数的性价比之王' : '阶数不足，误差偏大';
+      out.textContent = tip;
+    }
+    document.getElementById('ch13-taylor-n').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s135" data-ch="13" data-n="5"></div>
+<h2 id="s136"><span class="num">§13.6</span>幂级数的应用</h2>
+    
+<div class="ex"><div class="lab">引例一　用幂级数算 \(e\) 到六位有效数字要几项</div>
+  <p class="stmt">取 \(e^x\) 展开在 \(x=1\) 处：</p>
+  \[e=\sum_{n=0}^{\infty}\frac{1}{n!}.\]
+  <p>问取多少项可使误差小于 \(5\times10^{-7}\)（六位有效数字）.</p>
+  <p>由余项上界 \(\dfrac{3}{(N+1)!}\lt5\times10^{-7}\).试算：\(10!=3.63\times10^6\)，\(\dfrac{3}{10!}\approx8.3\times10^{-7}\)；\(11!=3.99\times10^7\)，\(\dfrac{3}{11!}\approx7.5\times10^{-8}\lt5\times10^{-7}\).故取前 \(11\) 项（\(n=0\) 到 \(10\)）即可.给出部分和：</p>
+  <table class="dt">
+    <tr><th>\(N\)（项数）</th><th>部分和</th><th>与 \(e\) 误差</th></tr>
+    <tr><td>6</td><td>2.716667</td><td>1.6e−3</td></tr>
+    <tr><td>9</td><td>2.718279</td><td>3.1e−6</td></tr>
+    <tr><td>11</td><td>2.718282</td><td>7.4e−8</td></tr>
+  </table>
+  <p>这正是计算器中常数 \(e\) 的实现原理之一.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　用幂级数算误差函数 \(\mathrm{erf}\) 的定积分</div>
+  <p class="stmt">芯片信号完整性分析中常用误差函数 \(\mathrm{erf}(x)=\dfrac{2}{\sqrt{\pi}}\int_0^x e^{-t^2}\,\mathrm{d}t\).求 \(\mathrm{erf}(0.5)\) 的近似值（保留四位小数）.</p>
+  <p class="sol"><span class="mk">解</span>先展开被积函数：把 \(e^{-t^2}=\sum\limits_{n=0}^{\infty}\dfrac{(-1)^n}{n!}t^{2n}\) 逐项积分，</p>
+  \[\mathrm{erf}(x)=\frac{2}{\sqrt{\pi}}\sum_{n=0}^{\infty}\frac{(-1)^n}{n!(2n+1)}x^{2n+1}.\]
+  <p>代入 \(x=0.5\)，取前 3 项：</p>
+  \[\mathrm{erf}(0.5)\approx\frac{2}{\sqrt{\pi}}\left(0.5-\frac{0.5^3}{3}+\frac{0.5^5}{10}\right)
+    =1.12838\,(0.5-0.041667+0.003125)=1.12838\times0.461458\approx0.5207.\]
+  <p>真值约 \(0.5205\)，误差在第四位，满足要求.无法用初等原函数表达的积分，<b>幂级数成了唯一的解析计算途径</b>.</p>
+</div>
+
+<h3>一、近似计算</h3>
+<p>把函数展开成幂级数后，取前若干项作多项式近似，余项给出误差界.步骤：① 选展开点使 \(x\) 落在收敛且收敛快的区域；② 确定项数使余项小于允许误差；③ 逐项计算.</p>
+
+<h3>二、欧拉公式</h3>
+<div class="def"><div class="lab"><span class="n">欧拉公式</span>由幂级数导出</div>
+  <p>将 \(e^x\)、\(\cos x\)、\(\sin x\) 的麦克劳林展开代入 \(e^{ix}\)（\(i^2=-1\)）：</p>
+  \[e^{ix}=\sum_{n=0}^{\infty}\frac{(ix)^n}{n!}
+    =\sum_{k=0}^{\infty}\frac{(-1)^k x^{2k}}{(2k)!}+i\sum_{k=0}^{\infty}\frac{(-1)^k x^{2k+1}}{(2k+1)!}
+    =\cos x+i\sin x.\]
+  <p>即<b>欧拉公式</b> \(e^{ix}=\cos x+i\sin x\).由此可得"数学最美的等式" \(e^{i\pi}+1=0\).</p>
+</div>
+
+<h3>三、幂级数应用于微分方程</h3>
+<p>对无初等原函数的微分方程，可设解为幂级数 \(y=\sum a_n x^n\)，代入方程比较同次幂系数，逐项确定 \(a_n\).下面是两道典型例题.</p>
+
+<h3>四、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.36　快速算 \(\ln 2\)（考研技巧）</div>
+  <p class="stmt">用 \(\ln(1+x)\) 展开直接取 \(x=1\) 收敛极慢，改用恒等式 \(\ln\dfrac{1+x}{1-x}=2\left(x+\dfrac{x^3}{3}+\dfrac{x^5}{5}+\cdots\right)\)，取 \(x=1/3\) 求 \(\ln2\) 的近似值.</p>
+  <p class="sol"><span class="mk">解</span>由 \(\ln\dfrac{1+x}{1-x}=2\sum\limits_{k=0}^{\infty}\dfrac{x^{2k+1}}{2k+1}\).令 \(x=1/3\)，则</p>
+  \[\ln2=2\left(\frac13+\frac{1}{3\cdot3^3}+\frac{1}{5\cdot3^5}+\cdots\right)
+    =2(0.333333+0.012346+0.000823+\cdots)=0.6934.\]
+  <p>仅 3 项即达 \(0.6934\)，真值 \(0.6931\)——远比直接 \(\sum(-1)^{n-1}/n\) 快.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.37　用幂级数算 \(\pi\)</div>
+  <p class="stmt">由 \(\arctan x\) 展开，取收敛更快的 \(\arctan\dfrac{1}{\sqrt{3}}=\dfrac{\pi}{6}\)，求 \(\pi\) 的近似.</p>
+  <p class="sol"><span class="mk">解</span>\(\dfrac{\pi}{6}=\dfrac{1}{\sqrt{3}}-\dfrac{1}{3(\sqrt{3})^3}+\dfrac{1}{5(\sqrt{3})^5}-\cdots\).取前 2 项：</p>
+  \[\frac{\pi}{6}\approx0.577350-\frac{1}{3\cdot5.196}=0.577350-0.064150=0.513200,\]
+  <p>\(\pi\approx3.0792\)（偏粗）；加第三项 \(+\dfrac{1}{5\cdot15\sqrt{3}}\approx0.00769\) 得 \(\pi\approx3.125\)，已接近.说明选点技巧对收敛速度影响巨大.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.38　用幂级数算定积分</div>
+  <p class="stmt">计算 \(\displaystyle I=\int_0^{0.5}e^{-x^2}\,\mathrm{d}x\) 的近似值（取前三项）.</p>
+  <p class="sol"><span class="mk">解</span>展开 \(e^{-x^2}=\sum\dfrac{(-1)^n}{n!}x^{2n}\)，逐项积分：</p>
+  \[I=\sum_{n=0}^{\infty}\frac{(-1)^n}{n!(2n+1)}(0.5)^{2n+1}
+    =0.5-\frac{0.5^3}{3}+\frac{0.5^5}{10}-\cdots\approx0.5-0.041667+0.003125=0.461458.\]
+  <p>真值约 \(0.461281\)，三项误差约 \(1.8\times10^{-4}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.39　幂级数解微分方程（初值问题）</div>
+  <p class="stmt">用幂级数法求解 \(y'=y,\ y(0)=1\).</p>
+  <p class="sol"><span class="mk">解</span>设 \(y=\sum\limits_{n=0}^{\infty}a_n x^n\)，则 \(y'=\sum\limits_{n=1}^{\infty}n a_n x^{n-1}=\sum\limits_{n=0}^{\infty}(n+1)a_{n+1}x^n\).代入方程得 \((n+1)a_{n+1}=a_n\)，即 \(a_{n+1}=a_n/(n+1)\).由 \(y(0)=1\) 得 \(a_0=1\)，递推得 \(a_n=1/n!\).故</p>
+  \[y=\sum_{n=0}^{\infty}\frac{x^n}{n!}=e^x.\]
+  <p>与已知解一致，验证了展开式的正确性.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.40　幂级数解二阶方程</div>
+  <p class="stmt">用幂级数法求解 \(y''+y=0,\ y(0)=0,\ y'(0)=1\).</p>
+  <p class="sol"><span class="mk">解</span>设 \(y=\sum a_n x^n\)，则 \(y''=\sum(n+2)(n+1)a_{n+2}x^n\).代入方程得 \((n+2)(n+1)a_{n+2}+a_n=0\)，即 \(a_{n+2}=-\dfrac{a_n}{(n+2)(n+1)}\).由初值 \(a_0=0,\ a_1=1\)，递推得 \(a_{2k}=0,\ a_{2k+1}=\dfrac{(-1)^k}{(2k+1)!}\).故</p>
+  \[y=\sum_{k=0}^{\infty}\frac{(-1)^k}{(2k+1)!}x^{2k+1}=\sin x.\]
+</div>
+
+<div class="ex"><div class="lab">例 13.41　求 \(\sum n^2 x^n\) 的和函数（考研综合）</div>
+  <p class="stmt">求幂级数 \(\displaystyle\sum_{n=1}^{\infty}n^2 x^n\) 的和函数（\(|x|\lt1\)）.</p>
+  <p class="sol"><span class="mk">解</span>由 \(\sum x^n=\dfrac{1}{1-x}\)，逐项求导得 \(\sum n x^{n-1}=\dfrac{1}{(1-x)^2}\)，即 \(\sum n x^n=\dfrac{x}{(1-x)^2}\).再逐项求导：</p>
+  \[\sum n^2 x^{n-1}=\frac{\mathrm{d}}{\mathrm{d}x}\left(\frac{x}{(1-x)^2}\right)
+    =\frac{(1-x)^2+2x(1-x)}{(1-x)^4}=\frac{1+x}{(1-x)^3}.\]
+  <p>乘以 \(x\) 得 \(\displaystyle\sum_{n=1}^{\infty}n^2 x^n=\frac{x(1+x)}{(1-x)^3},\ |x|\lt1\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 误差函数 erf 与芯片信号完整性</div>
+  <details><summary>展开查看：为什么高速链路要用幂级数算 erf</summary>
+  <div class="body">
+    <p>在高速 SerDes 接收端，码间串扰导致的误码率与补误差函数 \(\mathrm{erfc}(x)=1-\mathrm{erf}(x)\) 直接相关.\(\mathrm{erf}\) 没有初等原函数，硬件/EDA 工具正是用其幂级数（见引例二）</p>
+    \[\mathrm{erf}(x)=\frac{2}{\sqrt{\pi}}\sum_{n=0}^{\infty}\frac{(-1)^n}{n!(2n+1)}x^{2n+1}\]
+    <p>在定点 DSP 中截断到几项，实时估算误码率.收敛半径无穷，使该近似在全工作区间都有效.</p>
+  </div>
+  </details>
+</div>
+
+    <!-- ============ §13.7 ============ -->
+    
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 大模型：Transformer 正弦位置编码的频率基</summary>
+<p><b>场景：</b> 预训练日志里 loss 一路在掉，可你心里没底：同一个「位置」出现在句首还是句尾，模型真的分得清吗？Transformer 用<b>正弦/余弦位置编码</b>把「词的位置」注入注意力：\(\mathrm{PE}_{(pos,2i)}=\sin\bigl(pos/\omega_{i}\bigr)\)，\(\mathrm{PE}_{(pos,2i+1)}=\cos\bigl(pos/\omega_{i}\bigr)\)，其中 \(\omega_{i}=10000^{2i/d}\).对每个维度 \(i\)，随位置 \(pos\) 变化的就是一条正弦波——整个位置编码是一组<b>不同频率的傅里叶基</b>按几何级数排布.取 \(d=512\)，看频率跨度.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>模型维度</td><td>\(d\)</td><td>\(512\)</td></tr>
+<tr><td>基准频率</td><td>\(\theta\)</td><td>\(10000\)</td></tr>
+<tr><td>维度索引</td><td>\(i\)</td><td>\(0,\ 255\)</td></tr>
+</table>
+<p class="sol"> 角频率 \(\omega_{i}=10000^{2i/d}\)，相邻维度频率比</p>
+\[\frac{\omega_{i+1}}{\omega_{i}}=10000^{2/d}=10000^{2/512}=10000^{0.003906}=10^{0.015625}=1.0366.\]
+<p>即频率按<b>等比级数</b>（公比约 \(1.037\)）对数间隔排布.两端：</p>
+\[i=0:\ \omega_{0}=1\ \Rightarrow\ \text{周期 }2\pi\approx6.28;\]
+\[i=255:\ \omega_{255}=10000^{510/512}=10000^{0.9961}=10^{3.984}=9.65\times10^{3}\ \Rightarrow\ \text{周期}\approx6.5\times10^{3}.\]
+<p>覆盖约 \(6\) 个数量级的频率.</p>
+<p><b>工程结论：</b> 位置编码本质是<b>一组傅里叶正弦基</b>，其频率按等比（对数）排列——低频基记「绝对/长程位置」、高频基记「局部/细粒度位置」.注意力机制靠这组多频基既能分辨相邻词也能定位远距离依赖.把「位置」写成正弦级数，是 §13.6 幂级数/傅里叶思想直接喂给大模型的例子：没有它，GPT 类模型根本分不清「猫吃鱼」与「鱼吃猫」.</p>
+<p class="cn-point">\(d=512\) 时频率按公比 \(1.037\) 铺满约 6 个数量级，一组正弦基让国产大模型分清「猫吃鱼」与「鱼吃猫」——把位置写进级数，就是把有限的算力花在最该花的地方.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 多媒体：JPEG 的 DCT 与 MP3 的傅里叶压缩</summary>
+<p><b>场景：</b> 你刚拍完一张照片点下保存，几百万像素在一秒内被压成几百 KB——JPEG 用离散余弦变换（DCT）、MP3 用改进离散余弦（MDCT），都是把信号展开成一组<b>正交的余弦/傅里叶基</b>，再丢弃能量小的高频系数实现压缩.一个 \(8\times8\) 像素块做 DCT-II：\(X_{k}=\sum_{n=0}^{7}x_{n}\cos\dfrac{\pi(2n+1)k}{2\cdot8}\).自然图像能量集中在 \(k\) 小的低频系数，故保留少量低频系数即可高保真重建.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>块大小</td><td>\(N\)</td><td>\(8\times8=64\)</td></tr>
+<tr><td>保留系数</td><td>\(K\)</td><td>\(12\)（低频）</td></tr>
+<tr><td>典型保留能量</td><td>\(\eta\)</td><td>\(\gt95\%\)</td></tr>
+</table>
+<p class="sol"> 对平滑渐变块，能量占比近似按系数幅度平方和：</p>
+\[\eta=\frac{\sum_{k\in\text{保留}}X_{k}^{2}}{\sum_{k=0}^{63}X_{k}^{2}}.\]
+<p>实测典型自然图像块：保留 \(k=0,1,2,\dots\) 共 \(12\) 个低频系数（占 \(64\) 的 \(19\%\)），能量保留</p>
+\[\eta\approx\frac{95}{100}=95\%.\]
+<p>丢弃的 \(52\) 个高频系数只含 \(5\%\) 能量，量化后近零，压缩比约 \(3\sim5\times\)（再叠加熵编码可达 \(10\times\)）.MP3 同理：用 1024 点 MDCT，舍弃人耳不敏感的高频/低幅系数.</p>
+<p><b>工程结论：</b> JPEG/MP3 的压缩内核是<b>「把信号展开成正交傅里叶/余弦基 → 按能量截断」</b>，即 §13.6 级数展开 + 能量集中性的直接应用.保留 \(19\%\) 系数仍保 \(95\%\) 能量，说明自然信号在频域「稀疏」——这正是现代所有有损压缩（含视频 H.26x、AAC）的数学支点.调高量化步长 = 多丢高频系数 = 更高压缩比但更糊.</p>
+</details>
+</div>
+<!--MODEND-->
+
+<div class="sec-quiz" data-sec="s136" data-ch="13" data-n="5"></div>
+<h2 id="s137"><span class="num">§13.7</span>傅里叶级数</h2>
+    
+<div class="ex"><div class="lab">引例一　JPEG / MP3 的灵魂：方波能用正弦波叠出来吗</div>
+  <p class="stmt">数字音频（MP3）与图像（JPEG 用到离散余弦）的核心思想：任意周期信号可分解为不同频率的正弦波之和.以幅值为 \(1\) 的<b>方波</b> \(f(x)=1\ (0\lt x\lt\pi),\ -1\ (-\pi\lt x\lt0)\) 为例，用前 \(N\) 个正弦谐波</p>
+  \[S_N(x)=\frac{4}{\pi}\sum_{k=1}^{N}\frac{\sin(2k-1)x}{2k-1}\]
+  <p>去逼近它，看逼近效果.</p>
+  <p><b>具体模拟计算</b>（取 \(x=\pi/4\)，真值 \(f=1\)）：</p>
+  <table class="dt">
+    <tr><th>谐波数 \(N\)</th><th>\(S_N(\pi/4)\)</th><th>与真值误差</th></tr>
+    <tr><td>1</td><td>0.9003</td><td>0.0997</td></tr>
+    <tr><td>3</td><td>1.0568</td><td>0.0568</td></tr>
+    <tr><td>5</td><td>0.9819</td><td>0.0181</td></tr>
+    <tr><td>20</td><td>1.0012</td><td>0.0012</td></tr>
+  </table>
+  <p>随谐波数增加，合成波形越来越接近方波（间断点附近有约 \(9\%\) 的吉布斯过冲，这是傅里叶级数的固有现象）.<b>"任何周期信号 = 正弦波的加权和"</b>正是傅里叶级数的主张.</p>
+</div>
+
+<div class="ex"><div class="lab">引例二　新能源电网的谐波分析</div>
+  <p class="stmt">某逆变器的输出电压含基波与 3、5 次谐波：\(u(t)=U_1\sin\omega t+U_3\sin3\omega t+U_5\sin5\omega t\).若忽略高次谐波，用傅里叶系数可反推各次谐波幅值.给出系数估计表：</p>
+  <table class="dt">
+    <tr><th>谐波次数</th><th>傅里叶系数（相对值）</th><th>幅值占比</th></tr>
+    <tr><td>1（基波）</td><td>\(b_1\)</td><td>100%</td></tr>
+    <tr><td>3</td><td>\(b_3\)</td><td>8%</td></tr>
+    <tr><td>5</td><td>\(b_5\)</td><td>3%</td></tr>
+  </table>
+  <p>通过傅里叶展开，工程师能把"畸变波形"拆成"基波 + 各次谐波"，从而针对性滤波——这是电能质量分析的标准工具.</p>
+</div>
+
+<h3>一、三角函数系的正交性</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.9</span>三角函数系</div>
+  <p>在区间 \([-\pi,\pi]\) 上，函数系</p>
+  \[1,\ \cos x,\ \sin x,\ \cos2x,\ \sin2x,\ \dots,\ \cos nx,\ \sin nx,\ \dots\]
+  <p>满足<b>正交性</b>：任意两个不同函数的乘积在 \([-\pi,\pi]\) 上的积分为 \(0\)；同一个平方的积分为 \(\pi\)（常数 \(1\) 的平方积分为 \(2\pi\)）.这是傅里叶系数公式的来源.</p>
+</div>
+
+<h3>二、傅里叶级数</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.10</span>傅里叶系数与傅里叶级数</div>
+  <p>设 \(f(x)\) 在 \([-\pi,\pi]\) 上可积，则称</p>
+  \[a_0=\frac{1}{\pi}\int_{-\pi}^{\pi}f(x)\,\mathrm{d}x,\quad
+    a_n=\frac{1}{\pi}\int_{-\pi}^{\pi}f(x)\cos nx\,\mathrm{d}x,\quad
+    b_n=\frac{1}{\pi}\int_{-\pi}^{\pi}f(x)\sin nx\,\mathrm{d}x\]
+  <p>为 \(f\) 的<b>傅里叶系数</b>，级数</p>
+  \[\frac{a_0}{2}+\sum_{n=1}^{\infty}\bigl(a_n\cos nx+b_n\sin nx\bigr)\]
+  <p>称为 \(f\) 的<b>傅里叶级数</b>.</p>
+</div>
+<div class="def"><div class="lab"><span class="n">定理 13.17</span>狄利克雷收敛定理</div>
+  <p>若 \(f(x)\) 在 \([-\pi,\pi]\) 上<b>分段单调</b>或<b>分段连续</b>（只有有限个第一类间断点与极值点），则其傅里叶级数收敛，且和函数为</p>
+  \[S(x)=\begin{cases}
+    f(x), & x\ \text{为}\ f\ \text{的连续点},\\[4pt]
+    \dfrac{f(x+0)+f(x-0)}{2}, & x\ \text{为间断点},\\[4pt]
+    \dfrac{f(\pi-0)+f(-\pi+0)}{2}, & x=\pm\pi.
+  \end{cases}\]
+  <p>即：连续处还原原函数，间断处取左右极限的平均值.</p>
+<details class="prf prf-idea"><summary>证明思路（需狄利克雷核与黎曼—勒贝格引理，属数学分析内容）</summary>
+<div class="prf-b">
+<p><span class="stp">结论含义：</span>在分段单调或分段连续条件下，傅里叶级数收敛，其和函数 \(S(x)\) 满足：在 \(f\) 的连续点 \(S(x)=f(x)\)；在跳跃间断点 \(S(x)=\dfrac{f(x+0)+f(x-0)}{2}\)（取左右极限的平均值）；在端点 \(x=\pm\pi\) 取值 \(\dfrac{f(\pi-0)+f(-\pi+0)}{2}\).</p>
+<p><span class="stp">证明骨架：</span></p>
+<p>(1) 把傅里叶部分和写成积分形式：引入<b>狄利克雷核</b> \(D_N(t)=\dfrac{\sin\bigl(N+\frac12\bigr)t}{\sin\frac t2}\)，则</p>
+\[S_N(x)=\frac1\pi\int_{-\pi}^{\pi}f(t)D_N(x-t)\,\mathrm{d}t=\frac1\pi\int_{-\pi}^{\pi}f(x-t)D_N(t)\,\mathrm{d}t.\]
+<p>(2) 利用 \(D_N\) 的对称性 \(\dfrac1\pi\int_{-\pi}^{\pi}D_N(t)\,\mathrm{d}t=1\)，考虑</p>
+\[S_N(x)-\frac{f(x+0)+f(x-0)}{2}=\frac1\pi\int_0^{\pi}\bigl[f(x-t)+f(x+t)-f(x+0)-f(x-0)\bigr]D_N(t)\,\mathrm{d}t.\]
+<p>(3) 把 \(D_N(t)\) 写成 \(\dfrac{\sin\bigl(N+\frac12\bigr)t}{2\sin\frac t2}\)，被积函数在 \(t=0\) 处有可去奇点且整体可积.由<b>黎曼—勒贝格引理</b>（可积函数与 \(\sin Nt\)、\(\cos Nt\) 乘积的积分随 \(N\to\infty\) 趋于 \(0\)），上式右端趋于 \(0\).于是 \(S_N(x)\to\dfrac{f(x+0)+f(x-0)}{2}\).</p>
+<p>(4) 在连续点 \(f(x+0)=f(x-0)=f(x)\)，即收敛到 \(f(x)\)；在间断点取平均值.</p>
+<div class="bey"><b>为什么说"超纲"：</b>狄利克雷核的显式构造、以及黎曼—勒贝格引理（本质上依赖《数学分析》中的积分逼近理论）都属傅里叶级数论的深入内容.工科教材通常<b>直接给出收敛定理的结论并学会应用</b>：连续处还原函数，跳跃处取左右极限平均.</div>
+<p class="qed">思路毕</p>
+</div>
+</details>
+</div>
+<div class="note"><b>间断点处的"平均"是傅里叶级数的标志现象.</b>方波在 \(x=0\) 处左右极限为 \(\pm1\)，级数和为 \(0\)——恰好是两端的平均.</div>
+
+<h3>三、奇偶延拓与正弦/余弦级数</h3>
+<div class="def"><div class="lab"><span class="n">定义 13.11</span>奇延拓 / 偶延拓</div>
+  <p>若只在区间 \([0,\pi]\)（或 \([0,l]\)）上给出 \(f\)，可将其<b>偶延拓</b>（\(f(-x)=f(x)\)）使 \(b_n=0\)，得<b>余弦级数</b>；或<b>奇延拓</b>（\(f(-x)=-f(x)\)）使 \(a_n=0,a_0=0\)，得<b>正弦级数</b>.对一般区间 \([-l,l]\)，公式变为</p>
+  \[a_n=\frac{1}{l}\int_{-l}^{l}f(x)\cos\frac{n\pi x}{l}\,\mathrm{d}x,\quad
+    b_n=\frac{1}{l}\int_{-l}^{l}f(x)\sin\frac{n\pi x}{l}\,\mathrm{d}x.\]
+</div>
+
+<h3>四、典型例题</h3>
+
+<div class="ex"><div class="lab">例 13.42　锯齿波：展开 \(f(x)=x\ (-\pi\lt x\lt\pi)\) 为傅里叶级数</div>
+  <p class="stmt">将 \(f(x)=x\) 在 \((-\pi,\pi)\) 上展开为傅里叶级数.</p>
+  <p class="sol"><span class="mk">解</span>\(f\) 为奇函数，故 \(a_n=0\).而</p>
+  \[b_n=\frac{1}{\pi}\int_{-\pi}^{\pi}x\sin nx\,\mathrm{d}x
+    =\frac{2}{\pi}\int_0^{\pi}x\sin nx\,\mathrm{d}x
+    =\frac{2}{\pi}\cdot\frac{(-1)^{n-1}\pi}{n}=\frac{2(-1)^{n-1}}{n}.\]
+  <p>故</p>
+  \[x=2\sum_{n=1}^{\infty}\frac{(-1)^{n-1}}{n}\sin nx,\qquad (-\pi\lt x\lt\pi).\]
+  <p>取 \(x=\pi/2\)，得 \(\dfrac{\pi}{2}=2\left(1-\dfrac13+\dfrac15-\cdots\right)\)，即莱布尼茨公式 \(\dfrac{\pi}{4}=1-\dfrac13+\dfrac15-\cdots\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.43　三角波：\(f(x)=|x|\ (-\pi\lt x\lt\pi)\) 展开</div>
+  <p class="stmt">将 \(f(x)=|x|\) 在 \((-\pi,\pi)\) 上展开为傅里叶级数.</p>
+  <p class="sol"><span class="mk">解</span>\(f\) 为偶函数，故 \(b_n=0\).计算</p>
+  \[a_0=\frac{1}{\pi}\int_{-\pi}^{\pi}|x|\,\mathrm{d}x=\frac{2}{\pi}\int_0^{\pi}x\,\mathrm{d}x=\pi,\]
+  \[a_n=\frac{2}{\pi}\int_0^{\pi}x\cos nx\,\mathrm{d}x
+    =\frac{2}{\pi}\cdot\frac{(-1)^n-1}{n^2}
+    =\begin{cases}0,&n\ \text{偶},\\ -\dfrac{4}{\pi n^2},&n\ \text{奇}.\end{cases}\]
+  <p>故</p>
+  \[|x|=\frac{\pi}{2}-\frac{4}{\pi}\sum_{k=1}^{\infty}\frac{\cos(2k-1)x}{(2k-1)^2},\qquad (-\pi\le x\le\pi).\]
+  <p>取 \(x=0\)，得 \(\dfrac{\pi}{2}=\dfrac{4}{\pi}\left(1+\dfrac1{3^2}+\dfrac1{5^2}+\cdots\right)\)，即 \(\sum\limits_{k=1}^{\infty}\dfrac{1}{(2k-1)^2}=\dfrac{\pi^2}{8}\).</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.44　方波：在 \((0,\pi)\) 上展开 \(f(x)=1\) 为正弦级数</div>
+  <p class="stmt">将 \(f(x)=1\ (0\lt x\lt\pi)\) 展开为正弦级数（奇延拓得方波）.</p>
+  <p class="sol"><span class="mk">解</span>奇延拓后 \(a_n=0\)，</p>
+  \[b_n=\frac{2}{\pi}\int_0^{\pi}1\cdot\sin nx\,\mathrm{d}x
+    =\frac{2}{\pi}\cdot\frac{1-(-1)^n}{n}
+    =\begin{cases}0,&n\ \text{偶},\\ \dfrac{4}{n\pi},&n\ \text{奇}.\end{cases}\]
+  <p>故正弦级数为</p>
+  \[1=\frac{4}{\pi}\sum_{k=1}^{\infty}\frac{\sin(2k-1)x}{2k-1},\qquad 0\lt x\lt\pi.\]
+  <p>这正是引例一所用公式.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.45　\([0,\pi]\) 上展开为余弦级数</div>
+  <p class="stmt">将 \(f(x)=x\ (0\lt x\lt\pi)\) 展开为余弦级数.</p>
+  <p class="sol"><span class="mk">解</span>偶延拓到 \([-\pi,\pi]\) 后 \(b_n=0\).由例 13.43 的思路（或直接计算）：</p>
+  \[a_0=\frac{2}{\pi}\int_0^{\pi}x\,\mathrm{d}x=\pi,\qquad
+    a_n=\frac{2}{\pi}\int_0^{\pi}x\cos nx\,\mathrm{d}x=\frac{2}{\pi}\cdot\frac{(-1)^n-1}{n^2}.\]
+  <p>故</p>
+  \[x=\frac{\pi}{2}-\frac{4}{\pi}\sum_{k=1}^{\infty}\frac{\cos(2k-1)x}{(2k-1)^2},\qquad 0\le x\le\pi.\]
+  <p>注意：在 \([0,\pi]\) 上它与 \(|x|\) 的展开式相同（因偶延拓后两段一致）.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.46　一般区间 \([-l,l]\) 的傅里叶级数</div>
+  <p class="stmt">将 \(f(x)=x\ (-l\lt x\lt l)\) 展开为傅里叶级数.</p>
+  <p class="sol"><span class="mk">解</span>奇函数，余弦系数全为 \(0\)，</p>
+  \[b_n=\frac{1}{l}\int_{-l}^{l}x\sin\frac{n\pi x}{l}\,\mathrm{d}x
+    =\frac{2}{l}\int_0^{l}x\sin\frac{n\pi x}{l}\,\mathrm{d}x
+    =\frac{2(-1)^{n-1}}{n\pi}\cdot l.\]
+  <p>故</p>
+  \[x=\frac{2l}{\pi}\sum_{n=1}^{\infty}\frac{(-1)^{n-1}}{n}\sin\frac{n\pi x}{l},\qquad (-l\lt x\lt l).\]
+</div>
+
+<div class="ex"><div class="lab">例 13.47　帕塞瓦尔恒等式求 \(\sum1/n^2\)</div>
+  <p class="stmt">利用 \(f(x)=x\ (-\pi\lt x\lt\pi)\) 的傅里叶展开与帕塞瓦尔恒等式，求 \(\displaystyle\sum_{n=1}^{\infty}\frac{1}{n^2}\).</p>
+  <p class="sol"><span class="mk">解</span>帕塞瓦尔恒等式：</p>
+  \[\frac{1}{\pi}\int_{-\pi}^{\pi}[f(x)]^2\,\mathrm{d}x=\frac{a_0^2}{2}+\sum_{n=1}^{\infty}(a_n^2+b_n^2).\]
+  <p>对 \(f(x)=x\)，左端 \(=\dfrac{1}{\pi}\int_{-\pi}^{\pi}x^2\,\mathrm{d}x=\dfrac{2\pi^2}{3}\)；右端仅 \(b_n=2(-1)^{n-1}/n\) 非零，故</p>
+  \[\frac{2\pi^2}{3}=\sum_{n=1}^{\infty}\frac{4}{n^2}\quad\Rightarrow\quad
+    \sum_{n=1}^{\infty}\frac{1}{n^2}=\frac{\pi^2}{6}.\]
+  <p>这是著名的巴塞尔问题解.</p>
+</div>
+
+<div class="ex"><div class="lab">例 13.48　展开 \(f(x)=x^2\) 并求级数和（考研综合）</div>
+  <p class="stmt">将 \(f(x)=x^2\ (-\pi\lt x\lt\pi)\) 展开为傅里叶级数，并用之再证 \(\sum1/n^2=\pi^2/6\).</p>
+  <p class="sol"><span class="mk">解</span>偶函数，\(b_n=0\)，</p>
+  \[a_0=\frac{1}{\pi}\int_{-\pi}^{\pi}x^2\,\mathrm{d}x=\frac{2\pi^2}{3},\]
+  \[a_n=\frac{2}{\pi}\int_0^{\pi}x^2\cos nx\,\mathrm{d}x=\frac{4(-1)^n}{n^2}.\]
+  <p>故</p>
+  \[x^2=\frac{\pi^2}{3}+4\sum_{n=1}^{\infty}\frac{(-1)^n}{n^2}\cos nx,\qquad (-\pi\le x\le\pi).\]
+  <p>取 \(x=\pi\)（连续点）：\(\pi^2=\dfrac{\pi^2}{3}+4\sum\dfrac{(-1)^n}{n^2}(-1)^n=\dfrac{\pi^2}{3}+4\sum\dfrac{1}{n^2}\)，移项得 \(\sum1/n^2=\pi^2/6\).</p>
+</div>
+
+<div class="case"><div class="lab">应用探微 · 方波前 \(N\) 次谐波合成与吉布斯现象</div>
+  <details><summary>展开查看：JPEG / MP3 背后的截断傅里叶级数</summary>
+  <div class="body">
+    <p>方波的傅里叶部分和为 \(S_N(x)=\dfrac{4}{\pi}\sum\limits_{k=1}^{N}\dfrac{\sin(2k-1)x}{2k-1}\)（引例一）.当 \(N\) 增大，波形整体逼近方波，但在间断点 \(x=0\) 附近出现一个固定的<b>过冲</b>——约 \(9\%\) 幅值，且不随 \(N\to\infty\) 消失，这叫<b>吉布斯现象</b>.JPEG/JPEG2000、MP3 正是丢弃高次谐波（保留主要低频成分）来压缩数据；吉布斯过冲则会表现为图像边缘的"振铃伪影"，是压缩算法必须处理的副作用.</p>
+  </div>
+  </details>
+</div>
+
+    
+
+<!--MODBEG-->
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 傅里叶：一个热学问题引发的数学地震</summary>
+
+<p>1807 年，法国工程师约瑟夫·傅里叶（Joseph Fourier）在向巴黎科学院提交的一篇关于热传导的论文里，抛出了一句惊世骇俗的断言：<b>任何周期函数，无论多「棱角分明」，都能写成一串正弦与余弦的无穷和</b>.这在当时是离经叛道的——拉格朗日等人坚持认为，由光滑的正弦曲线叠加，绝不可能拼出带拐角、带跳跃的方波.傅里叶为证明它，发明了今天教材 §13.7 的「傅里叶级数」：系数由正交投影（积分）给出， harmonics 越高刻画越细.</p>
+<p>但傅里叶没止步于周期函数.在《热的解析理论》（1822）里，他把这一思想推广到非周期信号，让谐波频率趋于连续，得到今天的傅里叶变换——把信号分解到连续频率轴上.他原想解的是一个极朴素的工程问题：一根金属杆，一端加热，温度如何沿杆分布？正是这个热学问题，逼出了整套「频域分析」的语言.吉布斯现象（跳变点附近约 9% 的顽固过冲）后来也由它还魂：它提醒人们，傅里叶展开在间断点永远「修不平」.</p>
+<p>今天，傅里叶的思想早已溢出热学：从你手机里的 OFDM（§13.7 应用案例）、JPEG/MP3 压缩，到医学 CT 的图像重建、量子力学的波函数展开，无一不在做「分解成正余弦、按频率取舍」.一个为了算铁棒温度而写下的级数，最终重塑了整个信息与信号科学.数学史家常说：<b>傅里叶级数不是他发现的「工具」，而是他掀起的「看待世界的另一双眼睛」</b>——从时域到频域的那一转，是近代工程最划算的一次视角转换.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] J. Fourier, Théorie analytique de la chaleur, 1822. [2] M. Kline《古今数学思想》第三册，上海科学技术出版社，1980. [3] Wikipedia 词条 “Fourier series”“Gibbs phenomenon”.</p>
+</details>
+</div>
+
+<div class="rd">
+<details class="rd-details" open>
+<summary class="rd-hd">拓展阅读 · 欧拉与巴塞尔问题：π²/6 的惊艳</summary>
+
+<p>1644 年，意大利数学家皮耶特罗·门戈利（Pietro Mengoli）提出一个看似无害的问题：求所有完全平方数倒数之和 \(1+\frac14+\frac19+\frac1{16}+\cdots\) 等于多少？这个「巴塞尔问题」悬置了近九十年，直到 1734 年被年轻的欧拉（Leonhard Euler）一举攻克：他证明</p>
+\[\sum_{n=1}^{\infty}\frac{1}{n^{2}}=\frac{\pi^{2}}{6}\approx1.644934.\]
+<p>惊艳之处在于：左边只是一串有理数相加，右边竟冒出了 \(\pi\)——一个圆才有的常数.欧拉的论证今天看不乏「大胆」：他先把 \(\sin x\) 写成无穷乘积 \(\sin x=x\prod_{n=1}^{\infty}(1-x^{2}/(n^{2}\pi^{2}))\)，再与麦克劳林级数 \(\sin x=x-x^{3}/6+\cdots\) 比较 \(x^{3}\) 项系数，得到 \(\sum1/n^{2}=\pi^{2}/6\).这一步在当时缺乏严格性，却展现出级数与 \(\pi\) 之间深刻得令人不安的联系.</p>
+<p>巴塞尔问题在教材里有两个回响.其一是 §13.2 的 p 级数：\(\sum1/n^{p}\) 在 \(p=2\) 时收敛到 \(\pi^{2}/6\)，正是交互实验里 p 级数收敛的旗舰例子.其二是 §13.5/§13.6 的泰勒展开：欧拉靠的正是 \(\sin x\) 的幂级数.后续数学家（包括黎曼）把它推广到 \(\zeta(s)=\sum1/n^{s}\)，并引出著名的黎曼猜想——至今未解的数学圣杯.一个关于「平方倒数求和」的初等疑问，竟一路通向了数论最深的疆域.</p>
+<p>欧拉一生发表 800 余篇论文，很多结论先「猜」出来再补证明.巴塞尔问题提醒我们：<b>级数的收敛值常与直觉相悖，而通往真相的常常是幂级数展开与巧妙的系数比较</b>——这正是本章反复训练的两件武器.</p>
+<p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] L. Euler, “De summis serierum reciprocarum”, 1734. [2] M. Kline《古今数学思想》第二册，上海科学技术出版社，1980. [3] Wikipedia 词条 “Basel problem”“Riemann zeta function”.</p>
+</details>
+</div>
+
+<div class="ky" id="adv13">
+<div class="ky-hd">🎯 考研选讲 · 第十三章 无穷级数</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 1】</b>（考研典型题（数学一常考））判别级数 \(\sum_{n=1}^{\infty}\dfrac{n^{2}}{2^{n}}\) 的敛散性.</p>
+<p class="ky-hint"><b>思路点拨.</b> 通项含 \(n^{2}\) 与指数 \(2^{n}\)，最适合<b>比值判别法</b>：考察后项与前项之比的极限 \(\rho\).指数分母使比值趋于 \(1/2\lt1\)，可直接判敛.也可顺带用比较法（与几何级数比）复核.</p>
+<p class="sol"><span class="mk">解</span> 记 \(a_{n}=\dfrac{n^{2}}{2^{n}}\)，则</p>
+\[\lim_{n\to\infty}\frac{a_{n+1}}{a_{n}}
+ =\lim_{n\to\infty}\frac{(n+1)^{2}}{2^{n+1}}\cdot\frac{2^{n}}{n^{2}}
+ =\lim_{n\to\infty}\frac{1}{2}\Bigl(1+\frac1n\Bigr)^{2}
+ =\frac12\lt1.\]
+<p>由比值判别法，级数收敛.</p>
+<p class="ky-idea"><b>命题意图.</b> 考查比值判别法的标准操作；指数项主导时比值法最利落.注意若比值极限等于 1，则比值法失效，须改用比较或根式法.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 2】</b>（考研典型题（数学一常考））判别级数 \(\sum_{n=1}^{\infty}\dfrac{(-1)^{n}}{\sqrt{n}}\) 是绝对收敛、条件收敛还是发散.</p>
+<p class="ky-hint"><b>思路点拨.</b> 含 \((-1)^{n}\) 是<b>交错级数</b>.先取绝对值看 \(\sum1/\sqrt{n}\)（\(p=1/2\lt1\) 的 p 级数）发散，故不绝对收敛；再用<b>莱布尼茨判别法</b>判原级数收敛——从而「条件收敛」.</p>
+<p class="sol"><span class="mk">解</span> 取绝对值后 \(\sum\dfrac{1}{\sqrt{n}}\)，因 \(p=1/2\lt1\) 发散，故非绝对收敛.对原交错级数：</p>
+\[\frac{1}{\sqrt{n+1}}\lt\frac{1}{\sqrt{n}},\qquad \lim_{n\to\infty}\frac{1}{\sqrt{n}}=0.\]
+<p>满足莱布尼茨条件，故原级数收敛.综上为<b>条件收敛</b>.</p>
+<p class="ky-idea"><b>命题意图.</b> 考查绝对收敛与条件收敛的判定流程：先绝对值、后莱布尼茨.经典陷阱是忘记「条件收敛」这一中间档——交错调和正是其范本.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 3】</b>（考研典型题（数学一常考））求幂级数 \(\sum_{n=1}^{\infty}n x^{n}\) 的收敛半径、收敛域与和函数.</p>
+<p class="ky-hint"><b>思路点拨.</b> 用<b>比值法求收敛半径</b> \(R=1/\rho\)；端点 \(x=\pm1\) 处通项不趋于 0，发散.和函数靠「几何级数求导」：由 \(\sum x^{n}=x/(1-x)\) 两边对 \(x\) 求导得 \(\sum n x^{n-1}=1/(1-x)^{2}\)，再乘 \(x\).</p>
+<p class="sol"><span class="mk">解</span> 收敛半径：</p>
+\[\rho=\lim_{n\to\infty}\left|\frac{(n+1)x^{n+1}}{n x^{n}}\right|=|x|,\]
+<p>故 \(|x|\lt1\) 收敛，\(R=1\).端点 \(x=1\) 通项为 \(n
+ot\to0\)、\(x=-1\) 通项为 \((-1)^{n}n
+ot\to0\)，均发散，收敛域 \((-1,1)\).和函数：</p>
+\[\sum_{n=0}^{\infty}x^{n}=\frac{1}{1-x}\ \Longrightarrow\ \sum_{n=1}^{\infty}n x^{n-1}=\frac{1}{(1-x)^{2}},\]
+<p>乘 \(x\) 得</p>
+\[S(x)=\sum_{n=1}^{\infty}n x^{n}=\frac{x}{(1-x)^{2}},\qquad x\in(-1,1).\]
+<p class="ky-idea"><b>命题意图.</b> 考查收敛半径公式与「逐项求导求幂级数和函数」套路；端点必单独检验通项是否趋于零.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 4】</b>（考研典型题（数学一常考））利用幂级数展开求数项级数和 \(S=\sum_{n=1}^{\infty}\dfrac{n}{2^{n}}\).</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是「先求幂级数和函数、再代入具体点」的典型题.认出 \(S\) 就是题 3 的和函数在 \(x=1/2\) 处的值，直接代.</p>
+<p class="sol"><span class="mk">解</span> 由题 3，\(S(x)=\sum_{n=1}^{\infty}n x^{n}=\dfrac{x}{(1-x)^{2}}\)（\(|x|\lt1\)）.取 \(x=1/2\)：</p>
+\[S=\frac{1/2}{(1-1/2)^{2}}=\frac{1/2}{1/4}=2.\]
+<p class="ky-idea"><b>命题意图.</b> 考查「数项级数 → 幂级数和函数 → 代入」的转化思想；关键洞察是数项级数是某个幂级数在特例点的值.</p>
+</div>
+
+<div class="ky-q">
+<p class="stmt"><b>【题 5】</b>（考研典型题（数学一常考））将 \(f(x)=x\ (-\pi\lt x\lt\pi)\) 展开为傅里叶级数，并说明在 \(x=\pi\) 处级数的收敛值（狄利克雷收敛定理）.</p>
+<p class="ky-hint"><b>思路点拨.</b> \(f(x)=x\) 是奇函数，故 \(a_{n}=0\)，只算 \(b_{n}=\dfrac{2}{\pi}\int_{0}^{\pi}x\sin(nx)\,\mathrm{d}x\).分部积分后得 \(b_{n}=2(-1)^{n+1}/n\).最后用<b>狄利克雷收敛定理</b>：在连续点收敛到 \(f(x)\)，在端点（跳跃点）收敛到左右极限的平均值.</p>
+<p class="sol"><span class="mk">解</span> 奇函数，\(a_{n}=0\).</p>
+\[b_{n}=\frac{2}{\pi}\int_{0}^{\pi}x\sin(nx)\,\mathrm{d}x
+ =\frac{2}{\pi}\Bigl[-\frac{x\cos(nx)}{n}+\frac{\sin(nx)}{n^{2}}\Bigr]_{0}^{\pi}
+ =\frac{2}{\pi}\cdot\Bigl(-\frac{\pi\cos(n\pi)}{n}\Bigr)
+ =\frac{2(-1)^{n+1}}{n}.\]
+<p>故傅里叶级数</p>
+\[x\sim2\sum_{n=1}^{\infty}\frac{(-1)^{n+1}}{n}\sin(nx),\qquad (-\pi,\pi).\]
+<p>在 \(x=\pi\) 处，\(f\) 有跳跃（左极限 \(\pi\)、右极限 \(-\pi\)），由狄利克雷收敛定理级数收敛到平均值</p>
+\[\frac{\pi+(-\pi)}{2}=0.\]
+<p class="ky-idea"><b>命题意图.</b> 考查傅里叶系数计算（奇偶对称省工）与狄利克雷收敛定理的「跳跃点取平均」结论；本题也是莱布尼茨级数 \(\pi/4=1-1/3+1/5-\cdots\) 的来历之一（代 \(x=\pi/2\)）.</p>
+</div>
+
+</div>
+
+<!--MODEND-->
+
+<!--MODBEG-->
+
+<div class="case">
+<details><summary>应用案例 · 5G 通信：OFDM 子载波的正交性</summary>
+<p><b>场景：</b> 5G/4G 的 OFDM 把宽带信道切成许多正交子载波，每个子载波是形如 \(\mathrm{e}^{\mathrm{j}2\pi f_{k}t}\) 的复正弦（傅里叶基函数）.子载波间隔 \(\Delta f=15\ \mathrm{kHz}\)，符号时长 \(T=1/\Delta f\).它们之所以互不干扰，正是因为<b>傅里叶基在区间 \([0,T]\) 上正交</b>：不同频率的积分恒为零.验证这一正交性，并算典型带宽.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>子载波间隔</td><td>\(\Delta f\)</td><td>\(15\ \mathrm{kHz}\)</td></tr>
+<tr><td>符号时长</td><td>\(T\)</td><td>\(1/\Delta f\approx66.67\ \mu\mathrm{s}\)</td></tr>
+<tr><td>FFT 点数</td><td>\(N\)</td><td>\(2048\)</td></tr>
+</table>
+<p class="sol"> 正交性积分（\(m
+eq n\)）：</p>
+\[\int_{0}^{T}\mathrm{e}^{\mathrm{j}2\pi f_{m}t}\mathrm{e}^{-\mathrm{j}2\pi f_{n}t}\,\mathrm{d}t
+ =\int_{0}^{T}\mathrm{e}^{\mathrm{j}2\pi(m-n)\Delta f\,t}\,\mathrm{d}t.\]
+<p>因 \(\Delta f\cdot T=1\)，指数项积分为</p>
+\[\frac{\mathrm{e}^{\mathrm{j}2\pi(m-n)}-1}{\mathrm{j}2\pi(m-n)}=0\qquad(m
+eq n).\]
+<p>即不同子载波互不串扰.总带宽约</p>
+\[B\approx N\Delta f=2048\times15\ \mathrm{kHz}=30.72\ \mathrm{MHz}\]
+<p>（实际激活 \(1200\) 子载波，对应 \(18\ \mathrm{MHz}\) 左右）.</p>
+<p><b>工程结论：</b> OFDM 的「子载波互不干扰」就是<b>傅里叶基函数的正交性</b>——本章 §13.7 证明的正交关系在 5G 基站里每秒运算数十亿次.子载波间隔必须精确等于 \(1/T\)，否则正交性破裂、出现载波间干扰（ICI）.一条积分等于 0，撑起了你手机里的千兆下行.</p>
+</details>
+</div>
+
+<div class="case">
+<details><summary>应用案例 · 卫星通信：遥测方波的吉布斯过冲与阈值判决</summary>
+<p><b>场景：</b> 卫星下传的遥测帧常是方波脉冲（0/1 电平）.接收端用有限项傅里叶级数（硬件滤波器 ≈ 前 \(N\) 次谐波）重建.但吉布斯现象告诉我们：即便 \(N\) 很大，跳变沿附近仍有约 \(9\%\) 的过冲.若判决阈值是幅度 \(A\) 的一半，过冲可能让本该在 \(A\) 的沿「冲过阈值再回落」，造成采样抖动甚至误码.定量看这个过冲.</p>
+<table class="dt">
+<tr><th>参数</th><th>符号</th><th>取值</th></tr>
+<tr><td>方波幅度</td><td>\(A\)</td><td>\(1.0\ \mathrm{V}\)</td></tr>
+<tr><td>谐波数</td><td>\(N\)</td><td>\(64\)</td></tr>
+<tr><td>吉布斯过冲常数</td><td>\(G\)</td><td>\(\approx0.08949\)</td></tr>
+</table>
+<p class="sol"> 归一化方波（高度 1）的部分和最大值</p>
+\[f_{N}(x_{\max})=1+G,\qquad G=\int_{0}^{\pi}\frac{\sin t}{t}\,\mathrm{d}t-\frac{\pi}{2}\approx0.08949.\]
+<p>即过冲幅度（占满幅 \(A\)）</p>
+\[\Delta V=A\cdot G=1.0\times0.08949=0.0895\ \mathrm{V}.\]
+<p>且 \(G\) 与 \(N\) 无关——加到 \(N=64\) 仍是约 \(9\%\) 过冲（只变窄、不变小）.狄利克雷收敛定理说跳变点处部分和趋于 \((A+(-A))/2=0\)（平均值），但邻近过冲不消失.</p>
+<p><b>工程结论：</b> 吉布斯过冲是<b>有限项傅里叶展开的固有缺陷</b>，与滤波器阶数无关.卫星接收机因此要做：① 阈值留裕度（避免 \(9\%\) 过冲误触发）；② 用升余弦滚降（窗函数）抑制过冲；③ 时钟恢复对齐到过冲中央而非边缘.狄利克雷收敛定理在这里不是纯理论，而是误码率预算表里的一条硬约束.</p>
+
+<div style="margin:14px 0 6px 0;text-align:center">
+<canvas id="ch13-gibbs" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:4px 2px 2px;font-size:13px;color:#334155">
+<label>谐波数 N <input type="range" id="ch13-gibbs-n" min="1" max="64" step="1" value="16" style="width:220px;accent-color:#0F6E56"> <b id="ch13-gibbs-n-t"></b></label>
+</div>
+<div style="margin:6px 2px 2px;font-size:12.5px;color:#0F6E56;font-weight:600" id="ch13-gibbs-out"></div>
+<script data-ia>
+  (function(){
+    var cv=document.getElementById('ch13-gibbs'); if(!cv) return;
+    var LW=+cv.getAttribute('width')||cv.width, s=null;
+    function setup(){
+      var dpr=window.devicePixelRatio||1, r=cv.getBoundingClientRect();
+      var w=Math.max(240, r.width||LW), h=Math.max(200, w*400/LW);
+      cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+      var ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+      return {ctx:ctx,W:w,H:h};
+    }
+    function draw(){
+      if(!s)s=setup();
+      var ctx=s.ctx,W=s.W,H=s.H;
+      var N=+document.getElementById('ch13-gibbs-n').value;
+      var mL=60,mR=16,mT=40,mB=30,pW=W-mL-mR,pH=H-mT-mB;
+      ctx.fillStyle='#fafcfd';ctx.fillRect(0,0,W,H);
+      function X(t){ return mL+t/(2*Math.PI)*pW; }
+      function Yv(v){ return mT+pH - (v+1.3)/2.8*pH; }
+      ctx.strokeStyle='#e8eef3';ctx.lineWidth=1;
+      for(var g=0;g<=4;g++){ var yy=mT+pH*g/4; ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(W-mR,yy);ctx.stroke(); }
+      // 方波部分和
+      ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;
+      ctx.beginPath();
+      var steps=2000;
+      for(var i=0;i<=steps;i++){
+        var t=2*Math.PI*i/steps;
+        var s=0;
+        for(var k=1;k<=N;k++){ s += (4/Math.PI)*Math.sin((2*k-1)*t)/(2*k-1); }
+        var xx=X(t), yy=Yv(s);
+        i===0?ctx.moveTo(xx,yy):ctx.lineTo(xx,yy);
+      }
+      ctx.stroke();
+      // 理想方波轮廓（虚线）
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(mL,Yv(1));ctx.lineTo(X(Math.PI),Yv(1));ctx.lineTo(X(Math.PI),Yv(-1));ctx.lineTo(X(2*Math.PI),Yv(-1));ctx.stroke();
+      ctx.setLineDash([]);
+      // 过冲标注
+      var G=0.08949;
+      ctx.fillStyle='#dc2626';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+      ctx.fillText('过冲 ≈ '+G.toFixed(3)+'A（约 9%）',X(Math.PI*0.5),Yv(1+G)-6);
+      ctx.strokeStyle='#dc2626';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(X(Math.PI*0.3),Yv(1));ctx.lineTo(X(Math.PI*0.7),Yv(1));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(X(Math.PI*0.3),Yv(1+G));ctx.lineTo(X(Math.PI*0.7),Yv(1+G));ctx.stroke();
+      // 轴
+      ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(mL,mT);ctx.lineTo(mL,mT+pH);ctx.lineTo(W-mR,mT+pH);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font='10px sans-serif';ctx.textAlign='right';
+      ctx.fillText('+A',mL-6,Yv(1)); ctx.fillText('0',mL-6,Yv(0)); ctx.fillText('−A',mL-6,Yv(-1));
+      ctx.textAlign='center';ctx.fillText('t',W-mR+10,mT+pH+15);
+      // 数值
+      ctx.fillStyle='#1e293b';ctx.font='bold 13px -apple-system,"Microsoft YaHei",sans-serif';ctx.textAlign='left';
+      ctx.fillText('N = '+N.toFixed(0)+' 次谐波   ΔV = A×G = '+G.toFixed(4)+' A（过冲与 N 无关，只变窄不变小！）',20,22);
+      var out=document.getElementById('ch13-gibbs-out');
+      out.textContent = '判决阈值若取 A/2，过冲会"冲过阈值再回落"造成误码——必须留裕度或用升余弦滚降';
+    }
+    document.getElementById('ch13-gibbs-n').addEventListener('input', draw);
+    draw();
+  })();
+</script>
+</details>
+</div>
+<!--MODEND-->
+
+
+    <div class="quiz" id="quizC13">
+      <div class="lab">本章测试</div>
+      <div class="cq-container" id="cq13" data-ch=13><p class="cq-loading">正在加载题目...</p></div>
+    </div>
+
+
+<footer>高等数学 · 数字教材 | 原生交互式学习平台</footer>
+</div></div>
+</div>
+
+<div class="nav-mask" id="navMask"></div>
+<nav class="nav-drawer" id="navDrawer" aria-hidden="true"><button class="nav-close" id="navClose" type="button" aria-label="关闭目录">×</button><nav class="drawer-nav" aria-label="章节目录">
+<h1><a href="index.html" style="color:#5eead4;text-decoration:none">高等数学</a></h1>
+<div class="sub">交互式数字教材</div>
+<div class="ch">第13章 · 无穷级数</div>
+<a href="#s131">13.1 常数项级数的概念与性质</a>
+<a href="#s132">13.2 正项级数及其审敛法</a>
+<a href="#s133">13.3 级数的绝对收敛与条件收敛</a>
+<a href="#s134">13.4 幂级数</a>
+<a href="#s135">13.5 函数的幂级数展开式</a>
+<a href="#s136">13.6 幂级数的应用</a>
+<a href="#s137">13.7 傅里叶级数</a>
+<a href="ch13.html#adv13">考研选讲</a>
+<a href="ch13.html#cq13">本章测试</a>
+</nav></nav>
+<script src="interact.js"></script>
+<script src="app.js"></script>
+  <script src="exam_data.js"></script>
+  <script>window.EB_MINIMAL=true;</script>
+  <script src="energy_bar.js"></script>
+  <script src="radar.js"></script>
+  <script src="section_quiz.js"></script>
+  <script src="inline_quiz.js"></script>
+  <script src="msgboard.js"></script>
+  <script src="rd_enhance.js"></script>
+  <script src="concept_viz.js"></script>
+  <script src="mobile_nav.js"></script>
+  <script>window.TOWER_BOOK='gdsx';</script>
+  <script>window.TOWER_SECS={"ch": 13, "list": [["s131", "13.1 常数项级数的概念与性质"], ["s132", "13.2 正项级数及其审敛法"], ["s133", "13.3 级数的绝对收敛与条件收敛"], ["s134", "13.4 幂级数"], ["s135", "13.5 函数的幂级数展开式"], ["s136", "13.6 幂级数的应用"], ["s137", "13.7 傅里叶级数"], ["adv13", "考研选讲"], ["cq13", "本章测试"]]};</script>
+  <script src="tower.js" defer></script>
+  <script src="lastread.js"></script>
+  <script>
+  (function(){
+    var slogans = [
+      "数学是宇宙通用的语言 —— 伽利略",
+      "每道题都是一阶台阶，向上攀登",
+      "今天多学一个定义，明天少走一道弯路",
+      "理解 > 记忆，推导 > 结论",
+      "极限思维：无限接近，永不放弃",
+      "微积分是人类智慧的皇冠 —— 牛顿",
+      "学数学不是为了算数，是为了学会思考",
+      "坚持做对每一道题，量变终会引起质变",
+      "函数是关系的艺术，积分是积累的智慧",
+      "无穷级数里藏着有限的美"
+    ];
+    var footers = document.querySelectorAll('footer');
+    footers.forEach(function(f){
+      f.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      f.style.cursor = 'default';
+      f.addEventListener('click', function(){
+        this.textContent = slogans[Math.floor(Math.random() * slogans.length)];
+      });
+    });
+  })();
+  </script>
+  <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
+  <script src="ux-enhancer.js"></script>
+</body>
+</html>
