@@ -71,10 +71,12 @@
       '.mb-name{font-weight:600;font-size:14px;color:#1e293b}',
       '.mb-time{font-size:11px;color:#94a3b8}',
       '.mb-text{font-size:14px;line-height:1.7;color:#334155;margin-top:3px;word-break:break-word;white-space:pre-wrap}',
-      '.mb-del{position:absolute;top:8px;right:8px;border:none;background:#fef2f2;color:#ef4444;width:24px;height:24px;',
-      'border-radius:7px;cursor:pointer;font-size:13px;line-height:1;display:none;transition:background .2s}',
-      '.mb-del:hover{background:#fee2e2}',
+      '.mb-del{position:absolute;top:6px;right:6px;border:none;background:#fef2f2;color:#dc2626;width:28px;height:28px;',
+      'border-radius:8px;cursor:pointer;font-size:14px;line-height:1;display:none;transition:background .2s,transform .15s;opacity:.75}',
+      '.mb-del:hover{background:#fecaca;transform:scale(1.15);opacity:1}',
       '.mb-panel.admin .mb-del{display:block}',
+      /* 管理模式下留言卡片悬停高亮，提示可删除 */
+      '.mb-panel.admin .mb-msg:hover{box-shadow:0 0 0 2px rgba(220,38,38,.25),0 4px 12px rgba(0,0,0,.08)}',
       '@media (max-width:520px){.mb-fab{bottom:16px;right:16px;width:44px;height:44px;font-size:18px}}'
     ].join('');
     var st = document.createElement('style');
@@ -130,6 +132,8 @@
     var sendBtn = panel.querySelector('.mb-send');
     var isAdmin = !!localStorage.getItem(ADMIN_KEY_LS);
     if (isAdmin) panel.classList.add('admin');
+    /* updateAdminUI 在下方 gear 事件绑定处定义，此处延迟初始化标题 */
+    setTimeout(function () { if (typeof updateAdminUI === 'function') updateAdminUI(isAdmin); }, 0);
 
     function openPanel() { panel.classList.add('open'); backdrop.classList.add('show'); fab.style.display = 'none'; }
     function closePanel() { panel.classList.remove('open'); backdrop.classList.remove('show'); fab.style.display = 'flex'; }
@@ -138,17 +142,29 @@
     backdrop.addEventListener('click', closePanel);
 
     // 管理：输入口令后显示删除按钮
-    panel.querySelector('.mb-gear').addEventListener('click', function () {
+    var ptitle = panel.querySelector('.mb-ptitle');
+    var gearBtn = panel.querySelector('.mb-gear');
+    function updateAdminUI(isAdmin) {
+      if (isAdmin) {
+        ptitle.textContent = '🔧 管理模式';
+        gearBtn.textContent = '✅';
+        gearBtn.title = '退出管理模式';
+      } else {
+        ptitle.textContent = '💬 学习交流';
+        gearBtn.textContent = '🔧';
+        gearBtn.title = '管理（删除留言）';
+      }
+    }
+    gearBtn.addEventListener('click', function () {
       if (panel.classList.contains('admin')) {
         panel.classList.remove('admin');
         localStorage.removeItem(ADMIN_KEY_LS);
+        updateAdminUI(false);
         return;
       }
       var key = prompt('请输入管理口令（与 Worker 的 ADMIN_KEY 一致）：');
       if (!key) return;
       sendBtn.disabled = true;
-      // 用大号不存在的 id 做校验：即便口令正确也只会 DELETE 0 行，不会误删真实留言；
-      // 线上 Worker 错口令返回 400（而非 403），故以「非 2xx 即失败」统一判定
       fetch(COMMENTS_API_URL + '/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -157,7 +173,8 @@
         if (!r.ok) { alert('口令错误，或无删除权限.'); return; }
         localStorage.setItem(ADMIN_KEY_LS, key);
         panel.classList.add('admin');
-        alert('已进入管理模式，鼠标悬停留言可见 🗑 删除按钮.');
+        updateAdminUI(true);
+        alert('已进入管理模式，每条留言右上角显示 🗑 删除按钮.');
       }).catch(function () { alert('验证失败，请检查网络.'); })
         .finally(function () { sendBtn.disabled = false; });
     });
@@ -188,10 +205,12 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'delete', id: Number(id), key: key })
       }).then(function (r) {
-        if (!r.ok) throw new Error('bad');
+        return r.text().then(function (t) { return { ok: r.ok, status: r.status, body: t }; });
+      }).then(function (res) {
+        if (!res.ok) { alert('删除失败（HTTP ' + res.status + '）：' + (res.body || '权限错误或网络异常') + '.'); throw new Error('fail'); }
         var msg = btn.closest('.mb-msg');
         if (msg) msg.remove();
-      }).catch(function () { alert('删除失败，请重试.'); btn.textContent = '🗑'; btn.disabled = false; });
+      }).catch(function () { btn.textContent = '🗑'; btn.disabled = false; });
     });
 
     function loadComments() {
