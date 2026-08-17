@@ -489,6 +489,9 @@ html{scroll-behavior:smooth}
 *::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#0b6666,#094f4f)}
 *::selection{background:rgba(14,124,124,.18);color:var(--ink)}
 
+/* 长 display 公式允许横向滚动，避免被容器截断 */
+.katex-display{overflow-x:auto;overflow-y:hidden;padding-bottom:2px}
+
 /* 1b. 禁止标点符号出现在行首（中文排版规范） */
 p, .stmt, .sol, .ky-q .stmt, .rd-details > p, .ex > p, .def > p, .case > p, .note > p, .hist > p{
   hanging-punctuation:allow-last;

@@ -85,6 +85,101 @@
   var WORLD_SUFFIX = ['·初境', '·深境', '·秘境', '·幻境', '·绝境', '·圣境', '·灵境', '·幽境', '·炎境', '·霜境', '·空境', '·星境', '·终境'];
   /* 线性代数专属世界名（覆盖 WORLDS 的高数命名） */
   var LINALG_NAMES = { forest: '矩阵之林', canyon: '运算峡谷', sea: '向量之海', star: '特征星空', peak: '二次雪峰' };
+
+  /* ---------- 迷雾盲盒内容库：不只有题，还有故事、对话、冷知识 ----------
+     按 (ch, idx) 命中；未命中时回退到 EXAM_QUESTIONS 做题.                */
+  var BLIND_STORIES = [
+    /* ===== 高等数学 · 第1章 函数 ===== */
+    { ch: 1, type: 'story', icon: '📜', title: '函数符号的诞生', content: '1694 年，瑞士数学家约翰·伯努利首次用“x 的函数”描述曲线上的点.后来他的学生欧拉在 1734 年正式写下 f(x)——这个小小的括号，把千变万化的对应关系装进了一个简洁的符号.今天你看 f(x)=sin x，其实是在和欧拉“握手”.' },
+    { ch: 1, type: 'dialogue', icon: '💬', title: '狄利克雷的“怪函数”', content: '学生：老师，函数能不能处处不连续？<br>狄利克雷：能.定义 D(x)=1（x 为有理数），D(x)=0（x 为无理数）.你画不出图，但它实实在在是个函数.<br>学生：那它到底有多“怪”？<br>狄利克雷：怪到黎曼积分都拿它没办法——这催生了更强大的勒贝格积分.' },
+    { ch: 1, type: 'trivia', icon: '🎲', title: '冷知识：最早的学生编号', content: '函数概念最早并非“公式”，而是“曲线”.17 世纪人们觉得，只有能用代数式写出的才算函数.直到 1837 年，狄利克雷才给出现代定义：任意对应法则都是函数.也就是说，你今天的“y 是 x 的函数”，其实是 19 世纪才定型.' },
+
+    /* ===== 第2章 极限与连续 ===== */
+    { ch: 2, type: 'story', icon: '🏃', title: '芝诺的乌龟', content: '古希腊哲学家芝诺说：阿喀琉斯永远追不上乌龟——因为他跑到乌龟起点时，乌龟又向前爬了一小段.这个悖论困扰了人类近两千年，直到极限语言出现：无穷多个越来越小的段，其“总和”可以是有限的.极限，让人类第一次真正“追上”了乌龟.' },
+    { ch: 2, type: 'dialogue', icon: '💬', title: '刘徽割圆', content: '刘徽：圆内接正六边形不像圆，正十二边形稍像，正九十六边形就更像了.<br>学生：那要画多少边形才“是”圆？<br>刘徽：不必画到无穷.只要边数足够多，多边形面积与圆面积的差可以小于你任意指定的小数——这就叫“割之弥细，所失弥少”.' },
+    { ch: 2, type: 'trivia', icon: '🌊', title: '冷知识：ε 怎么念', content: '极限定义里那个 ε（epsilon），在希腊语里只是字母“e”.魏尔斯特拉斯用它来代表“任意小的正数”，于是 ε-δ 语言成了分析学的门槛.下次写 ε>0 时，可以默念：这是“误差”error 的首字母！' },
+
+    /* ===== 第3章 一元函数微分学 ===== */
+    { ch: 3, type: 'story', icon: '🍎', title: '牛顿的“流数术”', content: '1665 年，剑桥大学因瘟疫停课，22 岁的牛顿回到乡下.他在自家果园里思考：行星运动的瞬时方向如何描述？于是他发明了“流数术”——用无穷小量的比值研究变化率.这就是导数的前身.苹果不一定砸中他，但变化率确实“砸”开了近代科学.' },
+    { ch: 3, type: 'dialogue', icon: '💬', title: '莱布尼茨的 d', content: '莱布尼茨：我用 dy/dx 表示 y 对 x 的变化率，像分数一样好看.<br>牛顿：我用“点”表示流数，ẏ，更简洁.<br>学生：为什么今天我们用 dy/dx？<br>莱布尼茨：因为分数形式能“假装”约分，做链式法则时特别直观——虽然它其实不是普通分数.' },
+    { ch: 3, type: 'trivia', icon: '⚡', title: '冷知识：导数与速度', content: '汽车仪表盘上的“瞬时速度”，本质上就是位移函数的导数.GPS 每秒测一次位置，用相邻时刻位置差除以时间差，就得到近似的瞬时速度.所以，你每次开车看速度表，都在用微积分.' },
+
+    /* ===== 第4章 微分学的应用 ===== */
+    { ch: 4, type: 'story', icon: '📈', title: '洛必达买了条法则', content: '1696 年，洛必达出版了欧洲第一本微积分教材.书中有一条求 0/0 型极限的法则，被命名为“洛必达法则”.但历史上，这条定理其实是瑞士数学家约翰·伯努利告诉洛必达的——洛必达付了钱买下了署名权.所以，这条法则可以说是“买”来的.' },
+    { ch: 4, type: 'dialogue', icon: '💬', title: '函数也想知道自己最值', content: '函数 f(x)：我到底有没有最大值？<br>导数 f\'(x)：先让我等于零，找驻点看看.<br>二阶导 f\'\'(x)：驻点处我小于零，说明那是“山顶”，最大值！<br>函数：谢谢，我终于知道自己“巅峰”在哪了.' },
+    { ch: 4, type: 'trivia', icon: '🎯', title: '冷知识：凸函数与橡皮筋', content: '如果函数图像是“碗”形的，就叫凸函数.一个直观判据：在图像上任意两点连一条线段，线段都在图像上方.这就像在碗口拉一根橡皮筋，橡皮筋不会掉进碗里.凸优化能派上大用场，因为“碗底”就是全局最小值.' },
+
+    /* ===== 第5章 一元函数积分学 ===== */
+    { ch: 5, type: 'story', icon: '📐', title: '黎曼的“切蛋糕”', content: '1854 年，德国数学家黎曼提出：求曲边梯形面积，可以把区间切成很多小段，每段用矩形近似，然后让段数趋于无穷.这种“切蛋糕”的思想，就是黎曼积分.只要函数不是太离谱，切得足够细，矩形总面积就会逼近真正的面积.' },
+    { ch: 5, type: 'dialogue', icon: '💬', title: '不定积分找“爸爸”', content: '学生：∫ 2x dx = x² + C，为什么要加 C？<br>老师：因为导数为 2x 的函数不止一个，x²+1、x²-5、x²+π 都行.它们都是 2x 的“原函数爸爸”，彼此相差一个常数.<br>学生：所以不定积分是一族函数？<br>老师：对，C 就是这个家族的“族徽”.' },
+    { ch: 5, type: 'trivia', icon: '🥧', title: '冷知识：积分符号 ∫', content: '积分符号 ∫ 是莱布尼茨把拉丁文 summa（求和）的首字母 S 拉长写的.所以它本质上就是“求和”——只不过是无穷多项的求和.记住：∫ 就是拉长的 S，表示“把无穷小量加起来”.' },
+
+    /* ===== 第6章 积分学的应用 ===== */
+    { ch: 6, type: 'story', icon: '🏛️', title: '阿基米德的浴缸', content: '阿基米德发现，不规则物体的体积可以通过排出的水量来测量.后来积分学把这一思想数学化：旋转体的体积可以看成无数个薄圆盘的体积之和.所以，当你下次看到花瓶，可以想象它是由无数个“薄片”堆出来的.' },
+    { ch: 6, type: 'dialogue', icon: '💬', title: '曲线的弧长', content: '学生：曲线弯弯扭扭，怎么量长度？<br>老师：把它切成很多小段，每段近似看成直线.<br>学生：段数无限多时呢？<br>老师：小段长度的总和就是弧长.用积分写出来就是 ∫√(1+(y\')²) dx.简单说：把弯的当成很多直的拼起来.' },
+    { ch: 6, type: 'trivia', icon: '⚖️', title: '冷知识：重心与积分', content: '古代建筑师用杠杆找石块的重心，现代工程师用积分计算不规则物体的质心.飞机机翼、汽车外壳的重心设计，都要靠多重积分.一块薄板的重心，就是“各点坐标按面积加权平均”的结果.' },
+
+    /* ===== 第7章 常微分方程 ===== */
+    { ch: 7, type: 'story', icon: '🦠', title: '马尔萨斯的人口预言', content: '1798 年，马尔萨斯提出：人口增长率与现有人口成正比.用微分方程写就是 dP/dt = kP，解得 P(t)=P₀e^(kt)——指数增长.虽然现实中资源有限，人口不会永远指数爆炸，但这个模型开启了用微分方程研究变化的先河.' },
+    { ch: 7, type: 'dialogue', icon: '💬', title: '放射性同位素的告别', content: '碳-14：我的数量每过 5730 年就会减半.<br>考古学家：所以你身边的碳-14 剩多少，就能推算文物年代.<br>碳-14：对，这就是放射性碳定年法.我的衰变满足 dN/dt = -λN，解是指数衰减 N(t)=N₀e^(-λt).<br>考古学家：谢谢你，让我能“读”出时间.' },
+    { ch: 7, type: 'trivia', icon: '🚀', title: '冷知识：微分方程与火箭', content: '火箭推力、电路振荡、弹簧振动、传染病传播……这些看似无关的现象，往往能用同一类微分方程描述.微分方程是连接“局部变化规律”与“整体演化结果”的桥梁，被称为“自然界的通用语言”.' },
+
+    /* ===== 第8章 向量代数与空间解析几何 ===== */
+    { ch: 8, type: 'story', icon: '📍', title: '笛卡尔的坐标梦', content: '传说笛卡尔生病卧床，看到天花板上一只蜘蛛.他想：要描述蜘蛛的位置，只需要三个数（到两面墙和地面的距离）.于是直角坐标系诞生了.今天三维空间里的每个点 (x,y,z)，都延续着那只蜘蛛的灵感.' },
+    { ch: 8, type: 'dialogue', icon: '💬', title: '点积与叉积的对话', content: '点积 a·b：我衡量两个向量“同向”的程度，结果是个数.<br>叉积 a×b：我衡量两个向量“张成”的程度，结果是个向量，方向垂直于你们俩.<br>学生：那我该用哪个？<br>点积：算夹角、投影找我.<br>叉积：算面积、法向量找我.' },
+    { ch: 8, type: 'trivia', icon: '🧊', title: '冷知识：为什么右手系', content: '三维坐标系有“左手系”和“右手系”.我们常用右手系，是因为叉积方向用右手定则最自然.如果哪天发现物理定律在左手系里不一样，那说明你发现了新的对称性破缺——这可是诺贝尔奖级别的线索.' },
+
+    /* ===== 第9章 多元函数微分学 ===== */
+    { ch: 9, type: 'story', icon: '⛰️', title: '山地的坡度', content: '想象你站在山坡上，朝东走和朝北走，坡度可能完全不同.多元函数的偏导数，就是分别考察沿每个坐标轴方向的变化率.而梯度，则把所有方向的信息合成一个向量，指向函数增长最快的方向.登山时，梯度方向就是最陡的上山路.' },
+    { ch: 9, type: 'dialogue', icon: '💬', title: '全微分的自我介绍', content: '全微分 dz：我是函数值的“小变化”.<br>偏导数 ∂z/∂x、∂z/∂y：我是沿坐标轴的局部变化率.<br>全微分 dz = (∂z/∂x)dx + (∂z/∂y)dy.<br>学生：所以全微分就是“把各个方向的小贡献加起来”？<br>全微分：没错，线性近似就是这么简单.' },
+    { ch: 9, type: 'trivia', icon: '🌡️', title: '冷知识：梯度下降', content: '人工智能训练神经网络时，最常用的优化算法叫“梯度下降”：沿着损失函数梯度的反方向一小步一小步走，就能逐渐逼近最小值.你每天刷到的推荐算法、语音识别、图像生成，背后都在默默求偏导数.' },
+
+    /* ===== 第10章 重积分 ===== */
+    { ch: 10, type: 'story', icon: '🧱', title: '薄板的质量', content: '一块薄板各处的密度不同，怎么求总质量？黎曼的想法是：把薄板切成很多小方块，每小块密度近似不变，质量≈密度×面积，然后全部加起来.让方块越来越小，就得到二重积分 ∬ρ(x,y)dσ.切得越细，近似越真.' },
+    { ch: 10, type: 'dialogue', icon: '💬', title: '极坐标登场', content: '直角坐标：圆域积分我算起来很麻烦.<br>极坐标：让我来！x=r cosθ，y=r sinθ，面积元变成 r dr dθ.<br>学生：为什么多一个 r？<br>极坐标：因为同样 dθ 和 dr，离原点越远，“小块”面积越大.r 就是面积拉伸的倍数.' },
+    { ch: 10, type: 'trivia', icon: '📊', title: '冷知识：二重积分与概率', content: '二维正态分布的概率密度，图像像一座“钟形山”.求某个区域的概率，就是求这座山在该区域上方的体积——正是二重积分.统计学里很多检验量的分布，都是这样算出来的.' },
+
+    /* ===== 第11章 曲线积分 ===== */
+    { ch: 11, type: 'story', icon: '🌀', title: '格林的圈地法', content: '19 世纪英国数学家格林发现：沿着一块区域边界走一圈的“环量”，等于区域内部某种“涡旋”的总和.这就是格林公式.它把边界上的曲线积分和区域上的二重积分联系起来——“沿边转一圈”就知道“里面转多猛”.' },
+    { ch: 11, type: 'dialogue', icon: '💬', title: '保守场的捷径', content: '力场 F：沿不同路径做功可能不同.<br>保守场：不，只要我是保守场，做功只与起点终点有关，与路径无关.<br>学生：怎么判断？<br>保守场：看我的旋度是否为零，或者是否存在势函数 φ 使得 F=∇φ.有势函数，我就“懒”得绕弯.' },
+    { ch: 11, type: 'trivia', icon: '🌪️', title: '冷知识：龙卷风与旋度', content: '向量场的旋度描述“旋转”强弱.气象学家用旋度分析气旋和反气旋.如果一个区域的旋度不为零，就像水里有个漩涡——曲线积分绕它一圈，会得到非零环量.' },
+
+    /* ===== 第12章 曲面积分 ===== */
+    { ch: 12, type: 'story', icon: '🌊', title: '高斯的高斯定理', content: '高斯发现：通过一个封闭曲面的“通量”，等于曲面内部“源”的总量.这就是高斯公式（散度定理）.电场、磁场、流体力学中到处都有它的身影.可以说，高斯公式是“看外表通量，知内部总量”的数学魔法.' },
+    { ch: 12, type: 'dialogue', icon: '💬', title: '通量与流量', content: '水速场 v：我每秒穿过某张曲面多少水？<br>曲面积分 ∬v·n dS：我来算！把曲面切成小片，每片用点积 v·n 看“正对着”流过去多少，再求和.<br>学生：n 是什么？<br>曲面积分：曲面的单位法向量，表示“朝外指”的方向.' },
+    { ch: 12, type: 'trivia', icon: '🔭', title: '冷知识：麦克斯韦方程组', content: '电磁学巅峰之作麦克斯韦方程组，其中两个方程正是用散度、旋度和曲面积分写成的.没有高斯公式和斯托克斯公式，19 世纪的物理学家就无法把电、磁、光统一起来.微积分，真的改变了世界.' },
+
+    /* ===== 第13章 无穷级数 ===== */
+    { ch: 13, type: 'story', icon: '🎵', title: '泰勒的无限多项式', content: '1715 年，英国数学家泰勒发现：很多光滑函数都能写成无穷个幂次项的和.这就是泰勒级数.它像一把“数学显微镜”，把函数在某点附近的 behavior 放大成多项式.计算器里的 sin、cos、e^x，很多都是用泰勒级数逼近算出来的.' },
+    { ch: 13, type: 'dialogue', icon: '💬', title: '调和级数的自信', content: '调和级数 H = 1 + 1/2 + 1/3 + 1/4 + …：我每一项都在变小，总和一定收敛吧？<br>数学家：不，你的和其实会无限增大，只是增得很慢.<br>调和级数：有多慢？<br>数学家：前 n 项和约等于 ln n + γ，γ≈0.5772 叫欧拉常数.' },
+    { ch: 13, type: 'trivia', icon: '♾️', title: '冷知识：π 的级数', content: '1665 年，苏格兰数学家格雷戈里发现：π/4 = 1 - 1/3 + 1/5 - 1/7 + ….把无穷多个分数交替相加，竟然能得到圆周率！这就是著名的莱布尼茨级数.无穷级数让“无限”变得可以计算.' },
+
+    /* ===== 线性代数 · 第1章 行列式 ===== */
+    { ch: 101, type: 'story', icon: '🧮', title: '莱布尼茨的“行列式”草图', content: '1693 年，莱布尼茨在研究线性方程组时，用指标排列描述解的结构——这被认为是行列式的雏形.后来范德蒙德、柯西等人不断完善，才有了今天 n 阶行列式的模样.行列式最神奇的地方：一个数就能告诉我们方程组是否有唯一解.' },
+    { ch: 101, type: 'dialogue', icon: '💬', title: '行列式与面积', content: '二阶行列式：我的绝对值等于两个列向量张成的平行四边形面积.<br>三阶行列式：我的绝对值等于三个列向量张成的平行六面体体积.<br>学生：那 n 阶呢？<br>行列式：n 维“超体积”.所以行列式不只是“解方程的工具”，还是“体积的度量”.' },
+    { ch: 101, type: 'trivia', icon: '🔀', title: '冷知识：逆序数与排列', content: '行列式展开中每一项的符号，由列标排列的逆序数决定.逆序数就是“大数排在小数前面”的次数.逆序数为偶数取正，奇数取负.所以算行列式，其实是在数“乱序”的奇偶性.' },
+
+    /* ===== 第2章 矩阵及其运算 ===== */
+    { ch: 102, type: 'story', icon: '📋', title: '凯莱与矩阵乘法', content: '1858 年，英国数学家凯莱发表《矩阵论备忘录》，首次系统研究矩阵.他发现矩阵乘法虽然看起来“别扭”——不满足交换律，但恰恰是这种非交换性，完美描述了线性变换的复合.今天，矩阵是人工智能、计算机图形学的基本语言.' },
+    { ch: 102, type: 'dialogue', icon: '💬', title: 'AB 不等于 BA', content: '矩阵 A：我和 B 相乘，结果看“行乘列”.<br>矩阵 B：但 BA 的维度可能都不一样！<br>学生：为什么矩阵乘法不交换？<br>A：因为线性变换的先后顺序一般不能颠倒.先旋转再拉伸，和先拉伸再旋转，效果通常不同.' },
+    { ch: 102, type: 'trivia', icon: '🖼️', title: '冷知识：矩阵与游戏画面', content: '3D 游戏里每个角色的旋转、缩放、平移，都是用矩阵（或四元数）实现的.GPU 每秒要进行上亿次矩阵运算，才让游戏画面流畅.你打的每一场游戏，都是线性代数在加班.' },
+
+    /* ===== 第3章 向量组 ===== */
+    { ch: 103, type: 'story', icon: '🏗️', title: '基底的“骨架”', content: '平面上任意向量都能由 i、j 线性表示，所以 {i,j} 是二维空间的一组基底.基底就像房子的骨架：不能多（冗余）、不能少（不够撑）、方向不能共线.向量组的线性相关与无关，就是在判断这些向量能不能“互相替代”.' },
+    { ch: 103, type: 'dialogue', icon: '💬', title: '线性相关辩论', content: '向量 a：没有我你们不行！<br>向量 b：得了吧，你等于 2a，咱俩方向一样，多你一个不多.<br>秩：别吵，极大无关组说了算.极大无关组里有几个向量，秩就是几.' },
+    { ch: 103, type: 'trivia', icon: '🎨', title: '冷知识：色彩空间的基', content: 'RGB 色彩空间用红、绿、蓝三种基色混合出所有颜色.如果三种基色线性相关（比如一种是另两种的叠加），就会损失颜色信息.线性无关的基底，是“能表示所有东西的最小集合”.' },
+
+    /* ===== 第4章 线性方程组 ===== */
+    { ch: 104, type: 'story', icon: '🔧', title: '高斯消元的智慧', content: '高斯消元法 idea 很简单：通过初等行变换，把方程组化成“上三角”形状，再从下往上回代求解.这个从小学就开始用的方法，其实就是矩阵的初等变换.高斯把这一技巧系统化，让它能处理任意多个方程、任意多个未知数.' },
+    { ch: 104, type: 'dialogue', icon: '💬', title: '解的三种命运', content: '增广矩阵：我的秩 r 和系数矩阵的秩 R 决定一切.<br>学生：那什么时候有解？<br>增广矩阵：R=r 才有解；R=r=n（未知数个数）唯一解；R=r<n 无穷多解；R≠r 无解.<br>学生：就这么简单？<br>增广矩阵：对，秩就是方程组的“真实约束数”.' },
+    { ch: 104, type: 'trivia', icon: '📡', title: '冷知识：GPS 定位靠解方程组', content: 'GPS 接收器同时收到多颗卫星信号，每颗卫星给出一个距离方程.联立这些方程，就能解出接收器的三维坐标和时间偏差.现代导航，本质上是实时求解一个大规模线性（或非线性）方程组.' },
+
+    /* ===== 第5章 相似矩阵与二次型 ===== */
+    { ch: 105, type: 'story', icon: '🌌', title: '特征值的“不变量”', content: '两个相似矩阵，看起来不同，却共享特征值、行列式、迹、秩.特征值就像是矩阵的“指纹”——无论你怎么换基底，它都保持不变.相似对角化，就是找一个最简的“同族代表”来研究复杂的矩阵.' },
+    { ch: 105, type: 'dialogue', icon: '💬', title: '二次型的形状', content: '二次型：我是一类特殊的多元二次函数，图像可能是椭球、双曲面或抛物面.<br>正交变换：我能通过换坐标，把你的交叉项消掉，变成标准形.<br>学生：怎么判断是椭球还是双曲面？<br>二次型：看标准形系数全正、全负还是有正有负——这就是惯性定理.' },
+    { ch: 105, type: 'trivia', icon: '📉', title: '冷知识：搜索引擎与特征向量', content: 'Google 早期 PageRank 算法，把网页之间的链接关系建构成一个巨大矩阵，通过求主特征向量给网页排序.特征值最大的那个特征向量，就对应着“最重要的网页”.线性代数，撑起了整个搜索引擎时代.' }
+  ];
+
   function chapterWorld(ch) {
     var base = CFG.worldOf[ch] || 'forest';
     var W = WORLDS[base];
@@ -113,14 +208,73 @@
   function readStudy() { try { return JSON.parse(localStorage.getItem('study_v1')) || {}; } catch (e) { return {}; } }
   function mastery(ch) {
     var s = readStudy(), m = s.mastery && s.mastery[ch];
-    if (!m || !m.total) return { rate: 0, done: false, right: 0, total: 0 };
-    return { rate: m.right / m.total, done: m.right >= Math.ceil(m.total * 0.6), right: m.right, total: m.total };
+    var quizRate = 0, right = 0, total = 0;
+    if (m && m.total) { quizRate = m.right / m.total; right = m.right; total = m.total; }
+    // 内容能量：旧版由 chapter-fog.js 写入 fog_content_v1；现已由荧光回收率取代
+    var contentRate = 0;
+    try {
+      contentRate = JSON.parse(localStorage.getItem('fog_content_v1') || '{}')[BOOK + ':' + ch] || 0;
+    } catch (e) {}
+    // 同时读取 fluo 进度作为内容掌握率
+    var fluoRate = 0;
+    try {
+      var fluo = JSON.parse(localStorage.getItem('fluo_learned_v1') || '{}');
+      var prefix = BOOK + ':' + ch + ':';
+      var got = 0, all = 0;
+      for (var k in fluo) {
+        if (fluo.hasOwnProperty(k) && k.indexOf(prefix) === 0) { got++; all++; }
+      }
+      // 如果没有荧光标记，fluoRate 保持 0，避免干扰
+      if (all > 0) fluoRate = got / all;
+    } catch (e) {}
+    contentRate = Math.min(1, Math.max(contentRate, fluoRate));
+    var combined = Math.min(1, contentRate * 0.35 + quizRate * 0.65);
+    return { rate: combined, done: combined >= 0.6, right: right, total: total, gemRate: contentRate };
   }
   var LS = {
     get: function (k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } },
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
   var DIALOG_DONE = LS.get('tb_dialog'), RELICS = LS.get('tb_relics'), BLIND_OPEN = LS.get('tb_blind'), TITLES = LS.get('tb_titles');
+
+  /* ---------- 迷雾盲盒：每章多个，分散在地图中，打开后变路标 ---------- */
+  var BLIND_MARKERS = ['🚩','⭐','🏆','🗿','🌟','💎','🔮','⚓','🧭','🎐'];
+  function getBlindBoxes(ch) {
+    var rng = makeRng(ch * 7919 + 31415);
+    var bases = [
+      { left: 24, threshold: 22 },
+      { left: 52, threshold: 50 },
+      { left: 82, threshold: 78 }
+    ];
+    return bases.map(function (b, i) {
+      return {
+        left: Math.max(14, Math.min(90, b.left + Math.round((rng() - 0.5) * 8))),
+        threshold: Math.max(10, Math.min(95, b.threshold + Math.round((rng() - 0.5) * 10))),
+        marker: BLIND_MARKERS[(ch * 3 + i) % BLIND_MARKERS.length]
+      };
+    });
+  }
+  function normalizeBlindOpen() {
+    var need = false;
+    for (var ch in BLIND_OPEN) {
+      if (!BLIND_OPEN.hasOwnProperty(ch)) continue;
+      if (typeof BLIND_OPEN[ch] === 'number') {
+        var n = BLIND_OPEN[ch];
+        BLIND_OPEN[ch] = {};
+        for (var i = 0; i < n; i++) BLIND_OPEN[ch][i] = true;
+        need = true;
+      }
+    }
+    if (need) LS.set('tb_blind', BLIND_OPEN);
+  }
+  normalizeBlindOpen();
+  function isBlindOpened(ch, idx) { var o = BLIND_OPEN[ch]; return !!(o && o[idx]); }
+  function markBlindOpened(ch, idx) {
+    if (!BLIND_OPEN[ch]) BLIND_OPEN[ch] = {};
+    BLIND_OPEN[ch][idx] = true;
+    LS.set('tb_blind', BLIND_OPEN);
+    syncTowerToCloud();
+  }
 
   /* 塔数据云端同步：写 tb_* 时同步进 study_v1.tower（energy_bar 云端推送整个 study_v1，自动带走；mergeStudy 已支持并集合并） */
   function syncTowerToCloud() {
@@ -324,21 +478,50 @@
   ];
 
   /* ---------- 公式渲染（教材已加载 KaTeX 则用，否则降级纯文本） ---------- */
-  function renderTex(html) {
-    if (window.katex && html.indexOf('\\(') >= 0 || window.katex && html.indexOf('\\[') >= 0 || window.katex && html.indexOf('$') >= 0) {
-      try {
-        var el = document.createElement('span');
-        el.innerHTML = html;
-        var nodes = el.querySelectorAll('*');
-        return el.innerHTML;
-      } catch (e) { return html; }
+  function maybeKatex(el) {
+    if (!el || !window.katex || !window.katex.renderToString) return;
+    var html = el.innerHTML;
+    function render(tex, display) {
+      try { return window.katex.renderToString(tex, { throwOnError: false, displayMode: display }); } catch (e) { return null; }
     }
-    return html;
+    // 行内 \(...\)
+    html = html.replace(/\\\((.*?)\\\)/g, function (m, tex) {
+      var out = render(tex, false); return out || m;
+    });
+    //  display \[...\]
+    html = html.replace(/\\\[(.*?)\\\]/g, function (m, tex) {
+      var out = render(tex, true); return out || m;
+    });
+    //  display $$...$$
+    html = html.replace(/\$\$(.*?)\$\$/g, function (m, tex) {
+      var out = render(tex, true); return out || m;
+    });
+    el.innerHTML = html;
   }
-  function katexify(el) {
-    if (!window.renderMathInElement) return;
-    try { window.renderMathInElement(el, { delimiters: [{ left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }, { left: '$$', right: '$$', display: true }], throwOnError: false }); } catch (e) {}
+  /* 自评区专用：把裸 LaTeX 片段识别出来并安全渲染 */
+  function texForKatex(s) { return s.replace(/\\dfrac/g, '\\frac').replace(/\\tfrac/g, '\\frac'); }
+  function wrapInlineMath(s) {
+    if (!s) return s;
+    if (/\\\(|\\\)|\$\$/.test(s)) return s; // 已有包裹不再拆分
+    var out = '', math = '';
+    function flush() { if (math) { out += '\\(' + math + '\\)'; math = ''; } }
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (/[A-Za-z0-9\\_\^{}.\-+*/=(),;]/.test(c)) { math += c; }
+      else if (c === ' ' && math) { math += c; }
+      else { flush(); out += c; }
+    }
+    flush();
+    return out;
   }
+  function renderInlineMath(s) {
+    if (!window.katex || !window.katex.renderToString) return s;
+    return s.replace(/\\\((.*?)\\\)/g, function (m, tex) {
+      try { return window.katex.renderToString(tex, { throwOnError: true, displayMode: false }); }
+      catch (e) { return '<span style="font-family:KaTeX_Main,serif;white-space:pre-wrap">' + escHtml(tex) + '</span>'; }
+    });
+  }
+  function renderSelfCheckText(s) { return renderInlineMath(wrapInlineMath(texForKatex(s || ''))); }
 
   /* ---------- 老师头像 ---------- */
   function teacherFace(mood) {
@@ -370,7 +553,7 @@
   /* ---------- 状态 ---------- */
   /* 当前章：从页面文件名识别（chN.html → N），塔 = 章级目录 */
   var _pm = ((location.pathname || '').split('/').pop() || '').match(/^ch(\d+)\.html$/);
-  var curCh = _pm ? Math.min(+_pm[1], CFG.total) : 1, curTab = 'map', dlgTimer = null, dlgBusy = false, toastT = null;
+  var curCh = _pm ? Math.min(+_pm[1], CFG.total) : 1, curTab = 'map', dlgTimer = null, dlgBusy = false, dlgTyping = false, toastT = null;
   var prevDone = null;
 
   /* ---------- Toast ---------- */
@@ -465,8 +648,9 @@
     }
     return s + '</g>';
   }
-  /* ---------- 地图渲染（big=true 时放大为大图模式） ---------- */
-  function mapSVG(layout, m, big) {
+  /* ---------- 地图渲染（big=true 时放大为大图模式；renderCh 指定渲染章，用于盲盒打开状态） ---------- */
+  function mapSVG(layout, m, big, renderCh) {
+    var renderChNum = renderCh || curCh;
     var W = layout.W || WORLDS[layout.world];
     var cols = layout.cols || COLS, rows = layout.rows || ROWS;
     // 大图模式：格子放大、留白加大
@@ -506,14 +690,14 @@
     // 怪（该章未通关 → 显示；通关 → ✓）
     var mx = pad + layout.monster[0] * cell + cell / 2, my = pad + layout.monster[1] * cell + cell / 2;
     var mr = big ? 13 : 8;
-    if (m.done) { s += '<g transform="translate(' + mx + ',' + my + ')"><circle r="' + (mr + 1) + '" fill="none" stroke="#e0a93b" stroke-width="2.4"/><path d="M -5 0 L -1 5 L 6 -5" stroke="#e0a93b" stroke-width="3" fill="none" stroke-linecap="round"/><text y="' + (mr + 12) + '" text-anchor="middle" font-size="' + (big ? 8 : 6.5) + '" fill="#e0a93b">已化解</text></g>'; }
-    else { s += '<g transform="translate(' + mx + ',' + my + ')"><circle r="' + mr + '" fill="#e2607a"/><circle cx="' + (-mr * 0.38) + '" cy="' + (-mr * 0.25) + '" r="' + (mr * 0.2) + '" fill="#fff"/><circle cx="' + (mr * 0.38) + '" cy="' + (-mr * 0.25) + '" r="' + (mr * 0.2) + '" fill="#fff"/><path d="M ' + (-mr * 0.5) + ' ' + (mr * 0.4) + ' Q 0 ' + (mr * 0.75) + ' ' + (mr * 0.5) + ' ' + (mr * 0.4) + '" stroke="#fff" stroke-width="1.6" fill="none"/><text y="' + (mr + 12) + '" text-anchor="middle" font-size="' + (big ? 8 : 6) + '" fill="#e2607a">本章误区</text></g>'; }
+    if (m.done) { s += '<g transform="translate(' + mx + ',' + my + ')"><circle r="' + (mr + 1) + '" fill="none" stroke="#e0a93b" stroke-width="2.4"/><path d="M -5 0 L -1 5 L 6 -5" stroke="#e0a93b" stroke-width="3" fill="none" stroke-linecap="round"/></g>'; }
+    else { s += '<g transform="translate(' + mx + ',' + my + ')"><circle r="' + mr + '" fill="#e2607a"/><circle cx="' + (-mr * 0.38) + '" cy="' + (-mr * 0.25) + '" r="' + (mr * 0.2) + '" fill="#fff"/><circle cx="' + (mr * 0.38) + '" cy="' + (-mr * 0.25) + '" r="' + (mr * 0.2) + '" fill="#fff"/><path d="M ' + (-mr * 0.5) + ' ' + (mr * 0.4) + ' Q 0 ' + (mr * 0.75) + ' ' + (mr * 0.5) + ' ' + (mr * 0.4) + '" stroke="#fff" stroke-width="1.6" fill="none"/></g>'; }
     // 盲盒
     var bx = pad + layout.blind[0] * cell + cell / 2, by = pad + layout.blind[1] * cell + cell / 2;
-    var opened = !!BLIND_OPEN[curCh];
+    var opened = !!BLIND_OPEN[renderChNum];
     var br = big ? 13 : 9;
     if (opened) { s += '<g transform="translate(' + bx + ',' + by + ')"><circle r="' + br + '" fill="none" stroke="#e0a93b" stroke-width="2" opacity=".8"/><text y="' + (br * 0.4) + '" text-anchor="middle" font-size="' + (big ? 15 : 10) + '">🎉</text></g>'; }
-    else { s += '<g class="tbb-blind" transform="translate(' + bx + ',' + by + ')" style="cursor:pointer"><animateTransform attributeName="transform" type="translate" values="' + bx + ' ' + by + ';' + bx + ' ' + (by - 4) + ';' + bx + ' ' + by + '" dur="2.2s" repeatCount="indefinite"/><rect x="' + (-br) + '" y="' + (-br + 2) + '" width="' + (br * 2) + '" height="' + (br * 1.55) + '" rx="4" fill="#e0a93b"/><rect x="' + (-br) + '" y="' + (-br - 2) + '" width="' + (br * 2) + '" height="' + (br * 0.55) + '" rx="3" fill="#f5c35c"/><path d="M ' + (-br * 0.55) + ' ' + (-br - 2) + ' L ' + (br * 0.55) + ' ' + (-br - 2) + ' L 0 ' + (-br - 8) + ' Z" fill="#e07a3b"/><text y="' + (br * 1.4 + 10) + '" text-anchor="middle" font-size="' + (big ? 8 : 5.5) + '" fill="#e0a93b">考研盲盒</text></g>'; }
+    else { s += '<g class="tbb-blind" transform="translate(' + bx + ',' + by + ')" style="cursor:pointer"><animateTransform attributeName="transform" type="translate" values="' + bx + ' ' + by + ';' + bx + ' ' + (by - 4) + ';' + bx + ' ' + by + '" dur="2.2s" repeatCount="indefinite"/><rect x="' + (-br) + '" y="' + (-br + 2) + '" width="' + (br * 2) + '" height="' + (br * 1.55) + '" rx="4" fill="#e0a93b"/><rect x="' + (-br) + '" y="' + (-br - 2) + '" width="' + (br * 2) + '" height="' + (br * 0.55) + '" rx="3" fill="#f5c35c"/><path d="M ' + (-br * 0.55) + ' ' + (-br - 2) + ' L ' + (br * 0.55) + ' ' + (-br - 2) + ' L 0 ' + (-br - 8) + ' Z" fill="#e07a3b"/></g>'; }
     // 楼梯
     var sx = pad + layout.stairs[0] * cell + cell / 2, sy = pad + layout.stairs[1] * cell + cell / 2;
     var canUp = m.done;
@@ -565,30 +749,53 @@
     h += '<div class="tb-tower">';
     var _ts = window.TOWER_SECS;
     for (var ch = 1; ch <= CFG.total; ch++) {
-      var m = mastery(ch), wd = WORLDS[CFG.worldOf[ch]];
+      var m = mastery(ch), wd = chapterWorld(ch);
       var cls = 'floor' + (m.done ? ' done' : '') + (m.rate > 0 ? ' lit' : '') + (ch === curCh ? ' on' : '');
-      var stat = m.done ? '✓ 通关' : (m.rate > 0 ? Math.round(m.rate * 100) + '%' : '🔒');
-      /* 世界色条：楼层左侧色条 = 所属世界（塔即目录，一眼看出章节归属） */
-      h += '<div class="' + cls + '" data-ch="' + ch + '" style="border-left:3px solid ' + wd.ground + '"><span class="fno">' + ch + '</span><span class="fname">' + CFG.chNames[ch] + '</span><span class="fstat">' + stat + '</span></div>';
-      /* 当前章后面紧跟「本章小节」+ 地图（上下文感知，不突兀） */
-      if (ch === curCh) {
-        if (_ts && _ts.list && _ts.list.length) {
-          h += '<div class="tb-sec tb-sec-inline"><div class="tb-sec-head" id="tbSecHead">📑 本章小节<span class="tb-sec-cnt">' + _ts.list.length + '</span><i class="tb-sec-arr">▸</i></div><div class="tb-sec-list" id="tbSecList" style="display:none">';
-          _ts.list.forEach(function (it) {
-            var isAdv = String(it[1]).indexOf('考研') >= 0 || String(it[1]).indexOf('测试') >= 0;
-            h += '<a href="#' + it[0] + '"' + (isAdv ? ' class="tb-adv"' : '') + '>' + it[1] + '</a>';
-          });
-          h += '</div></div>';
-        }
-        /* 当前层地图：嵌入塔身，紧随当前章 */
-        h += '<div class="tb-map-wrap tb-map-inline"><div class="tb-map-label">掌握度 ' + Math.round(mastery(curCh).rate * 100) + '%<button class="tbtn tb-zoom" id="tbZoom" title="放大查看地图">⛶ 放大</button></div>';
-        h += '<svg class="tb-map" viewBox="0 0 ' + (PAD * 2 + COLS * CELL) + ' ' + (PAD * 2 + ROWS * CELL) + '" xmlns="http://www.w3.org/2000/svg">' + mapSVG(genLayout(curCh), mastery(curCh)) + '</svg></div>';
+      /* 楼层条 = 宽版迷雾世界地图章节条（同 tower_demo.html） */
+      var ratePct = Math.round(m.rate * 100);
+      h += '<div class="' + cls + '" data-ch="' + ch + '" data-rate="' + ratePct + '" style="--clear:' + ratePct + '">';
+      h += '<div class="floor-map" aria-hidden="true">';
+      h += '<div class="fm-sky" style="background:linear-gradient(180deg,' + wd.sky[0] + ' 0%,' + wd.sky[1] + ' 55%,' + wd.ground + ' 55%,' + wd.ground + ' 100%)"></div>';
+      h += '<div class="fm-sun"></div>';
+      h += '<div class="fm-cloud c1"></div><div class="fm-cloud c2"></div>';
+      h += '<div class="fm-tree">' + (wd.base === 'forest' ? '🌳' : wd.base === 'canyon' ? '🌵' : wd.base === 'sea' ? '🪸' : wd.base === 'star' ? '✨' : '🏔️') + '</div>';
+      h += '<div class="fm-tree t2">' + (wd.base === 'forest' ? '🌲' : wd.base === 'canyon' ? '🪨' : wd.base === 'sea' ? '🐚' : wd.base === 'star' ? '⭐' : '❄️') + '</div>';
+      h += '<svg class="fm-path" viewBox="0 0 900 60" preserveAspectRatio="none"><path d="M80,50 C160,45 200,20 280,28 C360,36 400,48 480,35 C560,22 620,42 700,30 C760,20 800,45 850,25"></path></svg>';
+      /* 每章 3 个迷雾盲盒，随 clear 进度 stagger 露出；打开后变成路标 */
+      var bboxes = getBlindBoxes(ch);
+      bboxes.forEach(function (bb, idx) {
+        var opened = isBlindOpened(ch, idx);
+        var cls = 'fm-blind' + (ratePct >= bb.threshold ? ' revealed' : '') + (opened ? ' opened' : '');
+        h += '<div class="' + cls + '" data-ch="' + ch + '" data-idx="' + idx + '" style="left:' + bb.left + '%">' + (opened ? bb.marker : '🎁') + '</div>';
+      });
+      h += '<div class="fm-fog"></div>';
+      h += '<div class="fm-front"></div>';
+      h += '<div class="fm-sweep"></div>';
+      h += '</div>';
+      h += '<div class="floor-head">';
+      h += '<span class="fno">' + ch + '</span>';
+      h += '<span class="fname">' + CFG.chNames[ch] + '</span>';
+      h += '<span class="mastery"><span class="mini-orb"></span></span>';
+      h += '</div>';
+      h += '</div>';
+      /* 当前章后面紧跟「本章小节」（大地图已删除） */
+      if (ch === curCh && _ts && _ts.list && _ts.list.length) {
+        h += '<div class="tb-sec tb-sec-inline"><div class="tb-sec-head" id="tbSecHead">📑 本章小节<span class="tb-sec-cnt">' + _ts.list.length + '</span><i class="tb-sec-arr">▸</i></div><div class="tb-sec-list" id="tbSecList" style="display:none">';
+        _ts.list.forEach(function (it) {
+          var isAdv = String(it[1]).indexOf('考研') >= 0 || String(it[1]).indexOf('测试') >= 0;
+          h += '<a href="#' + it[0] + '"' + (isAdv ? ' class="tb-adv"' : '') + '>' + it[1] + '</a>';
+        });
+        h += '</div></div>';
       }
     }
     h += '</div>';
     root.innerHTML = h;
     // 绑定：点楼层 = 进入该章（先播放"攀登"过场，再跳转）
     root.querySelectorAll('.floor').forEach(function (el) { el.addEventListener('click', function () { gotoFloor(el.dataset.ch); }); });
+    // 迷雾盲盒：点 🎁 直接开盒（阻止冒泡到楼层跳转）
+    root.querySelectorAll('.fm-blind').forEach(function (el) {
+      el.addEventListener('click', function (e) { e.stopPropagation(); openBlind(parseInt(el.dataset.ch, 10), parseInt(el.dataset.idx, 10)); });
+    });
     // 新点亮层：触发庆祝动画（prevDone 为 null 表示首屏渲染，跳过）
     if (prevDone) {
       for (var _c = 1; _c <= CFG.total; _c++) {
@@ -609,10 +816,9 @@
       _ls.style.display = open ? 'none' : 'block';
       _secHead.classList.toggle('open', !open);
     });
-    var b = root.querySelector('.tbb-blind'); if (b) b.addEventListener('click', openBlind);
+    root.querySelectorAll('.tbb-blind').forEach(function (b) { b.addEventListener('click', function (e) { e.stopPropagation(); openBlind(parseInt(b.dataset.ch || curCh, 10)); }); });
     document.getElementById('tbRelic').addEventListener('click', showRelics);
     var hb = document.getElementById('tbHelpBtn'); if (hb) hb.addEventListener('click', showHelp);
-    var zm = document.getElementById('tbZoom'); if (zm) zm.addEventListener('click', openBigMap);
   }
   /* ---------- 点楼层：攀登过场后跳转 ---------- */
   function gotoFloor(ch) {
@@ -650,40 +856,74 @@
   function closeBigMap() { document.getElementById('tbbig').classList.remove('open'); }
 
   /* ---------- 常驻帮助（"?" 按钮） ---------- */
-  /* ---------- 考研盲盒 ---------- */
+  /* ---------- 迷雾盲盒 ---------- */
   function closeBlind() { var b = document.getElementById('tbblind'); if (b) b.classList.remove('open'); }
-  function openBlind() {
+  /* 按章节与盲盒索引命中故事/对话/冷知识；线性代数 ch 映射到 101-105 */
+  function getStoryForBox(ch, idx) {
+    var mapCh = (BOOK === 'linalg') ? ch + 100 : ch;
+    var pool = BLIND_STORIES.filter(function (s) { return s.ch === mapCh; });
+    if (!pool.length) return null;
+    return pool[(idx || 0) % pool.length];
+  }
+  /* 渲染“故事型”盲盒：直接读小故事，不用做题 */
+  function renderStoryBox(story, opened) {
+    var qEl = document.getElementById('bbQ'),
+        optsEl = document.getElementById('bbOpts'),
+        fbEl = document.getElementById('bbFb'),
+        prizeEl = document.getElementById('bbPrize');
+    qEl.innerHTML = '<span class="bb-story-tag">' + escHtml(story.icon) + ' ' + (story.type === 'story' ? '数学小故事' : story.type === 'dialogue' ? '数学家对话' : '冷知识') + '</span>'
+      + '<div class="bb-story-title">' + escHtml(story.title) + '</div>';
+    optsEl.innerHTML = '<div class="bb-story-body">' + story.content + '</div>';
+    maybeKatex(optsEl);
+    fbEl.style.display = 'none'; fbEl.innerHTML = '';
+    prizeEl.className = 'bb-prize'; prizeEl.textContent = '';
+    if (opened) {
+      optsEl.innerHTML += '<div class="bb-story-note">🔓 你已经开启过这个盲盒，可以随时回顾这个小故事.</div>';
+    } else {
+      var btn = document.createElement('button');
+      btn.className = 'bb-story-btn';
+      btn.textContent = '原来如此 · 收下这个小故事';
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        awardPrize();
+      });
+      optsEl.appendChild(btn);
+    }
+  }
+  function openBlind(forCh, idx) {
+    blindTargetCh = forCh || curCh;
+    blindTargetIdx = (idx === undefined ? 0 : idx);
+    var boxes = getBlindBoxes(blindTargetCh);
+    var boxInfo = boxes[blindTargetIdx] || boxes[0];
+    var opened = isBlindOpened(blindTargetCh, blindTargetIdx);
+    var stemTitle = document.getElementById('bbStem');
+    if (stemTitle) stemTitle.innerHTML = (opened ? boxInfo.marker : '🎁') + ' 第 ' + blindTargetCh + ' 章 · 迷雾盲盒 #' + (blindTargetIdx + 1);
     var box = document.getElementById('tbblind'); if (!box) return;
     var all = window.EXAM_QUESTIONS || [];
-    var chQ = all.filter(function (x) { return x.ch === curCh; });
+    var chQ = all.filter(function (x) { return x.ch === blindTargetCh; });
     var kao = chQ.filter(function (x) { return x.src === 'kaoyan'; });
     var pool = kao.length ? kao : chQ;
     var qEl = document.getElementById('bbQ'),
         optsEl = document.getElementById('bbOpts'),
         fbEl = document.getElementById('bbFb'),
         prizeEl = document.getElementById('bbPrize');
-    /* KaTeX 渲染：与教材主渲染保持一致的分隔符配置 */
-    function maybeKatex(el) {
-      if (!window.renderMathInElement) return;
-      try {
-        window.renderMathInElement(el, {
-          delimiters: [
-            { left: '\\(', right: '\\)', display: false },
-            { left: '\\[', right: '\\]', display: true },
-            { left: '$$', right: '$$', display: true }
-          ],
-          throwOnError: false
-        });
-      } catch (e) {}
+    /* 优先命中故事/对话/冷知识盲盒；偶数索引或没题时直接上故事 */
+    var story = getStoryForBox(blindTargetCh, blindTargetIdx);
+    if (story && (blindTargetIdx % 2 === 0 || !pool.length)) {
+      renderStoryBox(story, opened);
+      box.classList.add('open');
+      return;
     }
     if (!pool.length) {
-      qEl.textContent = '本章暂无可抽取的盲盒题目，再多学一会儿就有啦～';
+      qEl.textContent = '本章暂无可抽取的盲盒内容，再多学一会儿就有啦～';
       optsEl.innerHTML = ''; fbEl.style.display = 'none'; fbEl.textContent = '';
       prizeEl.className = 'bb-prize'; prizeEl.textContent = '';
       box.classList.add('open'); return;
     }
-    var q = pool[Math.floor(Math.random() * pool.length)];
-    qEl.innerHTML = '🎁 考研盲盒 · ' + (q.stem || '');
+    /* 同一盲盒始终抽同一道题（稳定），不同盲盒题目不同 */
+    var qIndex = (blindTargetIdx * 7) % pool.length;
+    var q = pool[qIndex];
+    qEl.innerHTML = q.stem || '';
     maybeKatex(qEl);
     optsEl.innerHTML = '';
     fbEl.style.display = 'none'; fbEl.textContent = '';
@@ -704,47 +944,89 @@
         });
         optsEl.appendChild(b);
       });
-    /* ---- 填空题：渲染输入框 + 提交按钮 ---- */
+    /* ---- 填空/问答题：学生自评模式，不自动判定对错 ---- */
     } else {
       var wrap = document.createElement('div');
       wrap.className = 'bb-fill-wrap';
-      wrap.innerHTML = '<div class="bb-fill-hint">✏️ 这是一道填空题，请输入你的答案：</div>'
-        + '<div class="bb-fill-row"><input type="text" id="bbFillInput" class="bb-fill-input" placeholder="在此输入答案..." autocomplete="off" spellcheck="false">'
-        + '<button id="bbFillSubmit" class="bb-fill-submit">提交答案</button></div>';
-      optsEl.appendChild(wrap);
-      var inp = document.getElementById('bbFillInput');
-      var btn = document.getElementById('bbFillSubmit');
-      /* 回车提交 */
-      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') btn.click(); });
-      /* 聚焦输入框（延迟到动画完成后） */
-      setTimeout(function () { try { inp.focus(); } catch (e) {} }, 350);
-      btn.addEventListener('click', function () {
-        var val = inp.value.trim();
-        if (!val) { inp.classList.add('shake'); setTimeout(function () { inp.classList.remove('shake'); }, 450); return; }
-        btn.disabled = true; inp.disabled = true;
-        /* 简单比对：去除两端空白后比较（支持 LaTeX 答案的模糊匹配） */
-        var correct = normalizeAns(val) === normalizeAns(q.ans || '');
-        showFeedback(correct, q.ans, q.fb || '');
-        if (correct) awardPrize();
-      });
+      if (opened) {
+        wrap.innerHTML = '<div class="bb-fill-hint">🔓 你已经开启过这个盲盒，下面是参考答案与解析.</div>';
+        optsEl.appendChild(wrap);
+        showSelfCheck(q.ans || '', q.fb || '', true, null, null);
+      } else {
+        wrap.innerHTML = '<div class="bb-fill-hint">✏️ 这是一道填空题，请输入你的答案：</div>'
+          + '<div class="bb-fill-row"><input type="text" id="bbFillInput" class="bb-fill-input" placeholder="在此输入答案..." autocomplete="off" spellcheck="false">'
+          + '<button id="bbFillSubmit" class="bb-fill-submit">提交答案</button></div>';
+        optsEl.appendChild(wrap);
+        var inp = document.getElementById('bbFillInput');
+        var btn = document.getElementById('bbFillSubmit');
+        /* 回车提交 */
+        inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') btn.click(); });
+        /* 聚焦输入框（延迟到动画完成后） */
+        setTimeout(function () { try { inp.focus(); } catch (e) {} }, 350);
+        btn.addEventListener('click', function () {
+          var val = inp.value.trim();
+          if (!val) { inp.classList.add('shake'); setTimeout(function () { inp.classList.remove('shake'); }, 450); return; }
+          btn.disabled = true; inp.disabled = true;
+          /* 自评：显示参考答案与解析，由学生自己判断对错 */
+          showSelfCheck(q.ans || '', q.fb || '', false, inp, btn);
+        });
+      }
     }
     box.classList.add('open');
   }
-  /* 显示答题反馈 */
+  /* 显示选择题答题反馈（客观题仍自动判定） */
   function showFeedback(correct, ans, fb) {
     var fbEl = document.getElementById('bbFb');
     fbEl.style.display = 'block';
     fbEl.innerHTML = (correct ? '✅ 答对了！' : '❌ 答错啦（正确答案 ' + ans + '）') + '<br>' + fb;
     maybeKatex(fbEl);
   }
+  /* 显示填空/问答题自评区（学生自己对答案） */
+  function showSelfCheck(ans, fb, alreadyOpened, inp, btn) {
+    var fbEl = document.getElementById('bbFb');
+    fbEl.style.display = 'block';
+    var html = '<div class="bb-selfcheck-ans"><strong>参考答案</strong><span>' + renderSelfCheckText(ans) + '</span></div>'
+      + '<div class="bb-selfcheck-fb"><strong>解析</strong><div>' + renderSelfCheckText(fb) + '</div></div>';
+    if (!alreadyOpened) {
+      html += '<div class="bb-selfcheck-btns"><button class="bb-selfcheck-btn ok" id="bbSelfOk">✅ 我做对了</button>'
+        + '<button class="bb-selfcheck-btn no" id="bbSelfNo">❌ 还要再练</button></div>';
+    } else {
+      html += '<div class="bb-selfcheck-note">你已开启过这个盲盒，可随时回顾解析.</div>';
+    }
+    fbEl.innerHTML = html;
+    if (!alreadyOpened && inp && btn) {
+      document.getElementById('bbSelfOk').addEventListener('click', function () {
+        this.disabled = true;
+        var noBtn = document.getElementById('bbSelfNo');
+        if (noBtn) noBtn.disabled = true;
+        awardPrize();
+      });
+      document.getElementById('bbSelfNo').addEventListener('click', function () {
+        fbEl.style.display = 'none'; fbEl.innerHTML = '';
+        inp.disabled = false; btn.disabled = false;
+        try { inp.focus(); } catch (e) {}
+      });
+    }
+  }
+  /* 简单 HTML 转义，避免答案里的 < > & 破坏结构 */
+  function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
   /* 颁奖 */
+  var blindTargetCh = curCh, blindTargetIdx = 0;
   function awardPrize() {
     var prizes = ['🍀 好运符 ×2', '⚡ 能量 +5', '📜 老师手迹碎片', '🌟 称号碎片'];
     var prizeEl = document.getElementById('bbPrize');
     prizeEl.textContent = '🎁 恭喜获得：' + prizes[Math.floor(Math.random() * prizes.length)];
     prizeEl.className = 'bb-prize show';
-    BLIND_OPEN[curCh] = (BLIND_OPEN[curCh] || 0) + 1;
-    LS.set('tb_blind', BLIND_OPEN); syncTowerToCloud();
+    markBlindOpened(blindTargetCh, blindTargetIdx);
+    /* 当前盲盒图标立即切换为路标 */
+    var curBox = document.querySelector('.floor[data-ch="' + blindTargetCh + '"] .fm-blind[data-idx="' + blindTargetIdx + '"]');
+    if (curBox) {
+      var boxes = getBlindBoxes(blindTargetCh);
+      curBox.textContent = boxes[blindTargetIdx].marker;
+      curBox.classList.add('opened');
+    }
   }
   /* 答案标准化（去空白、统一 LaTeX 格式） */
   function normalizeAns(s) {
@@ -763,6 +1045,13 @@
     var sc = D.lines[idx];
     var textEl = document.getElementById('tbText'), optsEl = document.getElementById('tbOpts'), avaEl = document.getElementById('tbAva');
     optsEl.innerHTML = '';
+    // 点击气泡可立即打完当前句（再点不触发）
+    textEl.onclick = function () {
+      if (dlgTyping) finishTypeNow(textEl, sc.who === 's' ? '' : sc.text, function () {
+        if (sc.who !== 's' && idx + 1 < D.lines.length) setTimeout(function () { playScene(D, idx + 1); }, 260);
+        else if (sc.who !== 's') finishDialog(D);
+      });
+    };
     if (sc.who === 's') {
       avaEl.innerHTML = studentFace();
       textEl.textContent = '';
@@ -774,7 +1063,7 @@
           optsEl.innerHTML = '';
           typeInto(textEl, o.reply, function () {
             dlgBusy = false;
-            setTimeout(function () { finishDialog(D); }, 600);
+            setTimeout(function () { finishDialog(D); }, 900);
           });
         });
         optsEl.appendChild(b);
@@ -783,7 +1072,8 @@
     }
     avaEl.innerHTML = teacherFace(sc.mood);
     typeInto(textEl, sc.text, function () {
-      if (idx + 1 < D.lines.length) setTimeout(function () { playScene(D, idx + 1); }, 550);
+      textEl.onclick = null;
+      if (idx + 1 < D.lines.length) setTimeout(function () { playScene(D, idx + 1); }, 2200);
       else finishDialog(D);
     });
   }
@@ -801,16 +1091,24 @@
   }
   function typeInto(el, text, done) {
     if (dlgTimer) clearInterval(dlgTimer);
+    dlgTyping = true;
     el.textContent = ''; var i = 0;
     dlgTimer = setInterval(function () {
-      i += 2; el.textContent = text.slice(0, i);
-      if (i >= text.length) { clearInterval(dlgTimer); dlgTimer = null; if (done) done(); }
-    }, 24);
+      i++; el.textContent = text.slice(0, i);
+      if (i >= text.length) { clearInterval(dlgTimer); dlgTimer = null; dlgTyping = false; if (done) done(); }
+    }, 42);
+  }
+  function finishTypeNow(el, text, done) {
+    if (dlgTimer) { clearInterval(dlgTimer); dlgTimer = null; }
+    dlgTyping = false;
+    el.textContent = text;
+    if (done) done();
   }
   function closeDialog() {
+    var textEl = document.getElementById('tbText'); if (textEl) textEl.onclick = null;
     document.getElementById('tbchat').classList.remove('open');
     if (dlgTimer) { clearInterval(dlgTimer); dlgTimer = null; }
-    dlgBusy = false;
+    dlgBusy = false; dlgTyping = false;
   }
 
   /* ---------- 手迹架 ---------- */
@@ -846,7 +1144,7 @@
     var steps = [
       { emoji: '🗝️', title: '传说，塔里困着一位老师', sub: '相传这册教材深处，藏着一座古老的「知识之塔」.多年前，一位老师为守护塔中的学识，被永远困在了塔顶——只有学会每一章的人，才能一层层点亮塔身，将他唤醒.' },
       { emoji: '⚡', title: '而你，就是那个攀登者', sub: '你不需要额外操作：在教材里「学完就练」、答对题目，对应层掌握度就会上升.达到 60%，整层点亮、尘封的难题被解开——塔在为你开路.' },
-      { emoji: '🎁', title: '塔里藏着不少秘密', sub: '每层有一口「考研盲盒」，答对开盒有惊喜；每登上一层，塔顶会传来老师的声音；集齐他的手迹，传说就能拼出离开塔的路.' }
+      { emoji: '🎁', title: '塔里藏着不少秘密', sub: '每层都藏着一口「迷雾盲盒」，答对开盒有惊喜；每登上一层，塔顶会传来老师的声音；集齐他的手迹，传说就能拼出离开塔的路.' }
     ];
     var i = 0;
     function paint() {
@@ -859,7 +1157,7 @@
             ? '🏗️ <span>塔 = 你的<span style="color:var(--accent,#7c6cf0);font-weight:700">学习进度</span>，登顶之日 = 唤醒老师之时</span>'
             : i === 1
             ? '📈 <span>去任意章节<b>做几道题</b>，回来看塔：<b>紫色 = 塔在苏醒</b>，<b>绿色 ✓ = 整层点亮</b></span>'
-            : '🎁 <span>每层 <b>🎁盲盒</b> 藏考研题 · <b>🗣️老师的声音</b> 登层后传来 · <b>📜手迹</b> 集齐有彩蛋</span>') + '</div>'
+            : '🎁 <span>每层 <b>🎁盲盒</b> 藏惊喜题目 · <b>🗣️老师的声音</b> 登层后传来 · <b>📜手迹</b> 集齐有彩蛋</span>') + '</div>'
         + '<div class="ti-dots"><i class="' + (i === 0 ? 'on' : '') + '"></i><i class="' + (i === 1 ? 'on' : '') + '"></i><i class="' + (i === 2 ? 'on' : '') + '"></i></div>'
         + '<div class="ti-btns">'
         + (i < 2
@@ -917,19 +1215,19 @@
       + '<div class="tbchat" id="tbchat"><div class="tbc-head"><span id="tbTitle">🧙 老师</span><button class="x" id="tbClose">✕</button></div>'
       + '<div class="tbc-body"><div class="ava" id="tbAva"></div><div class="bubble"><span id="tbText"></span><span class="caret"></span></div></div>'
       + '<div class="opts" id="tbOpts"></div><div class="relic-gain" id="tbRelicGain"></div></div>'
-      + '<div class="tbblind" id="tbblind"><div class="bb-card"><div class="bb-head"><span id="bbStem">🎁 考研盲盒</span><button class="x" id="bbClose">✕</button></div>'
+      + '<div class="tbblind" id="tbblind"><div class="bb-card"><div class="bb-head"><span id="bbStem">🎁 迷雾盲盒</span><button class="x" id="bbClose">✕</button></div>'
       + '<div class="bb-q" id="bbQ"></div><div class="bb-opts" id="bbOpts"></div><div class="bb-fb" id="bbFb"></div><div class="bb-prize" id="bbPrize"></div></div></div>'
       + '<div class="tbblind" id="tbrelics"><div class="bb-card"><div class="bb-head"><span>📜 老师手迹 · 收集册</span><button class="x" id="tbrelicClose">✕</button></div><div id="tbrelicList"></div></div></div>'
       + '<div class="tb-help" id="tbhelp"><h3>🏰 知识之塔 · 这是什么？</h3>'
       + '<div class="th-row"><span class="ic">🗝️</span><span>传说这座塔困住了一位守护学识的老师.塔的每一层 = 教材的一章——你学得越深，点亮越多，他的声音就越清晰.</span></div>'
       + '<div class="th-row"><span class="ic">📈</span><span>在教材里「学完就练」、答对题目，对应章节的掌握度会上升；达到 60% 这一层点亮（✓ 绿），达到 80% 整层焕彩.</span></div>'
-      + '<div class="th-row"><span class="ic">🎁</span><span>每层地图上有一个金盒子「考研盲盒」：点它抽一道本章的考研真题，答对就有惊喜奖励（称号/能量/手迹…）.</span></div>'
+      + '<div class="th-row"><span class="ic">🎁</span><span>每层地图上都藏着一口「迷雾盲盒」：点它抽一道本章的惊喜题目，答对就有奖励（称号/能量/手迹…）.</span></div>'
       + '<div class="th-row"><span class="ic">🧙</span><span>每点亮一层，老师会来和你聊两句——内容都来自本章的知识点.登顶后还能收集他的「手迹」金句.</span></div>'
       + '<div class="th-row"><span class="ic">📱</span><span>手机端：塔收进右上角，不影响阅读；点楼层号可在各章之间查看自己的进度.</span></div>'
       + '<button class="th-close" id="tbhelpClose">知道了</button>'
       + '<button class="th-replay" id="tbhelpReplay">↻ 再看一次开篇引导</button></div>'
       + '<div class="tb-intro" id="tbintro"><div class="ti-card" id="tiCard"></div></div>'
-      + '<div class="tb-big" id="tbbig"><div class="big-card"><div class="big-head"><span id="tbbigTitle">地图</span><button class="x" id="tbbigClose">✕</button></div><svg id="tbbigMap" xmlns="http://www.w3.org/2000/svg"></svg><div class="big-tip">🎁 点击金盒子可抽考研盲盒 · ⬆ 楼梯点亮后可登层</div></div></div>'
+      + '<div class="tb-big" id="tbbig"><div class="big-card"><div class="big-head"><span id="tbbigTitle">地图</span><button class="x" id="tbbigClose">✕</button></div><svg id="tbbigMap" xmlns="http://www.w3.org/2000/svg"></svg><div class="big-tip">🎁 点击金盒子抽题 · ⬆ 楼梯点亮后可登层</div></div></div>'
       + '<div class="tbtoast" id="tbtoast"></div>';
     while (frag.firstChild) document.body.appendChild(frag.firstChild);
 
@@ -984,6 +1282,22 @@
         }, 400);
       }
     },
+    /* 接收 chapter-fog.js 飞来的能量球：让对应楼层条闪烁 + 雾层扫开 */
+    pulseChapter: function (ch, weak) {
+      var slot = document.getElementById('tower-slot');
+      if (!slot) return;
+      var floor = slot.querySelector('.floor[data-ch="' + ch + '"]');
+      if (!floor) return;
+      // 能量到达 → 把雾层向右侧扫开至当前掌握度
+      try { floor.style.setProperty('--clear', Math.round(mastery(ch).rate * 100)); } catch (e) {}
+      floor.classList.remove('pulse', 'sweep');
+      void floor.offsetWidth;
+      floor.classList.add('pulse', 'sweep');
+      floor.classList.add(weak ? 'pulse-weak' : 'pulse-strong');
+      setTimeout(function () {
+        floor.classList.remove('pulse', 'sweep', 'pulse-weak', 'pulse-strong');
+      }, 950);
+    },
     /* ===== 章节封面「世界地图」迷你版接口（供 ux-enhancer 封面联动） ===== */
     currentChapter: function () {
       var pm = location.pathname.match(/ch(\d+)/i);
@@ -1009,7 +1323,8 @@
       };
     },
     chapterName: function (ch) { return CFG.chNames[ch || this.currentChapter()]; },
-    openBigMap: function () { if (typeof openBigMap === 'function') openBigMap(); }
+    openBigMap: function () { if (typeof openBigMap === 'function') openBigMap(); },
+    openBlind: function (ch, idx) { if (typeof openBlind === 'function') openBlind(ch, idx); }
   };
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', build); }

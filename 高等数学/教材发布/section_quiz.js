@@ -121,6 +121,11 @@
   var drawer = null, dTitle = null, dProg = null, dBody = null;
   function ensureDrawer() {
     if (drawer) return;
+    if (!document.getElementById("sq-drawer-styles")) {
+      var st = document.createElement("style"); st.id = "sq-drawer-styles";
+      st.textContent = '.sq-dfoot{position:sticky;bottom:0;margin:22px -20px -24px;padding:14px 20px 18px;background:linear-gradient(180deg,rgba(255,255,255,0),#fff 28%);text-align:center;z-index:5}.sq-dfoot .sq-close-bottom{padding:10px 30px;border-radius:999px;border:none;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(220,38,38,.35);transition:.15s}.sq-dfoot .sq-close-bottom:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(220,38,38,.45)}';
+      document.head.appendChild(st);
+    }
     drawer = document.createElement("div");
     drawer.className = "sq-drawer";
     drawer.innerHTML =
@@ -128,12 +133,14 @@
         '<div class="sq-dtitles"><b class="sq-dtitle"></b><span class="sq-dprog"></span></div>' +
         '<button class="sq-close" title="收起练习面板">✕</button>' +
       '</div>' +
-      '<div class="sq-dbody"></div>';
+      '<div class="sq-dbody"></div>' +
+      '<div class="sq-dfoot"><button class="sq-close-bottom" title="收起练习面板">✕ 收起练习面板</button></div>';
     document.body.appendChild(drawer);
     dTitle = drawer.querySelector(".sq-dtitle");
     dProg = drawer.querySelector(".sq-dprog");
     dBody = drawer.querySelector(".sq-dbody");
     drawer.querySelector(".sq-close").addEventListener("click", closeDrawer);
+    drawer.querySelector(".sq-close-bottom").addEventListener("click", closeDrawer);
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeDrawer();
     });

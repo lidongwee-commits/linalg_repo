@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第3章 · 一元函数微分学</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第3章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -137,8 +141,7 @@ f'_{+}(x_0)=\lim_{\Delta x\to0^{+}}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}\]
 <p>即：<b>导数 \(f'(x_{0})\) 就是曲线 \(y=f(x)\) 在点 \((x_{0},f(x_{0}))\) 处切线的斜率</b>，\(\alpha\) 为切线倾角.</p>
 <p>由此立即得到<b>切线方程</b>与<b>法线方程</b>：</p>
 \[\text{切线：}\;y-f(x_{0})=f'(x_{0})(x-x_{0});\qquad
-  \text{法线：}\;y-f(x_{0})=-\frac{1}{f'(x_{0})}(x-x_{0})\;\bigl(f'(x_{0})
-eq0\bigr).\]
+  \text{法线：}\;y-f(x_{0})=-\frac{1}{f'(x_{0})}(x-x_{0})\;\bigl(f'(x_{0})\neq0\bigr).\]
 <p>若 \(f'(x_{0})=0\)，切线水平 \(y=f(x_{0})\)，法线竖直 \(x=x_{0}\)；若差商极限为 \(\infty\)，则切线竖直 \(x=x_{0}\).</p>
 
 <p><b>物理意义.</b>设质点作直线运动，位移函数为 \(s=s(t)\)，则 \(s'(t_{0})=v(t_{0})\) 是 \(t_{0}\) 时刻的<b>瞬时速度</b>；速度函数 \(v=v(t)\) 的导数 \(v'(t_{0})=a(t_{0})\) 是<b>瞬时加速度</b>.更一般地：</p>
@@ -175,8 +178,7 @@ eq0\bigr).\]
   <p>同法可得 \((\cos x)'=-\sin x\).</p>
 </div>
 
-<div class="ex"><div class="lab">例 3.3　指数函数 \(y=a^{x}\) 与对数函数 \(y=\log_{a}x\)（\(a\gt0,\;a
-eq1\)）</div>
+<div class="ex"><div class="lab">例 3.3　指数函数 \(y=a^{x}\) 与对数函数 \(y=\log_{a}x\)（\(a\gt0,\;a\neq1\)）</div>
   <p class="sol"><span class="mk">解</span>（1）\(\Delta y=a^{x+\Delta x}-a^{x}=a^{x}\bigl(a^{\Delta x}-1\bigr)\).利用等价无穷小 \(a^{\Delta x}-1\sim\Delta x\ln a\;(\Delta x\to0)\)：</p>
   \[\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}=a^{x}\lim_{\Delta x\to0}\frac{a^{\Delta x}-1}{\Delta x}=a^{x}\ln a,\]
   <p>即 \((a^{x})'=a^{x}\ln a\).特别地 \((\mathrm{e}^{x})'=\mathrm{e}^{x}\)——<b>指数函数 \(\mathrm{e}^{x}\) 的导数就是它自己</b>，这是它在自然科学中无处不在的根本原因.</p>
@@ -213,8 +215,7 @@ eq1\)）</div>
   <p class="sol"><span class="mk">解</span>（1）\(f(x)=|x|\) 在 \(x=0\) 显然连续（\(f(0)=0\)，左右极限都为 \(0\)）.计算单侧导数：</p>
   \[f'_{-}(0)=\lim_{\Delta x\to0^{-}}\frac{|\Delta x|-0}{\Delta x}=\lim_{\Delta x\to0^{-}}\frac{-\Delta x}{\Delta x}=-1,\qquad
     f'_{+}(0)=\lim_{\Delta x\to0^{+}}\frac{\Delta x}{\Delta x}=1.\]
-  <p>因 \(f'_{-}(0)=-1
-eq1=f'_{+}(0)\)，由定理 3.1 知 \(f\) 在 \(0\) 处<b>不可导</b>.几何上，图像在原点形成一个<b>尖点（角点）</b>，左右切线方向不一致.</p>
+  <p>因 \(f'_{-}(0)=-1\neq1=f'_{+}(0)\)，由定理 3.1 知 \(f\) 在 \(0\) 处<b>不可导</b>.几何上，图像在原点形成一个<b>尖点（角点）</b>，左右切线方向不一致.</p>
   <p>（2）\(g(x)=\sqrt[3]{x}=x^{1/3}\) 在 \(x=0\) 连续.计算差商：</p>
   \[\lim_{\Delta x\to0}\frac{\sqrt[3]{\Delta x}-0}{\Delta x}=\lim_{\Delta x\to0}\frac{1}{(\Delta x)^{2/3}}=+\infty.\]
   <p>极限为无穷，故 \(g\) 在 \(0\) 处<b>不可导</b>.但此时曲线在原点<b>有切线</b>，是<b>竖直切线 \(x=0\)</b>（倾角 \(\alpha=\dfrac{\pi}{2}\)，斜率不存在）.</p>
@@ -246,14 +247,12 @@ eq1=f'_{+}(0)\)，由定理 3.1 知 \(f\) 在 \(0\) 处<b>不可导</b>.几何�
 </div>
 
 <div class="ex"><div class="lab">例 3.7　可导但导函数不连续</div>
-  <p class="stmt">设 \(f(x)=\begin{cases}x^{2}\sin\dfrac1x,&x
-eq0,\\ 0,&x=0.\end{cases}\) 证明 \(f\) 在 \(x=0\) 可导，但 \(f'(x)\) 在 \(x=0\) 不连续.</p>
+  <p class="stmt">设 \(f(x)=\begin{cases}x^{2}\sin\dfrac1x,&x\neq0,\\ 0,&x=0.\end{cases}\) 证明 \(f\) 在 \(x=0\) 可导，但 \(f'(x)\) 在 \(x=0\) 不连续.</p>
   <p class="sol"><span class="mk">证</span>按定义</p>
   \[f'(0)=\lim_{\Delta x\to0}\frac{(\Delta x)^{2}\sin\dfrac{1}{\Delta x}-0}{\Delta x}
    =\lim_{\Delta x\to0}\Delta x\sin\frac{1}{\Delta x}=0,\]
   <p>这里用了"无穷小乘有界量仍是无穷小".故 \(f'(0)=0\)，可导.</p>
-  <p>当 \(x
-eq0\) 时（用第 3.2 节法则）\(f'(x)=2x\sin\dfrac1x-\cos\dfrac1x\).当 \(x\to0\) 时，\(2x\sin\dfrac1x\to0\)，而 \(\cos\dfrac1x\) 在 \([-1,1]\) 内无限振荡，极限不存在.故 \(\lim\limits_{x\to0}f'(x)\) 不存在，\(f'\) 在 \(0\) 处不连续.</p>
+  <p>当 \(x\neq0\) 时（用第 3.2 节法则）\(f'(x)=2x\sin\dfrac1x-\cos\dfrac1x\).当 \(x\to0\) 时，\(2x\sin\dfrac1x\to0\)，而 \(\cos\dfrac1x\) 在 \([-1,1]\) 内无限振荡，极限不存在.故 \(\lim\limits_{x\to0}f'(x)\) 不存在，\(f'\) 在 \(0\) 处不连续.</p>
   <p class="muted">这说明：<b>可导 \(\Rightarrow\) 连续，但"可导"并不能保证"导函数连续".</b>导函数连续的函数称为<b>连续可微函数</b>（记作 \(C^{1}\) 类），这是比可导更强的条件，在数值优化与轨迹规划中被反复要求.</p>
 </div>
 
@@ -471,8 +470,7 @@ eq0\) 时（用第 3.2 节法则）\(f'(x)=2x\sin\dfrac1x-\cos\dfrac1x\).当 \(x
   <p>设 \(u=u(x),\;v=v(x)\) 都在点 \(x\) 处可导，则</p>
   \[(1)\;\;(u\pm v)'=u'\pm v';\qquad (2)\;\;(uv)'=u'v+uv';\]
   \[(3)\;\;(Cu)'=Cu'\;(C\text{ 为常数});\qquad
-    (4)\;\;\Bigl(\frac{u}{v}\Bigr)'=\frac{u'v-uv'}{v^{2}}\;\bigl(v(x)
-eq0\bigr).\]
+    (4)\;\;\Bigl(\frac{u}{v}\Bigr)'=\frac{u'v-uv'}{v^{2}}\;\bigl(v(x)\neq0\bigr).\]
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p>以下均在某点 \(x\) 处，\(u=u(x),v=v(x)\) 可导.记 \(u'=u'(x),v'=v'(x)\).</p>
@@ -488,8 +486,7 @@ eq0\bigr).\]
 <p>令 \(h\to0\)，因 \(u\) 可导必连续（定理 3.2），\(u(x+h)\to u(x)\)，而 \(\dfrac{\Delta v}{h}\to v'\)、\(\dfrac{\Delta u}{h}\to u'\)，故</p>
 \[(uv)'=u v'+v u'.\]
 <p>取 \(v\equiv C\) 得 \((Cu)'=Cu'\).</p>
-<p><span class="stp">④ 商（\(v
-eq0\)）：</span></p>
+<p><span class="stp">④ 商（\(v\neq0\)）：</span></p>
 \[\left(\frac{u}{v}\right)'=\lim_{h\to0}\frac{\dfrac{u(x+h)}{v(x+h)}-\dfrac{u(x)}{v(x)}}{h}
 =\lim_{h\to0}\frac{u(x+h)v(x)-u(x)v(x+h)}{v(x+h)v(x)\,h}.\]
 <p>分子 \(=v(x)[u(x+h)-u(x)]-u(x)[v(x+h)-v(x)]\)，除以 \(h\) 后取极限得</p>
@@ -499,8 +496,7 @@ eq0\)）：</span></p>
 </details>
 </div>
 <div class="case"><div class="lab">应用探微 · 乘积法则与商法则的证明</div>
-  <details><summary>展开查看：为什么 \((uv)'
-eq u'v'\)</summary>
+  <details><summary>展开查看：为什么 \((uv)'\neq u'v'\)</summary>
   <div class="body">
     <p><b>乘积法则.</b>记 \(y=uv\)，则</p>
     \[\Delta y=u(x+\Delta x)v(x+\Delta x)-u(x)v(x).\]
@@ -540,24 +536,17 @@ eq u'v'\)</summary>
 
 <h3>二、反函数的求导法则</h3>
 <div class="def"><div class="lab"><span class="n">定理 3.4</span>反函数求导法则</div>
-  <p>设 \(x=\varphi(y)\) 在区间 \(I_{y}\) 内单调、可导，且 \(\varphi'(y)
-eq0\)，则它的反函数 \(y=f(x)\) 在对应区间 \(I_{x}\) 内可导，且</p>
+  <p>设 \(x=\varphi(y)\) 在区间 \(I_{y}\) 内单调、可导，且 \(\varphi'(y)\neq0\)，则它的反函数 \(y=f(x)\) 在对应区间 \(I_{x}\) 内可导，且</p>
   \[f'(x)=\frac{1}{\varphi'(y)},\qquad\text{即}\qquad \frac{\mathrm{d}y}{\mathrm{d}x}=\frac{1}{\dfrac{\mathrm{d}x}{\mathrm{d}y}}.\]
-  <p class="muted">证明要点：由单调性，\(\Delta x
-eq0\Leftrightarrow\Delta y
-eq0\)，且 \(\Delta x\to0\Leftrightarrow\Delta y\to0\)（连续性）.于是 \(\dfrac{\Delta y}{\Delta x}=\dfrac{1}{\Delta x/\Delta y}\)，两边取极限即得.</p>
+  <p class="muted">证明要点：由单调性，\(\Delta x\neq0\Leftrightarrow\Delta y\neq0\)，且 \(\Delta x\to0\Leftrightarrow\Delta y\to0\)（连续性）.于是 \(\dfrac{\Delta y}{\Delta x}=\dfrac{1}{\Delta x/\Delta y}\)，两边取极限即得.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p>设 \(x=\varphi(y)\) 在 \(I_y\) 内单调、可导且 \(\varphi'(y)
-eq0\)，其反函数为 \(y=f(x)\).</p>
-<p><span class="stp">思路：</span>因为 \(\varphi\) 可导必连续（定理 3.2），所以当自变量 \(y\) 变动趋于 \(y_0\) 时，对应的 \(x=\varphi(y)\) 也趋于 \(x_0\)，且 \(\Delta x
-eq0\Leftrightarrow\Delta y
-eq0\).</p>
+<p>设 \(x=\varphi(y)\) 在 \(I_y\) 内单调、可导且 \(\varphi'(y)\neq0\)，其反函数为 \(y=f(x)\).</p>
+<p><span class="stp">思路：</span>因为 \(\varphi\) 可导必连续（定理 3.2），所以当自变量 \(y\) 变动趋于 \(y_0\) 时，对应的 \(x=\varphi(y)\) 也趋于 \(x_0\)，且 \(\Delta x\neq0\Leftrightarrow\Delta y\neq0\).</p>
 <p><span class="stp">证明：</span>由差分关系</p>
 \[\frac{\Delta y}{\Delta x}=\frac{1}{\dfrac{\Delta x}{\Delta y}}
 =\frac{1}{\dfrac{\varphi(y+\Delta y)-\varphi(y)}{\Delta y}}.\]
-<p>令 \(\Delta y\to0\)，则 \(\Delta x\to0\)（连续性），且 \(\dfrac{\Delta x}{\Delta y}\to\varphi'(y)
-eq0\).于是</p>
+<p>令 \(\Delta y\to0\)，则 \(\Delta x\to0\)（连续性），且 \(\dfrac{\Delta x}{\Delta y}\to\varphi'(y)\neq0\).于是</p>
 \[f'(x)=\lim_{\Delta x\to0}\frac{\Delta y}{\Delta x}
 =\frac{1}{\lim_{\Delta y\to0}\dfrac{\Delta x}{\Delta y}}
 =\frac{1}{\varphi'(y)},\]
@@ -582,8 +571,7 @@ eq0\).于是</p>
   <p>设 \(u=g(x)\) 在点 \(x\) 处可导，\(y=f(u)\) 在对应点 \(u=g(x)\) 处可导，则复合函数 \(y=f\bigl[g(x)\bigr]\) 在点 \(x\) 处可导，且</p>
   \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\mathrm{d}y}{\mathrm{d}u}\cdot\frac{\mathrm{d}u}{\mathrm{d}x},
     \qquad\text{即}\qquad \bigl\{f[g(x)]\bigr\}'=f'\bigl[g(x)\bigr]\cdot g'(x).\]
-  <p class="muted"><b>证明要点：</b>当 \(\Delta u
-eq0\) 时 \(\dfrac{\Delta y}{\Delta x}=\dfrac{\Delta y}{\Delta u}\cdot\dfrac{\Delta u}{\Delta x}\).由 \(g\) 可导必连续，\(\Delta x\to0\Rightarrow\Delta u\to0\)，两个因子分别趋于 \(f'(u)\) 与 \(g'(x)\).（\(\Delta u=0\) 的情形需引入 \(\alpha(\Delta u)\to0\) 的增量表示式作补充论证.）</p>
+  <p class="muted"><b>证明要点：</b>当 \(\Delta u\neq0\) 时 \(\dfrac{\Delta y}{\Delta x}=\dfrac{\Delta y}{\Delta u}\cdot\dfrac{\Delta u}{\Delta x}\).由 \(g\) 可导必连续，\(\Delta x\to0\Rightarrow\Delta u\to0\)，两个因子分别趋于 \(f'(u)\) 与 \(g'(x)\).（\(\Delta u=0\) 的情形需引入 \(\alpha(\Delta u)\to0\) 的增量表示式作补充论证.）</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p>设 \(u=g(x)\) 在 \(x\) 可导，\(y=f(u)\) 在 \(u=g(x)\) 可导.</p>
@@ -591,8 +579,7 @@ eq0\) 时 \(\dfrac{\Delta y}{\Delta x}=\dfrac{\Delta y}{\Delta u}\cdot\dfrac{\De
 <p><span class="stp">第一步（写出增量式）：</span>由 \(f\) 在 \(u\) 可导，存在 \(\alpha(\Delta u)\to0\;(\Delta u\to0)\) 使</p>
 \[\Delta y=f'(u)\Delta u+\alpha(\Delta u)\Delta u,\]
 <p>且当 \(\Delta u=0\) 时约定 \(\alpha(0)=0\)（此时 \(\Delta y=0\)，式子仍成立）.</p>
-<p><span class="stp">第二步（除以 \(\Delta x\) 取极限）：</span>当 \(\Delta x
-eq0\) 时</p>
+<p><span class="stp">第二步（除以 \(\Delta x\) 取极限）：</span>当 \(\Delta x\neq0\) 时</p>
 \[\frac{\Delta y}{\Delta x}=f'(u)\frac{\Delta u}{\Delta x}+\alpha(\Delta u)\frac{\Delta u}{\Delta x}.\]
 <p>令 \(\Delta x\to0\)，由 \(g\) 连续得 \(\Delta u\to0\)，故 \(\alpha(\Delta u)\to0\)；又 \(\dfrac{\Delta u}{\Delta x}\to g'(x)\).于是</p>
 \[\frac{\mathrm{d}y}{\mathrm{d}x}=f'(u)g'(x)=f'[g(x)]\,g'(x).\]
@@ -1028,8 +1015,7 @@ eq0\) 时</p>
   \[f(t)=\frac{1}{2\pi}\varphi'(t)=f_{0}+Kt.\]
   <p>调频速率（频率的变化率）是相位的<b>二阶导数</b>：</p>
   \[\frac{\mathrm{d}f}{\mathrm{d}t}=\frac{1}{2\pi}\varphi''(t)=K=30\times10^{6}/10^{-6}=3\times10^{13}\ \mathrm{Hz/s}.\]
-  <p>而三阶导数 \(\varphi'''(t)=0\)，说明这是<b>理想线性调频</b>.实际器件的 \(\varphi'''
-eq0\)，称为<b>调频非线性</b>，它会使测距峰展宽、分辨率下降.</p>
+  <p>而三阶导数 \(\varphi'''(t)=0\)，说明这是<b>理想线性调频</b>.实际器件的 \(\varphi'''\neq0\)，称为<b>调频非线性</b>，它会使测距峰展宽、分辨率下降.</p>
   <p>取 \(K=3\times10^{13}\,\mathrm{Hz/s}\)，扫频时间 \(T_{c}=50\,\mathrm{\mu s}\)，则带宽 \(B=KT_{c}=1.5\,\mathrm{GHz}\)，距离分辨率</p>
   \[\Delta R=\frac{c}{2B}=\frac{3\times10^{8}}{2\times1.5\times10^{9}}=0.1\ \mathrm{m}.\]
   <p><b>可见"相位的一阶导给频率、二阶导给调频斜率、三阶导衡量非线性失真"——高阶导数在这里各有明确的工程读数.</b></p>
@@ -2056,8 +2042,7 @@ eq0\)，称为<b>调频非线性</b>，它会使测距峰展宽、分辨率下�
 
 <div class="ex"><div class="lab">例 3.25　隐函数一阶导数</div>
   <p class="stmt">求下列隐函数的 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\)：(1) \(x^{2}+y^{2}=R^{2}\)；(2) \(\mathrm{e}^{y}+xy-\mathrm{e}=0\)，并求 \(y'\big|_{x=0}\).</p>
-  <p class="sol"><span class="mk">解</span>(1) 两边对 \(x\) 求导：\(2x+2yy'=0\)，故 \(y'=-\dfrac{x}{y}\;(y
-eq0)\).</p>
+  <p class="sol"><span class="mk">解</span>(1) 两边对 \(x\) 求导：\(2x+2yy'=0\)，故 \(y'=-\dfrac{x}{y}\;(y\neq0)\).</p>
   <p>几何检验：圆上点 \((x,y)\) 处的半径方向斜率为 \(\dfrac{y}{x}\)，而切线斜率 \(-\dfrac{x}{y}\) 与之乘积为 \(-1\)，<b>切线垂直于半径</b>，与初等几何一致.✓</p>
   <p>(2) 两边对 \(x\) 求导（注意 \(xy\) 用乘积法则）：</p>
   \[\mathrm{e}^{y}y'+y+xy'=0\;\Longrightarrow\;y'\bigl(\mathrm{e}^{y}+x\bigr)=-y
@@ -2110,18 +2095,14 @@ eq0)\).</p>
 
 <h3>三、由参数方程所确定的函数的导数</h3>
 <div class="def"><div class="lab"><span class="n">定理 3.7</span>参数方程的一阶导数</div>
-  <p>设参数方程 \(\begin{cases}x=\varphi(t),\\ y=\psi(t),\end{cases}\;t\in I\) 确定 \(y\) 为 \(x\) 的函数.若 \(\varphi,\psi\) 均可导，且 \(\varphi'(t)
-eq0\)，则</p>
+  <p>设参数方程 \(\begin{cases}x=\varphi(t),\\ y=\psi(t),\end{cases}\;t\in I\) 确定 \(y\) 为 \(x\) 的函数.若 \(\varphi,\psi\) 均可导，且 \(\varphi'(t)\neq0\)，则</p>
   \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\dfrac{\mathrm{d}y}{\mathrm{d}t}}{\dfrac{\mathrm{d}x}{\mathrm{d}t}}=\frac{\psi'(t)}{\varphi'(t)}.\]
-  <p class="muted"><b>推导：</b>由 \(\varphi'(t)
-eq0\) 与单调性，\(x=\varphi(t)\) 存在反函数 \(t=\varphi^{-1}(x)\)，于是 \(y=\psi\bigl[\varphi^{-1}(x)\bigr]\).由链式法则与反函数求导法则</p>
+  <p class="muted"><b>推导：</b>由 \(\varphi'(t)\neq0\) 与单调性，\(x=\varphi(t)\) 存在反函数 \(t=\varphi^{-1}(x)\)，于是 \(y=\psi\bigl[\varphi^{-1}(x)\bigr]\).由链式法则与反函数求导法则</p>
   \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\mathrm{d}y}{\mathrm{d}t}\cdot\frac{\mathrm{d}t}{\mathrm{d}x}
    =\psi'(t)\cdot\frac{1}{\varphi'(t)}.\]
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p>设 \(x=\varphi(t),\ y=\psi(t)\)，且 \(\varphi'(t)
-eq0\).因 \(\varphi'(t)
-eq0\)，由连续性知 \(\varphi'\) 在 \(t\) 附近保号，故 \(\varphi\) 在 \(t\) 附近严格单调，从而 \(x=\varphi(t)\) 存在反函数 \(t=\varphi^{-1}(x)\).</p>
+<p>设 \(x=\varphi(t),\ y=\psi(t)\)，且 \(\varphi'(t)\neq0\).因 \(\varphi'(t)\neq0\)，由连续性知 \(\varphi'\) 在 \(t\) 附近保号，故 \(\varphi\) 在 \(t\) 附近严格单调，从而 \(x=\varphi(t)\) 存在反函数 \(t=\varphi^{-1}(x)\).</p>
 <p><span class="stp">化为复合函数：</span>于是 \(y=\psi\bigl[\varphi^{-1}(x)\bigr]\).由链式法则（定理 3.5）与反函数求导法则（定理 3.4），</p>
 \[\frac{\mathrm{d}y}{\mathrm{d}x}
 =\frac{\mathrm{d}y}{\mathrm{d}t}\cdot\frac{\mathrm{d}t}{\mathrm{d}x}
@@ -2157,8 +2138,7 @@ eq0\)，由连续性知 \(\varphi'\) 在 \(t\) 附近保号，故 \(\varphi\) �
 </div>
 </details>
 </div>
-<div class="note"><b>二阶导数的头号陷阱：</b>\(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\;\boldsymbol{
-eq}\;\dfrac{\psi''(t)}{\varphi''(t)}\)！<br>
+<div class="note"><b>二阶导数的头号陷阱：</b>\(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\;\boldsymbol{\neq}\;\dfrac{\psi''(t)}{\varphi''(t)}\)！<br>
 必须记住 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 仍然是 \(t\) 的函数，要再"对 \(x\) 求导"就得<b>先对 \(t\) 求导、再除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\)</b>.<br>
 <b>推荐记法（不用背分母 3 次方的公式）：</b>令 \(g(t)=\dfrac{\mathrm{d}y}{\mathrm{d}x}\)，则 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\dfrac{g'(t)}{\varphi'(t)}\).先化简 \(g(t)\) 再求导，计算量往往小很多.</div>
 
@@ -2177,8 +2157,7 @@ eq}\;\dfrac{\psi''(t)}{\varphi''(t)}\)！<br>
   \[\frac{\mathrm{d}x}{\mathrm{d}t}=\frac{2t}{1+t^{2}},\qquad
     \frac{\mathrm{d}y}{\mathrm{d}t}=1-\frac{1}{1+t^{2}}=\frac{t^{2}}{1+t^{2}}.\]
   <p><b>第二步：作商并化简（这一步的化简至关重要）.</b></p>
-  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{t^{2}/(1+t^{2})}{2t/(1+t^{2})}=\frac{t^{2}}{2t}=\frac{t}{2}\qquad(t
-eq0).\]
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{t^{2}/(1+t^{2})}{2t/(1+t^{2})}=\frac{t^{2}}{2t}=\frac{t}{2}\qquad(t\neq0).\]
   <p><b>第三步：对 \(\dfrac{t}{2}\) 关于 \(t\) 求导，再除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\).</b></p>
   \[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}
    =\frac{\dfrac{\mathrm{d}}{\mathrm{d}t}\Bigl(\dfrac{t}{2}\Bigr)}{\dfrac{\mathrm{d}x}{\mathrm{d}t}}
@@ -2188,8 +2167,7 @@ eq0).\]
 
 <div class="ex"><div class="lab">例 3.31　摆线的切线与二阶导数</div>
   <p class="stmt">摆线 \(\begin{cases}x=a(t-\sin t),\\ y=a(1-\cos t)\end{cases}\;(a\gt0)\)，求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 与 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\).</p>
-  <p class="sol"><span class="mk">解</span>\(\dfrac{\mathrm{d}x}{\mathrm{d}t}=a(1-\cos t),\;\dfrac{\mathrm{d}y}{\mathrm{d}t}=a\sin t\).故（设 \(t
-eq2k\pi\)）</p>
+  <p class="sol"><span class="mk">解</span>\(\dfrac{\mathrm{d}x}{\mathrm{d}t}=a(1-\cos t),\;\dfrac{\mathrm{d}y}{\mathrm{d}t}=a\sin t\).故（设 \(t\neq2k\pi\)）</p>
   \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{\sin t}{1-\cos t}
    =\frac{2\sin\dfrac t2\cos\dfrac t2}{2\sin^{2}\dfrac t2}=\cot\frac t2.\]
   <p>再求二阶导.先对 \(t\) 求导：\(\dfrac{\mathrm{d}}{\mathrm{d}t}\cot\dfrac t2=-\dfrac{1}{2\sin^{2}\dfrac t2}\).除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}=a(1-\cos t)=2a\sin^{2}\dfrac t2\)：</p>
@@ -2217,8 +2195,7 @@ eq2k\pi\)）</p>
    =-\frac{3a}{4}+\frac{3a}{4}=0.\]
   <p>分母：</p>
   \[r'\cos\theta-r\sin\theta=-\frac{\sqrt3}{2}a\cdot\frac12-\frac{3a}{2}\cdot\frac{\sqrt3}{2}
-   =-\frac{\sqrt3a}{4}-\frac{3\sqrt3a}{4}=-\sqrt3\,a
-eq0.\]
+   =-\frac{\sqrt3a}{4}-\frac{3\sqrt3a}{4}=-\sqrt3\,a\neq0.\]
   <p>故 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=0\)，<b>切线水平</b>，方程为 \(y=r\sin\theta=\dfrac{3a}{2}\cdot\dfrac{\sqrt3}{2}=\dfrac{3\sqrt3}{4}a\).</p>
   <p class="muted">此处正是心形线上纵坐标的最高点.<b>"分子为零 \(\Rightarrow\) 水平切线，分母为零 \(\Rightarrow\) 竖直切线"，这是极坐标求切线的快速判据.</b></p>
 </div>
@@ -2560,8 +2537,7 @@ eq0.\]
 <p><b>四则运算法则：</b></p>
 \[\mathrm{d}(u\pm v)=\mathrm{d}u\pm\mathrm{d}v,\qquad \mathrm{d}(Cu)=C\,\mathrm{d}u,\]
 \[\mathrm{d}(uv)=v\,\mathrm{d}u+u\,\mathrm{d}v,\qquad
-  \mathrm{d}\Bigl(\frac{u}{v}\Bigr)=\frac{v\,\mathrm{d}u-u\,\mathrm{d}v}{v^{2}}\;(v
-eq0).\]
+  \mathrm{d}\Bigl(\frac{u}{v}\Bigr)=\frac{v\,\mathrm{d}u-u\,\mathrm{d}v}{v^{2}}\;(v\neq0).\]
 
 <h3>三、一阶微分形式不变性</h3>
 <div class="def"><div class="lab"><span class="n">定理 3.10</span>一阶微分形式不变性</div>
@@ -2822,8 +2798,7 @@ eq0).\]
 <p>1734 年，爱尔兰克洛因教区的主教乔治·贝克莱出版了一本小册子，标题很长：《分析学家，或致一位不信神的数学家》.这位"不信神的数学家"一般认为指的是天文学家哈雷.贝克莱写作的动机是宗教的——他要反驳那些嘲笑宗教"不够严密"的科学家；但他挑的战场，却精准地踩在了微积分最脆弱的地方.</p>
 <p>他的质问是这样的.要求 \(y=x^{2}\) 的流数，按牛顿的做法：给 \(x\) 一个增量 \(o\)，算出</p>
 \[\frac{(x+o)^{2}-x^{2}}{o}=\frac{2xo+o^{2}}{o}=2x+o,\]
-<p>然后令 \(o\) 消失，得 \(2x\).贝克莱抓住了要害：<b>你在第二步用 \(o\) 做了除数，这就默认了 \(o
-e0\)；可你在第三步又把 \(o\) 扔掉，这又默认了 \(o=0\).同一个量，一会儿不是零，一会儿是零，这是自相矛盾的推理.</b>他留下了那句流传三百年的嘲讽：这些消失了的量的鬼魂，究竟是什么？"它们既不是有限量，也不是无穷小量，更不是零.难道我们不能称它们为逝去量的幽灵吗？"</p>
+<p>然后令 \(o\) 消失，得 \(2x\).贝克莱抓住了要害：<b>你在第二步用 \(o\) 做了除数，这就默认了 \(o\ne0\)；可你在第三步又把 \(o\) 扔掉，这又默认了 \(o=0\).同一个量，一会儿不是零，一会儿是零，这是自相矛盾的推理.</b>他留下了那句流传三百年的嘲讽：这些消失了的量的鬼魂，究竟是什么？"它们既不是有限量，也不是无穷小量，更不是零.难道我们不能称它们为逝去量的幽灵吗？"</p>
 <p>这一击极其致命，因为它是对的.十八世纪的分析学在计算上高歌猛进——欧拉用发散级数算出 \(1+\frac14+\frac19+\cdots=\dfrac{\pi^{2}}{6}\)，拉格朗日建立分析力学——但它的地基确实一片泥沼.数学家们心里都清楚，只是拿不出办法.达朗贝尔只能对学生说："往前走，信心自会到来."</p>
 <p>真正的回答用了将近一百年.1821 年，柯西在巴黎综合理工学院讲授《分析教程》，第一次把"极限"而不是"无穷小"放在逻辑的起点：所谓 \(2x+o\to2x\)，不是说 \(o\) 变成了零，而是说<b>差值可以任意小</b>.1860 年代，魏尔斯特拉斯给出了不含任何"运动""趋于"等直观词汇的 \(\varepsilon\)-\(\delta\) 表述——正是本教材第 2 章的那套语言.至此，导数被定义为一个<b>极限</b>，而极限被定义为一个<b>不等式命题</b>.贝克莱的幽灵，被一串量词彻底驱散：\(o\) 从来没有"变成零"，它始终不是零，被丢掉的只是一个趋于零的余项.</p>
 <p>故事还有一个漂亮的续章.1960 年，美籍数学家亚伯拉罕·鲁滨逊利用数理逻辑中的模型论，构造出包含真正"无穷小数"的<b>超实数</b>系统，并在其中严格重建了整个微积分，称为<b>非标准分析</b>.三百年后，莱布尼茨那个"存在一个比任何正数都小却不为零的量"的直觉，居然被证明是可以严格化的.数学史在这里画了一个意味深长的圆.</p>
@@ -2837,13 +2812,10 @@ e0\)；可你在第三步又把 \(o\) 扔掉，这又默认了 \(o=0\).同一个
 
 <div class="ky-q">
 <p class="stmt"><b>【题 1】</b>（考研典型题，数学一、二、三均常考）设 \(f(x)=(x^{2}-x-2)\,\bigl|x^{3}-x\bigr|\)，求 \(f(x)\) 的不可导点的个数.</p>
-<p class="ky-hint"><b>思路点拨.</b> 绝对值函数的可能不可导点，就是绝对值内部的<b>零点</b>：\(x^{3}-x=x(x-1)(x+1)=0\)，候选点为 \(x=-1,0,1\).但"候选"不等于"真的不可导"！关键判据是：把函数在候选点 \(x_{0}\) 附近写成 \(f(x)=g(x)\,|x-x_{0}|\) 的形式，其中 \(g\) 在 \(x_{0}\) 连续，则<b>\(g(x_{0})
-e0\) 时不可导，\(g(x_{0})=0\) 时可导</b>.最常见的陷阱是想当然地答"3 个".</p>
+<p class="ky-hint"><b>思路点拨.</b> 绝对值函数的可能不可导点，就是绝对值内部的<b>零点</b>：\(x^{3}-x=x(x-1)(x+1)=0\)，候选点为 \(x=-1,0,1\).但"候选"不等于"真的不可导"！关键判据是：把函数在候选点 \(x_{0}\) 附近写成 \(f(x)=g(x)\,|x-x_{0}|\) 的形式，其中 \(g\) 在 \(x_{0}\) 连续，则<b>\(g(x_{0})\ne0\) 时不可导，\(g(x_{0})=0\) 时可导</b>.最常见的陷阱是想当然地答"3 个".</p>
 <p class="sol"><span class="mk">解</span> 先分解：\(f(x)=(x-2)(x+1)\cdot|x|\cdot|x-1|\cdot|x+1|\).</p>
-<p>在 \(x=0\) 附近，\(f(x)=\bigl[(x-2)(x+1)|x-1|\,|x+1|\bigr]\cdot|x|\)，方括号在 \(x=0\) 处的值为 \((-2)(1)(1)(1)=-2
-e0\)，故 \(f\) 在 \(x=0\) <b>不可导</b>.</p>
-<p>在 \(x=1\) 附近，\(f(x)=\bigl[(x-2)(x+1)|x|\,|x+1|\bigr]\cdot|x-1|\)，方括号在 \(x=1\) 处为 \((-1)(2)(1)(2)=-4
-e0\)，故 \(f\) 在 \(x=1\) <b>不可导</b>.</p>
+<p>在 \(x=0\) 附近，\(f(x)=\bigl[(x-2)(x+1)|x-1|\,|x+1|\bigr]\cdot|x|\)，方括号在 \(x=0\) 处的值为 \((-2)(1)(1)(1)=-2\ne0\)，故 \(f\) 在 \(x=0\) <b>不可导</b>.</p>
+<p>在 \(x=1\) 附近，\(f(x)=\bigl[(x-2)(x+1)|x|\,|x+1|\bigr]\cdot|x-1|\)，方括号在 \(x=1\) 处为 \((-1)(2)(1)(2)=-4\ne0\)，故 \(f\) 在 \(x=1\) <b>不可导</b>.</p>
 <p>在 \(x=-1\) 附近，注意多项式因子里也有一个 \((x+1)\)：</p>
 \[f(x)=\bigl[(x-2)|x|\,|x-1|\bigr]\cdot(x+1)|x+1|.\]
 <p>而 \(\varphi(x)=(x+1)|x+1|\) 在 \(x=-1\) 处左右导数均为 \(0\)（因 \(\varphi(x)=\pm(x+1)^{2}\)），故 \(\varphi\) 可导，从而 \(f\) 在 \(x=-1\) <b>可导</b>，且 \(f'(-1)=0\).</p>
@@ -2860,10 +2832,8 @@ e0\)，故 \(f\) 在 \(x=1\) <b>不可导</b>.</p>
 <p>令 \(h\to0\)，两个差商分别趋于 \(f'(x_{0})\)，故原极限 \(=3f'(x_{0})+f'(x_{0})=4f'(x_{0})\).</p>
 <p>（一般结论：\(\dfrac{f(x_{0}+\alpha h)-f(x_{0}+\beta h)}{h}\to(\alpha-\beta)f'(x_{0})\)，本题 \(\alpha=3,\ \beta=-1\).）</p>
 <p>（2）<b>不能.</b>反例：取 \(f(x)=|x|,\ x_{0}=0\).此时</p>
-\[\frac{f(0+h)-f(0-h)}{2h}=\frac{|h|-|-h|}{2h}=0\quad(h
-e0),\]
-<p>对称差商的极限存在且为 \(0\)；但由正文例 3.4，\(f'_{-}(0)=-1
-e1=f'_{+}(0)\)，\(f\) 在 \(0\) 处不可导.更极端的反例：\(f(x)=\mathrm{sgn}(x)\) 在 \(0\) 处甚至不连续，对称差商却恒为 \(0\).</p>
+\[\frac{f(0+h)-f(0-h)}{2h}=\frac{|h|-|-h|}{2h}=0\quad(h\ne0),\]
+<p>对称差商的极限存在且为 \(0\)；但由正文例 3.4，\(f'_{-}(0)=-1\ne1=f'_{+}(0)\)，\(f\) 在 \(0\) 处不可导.更极端的反例：\(f(x)=\mathrm{sgn}(x)\) 在 \(0\) 处甚至不连续，对称差商却恒为 \(0\).</p>
 <p class="ky-idea"><b>命题意图.</b> 考查对导数定义式"分子两点之差必须与分母一致"这一要害的理解.选择题里常以"下列条件中能推出 \(f\) 在 \(x_{0}\) 可导的是"出现，对称差商、\(\lim h[f(x_{0}+h)-f(x_{0})]\) 之类都是设计好的干扰项.</p>
 </div>
 
@@ -2879,14 +2849,12 @@ e1=f'_{+}(0)\)，\(f\) 在 \(0\) 处不可导.更极端的反例：\(f(x)=\mathr
 </div>
 
 <div class="ky-q">
-<p class="stmt"><b>【题 4】</b>（考研典型题，数学一常考）设函数 \(f(t)\) 二阶可导且 \(f’’(t)
-e0\)，参数方程 \(\begin{cases}x=f'(t),\\ y=t\,f'(t)-f(t),\end{cases}\) 求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 与 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\).</p>
+<p class="stmt"><b>【题 4】</b>（考研典型题，数学一常考）设函数 \(f(t)\) 二阶可导且 \(f’’(t)\ne0\)，参数方程 \(\begin{cases}x=f'(t),\\ y=t\,f'(t)-f(t),\end{cases}\) 求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\) 与 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}\).</p>
 <p class="ky-hint"><b>思路点拨.</b> 抽象参数方程题，切忌硬套定理 3.8 那个分母三次方的公式.正确做法是<b>先算 \(\mathrm{d}y/\mathrm{d}x\) 并化到最简</b>，往往会出现惊人的约简；再用"对 \(t\) 求导后除以 \(\mathrm{d}x/\mathrm{d}t\)"求二阶导.头号陷阱依旧是误写成 \(\dfrac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\dfrac{y''(t)}{x''(t)}\).</p>
 <p class="sol"><span class="mk">解</span> 分别对 \(t\) 求导（\(y\) 中的 \(t\,f'(t)\) 用乘积法则）：</p>
 \[\frac{\mathrm{d}x}{\mathrm{d}t}=f’’(t),\qquad
   \frac{\mathrm{d}y}{\mathrm{d}t}=f'(t)+t\,f’’(t)-f'(t)=t\,f’’(t).\]
-<p>因 \(f’’(t)
-e0\)，作商并约去 \(f’’(t)\)：</p>
+<p>因 \(f’’(t)\ne0\)，作商并约去 \(f’’(t)\)：</p>
 \[\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{t\,f’’(t)}{f’’(t)}=t.\]
 <p>再求二阶导：把 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=t\) 对 \(t\) 求导得 \(1\)，除以 \(\dfrac{\mathrm{d}x}{\mathrm{d}t}\)：</p>
 \[\frac{\mathrm{d}^{2}y}{\mathrm{d}x^{2}}=\frac{1}{f’’(t)}.\]
@@ -3068,6 +3036,7 @@ e0\)，作商并约去 \(f’’(t)\)：</p>
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 3, "list": [["s031", "3.1 导数的概念"], ["s032", "3.2 求导的运算法则"], ["s033", "3.3 高阶导数"], ["s034", "3.4 隐函数与参数方程的求导"], ["s035", "3.5 函数的微分"], ["adv3", "考研选讲"], ["cq3", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -3095,5 +3064,6 @@ e0\)，作商并约去 \(f’’(t)\)：</p>
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

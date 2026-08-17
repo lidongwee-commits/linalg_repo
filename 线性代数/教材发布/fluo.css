@@ -1,0 +1,383 @@
+/* ============================================================================
+   fluo.css  —  「荧光」知识点 checkpoint：小晶石标记
+   重要定理 / 结论 / 例题 旁挂一颗小晶石（截图 3「展开查看」同款风格）。
+   文字本身不再像高亮批注，只靠 subtle 下划线 + 右侧可点击晶石暗示。
+   每个荧光绑定自己的 kind+title+内容，点开问"学会了吗？"；
+   点「会了」或「口述一下（语音/打字）」即回收，萤火飞向计数器。
+   单一来源：D:\数字教材\shared\fluo.css（两本书构建共用）
+   ========================================================================== */
+
+:root {
+  --fluo-thm: 99, 102, 241;    /* 定理 · 靛紫 */
+  --fluo-con: 13, 148, 136;    /* 结论 · 青绿 */
+  --fluo-exa: 217, 119, 6;     /* 例题 · 琥珀 */
+  --fluo-pro: 59, 130, 246;    /* 进度 · 蓝 */
+  --fluo-def: 124, 58, 237;    /* 定义 · 紫 */
+  --fluo-key: 15, 110, 86;     /* 要点 · 深青 */
+  --fluo-ky: 217, 119, 6;      /* 考研 · 琥珀 */
+  --fluo-ink: #1f2a37;
+  --fluo-card: rgba(255, 255, 255, .92);
+  --fluo-card-bd: rgba(180, 190, 205, .45);
+  --fluo-dim: #6b7682;
+}
+html.night {
+  --fluo-ink: #e8edf5;
+  --fluo-card: rgba(28, 34, 48, .92);
+  --fluo-card-bd: rgba(90, 105, 135, .42);
+  --fluo-dim: #9aa6b6;
+}
+
+/* ---- 荧光标记本体：文字仅 subtle 下划线，右侧挂小晶石 ---- */
+.fluo {
+  cursor: pointer;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  /* 极淡的下划线点，告诉读者"这里有可展开的知识点" */
+  border-bottom: 1px dotted rgba(var(--fluo-con), .38);
+  padding-bottom: .06em;
+  transition: border-color .2s ease, color .2s ease;
+}
+.fluo[data-kind="定理"] { border-bottom-color: rgba(var(--fluo-thm), .38); }
+.fluo[data-kind="例题"] { border-bottom-color: rgba(var(--fluo-exa), .38); }
+.fluo[data-kind="进度"] { border-bottom-color: rgba(var(--fluo-pro), .38); }
+.fluo[data-kind="定义"] { border-bottom-color: rgba(var(--fluo-def), .38); }
+.fluo[data-kind="结论"] { border-bottom-color: rgba(var(--fluo-con), .38); }
+.fluo[data-kind="要点"] { border-bottom-color: rgba(var(--fluo-key), .38); }
+.fluo[data-kind="考研"] { border-bottom-color: rgba(var(--fluo-ky), .38); }
+.fluo[data-kind="进度"],
+.fluo[data-kind="定义"],
+.fluo[data-kind="结论"],
+.fluo[data-kind="要点"],
+.fluo[data-kind="考研"] { border-bottom-style: dotted; }
+
+/* 小晶石：紧跟文字右侧，菱形/宝石形状，避免大光球和滚动残影 */
+.fluo::after {
+  content: "";
+  display: inline-block;
+  width: .40em;
+  height: .40em;
+  margin-left: .22em;
+  margin-right: .05em;
+  vertical-align: middle;
+  transform: rotate(45deg) translateZ(0);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-con)) 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .6) inset,
+    0 1px 3px rgba(var(--fluo-con), .35);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.fluo[data-kind="定理"]::after {
+  background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-thm)) 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .6) inset,
+    0 1px 3px rgba(var(--fluo-thm), .35);
+}
+.fluo[data-kind="例题"]::after {
+  background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-exa)) 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .6) inset,
+    0 1px 3px rgba(var(--fluo-exa), .35);
+}
+
+.fluo:hover::after {
+  transform: rotate(45deg) scale(1.4) translateZ(0);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .7) inset,
+    0 0 0 2px rgba(var(--fluo-con), .32),
+    0 2px 6px rgba(var(--fluo-con), .38);
+}
+.fluo[data-kind="定理"]:hover::after { box-shadow: 0 0 0 1px rgba(255,255,255,.7) inset, 0 0 0 2px rgba(var(--fluo-thm), .32), 0 2px 6px rgba(var(--fluo-thm), .38); }
+.fluo[data-kind="例题"]:hover::after { box-shadow: 0 0 0 1px rgba(255,255,255,.7) inset, 0 0 0 2px rgba(var(--fluo-exa), .32), 0 2px 6px rgba(var(--fluo-exa), .38); }
+
+/* ---- 标题旁小晶体 fluo-pin（不破坏标题文字，无下划线，和正文荧光同尺寸） ---- */
+.fluo.fluo-pin {
+  display: inline-block;
+  width: .40em; height: .40em;
+  margin-left: .22em;
+  margin-right: .05em;
+  vertical-align: middle;
+  border-bottom: none !important;
+  padding-bottom: 0;
+}
+.fluo.fluo-pin::after {
+  content: "";
+  display: block;
+  width: 100%; height: 100%;
+  margin: 0;
+  transform: rotate(45deg) translateZ(0);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-con)) 100%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 1px 3px rgba(var(--fluo-con), .35);
+}
+.fluo.fluo-pin[data-kind="定理"]::after { background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-thm)) 100%); box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 1px 3px rgba(var(--fluo-thm), .35); }
+.fluo.fluo-pin[data-kind="定义"]::after { background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-def)) 100%); box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 1px 3px rgba(var(--fluo-def), .35); }
+.fluo.fluo-pin[data-kind="例题"]::after { background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-exa)) 100%); box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 1px 3px rgba(var(--fluo-exa), .35); }
+.fluo.fluo-pin[data-kind="考研"]::after { background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-ky)) 100%); box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 1px 3px rgba(var(--fluo-ky), .35); }
+.fluo.fluo-pin[data-kind="结论"]::after { background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-con)) 100%); }
+.fluo.fluo-pin[data-kind="要点"]::after { background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-key)) 100%); }
+.fluo.fluo-pin:hover::after { transform: rotate(45deg) scale(1.25) translateZ(0); }
+
+/* ---- 已掌握：统一换成清晰小对勾（学生能一眼区分是否确认过） ---- */
+.fluo.fluo-pin.is-learned {
+  width: auto; height: auto;
+  min-width: auto;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+.fluo.fluo-pin.is-learned::after {
+  content: "✓";
+  display: inline-block;
+  width: auto; height: auto;
+  margin: 0 0 0 .12em;
+  transform: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: .82em;
+  font-weight: 800;
+  color: rgba(110, 140, 110, .78);
+  opacity: .9;
+  line-height: 1;
+  transition: color .15s ease, transform .15s ease;
+}
+.fluo.fluo-pin.is-learned:hover::after { color: rgba(80, 120, 80, .95); transform: scale(1.25); }
+
+/* ---- 小节末尾进度条 fluo-progress（兼容旧手动标记：未学菱形，已学对勾） ---- */
+.fluo-progress {
+  display: inline-block;
+  width: .40em; height: .40em;
+  margin: .8em .22em .8em .05em;
+  vertical-align: middle;
+  border: none !important;
+  background: transparent;
+  cursor: pointer;
+}
+.fluo-progress::before {
+  content: "";
+  display: block;
+  width: 100%; height: 100%;
+  transform: rotate(45deg) translateZ(0);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(255,255,255,.85) 0%, rgb(var(--fluo-pro)) 100%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.6) inset, 0 1px 3px rgba(var(--fluo-pro), .35);
+}
+.fluo-progress .fpg-dot, .fluo-progress .fpg-text { display: none; }
+.fluo-progress.is-learned::before {
+  content: "✓";
+  transform: none;
+  display: inline-block;
+  width: auto; height: auto;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: .82em;
+  font-weight: 800;
+  color: rgba(110, 140, 110, .78);
+  opacity: .9;
+  line-height: 1;
+  transition: color .15s ease, transform .15s ease;
+}
+.fluo-progress.is-learned:hover::before { color: rgba(80, 120, 80, .95); transform: scale(1.25); }
+
+/* ---- 正文荧光：已掌握后文字下划线消失，右侧变对勾 ---- */
+.fluo.is-learned {
+  border-bottom: none;
+  opacity: .9;
+}
+.fluo.is-learned::after {
+  content: "✓";
+  display: inline-block;
+  width: auto; height: auto;
+  margin-left: .18em; margin-right: .05em;
+  vertical-align: middle;
+  transform: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: .78em;
+  font-weight: 800;
+  color: rgba(110, 140, 110, .78);
+  opacity: .9;
+  line-height: 1;
+  transition: color .15s ease, transform .15s ease;
+}
+.fluo.is-learned:hover::after { color: rgba(80, 120, 80, .95); transform: scale(1.25); }
+.fluo.is-learned[data-kind="定理"]::after { color: rgba(110, 140, 110, .78); }
+.fluo.is-learned[data-kind="例题"]::after { color: rgba(110, 140, 110, .78); }
+.fluo.is-learned[data-kind="定义"]::after { color: rgba(110, 140, 110, .78); }
+.fluo.is-learned[data-kind="结论"]::after { color: rgba(110, 140, 110, .78); }
+.fluo.is-learned[data-kind="要点"]::after { color: rgba(110, 140, 110, .78); }
+.fluo.is-learned[data-kind="考研"]::after { color: rgba(110, 140, 110, .78); }
+
+/* ---- 回收飞向计数器的「萤火」小球（轻量，防拖拽残影） ---- */
+.fluo-fly {
+  position: fixed;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff, rgb(var(--fluo-con)) 70%);
+  box-shadow: 0 0 6px 1px rgba(var(--fluo-con), .75);
+  pointer-events: none;
+  z-index: 9000;
+  transition: transform .9s cubic-bezier(.4, 0, .2, 1), opacity .9s ease;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* ---- 弹层（玻璃拟态，保留） ---- */
+.fluo-pop {
+  position: fixed;
+  z-index: 8000;
+  width: min(344px, 88vw);
+  background: var(--fluo-card);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  color: var(--fluo-ink);
+  border: 1px solid var(--fluo-card-bd);
+  border-radius: 16px;
+  box-shadow: 0 22px 60px rgba(20, 30, 50, .22), 0 2px 8px rgba(20, 30, 50, .08);
+  padding: 15px 16px 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: hidden;
+  animation: fluoPopIn .18s cubic-bezier(.34, 1.4, .64, 1);
+}
+.fluo-pop::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgb(var(--fluo-con)), rgba(var(--fluo-con), .2));
+}
+.fluo-pop[data-kind="定理"]::before { background: linear-gradient(90deg, rgb(var(--fluo-thm)), rgba(var(--fluo-thm), .2)); }
+.fluo-pop[data-kind="例题"]::before { background: linear-gradient(90deg, rgb(var(--fluo-exa)), rgba(var(--fluo-exa), .2)); }
+@keyframes fluoPopIn { from { opacity: 0; transform: translateY(8px) scale(.97); } to { opacity: 1; transform: none; } }
+.fluo-pop[hidden] { display: none; }
+
+.fluo-pop .fp-head {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; margin-bottom: 7px;
+}
+.fluo-pop .fp-badge {
+  font-size: 12px; font-weight: 700; color: #fff;
+  padding: 3px 10px; border-radius: 999px;
+  background: rgb(var(--fluo-con));
+  box-shadow: 0 2px 8px rgba(var(--fluo-con), .4);
+}
+.fluo-pop .fp-badge[data-kind="定理"] { background: rgb(var(--fluo-thm)); box-shadow: 0 2px 8px rgba(var(--fluo-thm), .4); }
+.fluo-pop .fp-badge[data-kind="定义"] { background: rgb(var(--fluo-def)); box-shadow: 0 2px 8px rgba(var(--fluo-def), .4); }
+.fluo-pop .fp-badge[data-kind="结论"] { background: rgb(var(--fluo-con)); box-shadow: 0 2px 8px rgba(var(--fluo-con), .4); }
+.fluo-pop .fp-badge[data-kind="要点"] { background: rgb(var(--fluo-key)); box-shadow: 0 2px 8px rgba(var(--fluo-key), .4); }
+.fluo-pop .fp-badge[data-kind="例题"] { background: rgb(var(--fluo-exa)); box-shadow: 0 2px 8px rgba(var(--fluo-exa), .4); }
+.fluo-pop .fp-badge[data-kind="考研"] { background: rgb(var(--fluo-ky)); box-shadow: 0 2px 8px rgba(var(--fluo-ky), .4); }
+.fluo-pop .fp-badge[data-kind="进度"] { background: rgb(var(--fluo-pro)); box-shadow: 0 2px 8px rgba(var(--fluo-pro), .4); }
+.fluo-pop .fp-title { font-size: 14.5px; }
+.fluo-pop .fp-quote {
+  margin: 5px 0 9px; padding: 8px 11px;
+  background: rgba(var(--fluo-con), .08);
+  border-left: 3px solid rgb(var(--fluo-con));
+  border-radius: 6px; color: var(--fluo-ink);
+  font-size: 13px; max-height: 7.2em; overflow: auto;
+}
+.fluo-pop[data-kind="定理"] .fp-quote { border-left-color: rgb(var(--fluo-thm)); background: rgba(var(--fluo-thm), .08); }
+.fluo-pop[data-kind="定义"] .fp-quote { border-left-color: rgb(var(--fluo-def)); background: rgba(var(--fluo-def), .08); }
+.fluo-pop[data-kind="结论"] .fp-quote { border-left-color: rgb(var(--fluo-con)); background: rgba(var(--fluo-con), .08); }
+.fluo-pop[data-kind="要点"] .fp-quote { border-left-color: rgb(var(--fluo-key)); background: rgba(var(--fluo-key), .08); }
+.fluo-pop[data-kind="例题"] .fp-quote { border-left-color: rgb(var(--fluo-exa)); background: rgba(var(--fluo-exa), .08); }
+.fluo-pop[data-kind="考研"] .fp-quote { border-left-color: rgb(var(--fluo-ky)); background: rgba(var(--fluo-ky), .08); }
+.fluo-pop[data-kind="进度"] .fp-quote { border-left-color: rgb(var(--fluo-pro)); background: rgba(var(--fluo-pro), .08); }
+.fluo-pop .fp-ask { font-weight: 700; margin: 2px 0 10px; color: var(--fluo-ink); }
+.fluo-pop .fp-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.fluo-pop .fp-btn {
+  flex: 1 1 auto; min-width: 84px;
+  border: none; border-radius: 10px; padding: 9px 10px;
+  font-size: 13.5px; font-weight: 700; cursor: pointer;
+  transition: transform .12s ease, filter .15s ease, box-shadow .15s ease;
+}
+.fluo-pop .fp-btn:active { transform: scale(.96); }
+.fluo-pop .fp-btn-ok {
+  color: #fff;
+  background: linear-gradient(180deg, rgb(var(--fluo-con)), rgba(var(--fluo-con), .82));
+  box-shadow: 0 4px 14px rgba(var(--fluo-con), .35);
+}
+.fluo-pop .fp-btn-ok:hover { filter: brightness(1.05); }
+.fluo-pop[data-kind="定理"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-thm)), rgba(var(--fluo-thm), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-thm), .35); }
+.fluo-pop[data-kind="定义"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-def)), rgba(var(--fluo-def), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-def), .35); }
+.fluo-pop[data-kind="结论"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-con)), rgba(var(--fluo-con), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-con), .35); }
+.fluo-pop[data-kind="要点"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-key)), rgba(var(--fluo-key), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-key), .35); }
+.fluo-pop[data-kind="例题"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-exa)), rgba(var(--fluo-exa), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-exa), .35); }
+.fluo-pop[data-kind="考研"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-ky)), rgba(var(--fluo-ky), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-ky), .35); }
+.fluo-pop[data-kind="进度"] .fp-btn-ok { background: linear-gradient(180deg, rgb(var(--fluo-pro)), rgba(var(--fluo-pro), .82)); box-shadow: 0 4px 14px rgba(var(--fluo-pro), .35); }
+.fluo-pop .fp-btn-talk { background: rgba(var(--fluo-con), .1); color: rgb(var(--fluo-con)); }
+.fluo-pop .fp-btn-talk:hover { background: rgba(var(--fluo-con), .16); }
+.fluo-pop[data-kind="定理"] .fp-btn-talk { background: rgba(var(--fluo-thm), .1); color: rgb(var(--fluo-thm)); }
+.fluo-pop[data-kind="定义"] .fp-btn-talk { background: rgba(var(--fluo-def), .1); color: rgb(var(--fluo-def)); }
+.fluo-pop[data-kind="结论"] .fp-btn-talk { background: rgba(var(--fluo-con), .1); color: rgb(var(--fluo-con)); }
+.fluo-pop[data-kind="要点"] .fp-btn-talk { background: rgba(var(--fluo-key), .1); color: rgb(var(--fluo-key)); }
+.fluo-pop[data-kind="例题"] .fp-btn-talk { background: rgba(var(--fluo-exa), .12); color: rgb(var(--fluo-exa)); }
+.fluo-pop[data-kind="考研"] .fp-btn-talk { background: rgba(var(--fluo-ky), .12); color: rgb(var(--fluo-ky)); }
+.fluo-pop[data-kind="进度"] .fp-btn-talk { background: rgba(var(--fluo-pro), .12); color: rgb(var(--fluo-pro)); }
+.fluo-pop .fp-btn-later { background: transparent; color: var(--fluo-dim); border: 1px solid var(--fluo-card-bd); }
+.fluo-pop .fp-btn-later:hover { background: rgba(127, 127, 127, .06); }
+.fluo-pop .fp-talk { margin-top: 10px; display: none; }
+.fluo-pop .fp-talk.show { display: block; }
+.fluo-pop .fp-talk textarea {
+  width: 100%; min-height: 58px; resize: vertical;
+  border: 1px solid var(--fluo-card-bd); border-radius: 9px;
+  padding: 8px 10px; font: inherit; font-size: 13px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05);
+  background: rgba(127, 127, 127, .05); color: var(--fluo-ink);
+}
+.fluo-pop .fp-talk .fp-talk-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+.fluo-pop .fp-mic {
+  border: 1px solid var(--fluo-card-bd); background: rgba(var(--fluo-con), .1); color: rgb(var(--fluo-con));
+  border-radius: 9px; padding: 7px 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.fluo-pop .fp-mic:hover { background: rgba(var(--fluo-con), .16); }
+.fluo-pop .fp-mic.rec { background: #e23b3b; color: #fff; border-color: #e23b3b; }
+.fluo-pop .fp-talk .fp-hint { font-size: 11.5px; color: var(--fluo-dim); }
+.fluo-pop .fp-done {
+  margin-top: 10px; text-align: center; font-weight: 700; color: rgb(var(--fluo-con));
+  display: none;
+}
+.fluo-pop .fp-done.show { display: block; }
+
+/* ---- 悬浮计数器（更精致的胶囊） ---- */
+#fluo-counter {
+  position: fixed; left: 14px; bottom: 14px; z-index: 7000;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--fluo-card);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--fluo-ink);
+  border: 1px solid var(--fluo-card-bd); border-radius: 999px;
+  padding: 7px 14px; font-size: 13px; font-weight: 700;
+  box-shadow: 0 10px 28px rgba(20, 30, 50, .16);
+  cursor: default; user-select: none;
+}
+#fluo-counter .fc-dot {
+  width: 8px; height: 8px; border-radius: 2px;
+  background: rgb(var(--fluo-con));
+  box-shadow: 0 0 6px 1px rgba(var(--fluo-con), .7);
+  transform: rotate(45deg);
+}
+#fluo-counter .fc-num { color: rgb(var(--fluo-con)); }
+/* 在知识之塔目录内：不浮动，做成目录顶部的小胶囊 */
+#tower-slot #fluo-counter {
+  position: static;
+  left: auto; bottom: auto;
+  width: auto;
+  margin: 0 0 8px;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+#tower-slot #fluo-counter .fc-dot { width: 7px; height: 7px; }
+
+@media (max-width: 560px) {
+  #fluo-counter { left: 10px; bottom: 10px; padding: 6px 12px; font-size: 12px; }
+  #fluo-counter .fc-dot { width: 7px; height: 7px; }
+}

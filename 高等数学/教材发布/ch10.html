@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第10章 · 重积分</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第10章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -785,8 +789,7 @@
 <h3>四、一般换元与雅可比行列式</h3>
 <div class="def"><div class="lab"><span class="n">定理 10.6</span>二重积分换元法</div>
   <p>设变换 \(T:\ x=x(u,v),\ y=y(u,v)\) 把 \(uOv\) 平面上的闭区域 \(D'\) 一一映为 \(xOy\) 平面上的 \(D\)，且 \(x,y\) 有一阶连续偏导数，<b>雅可比行列式</b></p>
-  \[J=\frac{\partial(x,y)}{\partial(u,v)}=\begin{vmatrix}\dfrac{\partial x}{\partial u}&\dfrac{\partial x}{\partial v}\\[8pt]\dfrac{\partial y}{\partial u}&\dfrac{\partial y}{\partial v}\end{vmatrix}
-eq0\quad\text{在 }D'\text{ 上},\]
+  \[J=\frac{\partial(x,y)}{\partial(u,v)}=\begin{vmatrix}\dfrac{\partial x}{\partial u}&\dfrac{\partial x}{\partial v}\\[8pt]\dfrac{\partial y}{\partial u}&\dfrac{\partial y}{\partial v}\end{vmatrix}\neq0\quad\text{在 }D'\text{ 上},\]
   <p>则</p>
   \[\iint_{D}f(x,y)\,\mathrm{d}x\,\mathrm{d}y=\iint_{D'}f\bigl(x(u,v),y(u,v)\bigr)\,|J|\,\mathrm{d}u\,\mathrm{d}v .\]
   <p class="muted">极坐标是它的特例：\(x=r\cos\theta,\ y=r\sin\theta\) 时</p>
@@ -807,14 +810,12 @@ y(u+\Delta u,v)-y(u,v)=\frac{\partial y}{\partial u}\Delta u+o(\Delta u),\]
 <p><span class="stp">第三步：平行四边形面积 = \(|J|\times\) 原面积.</span>平面上两向量张成的平行四边形面积等于其分量行列式的绝对值：</p>
 \[\Delta\sigma\approx\bigl|\mathbf a\times\mathbf b\bigr|
 =\left|\begin{vmatrix}\dfrac{\partial x}{\partial u}&\dfrac{\partial x}{\partial v}\\[8pt]\dfrac{\partial y}{\partial u}&\dfrac{\partial y}{\partial v}\end{vmatrix}\right|\Delta u\,\Delta v=|J|\,\Delta u\,\Delta v .\]
-<p>取极限即得<b>面积元素的变换法则</b> \(\mathrm{d}x\,\mathrm{d}y=|J|\,\mathrm{d}u\,\mathrm{d}v\).（\(J
-eq0\) 保证像不退化成线段，且 \(T\) 局部一一.）</p>
+<p>取极限即得<b>面积元素的变换法则</b> \(\mathrm{d}x\,\mathrm{d}y=|J|\,\mathrm{d}u\,\mathrm{d}v\).（\(J\neq0\) 保证像不退化成线段，且 \(T\) 局部一一.）</p>
 <p><span class="stp">第四步：写积分和并取极限.</span>在第 \(k\) 个小块上取点 \((u_k,v_k)\)，其像为 \(\bigl(x(u_k,v_k),y(u_k,v_k)\bigr)\)，于是</p>
 \[\sum_k f\bigl(x(u_k,v_k),y(u_k,v_k)\bigr)\Delta\sigma_k\approx\sum_k f\bigl(x(u_k,v_k),y(u_k,v_k)\bigr)|J(u_k,v_k)|\,\Delta u_k\Delta v_k .\]
 <p>令网格加细，左端趋于 \(\displaystyle\iint_Df(x,y)\,\mathrm{d}x\,\mathrm{d}y\)，右端趋于 \(\displaystyle\iint_{D'}f\bigl(x(u,v),y(u,v)\bigr)|J|\,\mathrm{d}u\,\mathrm{d}v\)，两者相等.</p>
 <p><span class="stp">特例核对：</span>\(x=r\cos\theta,\ y=r\sin\theta\) 时 \(J=r\)，公式退化为定理 10.5，与那里用环扇形算出的 \(\mathrm{d}\sigma=r\,\mathrm{d}r\,\mathrm{d}\theta\) 完全吻合——这是对上述推导的一次独立验证.</p>
-<div class="bey"><b>为什么说"超纲"：</b>第二、三步中的 "\(\approx\)" 只是几何直观.要把它变成证明，必须回答：曲边四边形与平行四边形的<b>面积之差</b>是否真的是 \(\Delta u\Delta v\) 的高阶无穷小，并且这个"高阶"在整个 \(D'\) 上<b>一致</b>成立；还要说明像区域的边界仍是零面积集、\(T\) 的一一性如何由 \(J
-eq0\) 经<b>反函数定理</b>保证.这些属于《数学分析》中重积分变量代换定理的内容.工科阶段只需牢记：<b>换元时别忘乘 \(|J|\)</b>——它是"面积被拉伸了多少倍"的度量.</div>
+<div class="bey"><b>为什么说"超纲"：</b>第二、三步中的 "\(\approx\)" 只是几何直观.要把它变成证明，必须回答：曲边四边形与平行四边形的<b>面积之差</b>是否真的是 \(\Delta u\Delta v\) 的高阶无穷小，并且这个"高阶"在整个 \(D'\) 上<b>一致</b>成立；还要说明像区域的边界仍是零面积集、\(T\) 的一一性如何由 \(J\neq0\) 经<b>反函数定理</b>保证.这些属于《数学分析》中重积分变量代换定理的内容.工科阶段只需牢记：<b>换元时别忘乘 \(|J|\)</b>——它是"面积被拉伸了多少倍"的度量.</div>
 <p class="qed">思路毕</p>
 </div>
 </details>
@@ -2190,6 +2191,7 @@ eq0\) 经<b>反函数定理</b>保证.这些属于《数学分析》中重积分
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 10, "list": [["s101", "10.1 二重积分的概念与性质"], ["s102", "10.2 二重积分的计算"], ["s103", "10.3 三重积分的概念与性质"], ["s104", "10.4 三重积分的计算"], ["s105", "10.5 重积分的应用"], ["adv10", "考研选讲"], ["cq10", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -2217,5 +2219,6 @@ eq0\) 经<b>反函数定理</b>保证.这些属于《数学分析》中重积分
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

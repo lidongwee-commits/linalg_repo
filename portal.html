@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>数学 · 数字教材</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>document.documentElement.classList.add('wb-ready');</script>
 <style>
   :root{
     --gdsx:#22b392;     /* 高等数学 · 青绿 */
@@ -76,13 +78,13 @@
   #warp{position:fixed;inset:0;z-index:999;pointer-events:none;visibility:hidden}
   body.warping #warp{visibility:visible}
   /* 迷雾层：从透明到全屏浓雾 */
-  #warp .mist{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#c9d4f0 0%,#7a82a8 35%,#3b3f5c 65%,#16132b 100%);opacity:0;transition:opacity 1.6s ease-in-out}
-  body.warping #warp .mist{opacity:.95}
+  #warp .mist{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#c9d4f0 0%,#7a82a8 35%,#3b3f5c 65%,#16132b 100%);opacity:0;transition:opacity .85s ease-in-out}
+  body.warping #warp .mist{opacity:.96}
   /* 雾中微光粒子（缓慢飘动） */
   #warp .mist i{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);filter:blur(1.5px);animation:floatUp var(--fd,4s) ease-in-out infinite;animation-delay:var(--dl,0s)}
   @keyframes floatUp{0%,100%{transform:translateY(0) scale(1);opacity:.2}50%{transform:translateY(-28px) scale(1.4);opacity:.5}}
   /* Portal 内容在雾后淡出 */
-  body.warping .wrap{transition:opacity .8s ease-in;opacity:0}
+  body.warping .wrap{transition:opacity .45s ease-in;opacity:0}
 </style>
 </head>
 <body>
@@ -208,13 +210,14 @@
     box.innerHTML = html;
   })();
 
-  // 点击进入：云雾 + 慢速旋涡穿越
+  // 点击进入：云雾 + 快速穿越（跳转前标记目标页立即显示，避免教材页二次淡入闪烁）
   var links = document.querySelectorAll('.enter');
   for (var i = 0; i < links.length; i++) {
     links[i].addEventListener('click', function (e) {
       var href = this.getAttribute('data-target') || this.getAttribute('href');
       if (!href || href === '#') return;
       e.preventDefault();
+      try { sessionStorage.setItem('hfut_no_fouc', '1'); sessionStorage.setItem('hfut_in_app', '1'); } catch (e) {}
       // 迷雾渐浓：生成微光粒子 + 触发 CSS 过渡
       var mist = document.getElementById('warpMist');
       if (mist) {
@@ -229,7 +232,7 @@
         mist.innerHTML = html;
       }
       document.body.classList.add('warping');
-      setTimeout(function () { location.href = href; }, 1700);
+      setTimeout(function () { location.href = href; }, 900);
     });
   }
 })();

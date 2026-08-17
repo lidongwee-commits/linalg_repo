@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第1章 · 函数</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第1章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -104,7 +108,7 @@
   <p class="sol"><span class="mk">解</span>(a) 分母不能为零：\(x^2-1\neq0\)，即 \(x\neq\pm1\).故 \(D_f=\mathbb{R}\setminus\{-1,1\}=(-\infty,-1)\cup(-1,1)\cup(1,+\infty)\).</p>
   <p>(b) 两项需同时有意义：根号内非负 \(x-2\ge0\Rightarrow x\ge2\)；对数真数正 \(x+1>0\Rightarrow x>-1\).取交集得 \(D_g=[2,+\infty)\).</p>
   <p>(c) 反弦函数要求 \(|x/3|\le1\)，即 \(|x|\le3\).故 \(D_h=[-3,3]\).</p>
-  <p class="muted"><b>求域口诀：</b>分母!=0、偶根>=0、对数>0、\(\arcsin/\arccos\) 的 |内部|<=1、\(\tan\) 不在 \(\frac{\pi}{2}+k\pi\) 处.多条件时取各部分定义域的<b>交集</b>.</p>
+  <p class="muted"><b>求域口诀：</b>分母\(\neq0\)、偶根\(\ge0\)、对数\(>0\)、\(\arcsin/\arccos\) 的 \(|\text{内部}|\le1\)、\(\tan\) 不在 \(\frac{\pi}{2}+k\pi\) 处.多条件时取各部分定义域的<b>交集</b>.</p>
 </div>
 
 <h3>三、基本初等函数家族</h3>
@@ -128,42 +132,6 @@
 
 
 <div class="sec-quiz" data-sec="s011" data-ch="1" data-n="5"></div>
-<h2 id="s013"><span class="num">§1.3</span>反函数与复合函数</h2>
-    
-    <div class="ex"><div class="lab">引例　从"观测"反推"位置"：SLAM 中的反函数</div>
-  <p class="stmt">自动驾驶定位（SLAM）常遇到这样的逆问题：已知激光雷达测得的若干个距离 \(d_i\)，要反推出自身在世界坐标系的位置 \((x,y)\).这恰好是"函数求逆".</p>
-  <p>更直观的例子是<b>逻辑回归的逆变换</b>.模型输出"是猫的概率" \(p=\sigma(z)\)，而分析师常要由 \(p\) 反推"对数几率" \(z\)：</p>
-  \[z=\sigma^{-1}(p)=\ln\frac{p}{1-p}.\]
-  <p><b>具体计算：</b>若模型给出 \(p=0.8\)，则</p>
-  \[z=\ln\frac{0.8}{0.2}=\ln 4=1.3863.\]
-  <p>这个 \(\sigma^{-1}\) 叫 <b>logit 函数</b>，它把概率（有界于 \((0,1)\)）映射回整个实数轴，是逻辑回归与神经网络解释性的桥梁.<b>正函数描述"输入→输出"，反函数描述"结果→原因"，两者一体两面.</b></p>
-</div>
-
-    <h3>一、反函数</h3>
-    <div class="def"><div class="lab"><span class="n">定义 1.6</span>反函数</div>
-      <p>设 \(y=f(x)\) 是 \(D_f\) 到 \(R_f\) 的<b>一一对应</b>（严格单调即可保证）.由 \(y=f(x)\) 解出 \(x=\varphi(y)\)，这个以 \(y\) 为自变量、\(x\) 为因变量的函数称为 \(f\) 的<b>反函数</b>，记作 \(x=f^{-1}(y)\).</p>
-      <p>习惯上仍用 \(x\) 表示自变量，故常写作 \(y=f^{-1}(x)\).其定义域为 \(R_f\)，值域为 \(D_f\).</p>
-    </div>
-    <div class="note"><b>存在条件：函数必须是一一对应（至少在局部严格单调）.</b>奇函数 \(y=x^3\) 严格单调，反函数存在；偶函数 \(y=x^2\) 在 \(\mathbb{R}\) 上不单调，<b>无整体反函数</b>（但若限定 \(x\ge0\)，则反函数为 \(y=\sqrt{x}\)）.<br>
-      <b>几何意义：</b>\(y=f(x)\) 与 \(y=f^{-1}(x)\) 的图像关于直线 \(y=x\) 对称.</div>
-
-    <div class="ex"><div class="lab">例 1.7</div>
-      <p class="stmt">求 \(f(x)=2x+1\) 的反函数，并验证 \(f^{-1}\bigl(f(x)\bigr)=x\).</p>
-      <p class="sol"><span class="mk">解</span>由 \(y=2x+1\) 解出 \(x=\dfrac{y-1}{2}\)，互换字母得 \(f^{-1}(x)=\dfrac{x-1}{2}\).</p>
-      <p>验证：\(f^{-1}\bigl(f(x)\bigr)=f^{-1}(2x+1)=\dfrac{(2x+1)-1}{2}=x\).✓</p>
-    </div>
-    <div class="ex"><div class="lab">例 1.8　Logistic 与 Logit 互逆</div>
-      <p class="stmt">证明 \(\sigma(x)=\dfrac{1}{1+\mathrm{e}^{-x}}\) 与 \(\mathrm{logit}(p)=\ln\dfrac{p}{1-p}\) 互为反函数.</p>
-      <p class="sol"><span class="mk">解</span>令 \(p=\dfrac{1}{1+\mathrm{e}^{-x}}\)，解 \(x\)：</p>
-      \[1+\mathrm{e}^{-x}=\frac{1}{p}\;\Rightarrow\;\mathrm{e}^{-x}=\frac{1-p}{p}\;\Rightarrow\;-x=\ln\frac{1-p}{p}=\ln\frac{p}{1-p}\;\Rightarrow\;x=\ln\frac{p}{1-p}=\mathrm{logit}(p).\]
-      <p>故 \(\sigma^{-1}=\mathrm{logit}\)，互逆成立.</p>
-    </div>
-
-<!--MODBEG-->
-
-
-
-<div class="sec-quiz" data-sec="s013" data-ch="1" data-n="5"></div>
 <h2 id="s012"><span class="num">§1.2</span>函数的几种特性</h2>
     
     <div class="ex"><div class="lab">引例　损失函数为什么"越训练越小"：单调性的现实含义</div>
@@ -199,15 +167,14 @@
 
     <h3>三、周期性与有界性</h3>
     <div class="def"><div class="lab"><span class="n">定义 1.5</span>周期与有界</div>
-      <p><b>周期：</b>若存在 \(T
-eq0\) 使 \(f(x+T)=f(x)\) 对一切 \(x\) 成立，则称 \(f\) 为<b>周期函数</b>，最小的正数 \(T\) 为<b>周期</b>.</p>
+      <p><b>周期：</b>若存在 \(T\neq0\) 使 \(f(x+T)=f(x)\) 对一切 \(x\) 成立，则称 \(f\) 为<b>周期函数</b>，最小的正数 \(T\) 为<b>周期</b>.</p>
       <p><b>有界：</b>若存在 \(M>0\) 使 \(|f(x)|\le M\) 对一切 \(x\in D_f\) 成立，则称 \(f\) 在 \(D_f\) 上<b>有界</b>.</p>
     </div>
     <div class="ex"><div class="lab">例 1.6　雷达回波与有界性</div>
       <p class="stmt">毫米波雷达接收的调频回波信号可建模为 \(s(t)=A\sin(2\pi f t+\varphi)\).求其周期与有界范围.</p>
       <p class="sol"><span class="mk">解</span>由正弦周期性，\(s(t+T)=s(t)\) 当且仅当 \(2\pi f T=2\pi\)，故周期 \(T=\dfrac{1}{f}\).又 \(|\sin(\cdot)|\le1\)，故 \(|s(t)|\le A\)，即信号<b>有界于 \([-A,A]\)</b>.这就是"调幅"的含义——信息藏在 \(A\)、\(f\)、\(\varphi\) 里，而幅度永远不超过 \(A\).</p>
     </div>
-    <div class="note"><b>四类特性的工程意义速查：</b>单调性→损失下降/排序；奇偶性→对称性可利用（卷积核、特征对称）；周期性→信号处理（傅里叶）；有界性→数值稳定（激活函数输出不爆炸，是深层网络能训练的前提）.</div>
+    <div class="note"><b><span class="fluo" data-kind="结论" data-title="四特性工程意义" data-fid="gdsx1-con-eng">四类特性的工程意义速查</span>：</b>单调性→损失下降/排序；奇偶性→对称性可利用（卷积核、特征对称）；周期性→信号处理（傅里叶）；有界性→数值稳定（激活函数输出不爆炸，是深层网络能训练的前提）.</div>
 
   <details><summary>展开查看 · Sigmoid 导数为什么重要（预览，详见§3.2）</summary>
   <div class="body">
@@ -397,8 +364,7 @@ eq0\) 使 \(f(x+T)=f(x)\) 对一切 \(x\) 成立，则称 \(f\) 为<b>周期函�
 
     <h3>二、复合函数</h3>
     <div class="def"><div class="lab"><span class="n">定义 1.7</span>复合函数</div>
-      <p>设 \(y=f(u)\) 的定义域为 \(D_f\)，\(u=g(x)\) 的值域为 \(R_g\).若 \(R_g\cap D_f
-eq\varnothing\)，则把 \(u=g(x)\) 代入 \(y=f(u)\) 得到的</p>
+      <p>设 \(y=f(u)\) 的定义域为 \(D_f\)，\(u=g(x)\) 的值域为 \(R_g\).若 \(R_g\cap D_f\neq\varnothing\)，则把 \(u=g(x)\) 代入 \(y=f(u)\) 得到的</p>
       \[y=f\bigl[g(x)\bigr]\]
       <p>称为由 \(f\) 与 \(g\) 复合而成的<b>复合函数</b>，其中 \(u\) 称为<b>中间变量</b>.</p>
     </div>
@@ -408,8 +374,7 @@ eq\varnothing\)，则把 \(u=g(x)\) 代入 \(y=f(u)\) 得到的</p>
       <p class="stmt">设 \(f(x)=\sqrt{x}\)，\(g(x)=x^2-1\)，求 \(f\circ g\)、\(g\circ f\) 及其定义域.</p>
       <p class="sol"><span class="mk">解</span>\((f\circ g)(x)=f(g(x))=\sqrt{x^2-1}\)，要求 \(x^2-1\ge0\Rightarrow |x|\ge1\)，即定义域 \((-\infty,-1]\cup[1,+\infty)\).</p>
       <p>\((g\circ f)(x)=g(f(x))=(\sqrt{x})^2-1=x-1\)，由 \(f\) 的定义域要求 \(x\ge0\)，故定义域 \([0,+\infty)\).</p>
-      <p class="muted"><b>注意顺序：</b>一般 \(f\circ g
-eq g\circ f\).顺序不同，结果和定义域都不同.</p>
+      <p class="muted"><b>注意顺序：</b>一般 \(f\circ g\neq g\circ f\).顺序不同，结果和定义域都不同.</p>
     </div>
 
     <div class="case"><div class="lab">应用探微 · 神经网络 = 嵌套的复合函数</div>
@@ -638,6 +603,42 @@ eq g\circ f\).顺序不同，结果和定义域都不同.</p>
 <!--MODEND-->
 
 <div class="sec-quiz" data-sec="s012" data-ch="1" data-n="5"></div>
+<h2 id="s013"><span class="num">§1.3</span>反函数与复合函数</h2>
+    
+    <div class="ex"><div class="lab">引例　从"观测"反推"位置"：SLAM 中的反函数</div>
+  <p class="stmt">自动驾驶定位（SLAM）常遇到这样的逆问题：已知激光雷达测得的若干个距离 \(d_i\)，要反推出自身在世界坐标系的位置 \((x,y)\).这恰好是"函数求逆".</p>
+  <p>更直观的例子是<b>逻辑回归的逆变换</b>.模型输出"是猫的概率" \(p=\sigma(z)\)，而分析师常要由 \(p\) 反推"对数几率" \(z\)：</p>
+  \[z=\sigma^{-1}(p)=\ln\frac{p}{1-p}.\]
+  <p><b>具体计算：</b>若模型给出 \(p=0.8\)，则</p>
+  \[z=\ln\frac{0.8}{0.2}=\ln 4=1.3863.\]
+  <p>这个 \(\sigma^{-1}\) 叫 <b>logit 函数</b>，它把概率（有界于 \((0,1)\)）映射回整个实数轴，是逻辑回归与神经网络解释性的桥梁.<b>正函数描述"输入→输出"，反函数描述"结果→原因"，<span class="fluo" data-kind="结论" data-title="正反函数一体两面" data-fid="gdsx1-con-dual">两者一体两面</span>.</b></p>
+</div>
+
+    <h3>一、反函数</h3>
+    <div class="def"><div class="lab"><span class="n">定义 1.6</span>反函数</div>
+      <p>设 \(y=f(x)\) 是 \(D_f\) 到 \(R_f\) 的<b>一一对应</b>（<span class="fluo" data-kind="定理" data-title="反函数存在定理（严格单调⇔可反）" data-fid="gdsx1-thm-inv">严格单调即可保证</span>）.由 \(y=f(x)\) 解出 \(x=\varphi(y)\)，这个以 \(y\) 为自变量、\(x\) 为因变量的函数称为 \(f\) 的<b>反函数</b>，记作 \(x=f^{-1}(y)\).</p>
+      <p>习惯上仍用 \(x\) 表示自变量，故常写作 \(y=f^{-1}(x)\).其定义域为 \(R_f\)，值域为 \(D_f\).</p>
+    </div>
+    <div class="note"><b>存在条件：<span class="fluo" data-kind="结论" data-title="反函数存在条件" data-fid="gdsx1-con-inv">函数必须是一一对应（至少在局部严格单调）</span>.</b>奇函数 \(y=x^3\) 严格单调，反函数存在；偶函数 \(y=x^2\) 在 \(\mathbb{R}\) 上不单调，<b>无整体反函数</b>（但若限定 \(x\ge0\)，则反函数为 \(y=\sqrt{x}\)）.<br>
+      <b>几何意义：</b>\(y=f(x)\) 与 \(y=f^{-1}(x)\) 的图像关于直线 \(y=x\) 对称.</div>
+
+    <div class="ex"><div class="lab">例 1.7</div>
+      <p class="stmt">求 \(f(x)=2x+1\) 的反函数，并验证 \(f^{-1}\bigl(f(x)\bigr)=x\).</p>
+      <p class="sol"><span class="mk">解</span>由 \(y=2x+1\) 解出 \(x=\dfrac{y-1}{2}\)，<span class="fluo" data-kind="例题" data-title="例1.7 求反函数（互换字母法）" data-fid="gdsx1-ex-inv">互换字母得</span> \(f^{-1}(x)=\dfrac{x-1}{2}\).</p>
+      <p>验证：\(f^{-1}\bigl(f(x)\bigr)=f^{-1}(2x+1)=\dfrac{(2x+1)-1}{2}=x\).✓</p>
+    </div>
+    <div class="ex"><div class="lab">例 1.8　Logistic 与 Logit 互逆</div>
+      <p class="stmt">证明 \(\sigma(x)=\dfrac{1}{1+\mathrm{e}^{-x}}\) 与 \(\mathrm{logit}(p)=\ln\dfrac{p}{1-p}\) 互为反函数.</p>
+      <p class="sol"><span class="mk">解</span>令 \(p=\dfrac{1}{1+\mathrm{e}^{-x}}\)，解 \(x\)：</p>
+      \[1+\mathrm{e}^{-x}=\frac{1}{p}\;\Rightarrow\;\mathrm{e}^{-x}=\frac{1-p}{p}\;\Rightarrow\;-x=\ln\frac{1-p}{p}=\ln\frac{p}{1-p}\;\Rightarrow\;x=\ln\frac{p}{1-p}=\mathrm{logit}(p).\]
+      <p>故 \(\sigma^{-1}=\mathrm{logit}\)，互逆成立.</p>
+    </div>
+
+<!--MODBEG-->
+
+
+
+<div class="sec-quiz" data-sec="s013" data-ch="1" data-n="5"></div>
 <h2 id="s014"><span class="num">§1.4</span>初等函数</h2>
     
     <div class="ex"><div class="lab">引例　机械臂的"复制粘贴"：初等函数描述运动</div>
@@ -656,8 +657,7 @@ eq g\circ f\).顺序不同，结果和定义域都不同.</p>
     <table class="dt">
       <tr><th>类别</th><th>代表</th><th>要点</th></tr>
       <tr><td>幂函数</td><td>\(y=x^\mu\)（\(\mu\) 常数）</td><td>\(\mu\) 不同图像迥异</td></tr>
-      <tr><td>指数函数</td><td>\(y=a^x\;(a>0,a
-eq1)\)</td><td>\(y=\mathrm{e}^x\) 最常用；单调</td></tr>
+      <tr><td>指数函数</td><td>\(y=a^x\;(a>0,a\neq1)\)</td><td>\(y=\mathrm{e}^x\) 最常用；单调</td></tr>
       <tr><td>对数函数</td><td>\(y=\log_a x\)</td><td>\(\ln x\) 为自然对数；与指数互逆</td></tr>
       <tr><td>三角函数</td><td>\(\sin x,\cos x,\tan x\)</td><td>周期 \(2\pi\)（\(\tan\) 为 \(\pi\)）</td></tr>
       <tr><td>反三角函数</td><td>\(\arcsin x,\arctan x\) 等</td><td>多值经截段后得主值</td></tr>
@@ -1008,8 +1008,7 @@ eq1)\)</td><td>\(y=\mathrm{e}^x\) 最常用；单调</td></tr>
 </div>
 
 <div class="ky-q">
-<p class="stmt"><b>【题 2】</b>（考研典型题，数学一常考）已知 \(f\!\left(x+\dfrac{1}{x}\right)=x^{2}+\dfrac{1}{x^{2}}\)（\(x
-eq 0\)），求 \(f(t)\) 的表达式及其定义域.</p>
+<p class="stmt"><b>【题 2】</b>（考研典型题，数学一常考）已知 \(f\!\left(x+\dfrac{1}{x}\right)=x^{2}+\dfrac{1}{x^{2}}\)（\(x\neq 0\)），求 \(f(t)\) 的表达式及其定义域.</p>
 <p class="ky-hint"><b>思路点拨.</b> 这是"配凑法"求复合函数外层表达式的典型题.把右端凑成左端整体的函数即可.真正的陷阱在最后一步：<b>换元后新变量的取值范围绝不是全体实数</b>，必须由 \(t=x+\dfrac1x\) 的值域确定，这一步几乎每年都有大量考生遗漏.</p>
 <p class="sol"><span class="mk">解</span> 令 \(t=x+\dfrac1x\)，则
 \[t^{2}=x^{2}+2+\frac{1}{x^{2}}\;\Longrightarrow\; x^{2}+\frac{1}{x^{2}}=t^{2}-2,\]
@@ -1044,8 +1043,7 @@ eq 0\)），求 \(f(t)\) 的表达式及其定义域.</p>
 </div>
 
 <div class="ky-q">
-<p class="stmt"><b>【题 5】</b>（考研典型题，数学一常考）设 \(f(x)\) 在 \((-\infty,+\infty)\) 上有定义，且对一切 \(x\) 满足 \(f(x)
-eq 1\) 及
+<p class="stmt"><b>【题 5】</b>（考研典型题，数学一常考）设 \(f(x)\) 在 \((-\infty,+\infty)\) 上有定义，且对一切 \(x\) 满足 \(f(x)\neq 1\) 及
 \[f(x+1)=\frac{1+f(x)}{1-f(x)}.\]
 证明 \(f(x)\) 是周期函数，并求出它的一个周期.</p>
 <p class="ky-hint"><b>思路点拨.</b> 抽象函数的周期性题，通法是<b>反复迭代递推关系</b>，看几步之后能回到 \(f(x)\).先算 \(f(x+2)\)，会发现出现 \(-\dfrac{1}{f(x)}\) 这种"取负倒数"的结构；再迭代一次负倒数即可还原，于是周期为 4.切忌上来就猜周期是 1 或 2.</p>
@@ -1206,6 +1204,7 @@ eq 1\) 及
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 1, "list": [["s011", "1.1 函数的概念"], ["s012", "1.2 函数的几种特性"], ["s013", "1.3 反函数与复合函数"], ["s014", "1.4 初等函数"], ["adv1", "考研选讲"], ["cq1", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -1233,5 +1232,6 @@ eq 1\) 及
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

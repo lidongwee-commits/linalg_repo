@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第4章 · 一元函数微分学的应用</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第4章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -126,8 +130,7 @@
 \[f'(x_0)=f'_{+}(x_0)=\lim_{x\to x_0^{+}}\frac{f(x)-f(x_0)}{x-x_0}\le 0,\]
 \[f'(x_0)=f'_{-}(x_0)=\lim_{x\to x_0^{-}}\frac{f(x)-f(x_0)}{x-x_0}\ge 0 .\]
 <p><span class="stp">第四步：夹出结论.</span>于是 \(0\le f'(x_0)\le 0\)，故 \(f'(x_0)=0\).</p>
-<p><b>注</b>　\(x_0\) 必须是<b>内点</b>：正因为它两侧都有函数值可比，才能同时得到两个方向的不等式.若换成端点就不成立，例如 \(f(x)=x\) 在 \([0,1]\) 上于 \(x=1\) 取最大值，但 \(f'(1)=1
-eq0\).</p>
+<p><b>注</b>　\(x_0\) 必须是<b>内点</b>：正因为它两侧都有函数值可比，才能同时得到两个方向的不等式.若换成端点就不成立，例如 \(f(x)=x\) 在 \([0,1]\) 上于 \(x=1\) 取最大值，但 \(f'(1)=1\neq0\).</p>
 <p class="qed">证毕</p>
 </div>
 </details>
@@ -163,14 +166,11 @@ eq0\).</p>
 <p><b>几何意义：</b>一条两端等高的连续光滑曲线，中间至少有一处切线是水平的.</p>
 <p class="muted"><b>证</b>　由 \(f\) 在闭区间 \([a,b]\) 上连续，据最值定理，\(f\) 在 \([a,b]\) 上取到最大值 \(M\) 与最小值 \(m\).</p>
 <p class="muted">情形一：\(M=m\).此时 \(f(x)\equiv M\) 为常数，\(f'(x)=0\) 对一切 \(x\in(a,b)\) 成立，任取 \(\xi\) 即可.</p>
-<p class="muted">情形二：\(M\gt m\).由于 \(f(a)=f(b)\)，\(M\) 与 \(m\) 中至少有一个不等于端点值.不妨设 \(M
-eq f(a)\)，则最大值必在<b>内部</b>某点 \(\xi\in(a,b)\) 取到，即 \(f(x)\le f(\xi)\) 对一切 \(x\in[a,b]\) 成立.又 \(f\) 在 \(\xi\) 可导，由费马引理得 \(f'(\xi)=0\).证毕.</p>
+<p class="muted">情形二：\(M\gt m\).由于 \(f(a)=f(b)\)，\(M\) 与 \(m\) 中至少有一个不等于端点值.不妨设 \(M\neq f(a)\)，则最大值必在<b>内部</b>某点 \(\xi\in(a,b)\) 取到，即 \(f(x)\le f(\xi)\) 对一切 \(x\in[a,b]\) 成立.又 \(f\) 在 \(\xi\) 可导，由费马引理得 \(f'(\xi)=0\).证毕.</p>
 <div class="note"><b>三个条件缺一不可（每个都有反例）：</b><br>
-① 缺连续：\(f(x)=\begin{cases}x,&0\le x\lt 1\\ 0,&x=1\end{cases}\)，\(f(0)=f(1)=0\) 但 \(f'\equiv1
-eq0\).<br>
+① 缺连续：\(f(x)=\begin{cases}x,&0\le x\lt 1\\ 0,&x=1\end{cases}\)，\(f(0)=f(1)=0\) 但 \(f'\equiv1\neq0\).<br>
 ② 缺可导：\(f(x)=|x|\) 在 \([-1,1]\)，\(f(-1)=f(1)=1\)，但 \(f'(x)=\pm1\) 处处不为零（\(x=0\) 处不可导）.<br>
-③ 缺端点相等：\(f(x)=x\) 在 \([0,1]\)，\(f'\equiv1
-eq0\).</div>
+③ 缺端点相等：\(f(x)=x\) 在 \([0,1]\)，\(f'\equiv1\neq0\).</div>
 
 <div class="ex"><div class="lab">例 4.1　验证罗尔定理</div>
   <p class="stmt">验证 \(f(x)=x^{2}-2x-3\) 在 \([-1,3]\) 上满足罗尔定理，并求出 \(\xi\).</p>
@@ -183,8 +183,7 @@ eq0\).</div>
   <p class="sol"><span class="mk">证</span><b>（存在性——用零点定理）</b>令 \(f(x)=x^{5}+x-1\)，它在 \([0,1]\) 上连续.因</p>
   \[f(0)=-1\lt 0,\qquad f(1)=1+1-1=1\gt 0,\]
   <p>由零点定理，存在 \(x_0\in(0,1)\) 使 \(f(x_0)=0\)，即方程有根.</p>
-  <p><b>（唯一性——用罗尔定理反证）</b>假设方程在 \((0,1)\) 内还有另一根 \(x_1
-eq x_0\)，不妨设 \(x_0\lt x_1\).则 \(f\) 在 \([x_0,x_1]\) 上连续、\((x_0,x_1)\) 内可导且 \(f(x_0)=f(x_1)=0\)，由罗尔定理存在 \(\xi\in(x_0,x_1)\) 使 \(f'(\xi)=0\).但</p>
+  <p><b>（唯一性——用罗尔定理反证）</b>假设方程在 \((0,1)\) 内还有另一根 \(x_1\neq x_0\)，不妨设 \(x_0\lt x_1\).则 \(f\) 在 \([x_0,x_1]\) 上连续、\((x_0,x_1)\) 内可导且 \(f(x_0)=f(x_1)=0\)，由罗尔定理存在 \(\xi\in(x_0,x_1)\) 使 \(f'(\xi)=0\).但</p>
   \[f'(x)=5x^{4}+1\ge 1\gt 0\quad(\forall x\in\mathbb{R}),\]
   <p>与 \(f'(\xi)=0\) 矛盾.故根唯一.</p>
   <p class="muted"><b>套路总结：</b>"存在唯一"= 零点定理（存在）+ 罗尔定理反证或单调性（唯一）.这是考研证明题最标准的两段式结构.</p>
@@ -196,8 +195,7 @@ eq x_0\)，不妨设 \(x_0\lt x_1\).则 \(f\) 在 \([x_0,x_1]\) 上连续、\((x
   \[\bigl[\mathrm{e}^{x}f(x)\bigr]'=\mathrm{e}^{x}f'(x)+\mathrm{e}^{x}f(x)=\mathrm{e}^{x}\bigl[f'(x)+f(x)\bigr],\]
   <p>故令辅助函数 \(F(x)=\mathrm{e}^{x}f(x)\).它在 \([0,1]\) 上连续、\((0,1)\) 内可导，且</p>
   \[F(0)=\mathrm{e}^{0}f(0)=0,\qquad F(1)=\mathrm{e}\,f(1)=0.\]
-  <p>由罗尔定理，存在 \(\xi\in(0,1)\) 使 \(F'(\xi)=\mathrm{e}^{\xi}\bigl[f'(\xi)+f(\xi)\bigr]=0\).因 \(\mathrm{e}^{\xi}
-eq0\)，故 \(f'(\xi)+f(\xi)=0\).证毕.</p>
+  <p>由罗尔定理，存在 \(\xi\in(0,1)\) 使 \(F'(\xi)=\mathrm{e}^{\xi}\bigl[f'(\xi)+f(\xi)\bigr]=0\).因 \(\mathrm{e}^{\xi}\neq0\)，故 \(f'(\xi)+f(\xi)=0\).证毕.</p>
 </div>
 
 <div class="note"><b>辅助函数构造口诀（背下来能解掉大半证明题）：</b>
@@ -276,8 +274,7 @@ eq0\)，故 \(f'(\xi)+f(\xi)=0\).证毕.</p>
 
 <div class="ex"><div class="lab">例 4.4　用拉格朗日定理证明不等式</div>
   <p class="stmt">证明：对任意实数 \(a,b\)，有 \(\bigl|\arctan a-\arctan b\bigr|\le|a-b|\).</p>
-  <p class="sol"><span class="mk">证</span>若 \(a=b\) 显然成立.设 \(a
-eq b\)，令 \(f(x)=\arctan x\)，它在 \(\mathbb{R}\) 上处处可导，\(f'(x)=\dfrac{1}{1+x^{2}}\).在以 \(a,b\) 为端点的闭区间上用拉格朗日定理，存在 \(\xi\) 介于 \(a,b\) 之间，使</p>
+  <p class="sol"><span class="mk">证</span>若 \(a=b\) 显然成立.设 \(a\neq b\)，令 \(f(x)=\arctan x\)，它在 \(\mathbb{R}\) 上处处可导，\(f'(x)=\dfrac{1}{1+x^{2}}\).在以 \(a,b\) 为端点的闭区间上用拉格朗日定理，存在 \(\xi\) 介于 \(a,b\) 之间，使</p>
   \[\arctan a-\arctan b=\frac{1}{1+\xi^{2}}(a-b).\]
   <p>因 \(0\lt\dfrac{1}{1+\xi^{2}}\le 1\)，取绝对值即得 \(|\arctan a-\arctan b|\le|a-b|\).证毕.</p>
   <p class="muted">这说明 \(\arctan\) 是<b>压缩映射</b>（Lipschitz 常数为 1），在数值迭代与神经网络的稳定性分析中经常用到.</p>
@@ -300,16 +297,13 @@ eq b\)，令 \(f(x)=\arctan x\)，它在 \(\mathbb{R}\) 上处处可导，\(f'(x
 
 <h3>四、柯西中值定理</h3>
 <div class="def"><div class="lab"><span class="n">定理 4.4</span>柯西（Cauchy）中值定理</div>
-  <p>若 \(f(x)\) 与 \(g(x)\) 都在 \([a,b]\) 上连续、在 \((a,b)\) 内可导，且 \(g'(x)
-eq0\) 对一切 \(x\in(a,b)\) 成立，则至少存在一点 \(\xi\in(a,b)\)，使</p>
+  <p>若 \(f(x)\) 与 \(g(x)\) 都在 \([a,b]\) 上连续、在 \((a,b)\) 内可导，且 \(g'(x)\neq0\) 对一切 \(x\in(a,b)\) 成立，则至少存在一点 \(\xi\in(a,b)\)，使</p>
   \[\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi)}{g'(\xi)}.\]
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>在拉格朗日定理（定理 4.3）的证明里，我们构造了"曲线与弦的竖直距离"\(\varphi(x)=f(x)-L(x)\).现在结论的左端把分母 \(b-a\) 换成了 \(g(b)-g(a)\)，这相当于把<b>横坐标从 \(x\) 换成了 \(g(x)\)</b>.于是只需照抄那个辅助函数，把其中的 \(x-a\) 一律换成 \(g(x)-g(a)\)，再对它用罗尔定理.</p>
-<p><span class="stp">第一步：先说明分母不为零.</span>假若 \(g(a)=g(b)\)，则 \(g\) 在 \([a,b]\) 上满足罗尔定理（定理 4.2）的三个条件，于是存在 \(c\in(a,b)\) 使 \(g'(c)=0\)，这与已知 \(g'(x)
-eq0\) 矛盾.故</p>
-\[g(b)-g(a)
-eq0,\]
+<p><span class="stp">第一步：先说明分母不为零.</span>假若 \(g(a)=g(b)\)，则 \(g\) 在 \([a,b]\) 上满足罗尔定理（定理 4.2）的三个条件，于是存在 \(c\in(a,b)\) 使 \(g'(c)=0\)，这与已知 \(g'(x)\neq0\) 矛盾.故</p>
+\[g(b)-g(a)\neq0,\]
 <p>定理中的分式确实有意义.</p>
 <p><span class="stp">第二步：构造辅助函数.</span>令</p>
 \[\varphi(x)=f(x)-f(a)-\frac{f(b)-f(a)}{g(b)-g(a)}\bigl[g(x)-g(a)\bigr].\]
@@ -321,28 +315,24 @@ eq0,\]
 \[\varphi(b)=f(b)-f(a)-\frac{f(b)-f(a)}{g(b)-g(a)}\bigl[g(b)-g(a)\bigr]=0 .\]
 <p><span class="stp">第四步：应用罗尔定理.</span>由定理 4.2，存在 \(\xi\in(a,b)\) 使 \(\varphi'(\xi)=0\)，即</p>
 \[f'(\xi)=\frac{f(b)-f(a)}{g(b)-g(a)}\,g'(\xi).\]
-<p>因 \(g'(\xi)
-eq0\)，两边同除以 \(g'(\xi)\) 即得</p>
+<p>因 \(g'(\xi)\neq0\)，两边同除以 \(g'(\xi)\) 即得</p>
 \[\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi)}{g'(\xi)}.\]
 <p><b>注</b>　取 \(g(x)=x\) 即退化为拉格朗日中值定理.还要特别提醒：<b>不能</b>对 \(f\) 与 \(g\) 分别用一次拉格朗日定理再相除，因为那样得到的两个中值点未必是同一个 \(\xi\)，而本定理的价值恰恰在于"同一个 \(\xi\)".</p>
 <p class="qed">证毕</p>
 </div>
 </details>
 </div>
-<p class="muted"><b>证</b>　先说明分母有意义：若 \(g(b)=g(a)\)，则由罗尔定理存在一点使 \(g'=0\)，与假设矛盾，故 \(g(b)
-eq g(a)\).作辅助函数</p>
+<p class="muted"><b>证</b>　先说明分母有意义：若 \(g(b)=g(a)\)，则由罗尔定理存在一点使 \(g'=0\)，与假设矛盾，故 \(g(b)\neq g(a)\).作辅助函数</p>
 \[\varphi(x)=f(x)-f(a)-\frac{f(b)-f(a)}{g(b)-g(a)}\bigl[g(x)-g(a)\bigr].\]
 <p class="muted">易验 \(\varphi(a)=\varphi(b)=0\)，且 \(\varphi\) 满足罗尔定理条件，故存在 \(\xi\in(a,b)\) 使</p>
 \[\varphi'(\xi)=f'(\xi)-\frac{f(b)-f(a)}{g(b)-g(a)}g'(\xi)=0.\]
-<p class="muted">因 \(g'(\xi)
-eq0\)，两边除以 \(g'(\xi)\) 即得.证毕.</p>
+<p class="muted">因 \(g'(\xi)\neq0\)，两边除以 \(g'(\xi)\) 即得.证毕.</p>
 <div class="note">取 \(g(x)=x\)，柯西定理立即退化为拉格朗日定理；再取 \(f(a)=f(b)\)，又退化为罗尔定理.三者的关系是：<b>罗尔 ⊂ 拉格朗日 ⊂ 柯西</b>，一层比一层宽.柯西定理是下一节洛必达法则的<b>直接理论依据</b>.</div>
 
 <div class="ex"><div class="lab">例 4.6　柯西中值定理的典型用法</div>
   <p class="stmt">设 \(0\lt a\lt b\)，\(f(x)\) 在 \([a,b]\) 上连续、\((a,b)\) 内可导.证明：存在 \(\xi\in(a,b)\)，使</p>
   \[f(b)-f(a)=\xi\ln\frac{b}{a}\,f'(\xi).\]
-  <p class="sol"><span class="mk">证</span>观察结论中出现了 \(\ln\dfrac{b}{a}=\ln b-\ln a\)，提示取 \(g(x)=\ln x\).因 \(0\lt a\lt b\)，\(g\) 在 \([a,b]\) 上连续、\((a,b)\) 内可导，且 \(g'(x)=\dfrac1x
-eq0\).由柯西中值定理，存在 \(\xi\in(a,b)\) 使</p>
+  <p class="sol"><span class="mk">证</span>观察结论中出现了 \(\ln\dfrac{b}{a}=\ln b-\ln a\)，提示取 \(g(x)=\ln x\).因 \(0\lt a\lt b\)，\(g\) 在 \([a,b]\) 上连续、\((a,b)\) 内可导，且 \(g'(x)=\dfrac1x\neq0\).由柯西中值定理，存在 \(\xi\in(a,b)\) 使</p>
   \[\frac{f(b)-f(a)}{\ln b-\ln a}=\frac{f'(\xi)}{1/\xi}=\xi f'(\xi).\]
   <p>两边乘以 \(\ln\dfrac{b}{a}\) 即得结论.证毕.</p>
   <p class="muted"><b>识别技巧：</b>结论中除 \(f\) 外还出现了另一个函数（本题是 \(\ln\)），就把它取作柯西定理中的 \(g\).若出现 \(b^{2}-a^{2}\) 取 \(g=x^{2}\)，出现 \(\mathrm{e}^{b}-\mathrm{e}^{a}\) 取 \(g=\mathrm{e}^{x}\).</p>
@@ -353,8 +343,7 @@ eq0\).由柯西中值定理，存在 \(\xi\in(a,b)\) 使</p>
   \[\xi f'(\xi)+2f(\xi)=0.\]
   <p class="sol"><span class="mk">证</span>把结论中的 \(\xi\) 改写为 \(x\)：要凑出 \(xf'(x)+2f(x)\).由口诀表，取 \(F(x)=x^{2}f(x)\)，则</p>
   \[F'(x)=2xf(x)+x^{2}f'(x)=x\bigl[xf'(x)+2f(x)\bigr].\]
-  <p>\(F\) 在 \([0,1]\) 上连续、\((0,1)\) 内可导，且 \(F(0)=0\)，\(F(1)=1^{2}\cdot f(1)=0\).由罗尔定理，存在 \(\xi\in(0,1)\) 使 \(F'(\xi)=\xi\bigl[\xi f'(\xi)+2f(\xi)\bigr]=0\).因 \(\xi\in(0,1)\) 故 \(\xi
-eq0\)，从而 \(\xi f'(\xi)+2f(\xi)=0\).证毕.</p>
+  <p>\(F\) 在 \([0,1]\) 上连续、\((0,1)\) 内可导，且 \(F(0)=0\)，\(F(1)=1^{2}\cdot f(1)=0\).由罗尔定理，存在 \(\xi\in(0,1)\) 使 \(F'(\xi)=\xi\bigl[\xi f'(\xi)+2f(\xi)\bigr]=0\).因 \(\xi\in(0,1)\) 故 \(\xi\neq0\)，从而 \(\xi f'(\xi)+2f(\xi)=0\).证毕.</p>
 </div>
 
 <div class="ex"><div class="lab">例 4.8　考研经典：双中值点问题</div>
@@ -475,8 +464,7 @@ eq0\)，从而 \(\xi f'(\xi)+2f(\xi)=0\).证毕.</p>
 \[\bar v_r=\frac{r(t_B)-r(t_A)}{t_B-t_A}=\frac{1188.420-1200.000}{10}=-1.1580\ \mathrm{km/s}.\]
 <p>斜距 \(r(t)\) 连续可导，由拉格朗日中值定理，必存在 \(\xi\in(0,10)\) 使 \(r'(\xi)=-1.1580\ \mathrm{km/s}\).而多普勒序列在这 10 秒内从 \(-1.210\) 连续变到 \(-1.090\)，区间 \([-1.210,\,-1.090]\) <b>确实包含</b> \(-1.1580\)，两套设备自洽.</p>
 <p>反例检验：若某次多普勒全程读数落在 \([-1.30,-1.25]\)，而测距给出的平均值仍是 \(-1.158\)，则中值定理被违背，说明<b>必有一路数据有粗差</b>（常见原因是站钟跳秒或大气延迟模型失配）.</p>
-<p><b>工程结论：</b> 「平均变化率必被瞬时变化率取到」是一条不依赖任何模型细节的硬约束，测控软件把它写成实时告警条件：\(\bar v_r
-otin[\min v_{\text{dop}},\max v_{\text{dop}}]\) 即刻置数据无效.一条中值定理，成了轨道确定系统的免费故障检测器.</p>
+<p><b>工程结论：</b> 「平均变化率必被瞬时变化率取到」是一条不依赖任何模型细节的硬约束，测控软件把它写成实时告警条件：\(\bar v_r\notin[\min v_{\text{dop}},\max v_{\text{dop}}]\) 即刻置数据无效.一条中值定理，成了轨道确定系统的免费故障检测器.</p>
 <p class="cn-point">激光说平均径向速度是 \(-1.1580\ \mathrm{km/s}\)，多普勒说区间 \([-1.210,\,-1.090]\) 里一定有这一瞬间——两套独立设备用一条中值定理互相验伪，不放过任何一路「粗差」.中国航天测控网能在全球连续盯住每颗卫星，靠的正是这种用数学硬约束给数据把关的严谨，地面站的每一帧判定都要经得起这条定理的检验.</p>
 </details>
 </div>
@@ -517,8 +505,7 @@ otin[\min v_{\text{dop}},\max v_{\text{dop}}]\) 即刻置数据无效.一条中�
 <div class="def"><div class="lab"><span class="n">定理 4.5</span>洛必达（L'Hospital）法则（\(\tfrac00\) 型）</div>
   <p>设函数 \(f,g\) 满足：<br>
   （i）\(\lim\limits_{x\to a}f(x)=0\)，\(\lim\limits_{x\to a}g(x)=0\)；<br>
-  （ii）在 \(a\) 的某去心邻域内 \(f,g\) 均可导，且 \(g'(x)
-eq0\)；<br>
+  （ii）在 \(a\) 的某去心邻域内 \(f,g\) 均可导，且 \(g'(x)\neq0\)；<br>
   （iii）\(\lim\limits_{x\to a}\dfrac{f'(x)}{g'(x)}\) 存在（或为 \(\infty\)）.<br>
   则</p>
   \[\lim_{x\to a}\frac{f(x)}{g(x)}=\lim_{x\to a}\frac{f'(x)}{g'(x)}.\]
@@ -528,18 +515,11 @@ eq0\)；<br>
 \[\frac{f(x)}{g(x)}=\frac{f(x)-f(a)}{g(x)-g(a)},\]
 <p>右端正是柯西中值定理左端的模样！于是整个比值可以一步换成导数之比，这就是洛必达法则的全部秘密.</p>
 <p><span class="stp">第一步：补充定义.</span>令</p>
-\[F(x)=\begin{cases}f(x),&x
-eq a\\ 0,&x=a\end{cases}\qquad
-G(x)=\begin{cases}g(x),&x
-eq a\\ 0,&x=a\end{cases}\]
-<p>由条件（i），\(\lim\limits_{x\to a}F(x)=0=F(a)\)，故 \(F\) 在 \(a\) 处连续；结合条件（ii）中 \(f\) 在去心邻域内可导（从而连续），\(F\) 在 \(a\) 的某邻域 \(U(a)\) 上连续，在去心邻域内可导且 \(F'=f'\).\(G\) 同理，且 \(G'=g'
-eq0\).</p>
-<p><span class="stp">第二步：说明分母不为零.</span>设 \(x\in U(a),\ x
-eq a\).若 \(G(x)=0\)，则 \(G(x)=G(a)=0\)，由罗尔定理（定理 4.2），在 \(a\) 与 \(x\) 之间存在一点使 \(G'=0\)，与 \(g'
-eq0\) 矛盾.故 \(g(x)=G(x)
-eq0\)，所讨论的比值有意义.</p>
-<p><span class="stp">第三步：施用柯西中值定理.</span>任取 \(x\in U(a),\ x
-eq a\)，在以 \(a\) 与 \(x\) 为端点的闭区间上，\(F,G\) 满足定理 4.4 的全部条件，故存在 \(\xi\) 介于 \(a\) 与 \(x\) 之间，使</p>
+\[F(x)=\begin{cases}f(x),&x\neq a\\ 0,&x=a\end{cases}\qquad
+G(x)=\begin{cases}g(x),&x\neq a\\ 0,&x=a\end{cases}\]
+<p>由条件（i），\(\lim\limits_{x\to a}F(x)=0=F(a)\)，故 \(F\) 在 \(a\) 处连续；结合条件（ii）中 \(f\) 在去心邻域内可导（从而连续），\(F\) 在 \(a\) 的某邻域 \(U(a)\) 上连续，在去心邻域内可导且 \(F'=f'\).\(G\) 同理，且 \(G'=g'\neq0\).</p>
+<p><span class="stp">第二步：说明分母不为零.</span>设 \(x\in U(a),\ x\neq a\).若 \(G(x)=0\)，则 \(G(x)=G(a)=0\)，由罗尔定理（定理 4.2），在 \(a\) 与 \(x\) 之间存在一点使 \(G'=0\)，与 \(g'\neq0\) 矛盾.故 \(g(x)=G(x)\neq0\)，所讨论的比值有意义.</p>
+<p><span class="stp">第三步：施用柯西中值定理.</span>任取 \(x\in U(a),\ x\neq a\)，在以 \(a\) 与 \(x\) 为端点的闭区间上，\(F,G\) 满足定理 4.4 的全部条件，故存在 \(\xi\) 介于 \(a\) 与 \(x\) 之间，使</p>
 \[\frac{f(x)}{g(x)}=\frac{F(x)-F(a)}{G(x)-G(a)}=\frac{F'(\xi)}{G'(\xi)}=\frac{f'(\xi)}{g'(\xi)}.\]
 <p><span class="stp">第四步：令 \(x\to a\).</span>关键的一点是：\(\xi\) 被夹在 \(a\) 与 \(x\) 之间，故 \(0\lt |\xi-a|\lt |x-a|\)，因此 \(x\to a\) 时必有 \(\xi\to a\).记 \(A=\lim\limits_{x\to a}\dfrac{f'(x)}{g'(x)}\).对任给 \(\varepsilon\gt0\)，存在 \(\delta\gt0\)，使当 \(0\lt |t-a|\lt \delta\) 时</p>
 \[\left|\frac{f'(t)}{g'(t)}-A\right|\lt \varepsilon .\]
@@ -569,10 +549,7 @@ eq a\)，在以 \(a\) 与 \(x\) 为端点的闭区间上，\(F,G\) 满足定理 
 <p><span class="stp">第二步：在 \([x,x_0]\) 上用柯西中值定理.</span>对任意 \(x\in(a,x_0)\)，存在 \(\xi\in(x,x_0)\subset(a,x_0)\) 使</p>
 \[\frac{f(x)-f(x_0)}{g(x)-g(x_0)}=\frac{f'(\xi)}{g'(\xi)},\qquad\text{从而}\qquad
 \left|\frac{f(x)-f(x_0)}{g(x)-g(x_0)}-A\right|\lt \frac{\varepsilon}{4}.\]
-<p><span class="stp">第三步：把"差之比"还原成"原式".</span>当 \(x\) 充分接近 \(a\) 时 \(|f(x)|,|g(x)|\) 都很大，特别地 \(f(x)
-eq f(x_0),\ g(x)
-eq g(x_0),\ g(x)
-eq0\).此时有恒等式</p>
+<p><span class="stp">第三步：把"差之比"还原成"原式".</span>当 \(x\) 充分接近 \(a\) 时 \(|f(x)|,|g(x)|\) 都很大，特别地 \(f(x)\neq f(x_0),\ g(x)\neq g(x_0),\ g(x)\neq0\).此时有恒等式</p>
 \[\frac{f(x)}{g(x)}=\frac{f(x)-f(x_0)}{g(x)-g(x_0)}\cdot\lambda(x),\qquad
 \lambda(x)=\frac{1-\dfrac{g(x_0)}{g(x)}}{1-\dfrac{f(x_0)}{f(x)}}.\]
 <p><span class="stp">第四步：让修正因子归一.</span>因 \(f(x)\to\infty,\ g(x)\to\infty\) 而 \(f(x_0),g(x_0)\) 是常数，故 \(\lambda(x)\to1\ (x\to a^{+})\).于是存在 \(\delta\in(0,x_0-a)\)，使当 \(a\lt x\lt a+\delta\) 时</p>
@@ -588,8 +565,7 @@ eq0\).此时有恒等式</p>
 </div>
 <div class="note"><b>用洛必达前必须"三查"：</b><br>
 ① <b>查类型</b>：是否真的是 \(\tfrac00\) 或 \(\tfrac\infty\infty\)？其它类型必须先化归.这是最常见的错误——对 \(\lim\limits_{x\to0}\dfrac{\sin x}{1+x}\)（\(\tfrac00\) 不成立，分母趋于 1）用洛必达会得到错误答案.<br>
-② <b>查可导性</b>：分子分母在去心邻域内可导且 \(g'(x)
-eq0\).<br>
+② <b>查可导性</b>：分子分母在去心邻域内可导且 \(g'(x)\neq0\).<br>
 ③ <b>查结论极限</b>：\(\lim\dfrac{f'}{g'}\) 存在或为 \(\infty\).<b>若它不存在（且非无穷），法则失效，但不能因此断定原极限不存在.</b></div>
 
 <div class="ex"><div class="lab">例 4.9　基础：连用两次洛必达</div>
@@ -850,9 +826,7 @@ eq0\).<br>
 <p>又因 \(P_n\) 是 \(n\) 次多项式，其 \(n+1\) 阶导数为零，故 \(R_n^{(n+1)}(x)=f^{(n+1)}(x)\).</p>
 <p><span class="stp">第三步：找一个"同样平"的比较函数.</span>取 \(Q(x)=(x-x_0)^{n+1}\)，则同样有</p>
 \[Q(x_0)=Q'(x_0)=\cdots=Q^{(n)}(x_0)=0,\qquad Q^{(n+1)}(x)\equiv(n+1)! ,\]
-<p>且当 \(x
-eq x_0\) 时 \(Q^{(k)}(x)
-eq0\ (k=0,1,\dots,n)\)，这保证下面每一次使用柯西中值定理时分母的导数不为零.</p>
+<p>且当 \(x\neq x_0\) 时 \(Q^{(k)}(x)\neq0\ (k=0,1,\dots,n)\)，这保证下面每一次使用柯西中值定理时分母的导数不为零.</p>
 <p><span class="stp">第四步：反复使用柯西中值定理.</span>不妨设 \(x\gt x_0\)（\(x\lt x_0\) 时把区间端点对调即可）.在 \([x_0,x]\) 上对 \(R_n\) 与 \(Q\) 用定理 4.4：</p>
 \[\frac{R_n(x)}{Q(x)}=\frac{R_n(x)-R_n(x_0)}{Q(x)-Q(x_0)}=\frac{R_n'(\xi_1)}{Q'(\xi_1)},\qquad \xi_1\in(x_0,x).\]
 <p>由第二、三步 \(R_n'(x_0)=Q'(x_0)=0\)，故可在 \([x_0,\xi_1]\) 上对 \(R_n'\) 与 \(Q'\) 再用一次：</p>
@@ -1378,8 +1352,7 @@ eq0\ (k=0,1,\dots,n)\)，这保证下面每一次使用柯西中值定理时分�
 
 <h3>二、函数的极值</h3>
 <div class="def"><div class="lab"><span class="n">定义 4.1</span>极值</div>
-  <p>设 \(f(x)\) 在 \(x_0\) 的某邻域内有定义.若对该邻域内一切 \(x
-eq x_0\) 恒有 \(f(x)\lt f(x_0)\)，则称 \(f(x_0)\) 为 \(f\) 的一个<b>极大值</b>，\(x_0\) 为<b>极大值点</b>；若恒有 \(f(x)\gt f(x_0)\)，则称 \(f(x_0)\) 为<b>极小值</b>.极大值与极小值统称<b>极值</b>.</p>
+  <p>设 \(f(x)\) 在 \(x_0\) 的某邻域内有定义.若对该邻域内一切 \(x\neq x_0\) 恒有 \(f(x)\lt f(x_0)\)，则称 \(f(x_0)\) 为 \(f\) 的一个<b>极大值</b>，\(x_0\) 为<b>极大值点</b>；若恒有 \(f(x)\gt f(x_0)\)，则称 \(f(x_0)\) 为<b>极小值</b>.极大值与极小值统称<b>极值</b>.</p>
 </div>
 <div class="note"><b>极值是"局部冠军"，最值是"全局冠军".</b>一个函数可以有很多个极大值，其中某个极大值甚至可能小于另一处的极小值.极值点必在区间<b>内部</b>，端点不能是极值点（但可以是最值点）.</div>
 
@@ -1423,8 +1396,7 @@ eq x_0\) 恒有 \(f(x)\lt f(x_0)\)，则称 \(f(x_0)\) 为 \(f\) 的一个<b>极
 </details>
 </div>
 <div class="def"><div class="lab"><span class="n">定理 4.12</span>极值的第二充分条件（二阶导数法）</div>
-  <p>设 \(f\) 在 \(x_0\) 处二阶可导，且 \(f'(x_0)=0\)，\(f’’(x_0)
-eq0\).则</p>
+  <p>设 \(f\) 在 \(x_0\) 处二阶可导，且 \(f'(x_0)=0\)，\(f’’(x_0)\neq0\).则</p>
   <p>（1）\(f’’(x_0)\lt0\) 时，\(f(x_0)\) 为<b>极大值</b>；</p>
   <p>（2）\(f’’(x_0)\gt0\) 时，\(f(x_0)\) 为<b>极小值</b>.</p>
   <p class="muted"><b>记忆：</b>\(f’’\lt0\) 曲线"向下弯"像倒扣的碗，顶点是极大；\(f’’\gt0\) 曲线"向上弯"像碗，底点是极小.</p>
@@ -1445,8 +1417,7 @@ eq0\).则</p>
 </div>
 </details>
 </div>
-<div class="note"><b>两个充分条件怎么选？</b>第二充分条件计算快，但<b>只适用于驻点</b>且要求 \(f’’(x_0)
-eq0\)；第一充分条件适用面最广（不可导点也能判），但要分析 \(f'\) 的符号.<b>当 \(f’’(x_0)=0\) 时第二条件失效，必须退回第一条件.</b></div>
+<div class="note"><b>两个充分条件怎么选？</b>第二充分条件计算快，但<b>只适用于驻点</b>且要求 \(f’’(x_0)\neq0\)；第一充分条件适用面最广（不可导点也能判），但要分析 \(f'\) 的符号.<b>当 \(f’’(x_0)=0\) 时第二条件失效，必须退回第一条件.</b></div>
 
 <div class="ex"><div class="lab">例 4.28　两种判别法对照</div>
   <p class="stmt">求 \(f(x)=x^{3}-3x\) 的极值.</p>
@@ -1698,8 +1669,7 @@ eq0\)；第一充分条件适用面最广（不可导点也能判），但要分
 
 <h3>一、曲线凹凸性的定义</h3>
 <div class="def"><div class="lab"><span class="n">定义 4.2</span>凹弧与凸弧</div>
-  <p>设 \(f(x)\) 在区间 \(I\) 上连续.若对 \(I\) 上任意两点 \(x_1,x_2\;(x_1
-eq x_2)\) 恒有</p>
+  <p>设 \(f(x)\) 在区间 \(I\) 上连续.若对 \(I\) 上任意两点 \(x_1,x_2\;(x_1\neq x_2)\) 恒有</p>
   \[f\!\left(\frac{x_1+x_2}{2}\right)\lt\frac{f(x_1)+f(x_2)}{2},\]
   <p>则称 \(f\) 在 \(I\) 上的图形是<b>凹的</b>（凹弧，弦在弧的上方）；若恒有</p>
   \[f\!\left(\frac{x_1+x_2}{2}\right)\gt\frac{f(x_1)+f(x_2)}{2},\]
@@ -1842,13 +1812,11 @@ eq x_2)\) 恒有</p>
 </div>
 
 <div class="ex"><div class="lab">例 4.40　用凹凸性证明不等式（幂平均不等式）</div>
-  <p class="stmt">设 \(n\gt1\)，证明：当 \(x\gt0,\ y\gt0,\ x
-eq y\) 时，</p>
+  <p class="stmt">设 \(n\gt1\)，证明：当 \(x\gt0,\ y\gt0,\ x\neq y\) 时，</p>
   \[\frac{x^{n}+y^{n}}{2}\gt\left(\frac{x+y}{2}\right)^{n}.\]
   <p class="sol"><span class="mk">证</span>令 \(f(t)=t^{n}\;(t\gt0)\).则</p>
   \[f’’(t)=n(n-1)t^{n-2}\gt0\quad(t\gt0,\ n\gt1),\]
-  <p>故 \(f\) 在 \((0,+\infty)\) 上的图形是<b>凹</b>的.由凹弧的定义（定义 4.2），对 \(x
-eq y\) 有</p>
+  <p>故 \(f\) 在 \((0,+\infty)\) 上的图形是<b>凹</b>的.由凹弧的定义（定义 4.2），对 \(x\neq y\) 有</p>
   \[f\!\left(\frac{x+y}{2}\right)\lt\frac{f(x)+f(y)}{2},\qquad\text{即}\quad\left(\frac{x+y}{2}\right)^{n}\lt\frac{x^{n}+y^{n}}{2}.\]
   <p>证毕.</p>
   <p><b>数值验证（\(n=2\)）：</b>取 \(x=1,y=3\)，左端 \(\dfrac{1+9}{2}=5\)，右端 \(\left(\dfrac{1+3}{2}\right)^{2}=4\)，确有 \(5\gt4\).取 \(n=3,x=1,y=3\)：左端 \(\dfrac{1+27}{2}=14\)，右端 \(2^{3}=8\).</p>
@@ -2089,8 +2057,7 @@ eq y\) 有</p>
   <p>若曲线上的动点沿曲线无限远离原点时，该点与某条直线 \(L\) 的距离趋于零，则称 \(L\) 为该曲线的<b>渐近线</b>.具体分三类：</p>
   <p><b>（1）水平渐近线：</b>若 \(\lim\limits_{x\to+\infty}f(x)=b\) 或 \(\lim\limits_{x\to-\infty}f(x)=b\)（\(b\) 为常数），则 \(y=b\) 是水平渐近线.</p>
   <p><b>（2）铅直渐近线：</b>若 \(\lim\limits_{x\to x_0^{+}}f(x)=\infty\) 或 \(\lim\limits_{x\to x_0^{-}}f(x)=\infty\)，则 \(x=x_0\) 是铅直渐近线.</p>
-  <p><b>（3）斜渐近线：</b>若存在常数 \(k
-eq0\) 与 \(b\)，使</p>
+  <p><b>（3）斜渐近线：</b>若存在常数 \(k\neq0\) 与 \(b\)，使</p>
   \[k=\lim_{x\to\infty}\frac{f(x)}{x},\qquad b=\lim_{x\to\infty}\bigl[f(x)-kx\bigr]\]
   <p>都存在（且为有限数），则 \(y=kx+b\) 是斜渐近线.</p>
 </div>
@@ -2103,9 +2070,7 @@ eq0\) 与 \(b\)，使</p>
 <div class="ex"><div class="lab">例 4.41　三类渐近线综合求解</div>
   <p class="stmt">求曲线 \(y=\dfrac{x^{3}}{x^{2}+2x-3}\) 的所有渐近线.</p>
   <p class="sol"><span class="mk">解</span>先分解分母：\(x^{2}+2x-3=(x+3)(x-1)\)，故间断点为 \(x=-3\) 与 \(x=1\).</p>
-  <p><b>（1）铅直渐近线.</b>在 \(x=1\) 处分子 \(\to1
-eq0\)、分母 \(\to0\)，故 \(\lim\limits_{x\to1}y=\infty\)；在 \(x=-3\) 处分子 \(\to-27
-eq0\)、分母 \(\to0\)，故 \(\lim\limits_{x\to-3}y=\infty\).所以 <b>\(x=1\) 与 \(x=-3\) 都是铅直渐近线</b>.</p>
+  <p><b>（1）铅直渐近线.</b>在 \(x=1\) 处分子 \(\to1\neq0\)、分母 \(\to0\)，故 \(\lim\limits_{x\to1}y=\infty\)；在 \(x=-3\) 处分子 \(\to-27\neq0\)、分母 \(\to0\)，故 \(\lim\limits_{x\to-3}y=\infty\).所以 <b>\(x=1\) 与 \(x=-3\) 都是铅直渐近线</b>.</p>
   <p><b>（2）水平渐近线.</b>\(\lim\limits_{x\to\infty}\dfrac{x^{3}}{x^{2}+2x-3}=\infty\)（分子次数高），故<b>没有</b>水平渐近线.</p>
   <p><b>（3）斜渐近线.</b></p>
   \[k=\lim_{x\to\infty}\frac{y}{x}=\lim_{x\to\infty}\frac{x^{3}}{x(x^{2}+2x-3)}=\lim_{x\to\infty}\frac{x^{2}}{x^{2}+2x-3}=1,\]
@@ -2116,8 +2081,7 @@ eq0\)、分母 \(\to0\)，故 \(\lim\limits_{x\to-3}y=\infty\).所以 <b>\(x=1\)
 
 <div class="ex"><div class="lab">例 4.42　考研经典：含指数的渐近线</div>
   <p class="stmt">求曲线 \(y=x\,\mathrm{e}^{1/x}\) 的渐近线.</p>
-  <p class="sol"><span class="mk">解</span>定义域为 \(x
-eq0\).</p>
+  <p class="sol"><span class="mk">解</span>定义域为 \(x\neq0\).</p>
   <p><b>（1）铅直渐近线.</b>考察 \(x\to0\) 的两侧（令 \(t=\dfrac1x\)）：</p>
   \[\lim_{x\to0^{+}}x\,\mathrm{e}^{1/x}=\lim_{t\to+\infty}\frac{\mathrm{e}^{t}}{t}=+\infty\quad(\text{由例 4.11}),\]
   \[\lim_{x\to0^{-}}x\,\mathrm{e}^{1/x}=\lim_{t\to-\infty}\frac{\mathrm{e}^{t}}{t}=\frac{0}{-\infty}=0.\]
@@ -2987,8 +2951,7 @@ eq0\).</p>
 \[F(0)=0^{2}\cdot f(0)=0,\qquad F(1)=1^{2}\cdot f(1)=0 .\]
 <p>三条件满足，由罗尔定理，存在 \(\xi\in(0,1)\) 使 \(F'(\xi)=0\).而</p>
 \[F'(x)=2xf(x)+x^{2}f'(x),\]
-<p>故 \(2\xi f(\xi)+\xi^{2}f'(\xi)=0\).因 \(\xi\in(0,1)\) 故 \(\xi
-eq0\)，两边除以 \(\xi^{2}\) 得 \(f'(\xi)+\dfrac{2f(\xi)}{\xi}=0\)，即所证.</p>
+<p>故 \(2\xi f(\xi)+\xi^{2}f'(\xi)=0\).因 \(\xi\in(0,1)\) 故 \(\xi\neq0\)，两边除以 \(\xi^{2}\) 得 \(f'(\xi)+\dfrac{2f(\xi)}{\xi}=0\)，即所证.</p>
 <p class="ky-idea"><b>命题意图.</b> 考查辅助函数的构造能力，这是中值定理证明题的核心技术.记住通用模板：结论形如 \(\xi f'(\xi)+nf(\xi)=0\) 取 \(F=x^{n}f(x)\)；形如 \(f'(\xi)+\lambda f(\xi)=0\) 取 \(F=\mathrm{e}^{\lambda x}f(x)\)（详见 §4.1 的口诀表）.</p>
 </div>
 
@@ -3038,8 +3001,7 @@ eq0\)，两边除以 \(\xi^{2}\) 得 \(f'(\xi)+\dfrac{2f(\xi)}{\xi}=0\)，即所
 <div class="ky-q">
 <p class="stmt"><b>【题 5】</b>（考研典型题，数学一常考）设 \(f(x)\) 在 \([0,1]\) 上二阶可导，\(f(0)=f(1)=0\)，且 \(\min\limits_{x\in[0,1]}f(x)=-1\).证明：存在 \(\xi\in(0,1)\)，使 \(f’’(\xi)\ge 8\).</p>
 <p class="ky-hint"><b>思路点拨.</b> 结论涉及<b>二阶</b>导数与一个<b>不等式</b>，这是「在极值点处做泰勒展开」的标准信号.设最小值在 \(c\) 处取得，由 \(f(0)=f(1)=0\gt-1\) 知 \(c\) 必在<b>内部</b>，故 \(f'(c)=0\)——这一步是全题枢纽，必须写明理由.然后把两个端点 \(x=0\) 与 \(x=1\) 分别在 \(c\) 处展开，得到两个含二阶导的等式，最后按 \(c\) 与 \(\dfrac12\) 的大小分类取用.<b>陷阱</b>：只展开一个端点是做不出来的，因为 \(c\) 可能靠左也可能靠右.</p>
-<p class="sol"><span class="mk">解</span> 因 \(f\) 在闭区间 \([0,1]\) 上连续，最小值必可取到，设在 \(c\) 处取得，即 \(f(c)=-1\).由 \(f(0)=f(1)=0
-eq-1\) 知 \(c\in(0,1)\) 为<b>内点</b>，又 \(f\) 可导，由费马引理得 \(f'(c)=0\).</p>
+<p class="sol"><span class="mk">解</span> 因 \(f\) 在闭区间 \([0,1]\) 上连续，最小值必可取到，设在 \(c\) 处取得，即 \(f(c)=-1\).由 \(f(0)=f(1)=0\neq-1\) 知 \(c\in(0,1)\) 为<b>内点</b>，又 \(f\) 可导，由费马引理得 \(f'(c)=0\).</p>
 <p>把 \(f\) 在 \(c\) 处作带拉格朗日余项的一阶泰勒展开.对 \(x=0\)，存在 \(\eta_{1}\) 介于 \(0\) 与 \(c\) 之间，使</p>
 \[0=f(0)=f(c)+f'(c)(0-c)+\frac{f’’(\eta_{1})}{2}c^{2}=-1+\frac{f’’(\eta_{1})}{2}c^{2}
 \ \Longrightarrow\ f’’(\eta_{1})=\frac{2}{c^{2}} .\]
@@ -3134,6 +3096,7 @@ eq-1\) 知 \(c\in(0,1)\) 为<b>内点</b>，又 \(f\) 可导，由费马引理�
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 4, "list": [["s041", "4.1 微分中值定理"], ["s042", "4.2 洛必达法则"], ["s043", "4.3 泰勒中值定理"], ["s044", "4.4 函数的单调性与极值"], ["s045", "4.5 曲线的凹凸性与拐点"], ["s046", "4.6 函数图形的描绘"], ["s047", "4.7 导数在不等式证明中的应用"], ["s048", "4.8 相关变化率"], ["adv4", "考研选讲"], ["cq4", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -3161,5 +3124,6 @@ eq-1\) 知 \(c\in(0,1)\) 为<b>内点</b>，又 \(f\) 可导，由费马引理�
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第9章 · 多元函数微分学</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第9章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -152,17 +156,14 @@
 </div>
 
 <div class="ex"><div class="lab">例 9.4　由复合关系反求函数</div>
-  <p class="stmt">已知 \(f(x+y,\;x-y)=x^2-y^2+\dfrac{x-y}{x+y}\)（\(x+y
-eq0\)），求 \(f(u,v)\).</p>
+  <p class="stmt">已知 \(f(x+y,\;x-y)=x^2-y^2+\dfrac{x-y}{x+y}\)（\(x+y\neq0\)），求 \(f(u,v)\).</p>
   <p class="sol"><span class="mk">解</span>令 \(u=x+y,\;v=x-y\).注意 \(x^2-y^2=(x+y)(x-y)=uv\)，且 \(\dfrac{x-y}{x+y}=\dfrac{v}{u}\)，于是</p>
-  \[f(u,v)=uv+\frac{v}{u}\quad(u
-eq0).\]
+  \[f(u,v)=uv+\frac{v}{u}\quad(u\neq0).\]
   <p class="muted">技巧：不必解出 \(x,y\)，只要把右端<b>整体凑成 \(x+y\) 与 \(x-y\) 的式子</b>即可，这是这类题的通法.</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.5　齐次性验证</div>
-  <p class="stmt">设 \(f(x,y)=x^2+y^2-xy\tan\dfrac{x}{y}\)，证明 \(f(tx,ty)=t^2f(x,y)\)（\(t
-eq0\)）.</p>
+  <p class="stmt">设 \(f(x,y)=x^2+y^2-xy\tan\dfrac{x}{y}\)，证明 \(f(tx,ty)=t^2f(x,y)\)（\(t\neq0\)）.</p>
   <p class="sol"><span class="mk">证</span>直接代入：</p>
   \[f(tx,ty)=(tx)^2+(ty)^2-(tx)(ty)\tan\frac{tx}{ty}=t^2x^2+t^2y^2-t^2xy\tan\frac{x}{y}=t^2f(x,y).\]
   <p>满足这种关系的函数称为 <b>2 次齐次函数</b>.深度学习中的 ReLU 网络（无偏置时）对输入是 1 次齐次的，这一性质直接影响网络的尺度不变性分析.</p>
@@ -275,8 +276,7 @@ eq0\)）.</p>
 \[T(x,y)=85-5(x^2+y^2)\ \bigl(^\circ\mathrm{C}\bigr),\qquad x,y\ \text{单位}\ \mathrm{cm}.\]
 <p>散热工程师要回答两个问题：最热点在哪？边缘到中心的温差有多大？</p>
 <table class="dt">
-<tr><th>位置 \((x,y)/\mathrm{cm}\)</th><th>\(x^2+y^2\)</th><th>\(T/^\circ\mathrm{C}\)</th><th>\(
-abla T=(-10x,-10y)/^\circ\mathrm{C\cdot cm^{-1}}\)</th></tr>
+<tr><th>位置 \((x,y)/\mathrm{cm}\)</th><th>\(x^2+y^2\)</th><th>\(T/^\circ\mathrm{C}\)</th><th>\(\nabla T=(-10x,-10y)/^\circ\mathrm{C\cdot cm^{-1}}\)</th></tr>
 <tr><td>\((0,0)\)</td><td>0</td><td>85.0</td><td>\((0,0)\)</td></tr>
 <tr><td>\((0.5,0.5)\)</td><td>0.50</td><td>82.5</td><td>\((-5,-5)\)</td></tr>
 <tr><td>\((1,0)\)</td><td>1.00</td><td>80.0</td><td>\((-10,0)\)</td></tr>
@@ -374,8 +374,7 @@ abla T=(-10x,-10y)/^\circ\mathrm{C\cdot cm^{-1}}\)</th></tr>
 
 <div class="ex"><div class="lab">引例二　弱信号下的融合失稳：极限可能根本不存在</div>
   <p class="stmt">两路传感器读数为 \(x,y\)，某融合算法输出归一化互相关</p>
-  \[f(x,y)=\frac{xy}{x^2+y^2},\qquad (x,y)
-eq(0,0).\]
+  \[f(x,y)=\frac{xy}{x^2+y^2},\qquad (x,y)\neq(0,0).\]
   <p>当两路信号同时衰减到极弱（\((x,y)\to(0,0)\)）时，输出会稳定到某个值吗？</p>
   <p class="sol"><span class="mk">解</span>让读数沿直线 \(y=kx\) 一起趋于零，代入得</p>
   \[f(x,kx)=\frac{x\cdot kx}{x^2+k^2x^2}=\frac{k}{1+k^2}\quad(\text{与 }x\text{ 无关}).\]
@@ -405,8 +404,7 @@ eq(0,0).\]
 \[0\lt |PP_0|\lt \delta,\]
 <p>就有 \(|f(P)-A|\lt \varepsilon\).注意这里对 \(P\) 的位置<b>没有任何附加限制</b>，因此该不等式对落在<b>任何一条</b>路径上的 \(P\) 都成立.</p>
 <p><span class="stp">第二步：把定义限制到路径上.</span>设 \(P\) 沿路径 \(C_1\) 趋于 \(P_0\) 时 \(f(P)\to A_1\).取 \(C_1\) 上满足 \(0\lt |PP_0|\lt \delta\) 的点，由第一步得 \(|f(P)-A|\lt \varepsilon\)；令 \(P\to P_0\)（沿 \(C_1\)）取极限，得 \(|A_1-A|\le \varepsilon\).由 \(\varepsilon\gt 0\) 的任意性，\(A_1=A\).同理沿 \(C_2\) 可得 \(A_2=A\).</p>
-<p><span class="stp">第三步：导出矛盾.</span>于是 \(A_1=A=A_2\)，与已知 \(A_1
-eq A_2\) 矛盾.故假设不成立，二重极限 \(\lim\limits_{P\to P_0}f(P)\) 不存在.</p>
+<p><span class="stp">第三步：导出矛盾.</span>于是 \(A_1=A=A_2\)，与已知 \(A_1\neq A_2\) 矛盾.故假设不成立，二重极限 \(\lim\limits_{P\to P_0}f(P)\) 不存在.</p>
 <p><span class="stp">第四步：另一种情形.</span>若沿某条路径 \(C\) 的极限<b>不存在</b>，同样反设二重极限为 \(A\).由第二步的论证，限制在 \(C\) 上仍有：当 \(0\lt |PP_0|\lt \delta\) 时 \(|f(P)-A|\lt \varepsilon\)，这恰说明 \(P\) 沿 \(C\) 趋于 \(P_0\) 时 \(f(P)\to A\)，即沿 \(C\) 的极限存在，与假设矛盾.</p>
 <p class="qed">证毕</p>
 </div>
@@ -416,8 +414,7 @@ eq A_2\) 矛盾.故假设不成立，二重极限 \(\lim\limits_{P\to P_0}f(P)\)
 
 <div class="ex"><div class="lab">例 9.7　用定义证明极限（夹逼思想）</div>
   <p class="stmt">证明 \(\lim\limits_{(x,y)\to(0,0)}\dfrac{x^2y}{x^2+y^2}=0\).</p>
-  <p class="sol"><span class="mk">证</span>由 \(x^2\le x^2+y^2\) 得 \(\dfrac{x^2}{x^2+y^2}\le1\)，故当 \((x,y)
-eq(0,0)\) 时</p>
+  <p class="sol"><span class="mk">证</span>由 \(x^2\le x^2+y^2\) 得 \(\dfrac{x^2}{x^2+y^2}\le1\)，故当 \((x,y)\neq(0,0)\) 时</p>
   \[\left|\frac{x^2y}{x^2+y^2}-0\right|=\frac{x^2}{x^2+y^2}\,|y|\le|y|\le\sqrt{x^2+y^2}=\rho.\]
   <p>任给 \(\varepsilon\gt0\)，取 \(\delta=\varepsilon\).当 \(0\lt\rho\lt\delta\) 时便有 \(\left|\dfrac{x^2y}{x^2+y^2}\right|\le\rho\lt\varepsilon\)，故极限为 \(0\).</p>
   <p class="muted"><b>另解（极坐标法）：</b>令 \(x=\rho\cos\theta,\,y=\rho\sin\theta\)，原式 \(=\rho\cos^2\theta\sin\theta\)，其绝对值 \(\le\rho\to0\)，且<b>与 \(\theta\) 无关</b>地趋于 0，故极限为 0.极坐标法能把"任意方式趋近"化为"\(\rho\to0\) 且对 \(\theta\) 一致"，是最好用的判别工具.</p>
@@ -425,29 +422,24 @@ eq(0,0)\) 时</p>
 
 <div class="ex"><div class="lab">例 9.8　用路径法证明极限不存在（基础）</div>
   <p class="stmt">证明 \(\lim\limits_{(x,y)\to(0,0)}\dfrac{xy}{x^2+y^2}\) 不存在.</p>
-  <p class="sol"><span class="mk">证</span>沿 \(x\) 轴（\(y=0\)）趋近：\(f(x,0)=0\to0\).沿 \(y=x\) 趋近：\(f(x,x)=\dfrac{x^2}{2x^2}=\dfrac12\to\dfrac12\).两个极限 \(0
-eq\dfrac12\)，由定理 9.1 知二重极限不存在.</p>
+  <p class="sol"><span class="mk">证</span>沿 \(x\) 轴（\(y=0\)）趋近：\(f(x,0)=0\to0\).沿 \(y=x\) 趋近：\(f(x,x)=\dfrac{x^2}{2x^2}=\dfrac12\to\dfrac12\).两个极限 \(0\neq\dfrac12\)，由定理 9.1 知二重极限不存在.</p>
   <p class="muted">用极坐标看更清楚：\(f=\dfrac{\rho^2\cos\theta\sin\theta}{\rho^2}=\dfrac12\sin2\theta\)，<b>与 \(\rho\) 无关而只依赖方向角 \(\theta\)</b>，故 \(\rho\to0\) 时不趋于唯一值.这正好解释了引例二中融合输出的抖动范围是 \(\left[-\dfrac12,\dfrac12\right]\).</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.9　沿一切直线极限存在也不够（考研经典）</div>
-  <p class="stmt">设 \(f(x,y)=\dfrac{x^2y}{x^4+y^2}\)（\((x,y)
-eq(0,0)\)）.证明：\(f\) 沿任何过原点的直线趋于原点时极限都是 \(0\)，但 \(\lim\limits_{(x,y)\to(0,0)}f(x,y)\) 不存在.</p>
-  <p class="sol"><span class="mk">证</span>(1) 沿 \(y=kx\)（\(k
-eq0\)）：</p>
+  <p class="stmt">设 \(f(x,y)=\dfrac{x^2y}{x^4+y^2}\)（\((x,y)\neq(0,0)\)）.证明：\(f\) 沿任何过原点的直线趋于原点时极限都是 \(0\)，但 \(\lim\limits_{(x,y)\to(0,0)}f(x,y)\) 不存在.</p>
+  <p class="sol"><span class="mk">证</span>(1) 沿 \(y=kx\)（\(k\neq0\)）：</p>
   \[f(x,kx)=\frac{kx^3}{x^4+k^2x^2}=\frac{kx}{x^2+k^2}\xrightarrow{\;x\to0\;}\frac{0}{k^2}=0.\]
   <p>沿 \(y=0\)：\(f(x,0)=0\to0\)；沿 \(x=0\)：\(f(0,y)=0\to0\).故沿一切直线极限均为 \(0\).</p>
   <p>(2) 但沿<b>抛物线</b> \(y=x^2\)：</p>
-  \[f(x,x^2)=\frac{x^2\cdot x^2}{x^4+x^4}=\frac12\xrightarrow{\;x\to0\;}\frac12
-eq0.\]
+  \[f(x,x^2)=\frac{x^2\cdot x^2}{x^4+x^4}=\frac12\xrightarrow{\;x\to0\;}\frac12\neq0.\]
   <p>两者不等，故二重极限不存在.</p>
   <p class="muted"><b>本题的警示：</b>"沿所有直线极限相同"<b>绝不能</b>推出二重极限存在.判别时若直线路径给出同一值，必须再试抛物线等曲线路径，或改用极坐标/夹逼从正面证明.</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.10　二重极限的计算</div>
   <p class="stmt">求下列极限：(1) \(\lim\limits_{(x,y)\to(0,2)}\dfrac{\sin(xy)}{x}\)；(2) \(\lim\limits_{(x,y)\to(0,0)}\dfrac{\sqrt{xy+1}-1}{xy}\)；(3) \(\lim\limits_{(x,y)\to(0,0)}\bigl(x^2+y^2\bigr)\sin\dfrac{1}{x^2+y^2}\).</p>
-  <p class="sol"><span class="mk">解</span>(1) 当 \(y\to2
-eq0\) 时 \(xy\to0\)，利用一元等价无穷小 \(\sin t\sim t\)：</p>
+  <p class="sol"><span class="mk">解</span>(1) 当 \(y\to2\neq0\) 时 \(xy\to0\)，利用一元等价无穷小 \(\sin t\sim t\)：</p>
   \[\frac{\sin(xy)}{x}=y\cdot\frac{\sin(xy)}{xy}\longrightarrow 2\times1=2.\]
   <p>(2) 令 \(t=xy\to0\)，则原式 \(=\lim\limits_{t\to0}\dfrac{\sqrt{1+t}-1}{t}=\lim\limits_{t\to0}\dfrac{\frac12 t}{t}=\dfrac12\).</p>
   <p>(3) 记 \(\rho^2=x^2+y^2\).因 \(\left|\sin\dfrac{1}{\rho^2}\right|\le1\)，故 \(\left|\rho^2\sin\dfrac{1}{\rho^2}\right|\le\rho^2\to0\)，由夹逼准则极限为 \(0\).这是"无穷小乘有界量仍为无穷小"的二元版本.</p>
@@ -464,21 +456,16 @@ eq0\) 时 \(xy\to0\)，利用一元等价无穷小 \(\sin t\sim t\)：</p>
 
 <div class="ex"><div class="lab">例 9.11　二次极限不等 ⟹ 二重极限不存在</div>
   <p class="stmt">设 \(f(x,y)=\dfrac{x-y}{x+y}\)，讨论 \((x,y)\to(0,0)\) 时的两个二次极限与二重极限.</p>
-  <p class="sol"><span class="mk">解</span>先固定 \(x
-eq0\) 令 \(y\to0\)，得 \(\dfrac{x}{x}=1\)，再令 \(x\to0\) 得第一个二次极限 \(=1\).</p>
-  <p>先固定 \(y
-eq0\) 令 \(x\to0\)，得 \(\dfrac{-y}{y}=-1\)，再令 \(y\to0\) 得第二个二次极限 \(=-1\).</p>
-  <p>两者 \(1
-eq-1\)，故二重极限<b>不存在</b>（也可直接沿 \(y=0\) 得 1、沿 \(x=0\) 得 \(-1\)）.</p>
+  <p class="sol"><span class="mk">解</span>先固定 \(x\neq0\) 令 \(y\to0\)，得 \(\dfrac{x}{x}=1\)，再令 \(x\to0\) 得第一个二次极限 \(=1\).</p>
+  <p>先固定 \(y\neq0\) 令 \(x\to0\)，得 \(\dfrac{-y}{y}=-1\)，再令 \(y\to0\) 得第二个二次极限 \(=-1\).</p>
+  <p>两者 \(1\neq-1\)，故二重极限<b>不存在</b>（也可直接沿 \(y=0\) 得 1、沿 \(x=0\) 得 \(-1\)）.</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.12　二重极限存在但二次极限不存在</div>
-  <p class="stmt">设 \(f(x,y)=x\sin\dfrac1y+y\sin\dfrac1x\)（\(xy
-eq0\)）.证明 \(\lim\limits_{(x,y)\to(0,0)}f=0\)，但两个二次极限都不存在.</p>
+  <p class="stmt">设 \(f(x,y)=x\sin\dfrac1y+y\sin\dfrac1x\)（\(xy\neq0\)）.证明 \(\lim\limits_{(x,y)\to(0,0)}f=0\)，但两个二次极限都不存在.</p>
   <p class="sol"><span class="mk">证</span>由 \(\left|\sin\dfrac1y\right|\le1,\left|\sin\dfrac1x\right|\le1\) 得</p>
   \[|f(x,y)|\le|x|+|y|\le2\rho\longrightarrow0,\]
-  <p>故二重极限为 \(0\).但固定 \(x
-eq0\) 让 \(y\to0\) 时，\(x\sin\dfrac1y\) 随 \(y\) 剧烈振荡，\(\lim\limits_{y\to0}f(x,y)\) <b>不存在</b>，从而第一个二次极限无从谈起；由对称性另一个也不存在.</p>
+  <p>故二重极限为 \(0\).但固定 \(x\neq0\) 让 \(y\to0\) 时，\(x\sin\dfrac1y\) 随 \(y\) 剧烈振荡，\(\lim\limits_{y\to0}f(x,y)\) <b>不存在</b>，从而第一个二次极限无从谈起；由对称性另一个也不存在.</p>
   <p class="muted">此例说明：二重极限存在<b>不保证</b>可以"先后取极限".工程中"先固定一路信号再让另一路趋零"的分析方式，未必反映真实的联合趋零行为.</p>
 </div>
 
@@ -494,18 +481,15 @@ eq0\) 让 \(y\to0\) 时，\(x\sin\dfrac1y\) 随 \(y\) 剧烈振荡，\(\lim\limi
 
 <div class="ex"><div class="lab">例 9.13　分段函数的连续性判定</div>
   <p class="stmt">讨论函数</p>
-  \[f(x,y)=\begin{cases}\dfrac{x^2y}{x^2+y^2},&(x,y)
-eq(0,0),\\[6pt] 0,&(x,y)=(0,0)\end{cases}\]
+  \[f(x,y)=\begin{cases}\dfrac{x^2y}{x^2+y^2},&(x,y)\neq(0,0),\\[6pt] 0,&(x,y)=(0,0)\end{cases}\]
   <p class="stmt">在原点的连续性；并讨论把第二行改为 \(1\) 后的情形.</p>
   <p class="sol"><span class="mk">解</span>由例 9.7 已证 \(\lim\limits_{(x,y)\to(0,0)}\dfrac{x^2y}{x^2+y^2}=0=f(0,0)\)，故 \(f\) 在原点<b>连续</b>；在其余点它是初等函数，也连续.所以 \(f\) 在 \(\mathbb{R}^2\) 上处处连续.</p>
-  <p>若改定义 \(f(0,0)=1\)，则极限 \(0
-eq1=f(0,0)\)，原点成为<b>可去间断点</b>（改回 0 即可补救）.</p>
+  <p>若改定义 \(f(0,0)=1\)，则极限 \(0\neq1=f(0,0)\)，原点成为<b>可去间断点</b>（改回 0 即可补救）.</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.14　利用连续性求极限</div>
   <p class="stmt">求 \(\lim\limits_{(x,y)\to(1,2)}\dfrac{\ln(x+\mathrm{e}^{y})}{\sqrt{x^2+y^2}}\).</p>
-  <p class="sol"><span class="mk">解</span>被积表达式是初等函数，点 \((1,2)\) 在其定义区域内部（分母 \(\sqrt5
-eq0\)，真数 \(1+\mathrm{e}^2\gt0\)），故连续，直接代入：</p>
+  <p class="sol"><span class="mk">解</span>被积表达式是初等函数，点 \((1,2)\) 在其定义区域内部（分母 \(\sqrt5\neq0\)，真数 \(1+\mathrm{e}^2\gt0\)），故连续，直接代入：</p>
   \[\text{原式}=\frac{\ln(1+\mathrm{e}^{2})}{\sqrt{1+4}}=\frac{\ln(1+7.3891)}{2.2361}=\frac{2.1269}{2.2361}=0.9512.\]
 </div>
 
@@ -678,15 +662,13 @@ eq0\)，真数 \(1+\mathrm{e}^2\gt0\)），故连续，直接代入：</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.17　用定义求分段函数的偏导数</div>
-  <p class="stmt">设 \(f(x,y)=\begin{cases}\dfrac{xy}{x^2+y^2},&(x,y)
-eq(0,0),\\[6pt]0,&(x,y)=(0,0),\end{cases}\) 求 \(f_x(0,0),\,f_y(0,0)\).</p>
+  <p class="stmt">设 \(f(x,y)=\begin{cases}\dfrac{xy}{x^2+y^2},&(x,y)\neq(0,0),\\[6pt]0,&(x,y)=(0,0),\end{cases}\) 求 \(f_x(0,0),\,f_y(0,0)\).</p>
   <p class="sol"><span class="mk">解</span>分段点必须回到定义：</p>
   \[f_x(0,0)=\lim_{\Delta x\to0}\frac{f(\Delta x,0)-f(0,0)}{\Delta x}=\lim_{\Delta x\to0}\frac{0-0}{\Delta x}=0.\]
   <p>由 \(x,y\) 的对称性同样得 \(f_y(0,0)=0\).<b>两个偏导数都存在且为零.</b></p>
 </div>
 
-<div class="note"><b>重要结论：偏导数存在 \(\;
-ot\Rightarrow\;\) 函数连续！</b><br>
+<div class="note"><b>重要结论：偏导数存在 \(\;\not\Rightarrow\;\) 函数连续！</b><br>
 例 9.17 的 \(f\) 在原点两个偏导数都存在，但由例 9.8 知 \(\lim\limits_{(x,y)\to(0,0)}f\) <b>不存在</b>，故 \(f\) 在原点<b>不连续</b>.<br>
 <b>为什么？</b>偏导数只考察沿 \(x\) 轴、\(y\) 轴<b>两条特殊直线</b>的变化率，而连续性要求<b>一切方向、一切路径</b>都规矩."两条路上一切正常"完全允许"其余方向上兵荒马乱".这与一元函数"可导必连续"形成鲜明对比，是本章第一个必须扭转的直觉.</div>
 
@@ -720,9 +702,7 @@ ot\Rightarrow\;\) 函数连续！</b><br>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>\(f_{xy}\) 是"先对 \(x\) 后对 \(y\)"，\(f_{yx}\) 是"先对 \(y\) 后对 \(x\)".要把两者联系起来，就得找一个<b>对 \(x\)、对 \(y\) 地位完全对称</b>的量.这个量就是二阶差商——把它用<b>两种不同的拆法</b>各算一遍，每次用两回拉格朗日中值定理，最后让增量趋于零，由连续性两边就撞到同一点上.</p>
-<p><span class="stp">第一步：构造对称的二阶差商.</span>任取 \(P_0(x_0,y_0)\in D\)，取 \(h,k\) 充分小使矩形 \([x_0,x_0+h]\times[y_0,y_0+k]\) 含于 \(D\) 内（不妨设 \(h
-eq 0,\ k
-eq 0\)）.令</p>
+<p><span class="stp">第一步：构造对称的二阶差商.</span>任取 \(P_0(x_0,y_0)\in D\)，取 \(h,k\) 充分小使矩形 \([x_0,x_0+h]\times[y_0,y_0+k]\) 含于 \(D\) 内（不妨设 \(h\neq 0,\ k\neq 0\)）.令</p>
 \[\Delta=f(x_0+h,y_0+k)-f(x_0+h,y_0)-f(x_0,y_0+k)+f(x_0,y_0).\]
 <p>它关于 \((h,x)\) 与 \((k,y)\) 的地位是<b>对称</b>的，这正是全部巧思所在.</p>
 <p><span class="stp">第二步：第一种拆法（先 \(x\) 后 \(y\)）.</span>令</p>
@@ -735,8 +715,7 @@ eq 0\)）.令</p>
 \[\chi(y)=f(x_0+h,y)-f(x_0,y),\]
 <p>则 \(\Delta=\chi(y_0+k)-\chi(y_0)\).同样连用两次拉格朗日中值定理（先对 \(y\)，用到 \(f_y\) 存在；再对 \(x\)，用到 \(f_{yx}=(f_y)_x\) 存在），得存在 \(\bar\xi\) 介于 \(x_0\) 与 \(x_0+h\) 之间、\(\bar\eta\) 介于 \(y_0\) 与 \(y_0+k\) 之间，使</p>
 \[\Delta=k\,h\,f_{yx}(\bar\xi,\bar\eta).\]
-<p><span class="stp">第四步：比较并取极限.</span>两式左端是同一个 \(\Delta\)，又 \(hk
-eq 0\)，故</p>
+<p><span class="stp">第四步：比较并取极限.</span>两式左端是同一个 \(\Delta\)，又 \(hk\neq 0\)，故</p>
 \[f_{xy}(\xi,\eta)=f_{yx}(\bar\xi,\bar\eta).\]
 <p>令 \((h,k)\to(0,0)\).由于 \(\xi,\bar\xi\) 都夹在 \(x_0\) 与 \(x_0+h\) 之间、\(\eta,\bar\eta\) 都夹在 \(y_0\) 与 \(y_0+k\) 之间，故两个中值点都趋于 \(P_0\).再由 \(f_{xy}\) 与 \(f_{yx}\) 在 \(D\) 内<b>连续</b>，可对上式两端取极限，得</p>
 \[f_{xy}(x_0,y_0)=f_{yx}(x_0,y_0),\qquad\text{即}\qquad \frac{\partial^2 z}{\partial x\,\partial y}\bigg|_{P_0}=\frac{\partial^2 z}{\partial y\,\partial x}\bigg|_{P_0}.\]
@@ -746,8 +725,7 @@ eq 0\)，故</p>
 </details>
 </div>
 <div class="note"><b>反例（条件不可去）：</b>设
-\[f(x,y)=\begin{cases}\dfrac{xy(x^2-y^2)}{x^2+y^2},&(x,y)
-eq(0,0),\\[6pt]0,&(x,y)=(0,0),\end{cases}\]
+\[f(x,y)=\begin{cases}\dfrac{xy(x^2-y^2)}{x^2+y^2},&(x,y)\neq(0,0),\\[6pt]0,&(x,y)=(0,0),\end{cases}\]
 可算得 \(f_{xy}(0,0)=-1\) 而 \(f_{yx}(0,0)=1\)，二者<b>不相等</b>——原因正是 \(f_{xy}\) 在原点不连续.所幸<b>初等函数在其定义区域内各阶偏导数都连续</b>，所以做题时可放心交换次序.</div>
 
 <div class="ex"><div class="lab">例 9.19　求二阶偏导数并验证混合相等</div>
@@ -824,8 +802,7 @@ eq(0,0),\\[6pt]0,&(x,y)=(0,0),\end{cases}\]
 \[\frac{\partial L}{\partial w_1}=2\bigl[2(w_1-2)+(w_2-1)\bigr]=2(2a+b),\qquad
   \frac{\partial L}{\partial w_2}=2\bigl[(w_1-2)+2(w_2-1)\bigr]=2(a+2b).\]
 <table class="dt">
-<tr><th>\((w_1,w_2)\)</th><th>\((a,b)\)</th><th>\(\partial L/\partial w_1\)</th><th>\(\partial L/\partial w_2\)</th><th>\(|
-abla L|\)</th></tr>
+<tr><th>\((w_1,w_2)\)</th><th>\((a,b)\)</th><th>\(\partial L/\partial w_1\)</th><th>\(\partial L/\partial w_2\)</th><th>\(|\nabla L|\)</th></tr>
 <tr><td>\((3,2)\)</td><td>\((1,1)\)</td><td>\(2(2+1)=6\)</td><td>\(2(1+2)=6\)</td><td>8.49</td></tr>
 <tr><td>\((1,0.5)\)</td><td>\((-1,-0.5)\)</td><td>\(2(-2-0.5)=-5\)</td><td>\(2(-1-1)=-4\)</td><td>6.40</td></tr>
 <tr><td>\((2.2,1.1)\)</td><td>\((0.2,0.1)\)</td><td>\(2(0.4+0.1)=1\)</td><td>\(2(0.2+0.2)=0.8\)</td><td>1.28</td></tr>
@@ -972,14 +949,12 @@ abla L|\)</th></tr>
 <p><span class="stp">第一步：证连续.</span>令 \(\rho\to 0\)（即 \(\Delta x\to0,\ \Delta y\to0\)）.右端三项：\(A\Delta x\to0\)，\(B\Delta y\to0\)，\(o(\rho)\to0\).故 \(\Delta z\to0\)，即</p>
 \[\lim\limits_{(\Delta x,\Delta y)\to(0,0)}f(x_0+\Delta x,\,y_0+\Delta y)=f(x_0,y_0),\]
 <p>这正是 \(f\) 在 \((x_0,y_0)\) 连续的定义.</p>
-<p><span class="stp">第二步：证偏导存在并算出 \(A\).</span><span class="stp">思路：</span>全增量公式对<b>一切</b>方向的增量都成立，那就把它用在最特殊的方向上——只让 \(x\) 动.令 \(\Delta y=0,\ \Delta x
-eq0\)，此时 \(\rho=|\Delta x|\)，上式成为</p>
+<p><span class="stp">第二步：证偏导存在并算出 \(A\).</span><span class="stp">思路：</span>全增量公式对<b>一切</b>方向的增量都成立，那就把它用在最特殊的方向上——只让 \(x\) 动.令 \(\Delta y=0,\ \Delta x\neq0\)，此时 \(\rho=|\Delta x|\)，上式成为</p>
 \[f(x_0+\Delta x,\,y_0)-f(x_0,y_0)=A\Delta x+o(|\Delta x|).\]
 <p>两端除以 \(\Delta x\) 并令 \(\Delta x\to0\)：右端 \(\dfrac{o(|\Delta x|)}{\Delta x}\to0\)，于是</p>
 \[\lim\limits_{\Delta x\to 0}\frac{f(x_0+\Delta x,\,y_0)-f(x_0,y_0)}{\Delta x}=A .\]
 <p>该极限存在即说明 \(f_x(x_0,y_0)\) 存在，且 \(A=f_x(x_0,y_0)\).</p>
-<p><span class="stp">第三步：同理求 \(B\).</span>令 \(\Delta x=0,\ \Delta y
-eq0\)，此时 \(\rho=|\Delta y|\)，同样的两步给出 \(B=f_y(x_0,y_0)\).</p>
+<p><span class="stp">第三步：同理求 \(B\).</span>令 \(\Delta x=0,\ \Delta y\neq0\)，此时 \(\rho=|\Delta y|\)，同样的两步给出 \(B=f_y(x_0,y_0)\).</p>
 <p><span class="stp">第四步：写出全微分.</span>把 \(A,B\) 代回线性主部，并对自变量约定 \(\mathrm{d}x=\Delta x,\ \mathrm{d}y=\Delta y\)，即得</p>
 \[\mathrm{d}z=\frac{\partial z}{\partial x}\,\mathrm{d}x+\frac{\partial z}{\partial y}\,\mathrm{d}y .\]
 <p>同时这也说明：可微时线性主部的系数<b>只能</b>是两个偏导数，故全微分是<b>唯一</b>的.</p>
@@ -1077,21 +1052,18 @@ eq0\)，此时 \(\rho=|\Delta y|\)，同样的两步给出 \(B=f_y(x_0,y_0)\).</
   \[f_x(0,0)=\lim_{\Delta x\to0}\frac{\sqrt{|\Delta x\cdot0|}-0}{\Delta x}=\lim_{\Delta x\to0}\frac{0}{\Delta x}=0,\]
   <p>同理 \(f_y(0,0)=0\).若 \(f\) 在原点可微，则应有 \(\Delta z=0\cdot\Delta x+0\cdot\Delta y+o(\rho)\)，即</p>
   \[\lim_{\rho\to0}\frac{\sqrt{|\Delta x\,\Delta y|}}{\rho}=0.\]
-  <p>但沿 \(\Delta y=\Delta x\gt0\) 趋近时 \(\rho=\sqrt2\,\Delta x\)，上式左端 \(=\dfrac{\Delta x}{\sqrt2\,\Delta x}=\dfrac{1}{\sqrt2}
-eq0\).矛盾，故<b>不可微</b>.</p>
+  <p>但沿 \(\Delta y=\Delta x\gt0\) 趋近时 \(\rho=\sqrt2\,\Delta x\)，上式左端 \(=\dfrac{\Delta x}{\sqrt2\,\Delta x}=\dfrac{1}{\sqrt2}\neq0\).矛盾，故<b>不可微</b>.</p>
   <p class="muted">几何上，\(z=\sqrt{|xy|}\) 的图形在原点处有一条"折痕"，无法用一张平面去贴合——<b>可微的几何含义就是"曲面在该点有切平面"</b>（详见 §9.9）.</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.27　用定义判定可微性</div>
-  <p class="stmt">设 \(f(x,y)=\begin{cases}(x^2+y^2)\sin\dfrac{1}{x^2+y^2},&(x,y)
-eq(0,0),\\[6pt]0,&(x,y)=(0,0).\end{cases}\) 讨论 \(f\) 在原点的可微性.</p>
+  <p class="stmt">设 \(f(x,y)=\begin{cases}(x^2+y^2)\sin\dfrac{1}{x^2+y^2},&(x,y)\neq(0,0),\\[6pt]0,&(x,y)=(0,0).\end{cases}\) 讨论 \(f\) 在原点的可微性.</p>
   <p class="sol"><span class="mk">解</span>先求偏导：</p>
   \[f_x(0,0)=\lim_{\Delta x\to0}\frac{(\Delta x)^2\sin\frac{1}{(\Delta x)^2}}{\Delta x}=\lim_{\Delta x\to0}\Delta x\sin\frac{1}{(\Delta x)^2}=0,\]
   <p>同理 \(f_y(0,0)=0\).再验证定义（此处 \(\Delta z=f(\Delta x,\Delta y)=\rho^2\sin\dfrac{1}{\rho^2}\)）：</p>
   \[\frac{\Delta z-0\cdot\Delta x-0\cdot\Delta y}{\rho}=\rho\sin\frac{1}{\rho^2},\qquad \left|\rho\sin\frac{1}{\rho^2}\right|\le\rho\to0.\]
   <p>故 \(f\) 在原点<b>可微</b>，且 \(\mathrm{d}z\big|_{(0,0)}=0\).</p>
-  <p class="muted">但当 \((x,y)
-eq(0,0)\) 时 \(f_x=2x\sin\dfrac{1}{x^2+y^2}-\dfrac{2x}{x^2+y^2}\cos\dfrac{1}{x^2+y^2}\)，第二项在原点附近无界，\(f_x\) 在原点<b>不连续</b>.这正说明<b>"可微"推不出"偏导连续"</b>——关系表最后一行的反例.</p>
+  <p class="muted">但当 \((x,y)\neq(0,0)\) 时 \(f_x=2x\sin\dfrac{1}{x^2+y^2}-\dfrac{2x}{x^2+y^2}\cos\dfrac{1}{x^2+y^2}\)，第二项在原点附近无界，\(f_x\) 在原点<b>不连续</b>.这正说明<b>"可微"推不出"偏导连续"</b>——关系表最后一行的反例.</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.28　误差估计的完整流程</div>
@@ -1137,8 +1109,7 @@ eq(0,0)\) 时 \(f_x=2x\sin\dfrac{1}{x^2+y^2}-\dfrac{2x}{x^2+y^2}\cos\dfrac{1}{x^
     <!-- ============ §9.5 ============ -->
 <div class="labx">
   <div class="lab">方向导数 · 梯度场</div>
-  <div class="desc">二元函数梯度场 $
-abla f$：箭头指向函数值增长最快的方向.</div>
+  <div class="desc">二元函数梯度场 $\nabla f$：箭头指向函数值增长最快的方向.</div>
   <canvas id="cv_p95" width="720" height="320"></canvas>
   <script data-ia>
   (function(){
@@ -1349,8 +1320,7 @@ abla f$：箭头指向函数值增长最快的方向.</div>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>复合之后只剩一个自变量 \(t\)，要证的其实是一个<b>一元导数</b>存在并算出它.路线只有一条：写出差商 \(\dfrac{\Delta z}{\Delta t}\)，把分子 \(\Delta z\) 用外层函数的<b>可微性</b>拆成"线性主部 \(+\) 高阶无穷小"，再除以 \(\Delta t\) 取极限.全部技术难点集中在"高阶无穷小除以 \(\Delta t\) 之后是否仍趋于零"这一处.</p>
-<p><span class="stp">第一步：写出各增量.</span>设 \(t\) 取增量 \(\Delta t
-eq0\)，中间变量相应地得到增量</p>
+<p><span class="stp">第一步：写出各增量.</span>设 \(t\) 取增量 \(\Delta t\neq0\)，中间变量相应地得到增量</p>
 \[\Delta u=\varphi(t+\Delta t)-\varphi(t),\qquad \Delta v=\psi(t+\Delta t)-\psi(t),\]
 <p>并记 \(\Delta z=f(u+\Delta u,\ v+\Delta v)-f(u,v)\).因 \(\varphi,\psi\) 在 \(t\) 可导，故在 \(t\) 连续，于是</p>
 \[\Delta t\to0\ \Longrightarrow\ \Delta u\to0,\ \Delta v\to0 .\]
@@ -1367,10 +1337,8 @@ eq0\)，中间变量相应地得到增量</p>
 \[\frac{\mathrm{d}z}{\mathrm{d}t}=\frac{\partial z}{\partial u}\cdot\frac{\mathrm{d}u}{\mathrm{d}t}+\frac{\partial z}{\partial v}\cdot\frac{\mathrm{d}v}{\mathrm{d}t}.\]
 <p><span class="stp">第六步：为什么外层必须"可微"，只"偏导存在"不行？</span>整个证明的支点是第二步那个<b>把 \(\Delta u,\Delta v\) 同时纳入的</b>展开式.而偏导数 \(\dfrac{\partial z}{\partial u},\dfrac{\partial z}{\partial v}\) 只提供沿 \(u\) 轴、\(v\) 轴两个方向的信息；复合时 \(u,v\) 是被 \(t\) <b>捆在一起同时变动</b>的，动点沿的是一条斜的曲线，两个坐标方向的信息不足以控制 \(\Delta z\).</p>
 <p>反例：取</p>
-\[f(u,v)=\begin{cases}\dfrac{uv}{u^2+v^2}, & (u,v)
-eq(0,0),\\ 0, & (u,v)=(0,0),\end{cases}\qquad u=t,\ v=t .\]
-<p>在原点 \(f_u(0,0)=f_v(0,0)=0\)（沿两坐标轴 \(f\equiv0\)），形式套用公式会得到 \(\dfrac{\mathrm{d}z}{\mathrm{d}t}\Big|_{t=0}=0\)；但实际复合后 \(z=\dfrac{t^2}{2t^2}=\dfrac12\ (t
-eq0)\) 而 \(z(0)=0\)，在 \(t=0\) 处连续性都没有，更谈不上可导.可见此处 \(f\) 在原点不可微，结论就整个垮掉.</p>
+\[f(u,v)=\begin{cases}\dfrac{uv}{u^2+v^2}, & (u,v)\neq(0,0),\\ 0, & (u,v)=(0,0),\end{cases}\qquad u=t,\ v=t .\]
+<p>在原点 \(f_u(0,0)=f_v(0,0)=0\)（沿两坐标轴 \(f\equiv0\)），形式套用公式会得到 \(\dfrac{\mathrm{d}z}{\mathrm{d}t}\Big|_{t=0}=0\)；但实际复合后 \(z=\dfrac{t^2}{2t^2}=\dfrac12\ (t\neq0)\) 而 \(z(0)=0\)，在 \(t=0\) 处连续性都没有，更谈不上可导.可见此处 \(f\) 在原点不可微，结论就整个垮掉.</p>
 <p class="qed">证毕</p>
 </div>
 </details>
@@ -1384,8 +1352,7 @@ eq0)\) 而 \(z(0)=0\)，在 \(t=0\) 处连续性都没有，更谈不上可导.�
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>求 \(\dfrac{\partial z}{\partial x}\) 时把 \(y\) <b>钉死</b>当常数，于是 \(u,v,z\) 都只随 \(x\) 一个变量变化，问题就退化成定理 9.6 的情形.所以本定理是"全导数"的直接翻版，只需把 \(\dfrac{\mathrm{d}}{\mathrm{d}t}\) 换成 \(\dfrac{\partial}{\partial x}\).</p>
-<p><span class="stp">第一步：固定 \(y\)，写出增量.</span>设 \(x\) 取增量 \(\Delta x
-eq0\)，\(y\) 保持不变，则中间变量的<b>偏增量</b>为</p>
+<p><span class="stp">第一步：固定 \(y\)，写出增量.</span>设 \(x\) 取增量 \(\Delta x\neq0\)，\(y\) 保持不变，则中间变量的<b>偏增量</b>为</p>
 \[\Delta_x u=\varphi(x+\Delta x,\,y)-\varphi(x,y),\qquad \Delta_x v=\psi(x+\Delta x,\,y)-\psi(x,y),\]
 <p>相应地 \(\Delta_x z=f(u+\Delta_x u,\ v+\Delta_x v)-f(u,v)\).</p>
 <p><span class="stp">第二步：说明两个偏增量都趋于零.</span>由 \(\dfrac{\partial u}{\partial x}\) 存在，\(\dfrac{\Delta_x u}{\Delta x}\to\dfrac{\partial u}{\partial x}\)，于是</p>
@@ -1625,15 +1592,13 @@ eq0\)，\(y\) 保持不变，则中间变量的<b>偏增量</b>为</p>
   <p><b>取具体位形</b> \(\theta_1=60^\circ\).由 \(\cos60^\circ=0.5\) 及约束得 \(\cos(\theta_1+\theta_2)=0.5\)，取 \(\theta_1+\theta_2=60^\circ\)，即 \(\theta_2=0^\circ\)（手臂伸直折回）.此时 \(\sin60^\circ=0.8660\)：</p>
   \[\frac{\mathrm{d}\theta_2}{\mathrm{d}\theta_1}=-\frac{0.8660+0.8660}{0.8660}=-2.\]
   <p><b>物理含义：</b>\(\theta_1\) 每增加 \(0.01\ \mathrm{rad}\)，\(\theta_2\) 必须减少 \(0.02\ \mathrm{rad}\)，末端才能"贴着墙"不脱离.这就是机器人控制中的<b>联动比</b>，由隐函数求导直接给出.</p>
-  <div class="note"><b>奇异位形的数学预警：</b>公式的分母是 \(F_{\theta_2}=-\sin(\theta_1+\theta_2)\).当 \(\theta_1+\theta_2\to0\)（手臂完全伸直）时分母趋于零，\(\dfrac{\mathrm{d}\theta_2}{\mathrm{d}\theta_1}\to\infty\)——意味着末端要挪动一丁点，关节就得<b>疯狂旋转</b>.这就是机器人学中臭名昭著的<b>奇异位形</b>，控制器必须绕开.而隐函数存在定理里那句"\(F_y
-eq0\)"的条件，恰恰就是在数学上禁止这种情况发生.</div>
+  <div class="note"><b>奇异位形的数学预警：</b>公式的分母是 \(F_{\theta_2}=-\sin(\theta_1+\theta_2)\).当 \(\theta_1+\theta_2\to0\)（手臂完全伸直）时分母趋于零，\(\dfrac{\mathrm{d}\theta_2}{\mathrm{d}\theta_1}\to\infty\)——意味着末端要挪动一丁点，关节就得<b>疯狂旋转</b>.这就是机器人学中臭名昭著的<b>奇异位形</b>，控制器必须绕开.而隐函数存在定理里那句"\(F_y\neq0\)"的条件，恰恰就是在数学上禁止这种情况发生.</div>
 </div>
 
 <h3>一、一个方程确定的隐函数</h3>
 <div class="def"><div class="lab"><span class="n">定理 9.9</span>隐函数存在定理（二元方程）</div>
   <p>设 \(F(x,y)\) 在点 \(P_0(x_0,y_0)\) 的某邻域内具有连续偏导数，且</p>
-  \[F(x_0,y_0)=0,\qquad F_y(x_0,y_0)
-eq0,\]
+  \[F(x_0,y_0)=0,\qquad F_y(x_0,y_0)\neq0,\]
   <p>则方程 \(F(x,y)=0\) 在 \(P_0\) 的某邻域内唯一确定一个连续可导的函数 \(y=y(x)\)，满足 \(y_0=y(x_0)\)，且</p>
   \[\boxed{\ \frac{\mathrm{d}y}{\mathrm{d}x}=-\frac{F_x}{F_y}\ }\]
 <details class="prf prf-idea"><summary>证明思路（求导公式完整证明；存在性需完备性论证，属数学分析内容）</summary>
@@ -1644,12 +1609,9 @@ eq0,\]
 \[\frac{\mathrm{d}}{\mathrm{d}x}F\bigl(x,y(x)\bigr)=F_x\cdot\frac{\mathrm{d}x}{\mathrm{d}x}+F_y\cdot\frac{\mathrm{d}y}{\mathrm{d}x}=F_x+F_y\,\frac{\mathrm{d}y}{\mathrm{d}x}.\]
 <p>右端 \(0\) 的导数为 \(0\)，故</p>
 \[F_x+F_y\,\frac{\mathrm{d}y}{\mathrm{d}x}=0 .\]
-<p>又 \(F_y\) 连续且 \(F_y(x_0,y_0)
-eq0\)，由连续函数的<b>保号性</b>，在 \(P_0\) 的某个邻域内恒有 \(F_y
-eq0\)，于是可以放心地除过去：</p>
+<p>又 \(F_y\) 连续且 \(F_y(x_0,y_0)\neq0\)，由连续函数的<b>保号性</b>，在 \(P_0\) 的某个邻域内恒有 \(F_y\neq0\)，于是可以放心地除过去：</p>
 \[\frac{\mathrm{d}y}{\mathrm{d}x}=-\frac{F_x}{F_y}.\]
-<p>可见 \(F_y
-eq0\) 有<b>双重身份</b>：既是保证隐函数存在的条件，又是这里能作除法的条件.</p>
+<p>可见 \(F_y\neq0\) 有<b>双重身份</b>：既是保证隐函数存在的条件，又是这里能作除法的条件.</p>
 <p><span class="stp">二、存在性的证明骨架（思路）.</span>不妨设 \(F_y(x_0,y_0)\gt 0\).由 \(F_y\) 连续，存在矩形邻域 \(R=[x_0-a,x_0+a]\times[y_0-b,y_0+b]\subset D\)，其上 \(F_y\gt 0\).</p>
 <p>（i）<b>先固定 \(x=x_0\)</b>：一元函数 \(y\mapsto F(x_0,y)\) 在 \([y_0-b,y_0+b]\) 上严格单调递增，且 \(F(x_0,y_0)=0\)，故</p>
 \[F(x_0,\,y_0-b)\lt 0\lt F(x_0,\,y_0+b).\]
@@ -1666,8 +1628,7 @@ eq0\) 有<b>双重身份</b>：既是保证隐函数存在的条件，又是这�
   <div class="body">
     <p><b>推法一（链式法则）.</b>把 \(y=y(x)\) 代回方程，得<b>恒等式</b> \(F\bigl(x,\,y(x)\bigr)\equiv0\).两边对 \(x\) 求全导数（这里 \(F\) 经 \(x\) 与 \(y\) 两条路依赖 \(x\)）：</p>
     \[F_x\cdot1+F_y\cdot\frac{\mathrm{d}y}{\mathrm{d}x}=0.\]
-    <p>因 \(F_y
-eq0\)，解出 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=-\dfrac{F_x}{F_y}\).</p>
+    <p>因 \(F_y\neq0\)，解出 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=-\dfrac{F_x}{F_y}\).</p>
     <p><b>推法二（全微分）.</b>对 \(F(x,y)=0\) 两边取全微分：</p>
     \[F_x\,\mathrm{d}x+F_y\,\mathrm{d}y=0\;\Longrightarrow\;\mathrm{d}y=-\frac{F_x}{F_y}\mathrm{d}x.\]
     <p>两法本质相同，但<b>全微分法在处理方程组时优势明显</b>，见后文.</p>
@@ -1690,15 +1651,13 @@ eq0\)，解出 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=-\dfrac{F_x}{F_y}\).</p>
   <p class="stmt">设 \(\sin y+\mathrm{e}^{x}-xy^2=0\) 确定 \(y=y(x)\)，求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}\).</p>
   <p class="sol"><span class="mk">解</span>令 \(F=\sin y+\mathrm{e}^x-xy^2\).则</p>
   \[F_x=\mathrm{e}^x-y^2,\qquad F_y=\cos y-2xy.\]
-  <p>故当 \(\cos y-2xy
-eq0\) 时</p>
+  <p>故当 \(\cos y-2xy\neq0\) 时</p>
   \[\frac{\mathrm{d}y}{\mathrm{d}x}=-\frac{\mathrm{e}^x-y^2}{\cos y-2xy}=\frac{y^2-\mathrm{e}^x}{\cos y-2xy}.\]
 </div>
 
 <h3>二、三元方程确定的二元隐函数</h3>
 <div class="def"><div class="lab"><span class="n">定理 9.10</span>隐函数存在定理（三元方程）</div>
-  <p>设 \(F(x,y,z)\) 在点 \(P_0(x_0,y_0,z_0)\) 的某邻域内有连续偏导数，且 \(F(x_0,y_0,z_0)=0,\ F_z(x_0,y_0,z_0)
-eq0\)，则方程 \(F(x,y,z)=0\) 在该邻域内唯一确定一个连续且有连续偏导数的函数 \(z=z(x,y)\)，且</p>
+  <p>设 \(F(x,y,z)\) 在点 \(P_0(x_0,y_0,z_0)\) 的某邻域内有连续偏导数，且 \(F(x_0,y_0,z_0)=0,\ F_z(x_0,y_0,z_0)\neq0\)，则方程 \(F(x,y,z)=0\) 在该邻域内唯一确定一个连续且有连续偏导数的函数 \(z=z(x,y)\)，且</p>
   \[\boxed{\ \frac{\partial z}{\partial x}=-\frac{F_x}{F_z},\qquad \frac{\partial z}{\partial y}=-\frac{F_y}{F_z}\ }\]
 <details class="prf prf-idea"><summary>证明思路（求导公式完整证明；存在性需完备性论证，属数学分析内容）</summary>
 <div class="prf-b">
@@ -1706,9 +1665,7 @@ eq0\)，则方程 \(F(x,y,z)=0\) 在该邻域内唯一确定一个连续且有�
 \[F\bigl(x,\,y,\,z(x,y)\bigr)\equiv 0 .\]
 <p>这是关于 \(x,y\) 的恒等式.<b>求 \(\dfrac{\partial z}{\partial x}\)：把 \(y\) 看作常数</b>，对 \(x\) 求偏导.左端是 \(F(u,v,w)\) 与 \(u=x,\ v=y,\ w=z(x,y)\) 的复合，由定理 9.7 的链式法则，注意 \(\dfrac{\partial x}{\partial x}=1,\ \dfrac{\partial y}{\partial x}=0\)：</p>
 \[F_x\cdot 1+F_y\cdot 0+F_z\cdot\frac{\partial z}{\partial x}=0,\qquad\text{即}\qquad F_x+F_z\,\frac{\partial z}{\partial x}=0 .\]
-<p>由 \(F_z\) 连续且 \(F_z(P_0)
-eq0\)，据保号性在 \(P_0\) 的某邻域内 \(F_z
-eq0\)，两端除以 \(F_z\) 得</p>
+<p>由 \(F_z\) 连续且 \(F_z(P_0)\neq0\)，据保号性在 \(P_0\) 的某邻域内 \(F_z\neq0\)，两端除以 \(F_z\) 得</p>
 \[\frac{\partial z}{\partial x}=-\frac{F_x}{F_z}.\]
 <p><b>求 \(\dfrac{\partial z}{\partial y}\)：把 \(x\) 看作常数</b>，同样地 \(F_x\cdot0+F_y\cdot1+F_z\dfrac{\partial z}{\partial y}=0\)，故</p>
 \[\frac{\partial z}{\partial y}=-\frac{F_y}{F_z}.\]
@@ -1725,16 +1682,14 @@ eq0\)，两端除以 \(F_z\) 得</p>
 <div class="ex"><div class="lab">例 9.39　求二元隐函数的偏导数与二阶偏导数</div>
   <p class="stmt">设 \(x^2+y^2+z^2-4z=0\) 确定 \(z=z(x,y)\)，求 \(\dfrac{\partial z}{\partial x}\) 与 \(\dfrac{\partial^2z}{\partial x^2}\).</p>
   <p class="sol"><span class="mk">解</span>令 \(F=x^2+y^2+z^2-4z\)，则 \(F_x=2x,\ F_z=2z-4\).故</p>
-  \[\frac{\partial z}{\partial x}=-\frac{2x}{2z-4}=\frac{x}{2-z}\qquad(z
-eq2).\]
+  \[\frac{\partial z}{\partial x}=-\frac{2x}{2z-4}=\frac{x}{2-z}\qquad(z\neq2).\]
   <p>对 \(x\) 再求偏导（把 \(z\) 看作 \(x,y\) 的函数）：</p>
   \[\frac{\partial^2z}{\partial x^2}=\frac{1\cdot(2-z)-x\cdot\left(-\dfrac{\partial z}{\partial x}\right)}{(2-z)^2}
     =\frac{(2-z)+x\cdot\dfrac{x}{2-z}}{(2-z)^2}=\frac{(2-z)^2+x^2}{(2-z)^3}.\]
 </div>
 
 <div class="ex"><div class="lab">例 9.40　抽象隐函数（考研经典）</div>
-  <p class="stmt">设 \(z=z(x,y)\) 由方程 \(F(x-z,\;y-z)=0\) 确定，\(F\) 具有连续偏导数且 \(F_1'+F_2'
-eq0\).证明</p>
+  <p class="stmt">设 \(z=z(x,y)\) 由方程 \(F(x-z,\;y-z)=0\) 确定，\(F\) 具有连续偏导数且 \(F_1'+F_2'\neq0\).证明</p>
   \[\frac{\partial z}{\partial x}+\frac{\partial z}{\partial y}=1.\]
   <p class="sol"><span class="mk">证</span>令 \(u=x-z,\ v=y-z\).方程两边对 \(x\) 求偏导（\(z\) 是 \(x,y\) 的函数）：</p>
   \[F_1'\cdot\left(1-\frac{\partial z}{\partial x}\right)+F_2'\cdot\left(0-\frac{\partial z}{\partial x}\right)=0
@@ -1753,8 +1708,7 @@ eq0\).证明</p>
   <p class="sol"><span class="mk">解</span>两边取全微分：</p>
   \[\mathrm{e}^z\,\mathrm{d}z-\bigl(yz\,\mathrm{d}x+xz\,\mathrm{d}y+xy\,\mathrm{d}z\bigr)=0,\]
   \[(\mathrm{e}^z-xy)\,\mathrm{d}z=yz\,\mathrm{d}x+xz\,\mathrm{d}y,\]
-  \[\mathrm{d}z=\frac{yz\,\mathrm{d}x+xz\,\mathrm{d}y}{\mathrm{e}^z-xy}\qquad(\mathrm{e}^z
-eq xy).\]
+  \[\mathrm{d}z=\frac{yz\,\mathrm{d}x+xz\,\mathrm{d}y}{\mathrm{e}^z-xy}\qquad(\mathrm{e}^z\neq xy).\]
   <p>由此立得 \(\dfrac{\partial z}{\partial x}=\dfrac{yz}{\mathrm{e}^z-xy},\ \dfrac{\partial z}{\partial y}=\dfrac{xz}{\mathrm{e}^z-xy}\).</p>
 </div>
 
@@ -1767,8 +1721,7 @@ G_x+G_u\dfrac{\partial u}{\partial x}+G_v\dfrac{\partial v}{\partial x}=0.\end{c
 <p>这是以 \(\dfrac{\partial u}{\partial x},\dfrac{\partial v}{\partial x}\) 为未知量的<b>二元一次方程组</b>，其系数行列式称为<b>雅可比行列式</b>：</p>
 \[J=\frac{\partial(F,G)}{\partial(u,v)}=\begin{vmatrix}F_u & F_v\\ G_u & G_v\end{vmatrix}.\]
 <div class="def"><div class="lab"><span class="n">定理 9.11</span>隐函数组存在定理</div>
-  <p>设 \(F,G\) 在点 \(P_0(x_0,y_0,u_0,v_0)\) 的某邻域内有连续偏导数，\(F(P_0)=G(P_0)=0\)，且雅可比行列式 \(J=\dfrac{\partial(F,G)}{\partial(u,v)}\Big|_{P_0}
-eq0\)，则方程组在 \(P_0\) 附近唯一确定一组连续可微的函数 \(u=u(x,y),\,v=v(x,y)\)，且由克莱姆法则</p>
+  <p>设 \(F,G\) 在点 \(P_0(x_0,y_0,u_0,v_0)\) 的某邻域内有连续偏导数，\(F(P_0)=G(P_0)=0\)，且雅可比行列式 \(J=\dfrac{\partial(F,G)}{\partial(u,v)}\Big|_{P_0}\neq0\)，则方程组在 \(P_0\) 附近唯一确定一组连续可微的函数 \(u=u(x,y),\,v=v(x,y)\)，且由克莱姆法则</p>
   \[\frac{\partial u}{\partial x}=-\frac{1}{J}\frac{\partial(F,G)}{\partial(x,v)},\qquad
     \frac{\partial v}{\partial x}=-\frac{1}{J}\frac{\partial(F,G)}{\partial(u,x)}.\]
   <p>对 \(y\) 的偏导数只需把上式中的 \(x\) 换成 \(y\).</p>
@@ -1787,11 +1740,8 @@ F_u\dfrac{\partial u}{\partial x}+F_v\dfrac{\partial v}{\partial x}=-F_x,\\
 G_u\dfrac{\partial u}{\partial x}+G_v\dfrac{\partial v}{\partial x}=-G_x .
 \end{cases}\]
 <p>它的系数行列式正是雅可比行列式</p>
-\[J=\frac{\partial(F,G)}{\partial(u,v)}=\begin{vmatrix}F_u & F_v\\ G_u & G_v\end{vmatrix}
-eq 0 ,\]
-<p>（由 \(J|_{P_0}
-eq0\) 与各偏导数连续，据保号性在 \(P_0\) 的某邻域内 \(J
-eq0\)）.</p>
+\[J=\frac{\partial(F,G)}{\partial(u,v)}=\begin{vmatrix}F_u & F_v\\ G_u & G_v\end{vmatrix}\neq 0 ,\]
+<p>（由 \(J|_{P_0}\neq0\) 与各偏导数连续，据保号性在 \(P_0\) 的某邻域内 \(J\neq0\)）.</p>
 <p><span class="stp">第三步：用克莱姆法则解出.</span></p>
 \[\frac{\partial u}{\partial x}=\frac{1}{J}\begin{vmatrix}-F_x & F_v\\ -G_x & G_v\end{vmatrix}
 =-\frac{1}{J}\begin{vmatrix}F_x & F_v\\ G_x & G_v\end{vmatrix}=-\frac{1}{J}\,\frac{\partial(F,G)}{\partial(x,v)},\]
@@ -1800,15 +1750,11 @@ eq0\)）.</p>
 <p><span class="stp">第四步：对 \(y\) 的偏导数.</span>把上面全部推导中的 \(x\) 换成 \(y\)（此时固定 \(x\)，\(\dfrac{\partial x}{\partial y}=0,\ \dfrac{\partial y}{\partial y}=1\)），得</p>
 \[\frac{\partial u}{\partial y}=-\frac{1}{J}\,\frac{\partial(F,G)}{\partial(y,v)},\qquad
 \frac{\partial v}{\partial y}=-\frac{1}{J}\,\frac{\partial(F,G)}{\partial(u,y)}.\]
-<p><span class="stp">二、存在性的证明骨架（思路）.</span>可以<b>逐次消元、归结到定理 9.10</b>.因 \(J
-eq0\)，其第一行不全为零，不妨设 \(F_u(P_0)
-eq0\).</p>
+<p><span class="stp">二、存在性的证明骨架（思路）.</span>可以<b>逐次消元、归结到定理 9.10</b>.因 \(J\neq0\)，其第一行不全为零，不妨设 \(F_u(P_0)\neq0\).</p>
 <p>（i）对方程 \(F(x,y,u,v)=0\)（把 \(v\) 也看作自变量），由定理 9.10 型结论，可在 \(P_0\) 附近唯一解出 \(u=u(x,y,v)\)，且 \(\dfrac{\partial u}{\partial v}=-\dfrac{F_v}{F_u}\).</p>
 <p>（ii）代入第二个方程，令 \(H(x,y,v)=G\bigl(x,y,u(x,y,v),v\bigr)=0\).由链式法则</p>
-\[H_v=G_u\frac{\partial u}{\partial v}+G_v=G_u\left(-\frac{F_v}{F_u}\right)+G_v=\frac{F_uG_v-F_vG_u}{F_u}=\frac{J}{F_u}
-eq0 .\]
-<p>——<b>这正是条件 \(J
-eq0\) 起作用的地方</b>：它保证消元后剩下的那个方程仍满足单方程隐函数定理的条件.</p>
+\[H_v=G_u\frac{\partial u}{\partial v}+G_v=G_u\left(-\frac{F_v}{F_u}\right)+G_v=\frac{F_uG_v-F_vG_u}{F_u}=\frac{J}{F_u}\neq0 .\]
+<p>——<b>这正是条件 \(J\neq0\) 起作用的地方</b>：它保证消元后剩下的那个方程仍满足单方程隐函数定理的条件.</p>
 <p>（iii）于是再对 \(H=0\) 用一次定理 9.10，唯一解出 \(v=v(x,y)\)；回代 \(u=u\bigl(x,y,v(x,y)\bigr)\) 即得所求的一组隐函数.</p>
 <div class="bey"><b>为什么说"超纲"：</b>上面的消元归纳依赖单方程隐函数存在定理，而后者的存在性（见定理 9.9、9.10）本身就建立在<b>实数完备性</b>之上；对一般的 \(m\) 个方程 \(m\) 个未知量，逐次消元会越来越繁，标准做法是把方程组改写成不动点形式，用<b>压缩映射原理（Banach 不动点定理）</b>一举证明存在唯一性，再用线性代数中的可逆性论证光滑性.这些属于《数学分析》与《泛函分析》.工科阶段承认存在性，务必掌握的是第一部分：<b>对方程组两边求偏导，得到关于所求偏导数的线性方程组，再用克莱姆法则解出</b>.</div>
 <p class="qed">思路毕</p>
@@ -1824,9 +1770,7 @@ eq0\) 起作用的地方</b>：它保证消元后剩下的那个方程仍满足�
    y\dfrac{\partial u}{\partial x}+v+x\dfrac{\partial v}{\partial x}=0.\end{cases}\]
   <p>整理成线性方程组</p>
   \[\begin{cases}x\,u_x-y\,v_x=-u,\\ y\,u_x+x\,v_x=-v.\end{cases}\]
-  <p>系数行列式 \(J=\begin{vmatrix}x&-y\\ y&x\end{vmatrix}=x^2+y^2
-eq0\)（设 \((x,y)
-eq(0,0)\)）.由克莱姆法则</p>
+  <p>系数行列式 \(J=\begin{vmatrix}x&-y\\ y&x\end{vmatrix}=x^2+y^2\neq0\)（设 \((x,y)\neq(0,0)\)）.由克莱姆法则</p>
   \[u_x=\frac{1}{J}\begin{vmatrix}-u&-y\\ -v&x\end{vmatrix}=\frac{-ux-yv}{x^2+y^2},\qquad
     v_x=\frac{1}{J}\begin{vmatrix}x&-u\\ y&-v\end{vmatrix}=\frac{-xv+yu}{x^2+y^2}.\]
   <p>即 \(\dfrac{\partial u}{\partial x}=-\dfrac{xu+yv}{x^2+y^2},\qquad \dfrac{\partial v}{\partial x}=\dfrac{yu-xv}{x^2+y^2}\).</p>
@@ -1839,8 +1783,7 @@ eq(0,0)\)）.由克莱姆法则</p>
   \[v_x=g_1'\bigl(u_x-1\bigr)+g_2'\cdot 2vy\,v_x.\]
   <p>整理为关于 \(u_x,v_x\) 的线性方程组：</p>
   \[\begin{cases}(1-x f_1')\,u_x-f_2'\,v_x=u f_1',\\[4pt] -g_1'\,u_x+(1-2vy\,g_2')\,v_x=-g_1'.\end{cases}\]
-  <p>系数行列式 \(J=(1-xf_1')(1-2vy\,g_2')-f_2'g_1'\).当 \(J
-eq0\) 时由克莱姆法则</p>
+  <p>系数行列式 \(J=(1-xf_1')(1-2vy\,g_2')-f_2'g_1'\).当 \(J\neq0\) 时由克莱姆法则</p>
   \[\frac{\partial u}{\partial x}=\frac{1}{J}\begin{vmatrix}u f_1' & -f_2'\\ -g_1' & 1-2vy\,g_2'\end{vmatrix}
    =\frac{u f_1'\bigl(1-2vy\,g_2'\bigr)-f_2'g_1'}{(1-xf_1')(1-2vy\,g_2')-f_2'g_1'}.\]
 </div>
@@ -1910,10 +1853,8 @@ eq0\) 时由克莱姆法则</p>
     
   <p class="stmt">训练一个只有两个参数的模型，损失函数为</p>
   \[f(w_1,w_2)=w_1^2+2w_2^2.\]
-  \[
-abla f=\left(\frac{\partial f}{\partial w_1},\ \frac{\partial f}{\partial w_2}\right)=(2w_1,\ 4w_2).\]
-  \[\bigl(w_1,w_2\bigr)\leftarrow\bigl(w_1,w_2\bigr)-\eta\,
-abla f.\]
+  \[\nabla f=\left(\frac{\partial f}{\partial w_1},\ \frac{\partial f}{\partial w_2}\right)=(2w_1,\ 4w_2).\]
+  \[\bigl(w_1,w_2\bigr)\leftarrow\bigl(w_1,w_2\bigr)-\eta\,\nabla f.\]
   <p><b>逐步迭代（保留 4 位小数）：</b></p>
   <table class="dt">
     <tr><td>0</td><td>\((2.0000,\ 1.0000)\)</td><td>\((4.0000,\ 4.0000)\)</td><td>\((-0.4000,\ -0.4000)\)</td><td>\(6.0000\)</td></tr>
@@ -1983,64 +1924,41 @@ abla f.\]
 </div>
 
   <p>设 \(z=f(x,y)\) 在区域 \(D\) 内有一阶连续偏导数，则对每点 \(P(x,y)\in D\)，向量</p>
-  \[\operatorname{grad} f(x,y)=
-abla f=\left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right)\]
-  \[\operatorname{grad} f=
-abla f=\left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y},\ \frac{\partial f}{\partial z}\right).\]
-  <p class="muted">符号 \(
-abla\)（读作 nabla 或 del）是<b>向量微分算子</b> \(
-abla=\left(\dfrac{\partial}{\partial x},\dfrac{\partial}{\partial y}\right)\) 作用在标量函数上的结果.</p>
+  \[\operatorname{grad} f(x,y)=\nabla f=\left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right)\]
+  \[\operatorname{grad} f=\nabla f=\left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y},\ \frac{\partial f}{\partial z}\right).\]
+  <p class="muted">符号 \(\nabla\)（读作 nabla 或 del）是<b>向量微分算子</b> \(\nabla=\left(\dfrac{\partial}{\partial x},\dfrac{\partial}{\partial y}\right)\) 作用在标量函数上的结果.</p>
 </div>
 
   <p>若 \(f\) 在点 \(P_0\) 可微，则对任一单位向量 \(\boldsymbol{e}_l\) 有</p>
-  \[\frac{\partial f}{\partial l}\bigg|_{P_0}=
-abla f(P_0)\cdot\boldsymbol{e}_l=\bigl|
-abla f(P_0)\bigr|\cos\theta,\]
-  <p>其中 \(\theta\) 是 \(
-abla f(P_0)\) 与 \(\boldsymbol{e}_l\) 的夹角.由此立得三条<b>推论</b>：</p>
-  <p>(3) 当 \(\theta=\dfrac{\pi}{2}\)（<b>垂直</b>）时，方向导数为 \(0\)——沿此方向函数值瞬时不变，<b>该方向正是等高线的切线方向</b>，故 <b>\(
-abla f\) 处处垂直于等高线（等值面）</b>.</p>
+  \[\frac{\partial f}{\partial l}\bigg|_{P_0}=\nabla f(P_0)\cdot\boldsymbol{e}_l=\bigl|\nabla f(P_0)\bigr|\cos\theta,\]
+  <p>其中 \(\theta\) 是 \(\nabla f(P_0)\) 与 \(\boldsymbol{e}_l\) 的夹角.由此立得三条<b>推论</b>：</p>
+  <p>(3) 当 \(\theta=\dfrac{\pi}{2}\)（<b>垂直</b>）时，方向导数为 \(0\)——沿此方向函数值瞬时不变，<b>该方向正是等高线的切线方向</b>，故 <b>\(\nabla f\) 处处垂直于等高线（等值面）</b>.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>定理 9.12 的右端 \(f_x\cos\alpha+f_y\cos\beta\) 是两组数的"对应相乘再相加"——这正是<b>数量积</b>.一旦认出它是数量积，方向导数随方向如何变化的问题，就变成了"两个向量夹角"的初等几何问题.</p>
 <p><span class="stp">第一步：改写成数量积.</span>由定理 9.12，对任一单位向量 \(\boldsymbol{e}_l=(\cos\alpha,\cos\beta)\)，</p>
 \[\frac{\partial f}{\partial l}\bigg|_{P_0}=f_x(P_0)\cos\alpha+f_y(P_0)\cos\beta
-=\bigl(f_x(P_0),\,f_y(P_0)\bigr)\cdot(\cos\alpha,\cos\beta)=
-abla f(P_0)\cdot\boldsymbol{e}_l .\]
-<p><span class="stp">第二步：用夹角形式.</span>设 \(\theta\) 为 \(
-abla f(P_0)\) 与 \(\boldsymbol{e}_l\) 的夹角.由数量积的几何形式并注意 \(|\boldsymbol{e}_l|=1\)：</p>
-\[\frac{\partial f}{\partial l}\bigg|_{P_0}=\bigl|
-abla f(P_0)\bigr|\cdot|\boldsymbol{e}_l|\cos\theta=\bigl|
-abla f(P_0)\bigr|\cos\theta .\]
+=\bigl(f_x(P_0),\,f_y(P_0)\bigr)\cdot(\cos\alpha,\cos\beta)=\nabla f(P_0)\cdot\boldsymbol{e}_l .\]
+<p><span class="stp">第二步：用夹角形式.</span>设 \(\theta\) 为 \(\nabla f(P_0)\) 与 \(\boldsymbol{e}_l\) 的夹角.由数量积的几何形式并注意 \(|\boldsymbol{e}_l|=1\)：</p>
+\[\frac{\partial f}{\partial l}\bigg|_{P_0}=\bigl|\nabla f(P_0)\bigr|\cdot|\boldsymbol{e}_l|\cos\theta=\bigl|\nabla f(P_0)\bigr|\cos\theta .\]
 <p><span class="stp">第三步：定出取值范围.</span>由 \(-1\le\cos\theta\le1\) 立得</p>
-\[-\bigl|
-abla f(P_0)\bigr|\ \le\ \frac{\partial f}{\partial l}\bigg|_{P_0}\ \le\ \bigl|
-abla f(P_0)\bigr| .\]
-<p>（这也正是柯西不等式 \(\bigl|
-abla f\cdot\boldsymbol{e}_l\bigr|\le|
-abla f|\,|\boldsymbol{e}_l|\) 的内容，其取等条件是两向量<b>共线</b>.）由于上式中 \(
-abla f(P_0)\) 是<b>固定</b>的、只有 \(\theta\) 随方向变化，三条推论立刻读出：</p>
+\[-\bigl|\nabla f(P_0)\bigr|\ \le\ \frac{\partial f}{\partial l}\bigg|_{P_0}\ \le\ \bigl|\nabla f(P_0)\bigr| .\]
+<p>（这也正是柯西不等式 \(\bigl|\nabla f\cdot\boldsymbol{e}_l\bigr|\le|\nabla f|\,|\boldsymbol{e}_l|\) 的内容，其取等条件是两向量<b>共线</b>.）由于上式中 \(\nabla f(P_0)\) 是<b>固定</b>的、只有 \(\theta\) 随方向变化，三条推论立刻读出：</p>
 <p>(3) \(\theta=\dfrac{\pi}{2}\) 时 \(\cos\theta=0\)，方向导数为 \(0\).</p>
 <p><span class="stp">第四步：推论 (3) 中"垂直于等高线"的验证.</span>设过 \(P_0\) 的等高线为 \(f(x,y)=c\)，其光滑参数方程为 \(x=x(t),\ y=y(t)\).代入得恒等式 \(f\bigl(x(t),y(t)\bigr)\equiv c\)，两端对 \(t\) 求导，由定理 9.6：</p>
-\[f_x\,x'(t)+f_y\,y'(t)=0,\qquad\text{即}\qquad 
-abla f(P_0)\cdot\bigl(x'(t),\,y'(t)\bigr)=0 .\]
-<p>而 \((x'(t),y'(t))\) 正是等高线在 \(P_0\) 处的切向量，故 \(
-abla f(P_0)\) 与等高线的切线<b>垂直</b>.对三元函数同样论证可得 \(
-abla f\) 垂直于等值面.</p>
+\[f_x\,x'(t)+f_y\,y'(t)=0,\qquad\text{即}\qquad \nabla f(P_0)\cdot\bigl(x'(t),\,y'(t)\bigr)=0 .\]
+<p>而 \((x'(t),y'(t))\) 正是等高线在 \(P_0\) 处的切向量，故 \(\nabla f(P_0)\) 与等高线的切线<b>垂直</b>.对三元函数同样论证可得 \(\nabla f\) 垂直于等值面.</p>
 <p class="qed">证毕</p>
 </div>
 </details>
 
-② <b>大小</b>：这个最快方向上的变化率，即 \(|
-abla f|=\sqrt{f_x^2+f_y^2}\)；<br>
+② <b>大小</b>：这个最快方向上的变化率，即 \(|\nabla f|=\sqrt{f_x^2+f_y^2}\)；<br>
 ③ <b>几何</b>：垂直于过该点的等高线，指向函数值增大的一侧.<br>
 爬山时"沿等高线走不费劲、垂直等高线走最陡"——这就是推论 (1)(3) 的生活版本.
 
   <p class="sol"><span class="mk">解</span>(1) \(f_x=2x-y,\ f_y=-x+2y\)，在 \((1,1)\) 处均为 \(1\)，故</p>
-  \[
-abla f(1,1)=(1,\ 1).\]
-  \[\bigl|
-abla f(1,1)\bigr|=\sqrt{1^2+1^2}=\sqrt2\approx1.4142.\]
+  \[\nabla f(1,1)=(1,\ 1).\]
+  \[\bigl|\nabla f(1,1)\bigr|=\sqrt{1^2+1^2}=\sqrt2\approx1.4142.\]
 
 
   <p class="sol"><span class="mk">解</span>记 \(r=\sqrt{y^2+z^2}\).则</p>
@@ -2050,51 +1968,32 @@ abla f(1,1)\bigr|=\sqrt{1^2+1^2}=\sqrt2\approx1.4142.\]
   <p>于是 \(\operatorname{grad} u\big|_M=\left(\dfrac12,\ 0,\ \dfrac12\right)\)，其模 \(\dfrac{\sqrt2}{2}\approx0.7071\)，即 \(u\) 在 \(M\) 处的最大变化率.</p>
 
 
-  <p class="sol"><span class="mk">解</span>\(
-abla u=(2x,\,4y,\,6z)\)，在 \((1,1,1)\) 处为 \((2,4,6)\).</p>
+  <p class="sol"><span class="mk">解</span>\(\nabla u=(2x,\,4y,\,6z)\)，在 \((1,1,1)\) 处为 \((2,4,6)\).</p>
   <p>该点处沿椭球面<b>切平面内任一方向</b>的方向导数均为 0（因为在等值面上函数值不变），沿法向 \((2,4,6)\) 的方向导数最大，为 \(\sqrt{4+16+36}=\sqrt{56}=2\sqrt{14}\approx7.483\).</p>
 
 
 <div class="ex"><div class="lab">例 9.49　由方向导数反求函数信息（考研题型）</div>
-  <p class="stmt">已知可微函数 \(f(x,y)\) 在点 \(P_0\) 处沿方向 \(\boldsymbol{e}_1=(1,0)\) 的方向导数为 \(3\)，沿方向 \(\boldsymbol{e}_2=\left(\dfrac{\sqrt2}{2},\dfrac{\sqrt2}{2}\right)\) 的方向导数为 \(2\sqrt2\).求 \(
-abla f(P_0)\) 及最大方向导数.</p>
-  <p class="sol"><span class="mk">解</span>设 \(
-abla f(P_0)=(a,b)\).由定理 9.13，</p>
+  <p class="stmt">已知可微函数 \(f(x,y)\) 在点 \(P_0\) 处沿方向 \(\boldsymbol{e}_1=(1,0)\) 的方向导数为 \(3\)，沿方向 \(\boldsymbol{e}_2=\left(\dfrac{\sqrt2}{2},\dfrac{\sqrt2}{2}\right)\) 的方向导数为 \(2\sqrt2\).求 \(\nabla f(P_0)\) 及最大方向导数.</p>
+  <p class="sol"><span class="mk">解</span>设 \(\nabla f(P_0)=(a,b)\).由定理 9.13，</p>
   \[(a,b)\cdot(1,0)=a=3,\qquad (a,b)\cdot\left(\frac{\sqrt2}{2},\frac{\sqrt2}{2}\right)=\frac{\sqrt2}{2}(a+b)=2\sqrt2.\]
-  <p>由第二式 \(a+b=4\)，结合 \(a=3\) 得 \(b=1\).故 \(
-abla f(P_0)=(3,1)\)，最大方向导数</p>
-  \[\bigl|
-abla f\bigr|=\sqrt{9+1}=\sqrt{10}\approx3.1623,\]
+  <p>由第二式 \(a+b=4\)，结合 \(a=3\) 得 \(b=1\).故 \(\nabla f(P_0)=(3,1)\)，最大方向导数</p>
+  \[\bigl|\nabla f\bigr|=\sqrt{9+1}=\sqrt{10}\approx3.1623,\]
   <p>取得于方向 \(\left(\dfrac{3}{\sqrt{10}},\dfrac{1}{\sqrt{10}}\right)\).</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.50　最速下降方向的应用</div>
   <p class="stmt">某无人机在山区飞行，地形高度（米）近似为 \(h(x,y)=1000-0.02x^2-0.05y^2\)（\(x,y\) 单位为米）.无人机现位于 \((100,60)\) 上空，为快速降低飞行高度以躲避雷达，应沿哪个水平方向飞行？该方向上高度下降速率是多少？</p>
   <p class="sol"><span class="mk">解</span>\(h_x=-0.04x,\ h_y=-0.10y\)，在 \((100,60)\) 处</p>
-  \[
-abla h=(-4.0,\ -6.0),\qquad \bigl|
-abla h\bigr|=\sqrt{16+36}=\sqrt{52}=7.2111.\]
-  <p>地形<b>下降</b>最快的方向是 \(-
-abla h=(4,6)\)（因为 \(
-abla h\) 指向上升最快方向），单位化为</p>
+  \[\nabla h=(-4.0,\ -6.0),\qquad \bigl|\nabla h\bigr|=\sqrt{16+36}=\sqrt{52}=7.2111.\]
+  <p>地形<b>下降</b>最快的方向是 \(-\nabla h=(4,6)\)（因为 \(\nabla h\) 指向上升最快方向），单位化为</p>
   \[\boldsymbol{e}=\left(\frac{4}{\sqrt{52}},\frac{6}{\sqrt{52}}\right)=(0.5547,\ 0.8321).\]
   <p>沿该方向每水平前进 \(1\ \mathrm{m}\)，地形高度下降 \(7.21\ \mathrm{m}\)——坡度约 \(\arctan 7.21=82.1^\circ\)，实际上是悬崖.若沿 \(x\) 轴飞行，下降速率仅 \(|h_x|=4.0\ \mathrm{m/m}\)，慢了将近一倍.</p>
 </div>
 
-  <p class="stmt">设 \(u,v\) 均可微，\(C\) 为常数.证明：(1) \(
-abla(Cu)=C
-abla u\)；(2) \(
-abla(uv)=v
-abla u+u
-abla v\)；(3) \(
-abla f(u)=f'(u)
-abla u\).</p>
+  <p class="stmt">设 \(u,v\) 均可微，\(C\) 为常数.证明：(1) \(\nabla(Cu)=C\nabla u\)；(2) \(\nabla(uv)=v\nabla u+u\nabla v\)；(3) \(\nabla f(u)=f'(u)\nabla u\).</p>
   <p class="sol"><span class="mk">证</span>只需逐分量验证.以 (2) 为例，第一个分量</p>
   \[\frac{\partial (uv)}{\partial x}=v\frac{\partial u}{\partial x}+u\frac{\partial v}{\partial x},\]
-  <p>第二个分量同理.把两个分量合成向量即得 \(
-abla(uv)=v
-abla u+u
-abla v\).(1)(3) 类似，(3) 用的是链式法则.</p>
+  <p>第二个分量同理.把两个分量合成向量即得 \(\nabla(uv)=v\nabla u+u\nabla v\).(1)(3) 类似，(3) 用的是链式法则.</p>
 
 
 <div class="case"><div class="lab">应用探微 · 学习率该取多大：一次完整的收敛性分析</div>
@@ -2147,19 +2046,16 @@ abla v\).(1)(3) 类似，(3) 用的是链式法则.</p>
 
 <div class="def"><div class="lab"><span class="n">定理 9.11</span>方向导数的计算公式</div>
   <p>若 \(f\) 在 \(P_0\) 可微，则沿任意单位方向 \(\boldsymbol{e}_l\) 的方向导数都存在，且</p>
-  \[\boxed{\ \frac{\partial f}{\partial l}=f_x(P_0)\cos\alpha+f_y(P_0)\cos\beta=
-abla f(P_0)\cdot\boldsymbol{e}_l\ }\]
+  \[\boxed{\ \frac{\partial f}{\partial l}=f_x(P_0)\cos\alpha+f_y(P_0)\cos\beta=\nabla f(P_0)\cdot\boldsymbol{e}_l\ }\]
   <p>三元情形为</p>
-  \[\boxed{\ \frac{\partial f}{\partial l}=f_x\cos\alpha+f_y\cos\beta+f_z\cos\gamma=
-abla f\cdot\boldsymbol{e}_l\ }\]
+  \[\boxed{\ \frac{\partial f}{\partial l}=f_x\cos\alpha+f_y\cos\beta+f_z\cos\gamma=\nabla f\cdot\boldsymbol{e}_l\ }\]
 <details class="prf prf-idea"><summary>证明思路（可微性直接推出，属核心公式）</summary>
 <div class="prf-b">
 <p>由 \(f\) 在 \(P_0\) 可微，全增量可写为</p>
 \[\Delta f=f_x(P_0)\,\Delta x+f_y(P_0)\,\Delta y+o(\rho),\qquad \rho=\sqrt{(\Delta x)^2+(\Delta y)^2}.\]
 <p>沿方向 \(\boldsymbol{l}\) 取 \(\Delta x=t\cos\alpha,\ \Delta y=t\cos\beta\)（此时 \(\rho=|t|=t\)，因 \(t\to0^+\)），代入得</p>
 \[\frac{\Delta f}{t}=f_x\cos\alpha+f_y\cos\beta+\frac{o(t)}{t}.\]
-<p>令 \(t\to0^+\)，末项趋于 \(0\)，即得 \(\dfrac{\partial f}{\partial l}=f_x\cos\alpha+f_y\cos\beta=
-abla f\cdot\boldsymbol{e}_l\).三元情形完全类似，把 \(\boldsymbol{e}_l\) 写成 \((\cos\alpha,\cos\beta,\cos\gamma)\) 即可.</p>
+<p>令 \(t\to0^+\)，末项趋于 \(0\)，即得 \(\dfrac{\partial f}{\partial l}=f_x\cos\alpha+f_y\cos\beta=\nabla f\cdot\boldsymbol{e}_l\).三元情形完全类似，把 \(\boldsymbol{e}_l\) 写成 \((\cos\alpha,\cos\beta,\cos\gamma)\) 即可.</p>
 <p class="qed">证毕</p>
 </div>
 </details>
@@ -2169,31 +2065,21 @@ abla f\cdot\boldsymbol{e}_l\).三元情形完全类似，把 \(\boldsymbol{e}_l\
 <h3>二、梯度</h3>
 <div class="def"><div class="lab"><span class="n">定义 9.12</span>梯度</div>
   <p>设 \(f\) 具有一阶连续偏导数，则称向量</p>
-  \[\boxed{\ 
-abla f=\operatorname{grad}f=\left(\frac{\partial f}{\partial x},\;\frac{\partial f}{\partial y}\right)\ }\qquad\text{（二元）}\]
+  \[\boxed{\ \nabla f=\operatorname{grad}f=\left(\frac{\partial f}{\partial x},\;\frac{\partial f}{\partial y}\right)\ }\qquad\text{（二元）}\]
   <p>或</p>
-  \[\boxed{\ 
-abla f=\operatorname{grad}f=\left(\frac{\partial f}{\partial x},\;\frac{\partial f}{\partial y},\;\frac{\partial f}{\partial z}\right)\ }\qquad\text{（三元）}\]
+  \[\boxed{\ \nabla f=\operatorname{grad}f=\left(\frac{\partial f}{\partial x},\;\frac{\partial f}{\partial y},\;\frac{\partial f}{\partial z}\right)\ }\qquad\text{（三元）}\]
   <p>为 \(f\) 在 \(P_0\) 处的<b>梯度</b>.它是一个<b>向量场</b>，每点赋一个方向.</p>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定理 9.12</span>方向导数与梯度的关系</div>
-  <p>由 \(\dfrac{\partial f}{\partial l}=
-abla f\cdot\boldsymbol{e}_l=|
-abla f|\,|\boldsymbol{e}_l|\cos\theta=|
-abla f|\cos\theta\)（\(\theta\) 为 \(\boldsymbol{e}_l\) 与 \(
-abla f\) 的夹角）立得三条推论：</p>
+  <p>由 \(\dfrac{\partial f}{\partial l}=\nabla f\cdot\boldsymbol{e}_l=|\nabla f|\,|\boldsymbol{e}_l|\cos\theta=|\nabla f|\cos\theta\)（\(\theta\) 为 \(\boldsymbol{e}_l\) 与 \(\nabla f\) 的夹角）立得三条推论：</p>
   <div class="bey">
-  <p><b>推论 1（增长最快）：</b>当 \(\theta=0\)，即沿<b>梯度方向</b>时，方向导数取最大值 \(|
-abla f|\)——梯度指向函数值<b>增长最快</b>的方向.</p>
-  <p><b>推论 2（下降最快）：</b>当 \(\theta=\pi\)，即沿<b>负梯度方向</b> \(-
-abla f\) 时，方向导数取最小值 \(-|
-abla f|\)——这是<b>最速下降方向</b>（机器学习梯度下降法的几何根源）.</p>
+  <p><b>推论 1（增长最快）：</b>当 \(\theta=0\)，即沿<b>梯度方向</b>时，方向导数取最大值 \(|\nabla f|\)——梯度指向函数值<b>增长最快</b>的方向.</p>
+  <p><b>推论 2（下降最快）：</b>当 \(\theta=\pi\)，即沿<b>负梯度方向</b> \(-\nabla f\) 时，方向导数取最小值 \(-|\nabla f|\)——这是<b>最速下降方向</b>（机器学习梯度下降法的几何根源）.</p>
   <p><b>推论 3（瞬时不变）：</b>当 \(\theta=\dfrac{\pi}{2}\)，即沿<b>垂直于梯度</b>的方向时，方向导数为 \(0\)——函数值瞬时不变，这正是<b>等高线（等值线）的切线方向</b>.</p>
   </div>
 </div>
-<div class="note"><b>梯度垂直于等高线：</b>等高线 \(f(x,y)=c\) 上每点的切线方向恰使方向导数为 \(0\)，故 \(
-abla f\) 必与该切线垂直，即<b>梯度垂直于等高线、指向函数值增大一侧</b>.这也是为什么地图上" uphill "总是垂直于等高线.</div>
+<div class="note"><b>梯度垂直于等高线：</b>等高线 \(f(x,y)=c\) 上每点的切线方向恰使方向导数为 \(0\)，故 \(\nabla f\) 必与该切线垂直，即<b>梯度垂直于等高线、指向函数值增大一侧</b>.这也是为什么地图上" uphill "总是垂直于等高线.</div>
 
 <div class="ex"><div class="lab">例 9.42　二元方向导数（先单位化）</div>
   <p class="stmt">求 \(f(x,y)=x^2+y^2\) 在 \((1,2)\) 处沿向量 \(\boldsymbol{l}=(3,4)\) 方向的方向导数.</p>
@@ -2206,11 +2092,9 @@ abla f\) 必与该切线垂直，即<b>梯度垂直于等高线、指向函数�
 <div class="ex"><div class="lab">例 9.43　梯度、最快方向与不变方向</div>
   <p class="stmt">求 \(f(x,y)=x^2-xy+y^2\) 在 \((1,1)\) 处：(1) 梯度；(2) 增长最快的方向与最大变化率；(3) 函数值瞬时不变的方向.</p>
   <p class="sol"><span class="mk">解</span>\((1)\ f_x=2x-y,\ f_y=-x+2y\)，在 \((1,1)\) 得 \(f_x=1,\ f_y=1\)，故</p>
-  \[
-abla f(1,1)=(1,1).\]
+  \[\nabla f(1,1)=(1,1).\]
   <p>\((2)\) 增长最快的方向即梯度方向本身：\(\boldsymbol{e}_{\max}=\dfrac{(1,1)}{\sqrt2}=\bigl(\tfrac1{\sqrt2},\tfrac1{\sqrt2}\bigr)\)，最大变化率为</p>
-  \[|
-abla f(1,1)|=\sqrt{1^2+1^2}=\sqrt2.\]
+  \[|\nabla f(1,1)|=\sqrt{1^2+1^2}=\sqrt2.\]
   <p>\((3)\) 与梯度垂直（沿等高线切线）时方向导数为 \(0\)，对应方向为 \(\pm(1,-1)/\sqrt2\).</p>
 </div>
 
@@ -2225,40 +2109,28 @@ abla f(1,1)|=\sqrt{1^2+1^2}=\sqrt2.\]
 </div>
 
 <div class="ex"><div class="lab">例 9.45　由方向导数反求梯度</div>
-  <p class="stmt">已知在某点沿 \((1,0)\) 方向导数为 \(3\)、沿 \(\bigl(\tfrac{\sqrt2}{2},\tfrac{\sqrt2}{2}\bigr)\) 方向导数为 \(2\sqrt2\).求该点梯度 \(
-abla f=(a,b)\) 及最大方向导数.</p>
-  <p class="sol"><span class="mk">解</span>设 \(
-abla f=(a,b)\).由 \(
-abla f\cdot\boldsymbol{e}_l=\dfrac{\partial f}{\partial l}\)：</p>
+  <p class="stmt">已知在某点沿 \((1,0)\) 方向导数为 \(3\)、沿 \(\bigl(\tfrac{\sqrt2}{2},\tfrac{\sqrt2}{2}\bigr)\) 方向导数为 \(2\sqrt2\).求该点梯度 \(\nabla f=(a,b)\) 及最大方向导数.</p>
+  <p class="sol"><span class="mk">解</span>设 \(\nabla f=(a,b)\).由 \(\nabla f\cdot\boldsymbol{e}_l=\dfrac{\partial f}{\partial l}\)：</p>
   \[(a,b)\cdot(1,0)=a=3.\]
   <p>第二式：</p>
   \[(a,b)\cdot\left(\frac{\sqrt2}{2},\frac{\sqrt2}{2}\right)=\frac{a+b}{\sqrt2}=2\sqrt2\;\Longrightarrow\;a+b=4\;\Longrightarrow\;b=1.\]
-  <p>故 \(
-abla f=(3,1)\)，最大方向导数为 \(|
-abla f|=\sqrt{3^2+1^2}=\sqrt{10}\).</p>
+  <p>故 \(\nabla f=(3,1)\)，最大方向导数为 \(|\nabla f|=\sqrt{3^2+1^2}=\sqrt{10}\).</p>
 </div>
 
 <div class="ex"><div class="lab">例 9.46　最速下降（与 §9.8 巡检无人机呼应）</div>
   <p class="stmt">无人机地形高度场 \(h(x,y)=1000-0.02x^2-0.05y^2\)（单位：m）.求在点 \((100,60)\) 的<b>最速下降方向</b>及对应的下降速率.</p>
   <p class="sol"><span class="mk">解</span>梯度</p>
-  \[
-abla h=(h_x,h_y)=(-0.04x,\,-0.10y).\]
+  \[\nabla h=(h_x,h_y)=(-0.04x,\,-0.10y).\]
   <p>在 \((100,60)\) 处</p>
-  \[
-abla h=(-4,\,-6),\qquad |
-abla h|=\sqrt{(-4)^2+(-6)^2}=\sqrt{52}\approx7.21.\]
+  \[\nabla h=(-4,\,-6),\qquad |\nabla h|=\sqrt{(-4)^2+(-6)^2}=\sqrt{52}\approx7.21.\]
   <p>最速<b>下降</b>方向为负梯度方向单位化：</p>
-  \[\boldsymbol{u}_{\min}=-\frac{
-abla h}{|
-abla h|}=\frac{(4,6)}{\sqrt{52}}\approx(0.555,\,0.832).\]
+  \[\boldsymbol{u}_{\min}=-\frac{\nabla h}{|\nabla h|}=\frac{(4,6)}{\sqrt{52}}\approx(0.555,\,0.832).\]
   <p>沿此方向每前进 \(1\ \mathrm{m}\)，高度约下降 \(7.21\ \mathrm{m}\)（即坡度约为 \(7.21\)）.这正是梯度下降法"朝最陡处下脚"的几何含义.</p>
 </div>
 
 <div class="case"><div class="lab">场景　室内温度场：哪儿升温最快？</div>
   <p><b>场景：</b> 房间内温度近似为 \(T(x,y)=20+0.5x-0.3y\)（℃，\(x,y\) 以米计）.你站在 \((2,1)\)，<b>朝哪个方向走会立刻感觉到最明显的升温</b>？升温速率多大？</p>
-  \[
-abla T=(0.5,\,-0.3),\qquad |
-abla T|=\sqrt{0.25+0.09}=\sqrt{0.34}\approx0.583\ \mathrm{^\circ C/m}.\]
+  \[\nabla T=(0.5,\,-0.3),\qquad |\nabla T|=\sqrt{0.25+0.09}=\sqrt{0.34}\approx0.583\ \mathrm{^\circ C/m}.\]
   <p>最速升温方向为单位梯度 \(\dfrac{(0.5,-0.3)}{0.583}\approx(0.857,\,-0.514)\)——即"朝 \(x\) 正方向略偏 \(y\) 负方向".沿此方向每走 1 m 升温约 \(0.583\ \mathrm{^\circ C}\)；若沿垂直方向 \((0.514,0.857)\) 走，则温度<b>瞬时不变</b>（正走在等温线上）.</p>
 
 <div style="margin:14px 0 6px 0;text-align:center">
@@ -2336,15 +2208,10 @@ abla T|=\sqrt{0.25+0.09}=\sqrt{0.34}\approx0.583\ \mathrm{^\circ C/m}.\]
 
 <div class="case">
 <p><b>场景：</b> 一架巡检无人机载有地形高度场 \(h(x,y)=50-0.5x^2-0.3y^2\)（单位：米，\(x,y\) 以 10 m 计）.它要从 \((4,3)\)（即实地 \((40\ \mathrm{m},30\ \mathrm{m})\)）尽快降低高度避险，该朝哪个方向走？这恰好是例 9.50「最速下降方向的应用」.</p>
-\[
-abla h=(-4,\,-1.8),\qquad |
-abla h|=\sqrt{16+3.24}=\sqrt{19.24}=4.386.\]
+\[\nabla h=(-4,\,-1.8),\qquad |\nabla h|=\sqrt{16+3.24}=\sqrt{19.24}=4.386.\]
 <p>最速下降方向（单位向量）为</p>
-\[\boldsymbol{u}_{\min}=-\frac{
-abla h}{|
-abla h|}=\frac{(4,1.8)}{4.386}=(0.912,\ 0.410).\]
-<p>沿此方向的方向导数 \(D_{\boldsymbol u_{\min}}h=-|
-abla h|=-4.386\)（每 10 m 下降 4.386 m，即坡度 \(0.439\)）.</p>
+\[\boldsymbol{u}_{\min}=-\frac{\nabla h}{|\nabla h|}=\frac{(4,1.8)}{4.386}=(0.912,\ 0.410).\]
+<p>沿此方向的方向导数 \(D_{\boldsymbol u_{\min}}h=-|\nabla h|=-4.386\)（每 10 m 下降 4.386 m，即坡度 \(0.439\)）.</p>
 
 </div>
 
@@ -2352,9 +2219,7 @@ abla h|=-4.386\)（每 10 m 下降 4.386 m，即坡度 \(0.439\)）.</p>
 <p><b>场景：</b> 一张 MRI 切片在某组织内部灰度近似为高斯隆起</p>
 \[I(x,y)=I_0\exp\!\Bigl(-\frac{(x-c_x)^2+(y-c_y)^2}{2\sigma^2}\Bigr),\qquad I_0=1000,\ \sigma=2\ \text{像素}.\]
 \[I=1000\,\mathrm{e}^{-0.25}=778.8,\]
-\[
-abla I=778.8\,(-0.25,\,-0.25)=(-194.7,\,-194.7),\qquad |
-abla I|=\sqrt{2\times194.7^2}=275.7.\]
+\[\nabla I=778.8\,(-0.25,\,-0.25)=(-194.7,\,-194.7),\qquad |\nabla I|=\sqrt{2\times194.7^2}=275.7.\]
 
 </div>
 <!--MODEND-->
@@ -2475,17 +2340,11 @@ abla I|=\sqrt{2\times194.7^2}=275.7.\]
 <p><span class="stp">第一步：写出增量.</span>因 \(P_0\) 是驻点，\(f_x(P_0)=f_y(P_0)=0\).由定理 9.14（二阶泰勒公式，佩亚诺型余项，只需二阶连续偏导），记 \(h=\Delta x,\ k=\Delta y,\ \rho=\sqrt{h^2+k^2}\)：</p>
 \[\Delta f=f(x_0+h,\,y_0+k)-f(x_0,y_0)=\frac{1}{2}\bigl(Ah^2+2Bhk+Ck^2\bigr)+o(\rho^2).\]
 <p>记二次型 \(Q(h,k)=Ah^2+2Bhk+Ck^2\).</p>
-<p><span class="stp">第二步：配方——看清 \(AC-B^2\) 从哪来.</span>设 \(A
-eq0\)，两端乘 \(A\) 再配方：</p>
+<p><span class="stp">第二步：配方——看清 \(AC-B^2\) 从哪来.</span>设 \(A\neq0\)，两端乘 \(A\) 再配方：</p>
 \[A\,Q(h,k)=A^2h^2+2ABhk+ACk^2=(Ah+Bk)^2+\bigl(AC-B^2\bigr)k^2 .\]
 <p>右端是两个平方项之和（带系数），符号一目了然.这一步是整个判别法的<b>代数心脏</b>.</p>
-<p><span class="stp">第三步：\(\Delta=AC-B^2\gt 0\) 的情形——二次型定号.</span>此时必有 \(A
-eq0\)（否则 \(\Delta=-B^2\le0\)）.由第二步，对 \((h,k)
-eq(0,0)\)：右端两项都非负；且不能同时为零——若 \(k=0\) 且 \(Ah+Bk=0\)，则 \(Ah=0\)，由 \(A
-eq0\) 得 \(h=0\)，与 \((h,k)
-eq(0,0)\) 矛盾.故</p>
-\[A\,Q(h,k)\gt 0\quad\text{对一切 }(h,k)
-eq(0,0),\]
+<p><span class="stp">第三步：\(\Delta=AC-B^2\gt 0\) 的情形——二次型定号.</span>此时必有 \(A\neq0\)（否则 \(\Delta=-B^2\le0\)）.由第二步，对 \((h,k)\neq(0,0)\)：右端两项都非负；且不能同时为零——若 \(k=0\) 且 \(Ah+Bk=0\)，则 \(Ah=0\)，由 \(A\neq0\) 得 \(h=0\)，与 \((h,k)\neq(0,0)\) 矛盾.故</p>
+\[A\,Q(h,k)\gt 0\quad\text{对一切 }(h,k)\neq(0,0),\]
 <p>即 \(Q\) 恒与 \(A\) <b>同号</b>：\(A\gt 0\) 时正定，\(A\lt 0\) 时负定.</p>
 <p><span class="stp">第四步：把定号"传递"给 \(\Delta f\)（处理余项）.</span>令 \(h=\rho\cos\phi,\ k=\rho\sin\phi\).由 \(Q\) 是二次齐次式，</p>
 \[Q(h,k)=\rho^2\,q(\phi),\qquad q(\phi)=A\cos^2\phi+2B\cos\phi\sin\phi+C\sin^2\phi .\]
@@ -2494,12 +2353,8 @@ eq(0,0),\]
 <p>当 \(\rho\) 充分小时 \(\left|\dfrac{o(\rho^2)}{\rho^2}\right|\lt \dfrac{m}{4}\lt \dfrac{|q(\phi)|}{2}\)，故方括号与 \(q(\phi)\) 同号，从而 \(\Delta f\) 与 \(A\) 同号且不为零：</p>
 <p>\(A\gt 0\)：\(\Delta f\gt 0\)，\(f(P_0)\) 是<b>极小值</b>；\(A\lt 0\)：\(\Delta f\lt 0\)，\(f(P_0)\) 是<b>极大值</b>.</p>
 <p><span class="stp">第五步：\(\Delta=AC-B^2\lt 0\) 的情形——不是极值.</span>只需找出两个方向使 \(Q\) 异号.</p>
-<p>(i) 若 \(A
-eq0\)：沿 \(k=0,\ h
-eq0\)，\(Q=Ah^2\)，与 \(A\) 同号；沿 \(h=-B,\ k=A\)（此时 \(Ah+Bk=0\)），由第二步 \(AQ=(AC-B^2)A^2\lt 0\)，故 \(Q\) 与 \(A\) <b>反号</b>.</p>
-<p>(ii) 若 \(A=0\)：则 \(\Delta=-B^2\lt 0\) 给出 \(B
-eq0\).沿 \(k=\epsilon h\ (h
-eq0)\)，\(Q=h^2\epsilon\,(2B+C\epsilon)\)；取 \(|\epsilon|\) 充分小使 \(2B+C\epsilon\) 与 \(2B\) 同号，则 \(\epsilon\gt 0\) 与 \(\epsilon\lt 0\) 给出符号相反的 \(Q\).</p>
+<p>(i) 若 \(A\neq0\)：沿 \(k=0,\ h\neq0\)，\(Q=Ah^2\)，与 \(A\) 同号；沿 \(h=-B,\ k=A\)（此时 \(Ah+Bk=0\)），由第二步 \(AQ=(AC-B^2)A^2\lt 0\)，故 \(Q\) 与 \(A\) <b>反号</b>.</p>
+<p>(ii) 若 \(A=0\)：则 \(\Delta=-B^2\lt 0\) 给出 \(B\neq0\).沿 \(k=\epsilon h\ (h\neq0)\)，\(Q=h^2\epsilon\,(2B+C\epsilon)\)；取 \(|\epsilon|\) 充分小使 \(2B+C\epsilon\) 与 \(2B\) 同号，则 \(\epsilon\gt 0\) 与 \(\epsilon\lt 0\) 给出符号相反的 \(Q\).</p>
 <p>两种情形都得到 \(\phi_1,\phi_2\) 使 \(q(\phi_1)\gt 0\gt q(\phi_2)\).仿第四步，沿 \(\phi=\phi_1\) 方向趋近时 \(\Delta f\gt 0\)，沿 \(\phi=\phi_2\) 方向趋近时 \(\Delta f\lt 0\).故在 \(P_0\) 的<b>任何</b>邻域内 \(\Delta f\) 都变号，\(f(P_0)\) 不是极值（\(P_0\) 是<b>鞍点</b>）.</p>
 <p><span class="stp">第六步：\(\Delta=0\) 的情形——判别法失效.</span>此时 \(q(\phi)\) 在某方向上为零，二阶项不足以压住 \(o(\rho^2)\)，胜负由更高阶项决定，须另作讨论.例如在原点处：\(f=x^2+y^4\) 有 \(A=2,B=C=0,\ \Delta=0\)，是极小值；而 \(f=x^2+y^3\) 同样 \(A=2,B=C=0,\ \Delta=0\)，但沿 \(x=0\) 当 \(y\lt 0\) 时 \(f\lt 0\)、\(y\gt 0\) 时 \(f\gt 0\)，不是极值.可见 \(\Delta=0\) 两种可能都会出现.</p>
 <p class="qed">证毕</p>
@@ -2538,8 +2393,7 @@ eq0)\)，\(Q=h^2\epsilon\,(2B+C\epsilon)\)；取 \(|\epsilon|\) 充分小使 \(2
 <div class="ex"><div class="lab">例 9.54　判别法失效的情形</div>
   <p class="stmt">讨论 \(f(x,y)=x^4+y^4\) 与 \(g(x,y)=x^3+y^3\) 在原点是否取极值.</p>
   <p class="sol"><span class="mk">解</span>两者在原点都是驻点，且 \(A=B=C=0\)，\(\Delta=0\)，判别法失效，必须直接分析.</p>
-  <p>对 \(f\)：当 \((x,y)
-eq(0,0)\) 时 \(f=x^4+y^4\gt0=f(0,0)\)，故取<b>极小值 0</b>.</p>
+  <p>对 \(f\)：当 \((x,y)\neq(0,0)\) 时 \(f=x^4+y^4\gt0=f(0,0)\)，故取<b>极小值 0</b>.</p>
   <p>对 \(g\)：沿 \(x\) 轴正向 \(g=x^3\gt0\)，沿 \(x\) 轴负向 \(g=x^3\lt0\)，在原点任意小邻域内都有正有负，故<b>不是极值</b>.</p>
   <p class="muted">当 \(\Delta=0\) 时，标准做法是<b>回到定义</b>：考察 \(f(x,y)-f(x_0,y_0)\) 在该点附近是否保持定号，常沿若干特殊路径试探.</p>
 </div>
@@ -2558,12 +2412,9 @@ eq(0,0)\) 时 \(f=x^4+y^4\gt0=f(0,0)\)，故取<b>极小值 0</b>.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>条件极值的麻烦在于两个变量被约束"绑住"了，不能各自独立地令偏导为零.<b>破局的办法是用隐函数定理把约束解开</b>：从 \(\varphi(x,y)=0\) 中局部解出 \(y=y(x)\)，代回目标函数，条件极值就变成了一元的<b>无条件</b>极值，可以直接用费马引理.整理所得的等式，乘数 \(\lambda\) 会自己冒出来.</p>
-<p><span class="stp">第一步：条件与设定.</span>设 \(f,\varphi\) 在点 \(P_0(x_0,y_0)\) 的某邻域内有连续偏导数，\(P_0\) 满足约束 \(\varphi(x_0,y_0)=0\) 且是 \(f\) 在该约束下的极值点.再设约束<b>非退化</b>，即 \(\bigl(\varphi_x(P_0),\varphi_y(P_0)\bigr)
-eq(0,0)\).不妨设</p>
-\[\varphi_y(x_0,y_0)
-eq 0\]
-<p>（若 \(\varphi_y(P_0)=0\)，则必有 \(\varphi_x(P_0)
-eq0\)，把下面论证中 \(x\) 与 \(y\) 的地位互换即可）.</p>
+<p><span class="stp">第一步：条件与设定.</span>设 \(f,\varphi\) 在点 \(P_0(x_0,y_0)\) 的某邻域内有连续偏导数，\(P_0\) 满足约束 \(\varphi(x_0,y_0)=0\) 且是 \(f\) 在该约束下的极值点.再设约束<b>非退化</b>，即 \(\bigl(\varphi_x(P_0),\varphi_y(P_0)\bigr)\neq(0,0)\).不妨设</p>
+\[\varphi_y(x_0,y_0)\neq 0\]
+<p>（若 \(\varphi_y(P_0)=0\)，则必有 \(\varphi_x(P_0)\neq0\)，把下面论证中 \(x\) 与 \(y\) 的地位互换即可）.</p>
 <p><span class="stp">第二步：用隐函数定理解开约束.</span>由<b>定理 9.9</b>，方程 \(\varphi(x,y)=0\) 在 \(P_0\) 的某邻域内唯一确定一个连续可导的函数 \(y=y(x)\)，满足 \(y_0=y(x_0)\)，且</p>
 \[y'(x)=-\frac{\varphi_x}{\varphi_y}.\]
 <p>换言之，约束曲线在 \(P_0\) 附近恰好就是点集 \(\{(x,\,y(x))\}\).</p>
@@ -2573,16 +2424,13 @@ eq0\)，把下面论证中 \(x\) 与 \(y\) 的地位互换即可）.</p>
 \[g'(x_0)=0 .\]
 <p><span class="stp">第四步：算出 \(g'(x_0)\).</span>由定理 9.6（全导数）：</p>
 \[g'(x)=f_x+f_y\,y'(x)=f_x-f_y\,\frac{\varphi_x}{\varphi_y}.\]
-<p>在 \(x_0\) 处令其为零，并乘以 \(\varphi_y(P_0)
-eq0\)，得</p>
+<p>在 \(x_0\) 处令其为零，并乘以 \(\varphi_y(P_0)\neq0\)，得</p>
 \[f_x\varphi_y-f_y\varphi_x=0\qquad\text{（在 }P_0\text{ 处）} .\]
-<p><span class="stp">第五步：引入乘数 \(\lambda\).</span>因 \(\varphi_y(P_0)
-eq0\)，可以定义</p>
+<p><span class="stp">第五步：引入乘数 \(\lambda\).</span>因 \(\varphi_y(P_0)\neq0\)，可以定义</p>
 \[\lambda=-\frac{f_y(x_0,y_0)}{\varphi_y(x_0,y_0)} .\]
 <p>由定义立得 \(f_y+\lambda\varphi_y=0\).再把 \(f_y=-\lambda\varphi_y\) 代入第四步的等式：</p>
 \[f_x\varphi_y-(-\lambda\varphi_y)\varphi_x=\varphi_y\bigl(f_x+\lambda\varphi_x\bigr)=0 ,\]
-<p>由 \(\varphi_y
-eq0\) 得 \(f_x+\lambda\varphi_x=0\).连同原有的约束，\((x_0,y_0,\lambda)\) 满足</p>
+<p>由 \(\varphi_y\neq0\) 得 \(f_x+\lambda\varphi_x=0\).连同原有的约束，\((x_0,y_0,\lambda)\) 满足</p>
 \[\begin{cases}f_x+\lambda\varphi_x=0,\\ f_y+\lambda\varphi_y=0,\\ \varphi(x,y)=0 .\end{cases}\]
 <p><span class="stp">第六步：认出这就是 \(L\) 的驻点方程.</span>令 \(L(x,y,\lambda)=f(x,y)+\lambda\varphi(x,y)\)，则 \(L_x=f_x+\lambda\varphi_x,\ L_y=f_y+\lambda\varphi_y,\ L_\lambda=\varphi(x,y)\).上面三式恰是 \(L_x=L_y=L_\lambda=0\).<b>这就把"有约束的二元问题"化成了"无约束的三元驻点问题"</b>，方法的全部魔力就在于此.</p>
 <p>对 \(m\lt n\) 个约束 \(\varphi_j(x_1,\dots,x_n)=0\) 的情形，只要雅可比矩阵 \(\left(\dfrac{\partial\varphi_j}{\partial x_i}\right)\) 在该点秩为 \(m\)，就可以选出 \(m\) 个变量，使相应的 \(m\) 阶雅可比行列式非零，从而由<b>定理 9.11</b>（隐函数组存在定理）把这 \(m\) 个变量局部解成其余 \(n-m\) 个变量的函数，化为 \(n-m\) 元的<b>无条件</b>极值问题；对每个自由变量重复第三至第五步的论证，即得 \(L=f+\sum\limits_{j=1}^{m}\lambda_j\varphi_j\) 对全部 \(n+m\) 个变量的偏导数为零.</p>
@@ -2724,8 +2572,7 @@ eq0\) 得 \(f_x+\lambda\varphi_x=0\).连同原有的约束，\((x_0,y_0,\lambda)
 <div class="case">
 <p><b>场景：</b> 引例一用最小二乘法把 5 个数据点拟合成直线 \(y=a+bx\)，目标函数</p>
 \[S(a,b)=\sum_{i=1}^5\bigl(y_i-a-bx_i\bigr)^2.\]
-<p>求极小就是令 \(
-abla S=(0,0)\)——和上面 gd 实验要找的谷底完全一致，只是这里能直接解出解析解（正态方程）.</p>
+<p>求极小就是令 \(\nabla S=(0,0)\)——和上面 gd 实验要找的谷底完全一致，只是这里能直接解出解析解（正态方程）.</p>
 <table class="dt">
 <tr><th>\(i\)</th><th>\(x_i\)</th><th>\(y_i\)</th><th>\(x_i^2\)</th><th>\(x_i y_i\)</th></tr>
 <tr><td>1</td><td>0</td><td>1.0</td><td>0</td><td>0</td></tr>
@@ -2802,10 +2649,8 @@ abla S=(0,0)\)——和上面 gd 实验要找的谷底完全一致，只是这�
 
 <h3>二、曲面的切平面与法线</h3>
 <div class="def"><div class="lab">情形一：隐式曲面 \(F(x,y,z)=0\)</div>
-  <p>设 \(F\) 有连续偏导数且在 \(M_0(x_0,y_0,z_0)\) 处 \(\bigl(F_x,F_y,F_z\bigr)
-eq\boldsymbol{0}\)，则曲面 \(\Sigma:F(x,y,z)=0\) 在 \(M_0\) 处</p>
-  <p><b>法向量</b> \(\boldsymbol{n}=\bigl(F_x(M_0),\,F_y(M_0),\,F_z(M_0)\bigr)=
-abla F(M_0)\)；</p>
+  <p>设 \(F\) 有连续偏导数且在 \(M_0(x_0,y_0,z_0)\) 处 \(\bigl(F_x,F_y,F_z\bigr)\neq\boldsymbol{0}\)，则曲面 \(\Sigma:F(x,y,z)=0\) 在 \(M_0\) 处</p>
+  <p><b>法向量</b> \(\boldsymbol{n}=\bigl(F_x(M_0),\,F_y(M_0),\,F_z(M_0)\bigr)=\nabla F(M_0)\)；</p>
   <p><b>切平面</b></p>
   \[F_x(M_0)(x-x_0)+F_y(M_0)(y-y_0)+F_z(M_0)(z-z_0)=0;\]
   <p><b>法线</b></p>
@@ -2859,8 +2704,7 @@ abla F(M_0)\)；</p>
   \[F_x=y=1,\qquad F_y=x=2,\qquad F_z=\mathrm{e}^{z}-1=\mathrm{e}^{0}-1=0.\]
   <p>法向量 \(\boldsymbol{n}=(1,2,0)\).切平面</p>
   \[1\cdot(x-2)+2(y-1)+0\cdot(z-0)=0,\qquad\text{即}\qquad x+2y-4=0.\]
-  <p class="muted">法向量的 \(z\) 分量为零，说明切平面<b>与 \(z\) 轴平行</b>（是一张竖直平面）.此时该曲面无法在 \(M_0\) 附近写成 \(z=f(x,y)\) 的显式形式——正对应 §9.6 中隐函数存在定理要求 \(F_z
-eq0\) 的条件在此<b>失效</b>.<b>几何与分析在这里再次呼应.</b></p>
+  <p class="muted">法向量的 \(z\) 分量为零，说明切平面<b>与 \(z\) 轴平行</b>（是一张竖直平面）.此时该曲面无法在 \(M_0\) 附近写成 \(z=f(x,y)\) 的显式形式——正对应 §9.6 中隐函数存在定理要求 \(F_z\neq0\) 的条件在此<b>失效</b>.<b>几何与分析在这里再次呼应.</b></p>
 </div>
 
 <div class="ex"><div class="lab">例 9.64　求满足方向条件的切平面（考研经典）</div>
@@ -2878,12 +2722,8 @@ eq0\) 的条件在此<b>失效</b>.<b>几何与分析在这里再次呼应.</b><
   <p class="stmt">求曲线 \(\begin{cases}x^2+y^2+z^2=6,\\ x+y+z=0\end{cases}\) 在点 \(M_0(1,-2,1)\) 处的切线与法平面方程.</p>
   <p class="sol"><span class="mk">解</span>交线上一点的切向量必须<b>同时垂直于两个曲面的法向量</b>，故可取二者的<b>向量积</b>.</p>
   <p>令 \(F=x^2+y^2+z^2-6,\ G=x+y+z\)（验证：\(1+4+1=6\ \checkmark\)，\(1-2+1=0\ \checkmark\)）.</p>
-  \[
-abla F\big|_{M_0}=(2x,2y,2z)=(2,-4,2),\qquad 
-abla G=(1,1,1).\]
-  \[\boldsymbol{T}=
-abla F\times
-abla G=\begin{vmatrix}\boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\ 2&-4&2\\ 1&1&1\end{vmatrix}
+  \[\nabla F\big|_{M_0}=(2x,2y,2z)=(2,-4,2),\qquad \nabla G=(1,1,1).\]
+  \[\boldsymbol{T}=\nabla F\times\nabla G=\begin{vmatrix}\boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\ 2&-4&2\\ 1&1&1\end{vmatrix}
    =\boldsymbol{i}(-4-2)-\boldsymbol{j}(2-2)+\boldsymbol{k}(2+4)=(-6,\ 0,\ 6).\]
   <p>约简为 \(\boldsymbol{T}=(-1,0,1)\)，或取反向 \((1,0,-1)\).</p>
   <p><b>切线：</b>\(\dfrac{x-1}{1}=\dfrac{y+2}{0}=\dfrac{z-1}{-1}\)（其中 \(y+2=0\) 理解为切线落在平面 \(y=-2\) 上）.</p>
@@ -2963,11 +2803,9 @@ abla G=\begin{vmatrix}\boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\ 2&-4&2\\ 1&
 <div class="ky-hd">🎯 考研选讲 · 第九章 多元函数微分学</div>
 
 <div class="ky-q">
-<p class="stmt"><b>【题 1】</b>（考研典型题，数学一常考）设 \(f(x,y)=\begin{cases}\dfrac{xy}{x^2+y^2},& (x,y)
-eq(0,0),\\ 0,& (x,y)=(0,0).\end{cases}\) 讨论 \(f\) 在 \((0,0)\) 处的偏导数存在性与连续性.</p>
+<p class="stmt"><b>【题 1】</b>（考研典型题，数学一常考）设 \(f(x,y)=\begin{cases}\dfrac{xy}{x^2+y^2},& (x,y)\neq(0,0),\\ 0,& (x,y)=(0,0).\end{cases}\) 讨论 \(f\) 在 \((0,0)\) 处的偏导数存在性与连续性.</p>
 <p class="ky-hint"><b>思路点拨.</b> 偏导数是「固定一个变量、对另一个求一元导数」，只沿坐标轴逼近，永远碰不到路径依赖问题；而连续性要求所有路径的极限都等于函数值.两者的反例常被混为一谈——这是最大陷阱.</p>
-<p class="sol"><span class="mk">解</span> 对 \(x\) 的偏导：\(f(x,0)\equiv 0\)，故 \(f_x(0,0)=\lim\limits_{x\to0}\dfrac{0-0}{x}=0\)；同理 \(f_y(0,0)=0\)，两偏导均存在.连续性：沿 \(y=x\) 趋近，\(f(x,x)=\dfrac{x^2}{2x^2}=\dfrac12
-eq 0=f(0,0)\)，故在原点不连续.</p>
+<p class="sol"><span class="mk">解</span> 对 \(x\) 的偏导：\(f(x,0)\equiv 0\)，故 \(f_x(0,0)=\lim\limits_{x\to0}\dfrac{0-0}{x}=0\)；同理 \(f_y(0,0)=0\)，两偏导均存在.连续性：沿 \(y=x\) 趋近，\(f(x,x)=\dfrac{x^2}{2x^2}=\dfrac12\neq 0=f(0,0)\)，故在原点不连续.</p>
 <p class="ky-idea"><b>命题意图.</b> 考查「偏导数存在 \(
 Rightarrow\) 连续」这一反直觉结论（对应 §9.2 定理 9.4 后的关系表），与例 9.17 同源.</p>
 </div>
@@ -2989,8 +2827,7 @@ Rightarrow\) 连续」这一反直觉结论（对应 §9.2 定理 9.4 后的关�
 <p class="sol"><span class="mk">解</span> 对 \(x\) 求导：</p>
 \[1=\frac{\partial u}{\partial x},\qquad 2u\frac{\partial u}{\partial x}+2v\frac{\partial v}{\partial x}+2z\frac{\partial z}{\partial x}=0.\]
 <p>代入 \(\partial u/\partial x=1\) 得 \(2u+2v\,v_x+2z\,z_x=0\)，即 \(v\,v_x+z\,z_x=-u\).再对第一式 \(u=x+y+z\) 求 \(x\) 导得 \(u_x=1+z_x=1\Rightarrow z_x=0\)？注意 \(u_x=\partial u/\partial x=1\) 已给出，而 \(u=x+y+z\) 对 \(x\) 导为 \(1=1+\partial z/\partial x\)？需谨慎：\(u\) 显含 \(x\)，故 \(\partial u/\partial x=1+\partial z/\partial x\).与 \(u_x=1\) 联立得 \(1+\partial z/\partial x=1\Rightarrow \partial z/\partial x=0\).代回：\(v\,v_x=-u\).故</p>
-\[\frac{\partial z}{\partial x}=0,\qquad \frac{\partial v}{\partial x}=-\frac{u}{v}\quad(v
-eq0).\]
+\[\frac{\partial z}{\partial x}=0,\qquad \frac{\partial v}{\partial x}=-\frac{u}{v}\quad(v\neq0).\]
 <p class="ky-idea"><b>命题意图.</b> 考查隐函数组存在定理（定理 9.11）与例 9.42「方程组求偏导」的联立技巧，强调所有因变量一起动.</p>
 </div>
 
@@ -3037,19 +2874,13 @@ eq0).\]
 <div class="case">
 <details><summary>应用案例 · 抛物面天线型面：切平面与法线用于指向标校</summary>
 <p><b>场景：</b> 一口卫星通信抛物面天线 \(z=\dfrac{x^2+y^2}{4f}\)（\(f=1\ \mathrm{m}\) 为焦距，即例 9.61 的抛物面）.在型面点 \((1,1)\) 处，反射面的法线方向决定「平行于轴入射的电波反射后是否精确过焦点」——CNC 加工与安装标校都要先算出它.对应例 9.62.</p>
-\[
-abla F=\Bigl(\frac{x}{2f},\ \frac{y}{2f},\ -1\Bigr).\]
+\[\nabla F=\Bigl(\frac{x}{2f},\ \frac{y}{2f},\ -1\Bigr).\]
 <p>在 \((1,1)\)（此时 \(z=\dfrac{1+1}{4}=0.5\)）：</p>
-\[
-abla F=(0.5,\ 0.5,\ -1),\qquad |
-abla F|=\sqrt{0.25+0.25+1}=1.225.\]
+\[\nabla F=(0.5,\ 0.5,\ -1),\qquad |\nabla F|=\sqrt{0.25+0.25+1}=1.225.\]
 <p>单位法向 \((0.408,\ 0.408,\ -0.816)\).切平面：</p>
 \[0.5(x-1)+0.5(y-1)-1(z-0.5)=0\ \Rightarrow\ z=0.5x+0.5y-0.5.\]
-<p><b>工程结论：</b> 法线方向由 \(
-abla F\) 给出，加工刀轴、反射面法线标校都以此为准.抛物面的几何性质（所有平行轴的射线经反射会聚于焦点）要求每一点的法线都精确等于这里算出的 \(
-abla F\)——偏 \(1^\circ\) 就会让波束指向偏差数毫弧度，足以让地面站失锁.</p>
-<p class="cn-point">反射面每一点的法线都得"精确等于"\(
-abla F=(0.5,0.5,-1)\)，偏 \(1^\circ\) 波束就跑偏数毫弧度——国产卫星通信地面站能在万里之外锁住一颗星，拼的就是这种把法线标校到毫弧度级的功夫.</p>
+<p><b>工程结论：</b> 法线方向由 \(\nabla F\) 给出，加工刀轴、反射面法线标校都以此为准.抛物面的几何性质（所有平行轴的射线经反射会聚于焦点）要求每一点的法线都精确等于这里算出的 \(\nabla F\)——偏 \(1^\circ\) 就会让波束指向偏差数毫弧度，足以让地面站失锁.</p>
+<p class="cn-point">反射面每一点的法线都得"精确等于"\(\nabla F=(0.5,0.5,-1)\)，偏 \(1^\circ\) 波束就跑偏数毫弧度——国产卫星通信地面站能在万里之外锁住一颗星，拼的就是这种把法线标校到毫弧度级的功夫.</p>
 </details>
 </div>
 <!--MODEND-->
@@ -3097,6 +2928,7 @@ abla F=(0.5,0.5,-1)\)，偏 \(1^\circ\) 波束就跑偏数毫弧度——国产�
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 9, "list": [["s091", "9.1 多元函数的概念"], ["s092", "9.2 二元函数的极限与连续"], ["s093", "9.3 偏导数"], ["s094", "9.4 全微分"], ["s095", "9.5 多元复合函数的求导法则"], ["s096", "9.6 隐函数的微分法"], ["s097", "9.7 方向导数与梯度"], ["s098", "9.8 泰勒公式与极值应用"], ["s099", "9.9 多元微分学的几何应用"], ["adv9", "考研选讲"], ["cq9", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -3124,5 +2956,6 @@ abla F=(0.5,0.5,-1)\)，偏 \(1^\circ\) 波束就跑偏数毫弧度——国产�
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

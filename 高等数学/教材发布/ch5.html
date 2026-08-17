@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第5章 · 一元函数积分学</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第5章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -732,8 +736,7 @@
   <p class="stmt">设 \(f(x)\) 连续，且满足 \(\displaystyle\int_{0}^{x}f(t)\,\mathrm{d}t=x^{2}+\int_{0}^{x}t f(t)\,\mathrm{d}t\)，求 \(f(x)\).</p>
   <p class="sol"><span class="mk">解</span>两端对 \(x\) 求导（两边的变上限积分都用定理 5.3）：</p>
   \[f(x)=2x+x f(x).\]
-  <p>移项整理：\(f(x)(1-x)=2x\)，故当 \(x
-eq1\) 时</p>
+  <p>移项整理：\(f(x)(1-x)=2x\)，故当 \(x\neq1\) 时</p>
   \[f(x)=\frac{2x}{1-x}.\]
   <p class="muted"><b>方法：</b>凡是"未知函数被关在积分号里"的方程（积分方程），第一反应就是<b>对 \(x\) 求导</b>，把它化成代数方程或微分方程；同时别忘了从原方程中令 \(x=0\) 提取<b>初始条件</b>（本题代 \(x=0\) 得 \(0=0\)，无额外信息）.</p>
 </div>
@@ -1041,12 +1044,10 @@ eq1\) 时</p>
 <table class="dt">
   <tr><th>序号</th><th>不定积分公式</th><th>序号</th><th>不定积分公式</th></tr>
   <tr><td>1</td><td>\(\displaystyle\int k\,\mathrm{d}x=kx+C\)</td><td>11</td><td>\(\displaystyle\int \csc x\cot x\,\mathrm{d}x=-\csc x+C\)</td></tr>
-  <tr><td>2</td><td>\(\displaystyle\int x^{\mu}\mathrm{d}x=\frac{x^{\mu+1}}{\mu+1}+C\;(\mu
-eq-1)\)</td><td>12</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{1+x^{2}}=\arctan x+C\)</td></tr>
+  <tr><td>2</td><td>\(\displaystyle\int x^{\mu}\mathrm{d}x=\frac{x^{\mu+1}}{\mu+1}+C\;(\mu\neq-1)\)</td><td>12</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{1+x^{2}}=\arctan x+C\)</td></tr>
   <tr><td>3</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{x}=\ln|x|+C\)</td><td>13</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{\sqrt{1-x^{2}}}=\arcsin x+C\)</td></tr>
   <tr><td>4</td><td>\(\displaystyle\int \mathrm{e}^{x}\mathrm{d}x=\mathrm{e}^{x}+C\)</td><td>14</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{a^{2}+x^{2}}=\frac1a\arctan\frac xa+C\)</td></tr>
-  <tr><td>5</td><td>\(\displaystyle\int a^{x}\mathrm{d}x=\frac{a^{x}}{\ln a}+C\;(a\gt0,a
-eq1)\)</td><td>15</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{\sqrt{a^{2}-x^{2}}}=\arcsin\frac xa+C\)</td></tr>
+  <tr><td>5</td><td>\(\displaystyle\int a^{x}\mathrm{d}x=\frac{a^{x}}{\ln a}+C\;(a\gt0,a\neq1)\)</td><td>15</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{\sqrt{a^{2}-x^{2}}}=\arcsin\frac xa+C\)</td></tr>
   <tr><td>6</td><td>\(\displaystyle\int \sin x\,\mathrm{d}x=-\cos x+C\)</td><td>16</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{x^{2}-a^{2}}=\frac{1}{2a}\ln\left|\frac{x-a}{x+a}\right|+C\)</td></tr>
   <tr><td>7</td><td>\(\displaystyle\int \cos x\,\mathrm{d}x=\sin x+C\)</td><td>17</td><td>\(\displaystyle\int \tan x\,\mathrm{d}x=-\ln|\cos x|+C\)</td></tr>
   <tr><td>8</td><td>\(\displaystyle\int \sec^{2}x\,\mathrm{d}x=\tan x+C\)</td><td>18</td><td>\(\displaystyle\int \cot x\,\mathrm{d}x=\ln|\sin x|+C\)</td></tr>
@@ -1394,14 +1395,12 @@ eq1)\)</td><td>15</td><td>\(\displaystyle\int \frac{\mathrm{d}x}{\sqrt{a^{2}-x^{
 
 <h3>二、第二类换元法</h3>
 <div class="def"><div class="lab"><span class="n">定理 5.8</span>第二类换元积分法</div>
-  <p>设 \(x=\psi(t)\) 单调可导且 \(\psi'(t)
-eq0\).若 \(f\bigl(\psi(t)\bigr)\psi'(t)\) 有原函数 \(\Phi(t)\)，则</p>
+  <p>设 \(x=\psi(t)\) 单调可导且 \(\psi'(t)\neq0\).若 \(f\bigl(\psi(t)\bigr)\psi'(t)\) 有原函数 \(\Phi(t)\)，则</p>
   \[\int f(x)\,\mathrm{d}x\xlongequal{x=\psi(t)}\int f\bigl(\psi(t)\bigr)\psi'(t)\,\mathrm{d}t=\Phi(t)+C=\Phi\bigl(\psi^{-1}(x)\bigr)+C,\]
   <p>其中 \(t=\psi^{-1}(x)\) 是 \(x=\psi(t)\) 的反函数.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p>已知 \(x=\psi(t)\) 单调可导、\(\psi'(t)
-eq0\)，且 \(f(\psi(t))\psi'(t)\) 有原函数 \(\Phi(t)\)，即</p>
+<p>已知 \(x=\psi(t)\) 单调可导、\(\psi'(t)\neq0\)，且 \(f(\psi(t))\psi'(t)\) 有原函数 \(\Phi(t)\)，即</p>
 \[\Phi'(t)=f\bigl(\psi(t)\bigr)\psi'(t).\]
 <p>记 \(t=\psi^{-1}(x)\) 为反函数.只需验证 \(\Phi(\psi^{-1}(x))+C\) 对 \(x\) 的导数等于 \(f(x)\).由复合函数求导与反函数求导公式，</p>
 \[\frac{\mathrm{d}}{\mathrm{d}x}\bigl[\Phi(t)+C\bigr]=\Phi'(t)\frac{\mathrm{d}t}{\mathrm{d}x}
@@ -1686,7 +1685,7 @@ eq0\)，且 \(f(\psi(t))\psi'(t)\) 有原函数 \(\Phi(t)\)，即</p>
 
       // 底部信息栏
       ctx.fillStyle='#33473f'; ctx.font='13px -apple-system,sans-serif';
-      ctx.fillText('\U0001f4cf 区间 ['+a.toFixed(1)+', '+b.toFixed(1)+']  |  割线斜率 = '+secantSlope.toFixed(4)+'  |  f\'('+x0.toFixed(2)+') = '+m.toFixed(4)+'  |  差 = '+diff.toFixed(4), 16, H-12);
+      ctx.fillText('\U0001f4cf 区间 ['+a.toFixed(1)+', '+b.toFixed(1)+']  |  割线斜率 = '+secantSlope.toFixed(4)+'  |  f'('+x0.toFixed(2)+') = '+m.toFixed(4)+'  |  差 = '+diff.toFixed(4), 16, H-12);
     }
   }
 
@@ -2466,11 +2465,9 @@ eq0\)，且 \(f(\psi(t))\psi'(t)\) 有原函数 \(\Phi(t)\)，即</p>
 
 <div class="ex"><div class="lab">例 5.49　\(p\) 积分（务必记住结论）</div>
   <p class="stmt">讨论 \(\displaystyle\int_{1}^{+\infty}\frac{\mathrm{d}x}{x^{p}}\;(p\gt0)\) 的敛散性.</p>
-  <p class="sol"><span class="mk">解</span>分 \(p=1\) 与 \(p
-eq1\) 两种情形.</p>
+  <p class="sol"><span class="mk">解</span>分 \(p=1\) 与 \(p\neq1\) 两种情形.</p>
   <p>当 \(p=1\) 时，由例 5.48(2) 知发散.</p>
-  <p>当 \(p
-eq1\) 时，原函数为 \(\dfrac{x^{1-p}}{1-p}\)：</p>
+  <p>当 \(p\neq1\) 时，原函数为 \(\dfrac{x^{1-p}}{1-p}\)：</p>
   \[\int_{1}^{T}\frac{\mathrm{d}x}{x^{p}}=\left[\frac{x^{1-p}}{1-p}\right]_{1}^{T}=\frac{T^{1-p}-1}{1-p}.\]
   <p>· 若 \(p\gt1\)，则 \(1-p\lt0\)，\(T^{1-p}\to0\)，极限为 \(\dfrac{-1}{1-p}=\dfrac{1}{p-1}\)，<b>收敛</b>；</p>
   <p>· 若 \(0\lt p\lt1\)，则 \(1-p\gt0\)，\(T^{1-p}\to+\infty\)，<b>发散</b>.</p>
@@ -2495,8 +2492,7 @@ eq1\) 时，原函数为 \(\dfrac{x^{1-p}}{1-p}\)：</p>
   <p class="stmt">讨论 \(\displaystyle\int_{0}^{1}\frac{\mathrm{d}x}{x^{p}}\;(p\gt0)\) 的敛散性，并计算 \(\displaystyle\int_{0}^{1}\frac{\mathrm{d}x}{\sqrt x}\).</p>
   <p class="sol"><span class="mk">解</span>\(x=0\) 是瑕点（\(p\gt0\) 时 \(x^{-p}\to+\infty\)）.</p>
   <p>当 \(p=1\)：\(\displaystyle\int_{\varepsilon}^{1}\frac{\mathrm{d}x}{x}=-\ln\varepsilon\to+\infty\)，<b>发散</b>.</p>
-  <p>当 \(p
-eq1\)：</p>
+  <p>当 \(p\neq1\)：</p>
   \[\int_{\varepsilon}^{1}\frac{\mathrm{d}x}{x^{p}}=\left[\frac{x^{1-p}}{1-p}\right]_{\varepsilon}^{1}=\frac{1-\varepsilon^{1-p}}{1-p}.\]
   <p>若 \(0\lt p\lt1\)，则 \(1-p\gt0\)，\(\varepsilon^{1-p}\to0\)，极限为 \(\dfrac{1}{1-p}\)，<b>收敛</b>；若 \(p\gt1\)，则 \(\varepsilon^{1-p}\to+\infty\)，<b>发散</b>.综上：</p>
   \[\boxed{\ \int_{0}^{1}\frac{\mathrm{d}x}{x^{p}}=\begin{cases}\dfrac{1}{1-p},&0\lt p\lt1\ \text{（收敛）},\\[8pt] +\infty,&p\ge1\ \text{（发散）}.\end{cases}}\]
@@ -2693,8 +2689,7 @@ eq1\)：</p>
 <p>故事从公元前四世纪的欧多克索斯开始.他提出一条后来被称为"穷竭法"的原理：从一个量中减去它的一半以上，再从余量中减去一半以上，如此继续，余量可以小于任何预先给定的量.这句话是"极限"最早的替身——古希腊人不敢直接谈无穷，只好用"要多小有多小"来兜圈子.欧几里得在《几何原本》第十二卷用它证明了圆面积与直径平方成正比，但他给不出比例常数.</p>
 <p>真正把穷竭法用到极致的是阿基米德.他在《抛物线求积法》中证明：抛物线弓形的面积等于同底同高三角形面积的 \(\dfrac43\) 倍.做法是先在弓形里嵌一个三角形，再在剩下的两个小弓形里各嵌一个三角形，如此无穷进行，得到 \(1+\dfrac14+\dfrac1{16}+\cdots=\dfrac43\).这实质上是求出了一个无穷级数的和，也是人类第一次把"无穷多块拼起来"得到一个确定的有限值.但阿基米德的证明必须配上双重反证法："若面积大于 \(\dfrac43\)，导出矛盾；若小于 \(\dfrac43\)，也导出矛盾."——他心里明白极限，笔下却不许自己写.</p>
 <p>东方的路径同样精彩.公元三世纪，魏晋数学家刘徽注《九章算术》，用割圆术从正六边形出发不断加倍边数，留下那句千古名言："割之弥细，所失弥少；割之又割，以至于不可割，则与圆合体而无所失矣."他算到正 3072 边形，得 \(\pi\approx3.1416\).这段话若翻译成现代语言，就是"当分割的最大跨度趋于零时，内接多边形面积的极限等于圆面积"——与定义 5.1 中的 \(\lambda\to0\) 严丝合缝.稍后祖冲之父子提出"幂势既同，则积不容异"（祖暅原理），已经触及了以截面积积分求体积的思想.</p>
-<p>此后一千多年，这套方法停滞不前，原因很实在：每换一个图形，就得重新设计一套精巧的几何论证，无法机械化.转机出现在十七世纪.开普勒为了估算酒桶容积，把桶想象成无数薄圆片的叠加，写下《测量酒桶体积的新科学》.卡瓦列里把这种想法系统化为"不可分量原理".费马则用等比数列分割区间，一举算出了 \(\displaystyle\int_0^a x^{n}\mathrm{d}x=\dfrac{a^{n+1}}{n+1}\) 对一切有理数 \(n
-eq-1\) 成立——他离积分只差一层窗户纸.</p>
+<p>此后一千多年，这套方法停滞不前，原因很实在：每换一个图形，就得重新设计一套精巧的几何论证，无法机械化.转机出现在十七世纪.开普勒为了估算酒桶容积，把桶想象成无数薄圆片的叠加，写下《测量酒桶体积的新科学》.卡瓦列里把这种想法系统化为"不可分量原理".费马则用等比数列分割区间，一举算出了 \(\displaystyle\int_0^a x^{n}\mathrm{d}x=\dfrac{a^{n+1}}{n+1}\) 对一切有理数 \(n\neq-1\) 成立——他离积分只差一层窗户纸.</p>
 <p>捅破这层纸的是牛顿与莱布尼茨.他们发现求面积与求切线互为逆运算，把"每个图形单独想办法"变成了"统一去找原函数"（就是本章的定理 5.4）.计算效率的爆炸性提升带来了一个副作用：整个十八世纪，数学家们熟练地使用积分却说不清它究竟是什么.贝克莱主教尖刻地嘲讽无穷小是"逝去量的幽灵"，而这个质问一时无人能答.</p>
 <p>严格化的工作留给了十九世纪.柯西在 1823 年首次用和式的极限定义积分，但他只处理连续函数.1854 年，黎曼在哥廷根大学提交就职论文《关于函数用三角级数表示的可能性》，为了讨论一类古怪函数能否展成傅里叶级数，他不得不给出一个适用范围最广的积分定义——任意分割、任意取点、极限存在且与分法取法无关.这正是我们今天写在定义 5.1 里的那段话.有趣的是，黎曼积分只是那篇论文里的"配角"，却成了流传最广的遗产.此后达布用上下和给出了等价刻画，勒贝格又在 1902 年换一个方向（分割值域而非定义域）建立了更强大的积分理论.</p>
 <p>从"不敢说无穷"到"精确刻画无穷"，两千年的跨度里，最动人的不是结论，而是那份共同的执念：面对一块弯弯曲曲的图形，人类始终相信可以用无穷多个笔直的小块把它量出来.</p>
@@ -2866,6 +2861,7 @@ eq-1\) 成立——他离积分只差一层窗户纸.</p>
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 5, "list": [["s051", "5.1 定积分的概念及性质"], ["s052", "5.2 微积分基本定理"], ["s053", "5.3 不定积分的概念与性质"], ["s054", "5.4 换元积分法"], ["s055", "5.5 分部积分法"], ["s056", "5.6 几类特殊类型函数的积分"], ["s057", "5.7 反常积分"], ["adv5", "考研选讲"], ["cq5", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -2893,5 +2889,6 @@ eq-1\) 成立——他离积分只差一层窗户纸.</p>
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

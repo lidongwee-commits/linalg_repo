@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第7章 · 常微分方程</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第7章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -464,16 +468,14 @@
 <div class="def"><div class="lab"><span class="n">定理 7.2</span>可分离变量方程的解法</div>
   <p>形如</p>
   \[\frac{\mathrm{d}y}{\mathrm{d}x}=f(x)\,g(y)\qquad\text{或}\qquad M_1(x)N_1(y)\,\mathrm{d}x+M_2(x)N_2(y)\,\mathrm{d}y=0\]
-  <p>的一阶方程称为<b>可分离变量方程</b>.当 \(g(y)
-eq0\) 时，可"分离"成</p>
+  <p>的一阶方程称为<b>可分离变量方程</b>.当 \(g(y)\neq0\) 时，可"分离"成</p>
   \[\frac{\mathrm{d}y}{g(y)}=f(x)\,\mathrm{d}x,\]
   <p>两端分别积分即得隐式通解</p>
   \[\int\frac{\mathrm{d}y}{g(y)}=\int f(x)\,\mathrm{d}x+C .\]
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>"分离变量"表面上是把 \(\mathrm{d}y\) 与 \(\mathrm{d}x\) 当成可以搬来搬去的数，这只是记号上的方便.真正的道理是<b>复合函数求导（换元积分法）的逆用</b>：把方程改写成"某个复合函数的导数 = 某个已知函数的导数".</p>
-<p><span class="stp">第一步：改写方程.</span>设 \(y=y(x)\) 是方程 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=f(x)g(y)\) 的解，且在所考虑的区间上 \(g(y(x))
-eq0\).两端同除 \(g(y)\) 得</p>
+<p><span class="stp">第一步：改写方程.</span>设 \(y=y(x)\) 是方程 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=f(x)g(y)\) 的解，且在所考虑的区间上 \(g(y(x))\neq0\).两端同除 \(g(y)\) 得</p>
 \[\frac{1}{g\bigl(y(x)\bigr)}\cdot\frac{\mathrm{d}y}{\mathrm{d}x}=f(x).\]
 <p><span class="stp">第二步：识别左端是一个复合函数的导数.</span>取 \(G(y)\) 为 \(\dfrac{1}{g(y)}\) 的任一原函数，即 \(G'(y)=\dfrac{1}{g(y)}\).由复合函数求导法则</p>
 \[\frac{\mathrm{d}}{\mathrm{d}x}G\bigl(y(x)\bigr)=G'\bigl(y(x)\bigr)\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{1}{g\bigl(y(x)\bigr)}\frac{\mathrm{d}y}{\mathrm{d}x}.\]
@@ -482,8 +484,7 @@ eq0\).两端同除 \(g(y)\) 得</p>
 <p><span class="stp">第三步：积分.</span>在区间上导数恒为零的函数必为常数，故存在常数 \(C\) 使</p>
 \[G\bigl(y(x)\bigr)=F(x)+C,\qquad\text{即}\qquad \int\frac{\mathrm{d}y}{g(y)}=\int f(x)\,\mathrm{d}x+C .\]
 <p>这正是所要的隐式通解；形式记号 \(\dfrac{\mathrm{d}y}{g(y)}=f(x)\mathrm{d}x\) 只是上述推导的速记.</p>
-<p><span class="stp">第四步：验证充分性.</span>反过来，设 \(y(x)\) 由 \(G(y)=F(x)+C\) 隐式确定.因 \(G'(y)=\dfrac1{g(y)}
-eq0\)，由隐函数存在定理 \(y\) 可导，对等式两端关于 \(x\) 求导得 \(\dfrac{1}{g(y)}y'=f(x)\)，即 \(y'=f(x)g(y)\).故隐式关系确定的函数确是解.</p>
+<p><span class="stp">第四步：验证充分性.</span>反过来，设 \(y(x)\) 由 \(G(y)=F(x)+C\) 隐式确定.因 \(G'(y)=\dfrac1{g(y)}\neq0\)，由隐函数存在定理 \(y\) 可导，对等式两端关于 \(x\) 求导得 \(\dfrac{1}{g(y)}y'=f(x)\)，即 \(y'=f(x)g(y)\).故隐式关系确定的函数确是解.</p>
 <p><span class="stp">第五步：补上被除掉的解.</span>上面第一步除以了 \(g(y)\).若 \(g(y_*)=0\)，则常值函数 \(y\equiv y_*\) 满足 \(y'=0=f(x)g(y_*)\)，也是方程的解，称为<b>奇解</b>（有时可由通解取极限得到，有时不能）.对第二种写法 \(M_1N_1\mathrm{d}x+M_2N_2\mathrm{d}y=0\)，同除 \(M_2(x)N_1(y)\) 后化为 \(\dfrac{M_1}{M_2}\mathrm{d}x+\dfrac{N_2}{N_1}\mathrm{d}y=0\)，重复上述论证即可，另需单独检查 \(M_2(x)=0\) 与 \(N_1(y)=0\) 给出的解.</p>
 <p class="qed">证毕</p>
 </div>
@@ -496,8 +497,7 @@ eq0\)，由隐函数存在定理 \(y\) 可导，对等式两端关于 \(x\) 求�
 
 <div class="ex"><div class="lab">例 7.8　基础题</div>
   <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=2xy\) 的通解.</p>
-  <p class="sol"><span class="mk">解</span>分离变量（先设 \(y
-eq0\)）：</p>
+  <p class="sol"><span class="mk">解</span>分离变量（先设 \(y\neq0\)）：</p>
   \[\frac{\mathrm{d}y}{y}=2x\,\mathrm{d}x\;\Longrightarrow\;\ln|y|=x^2+C_1
    \;\Longrightarrow\;|y|=\mathrm{e}^{C_1}\mathrm{e}^{x^2}.\]
   <p>令 \(C=\pm\mathrm{e}^{C_1}\)（任意非零常数），得 \(y=C\mathrm{e}^{x^2}\).又 \(y\equiv0\) 显然也是解，恰对应 \(C=0\).故通解为</p>
@@ -544,14 +544,12 @@ eq0\)）：</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>方程 \(y'=\varphi(y/x)\) 的右端只认识"比值" \(y/x\)，不单独认识 \(x\) 和 \(y\).既然未知量真正的"自由度"是这个比值，就干脆把它取作新的未知函数 \(u=y/x\).这样右端立刻变成只含 \(u\) 的 \(\varphi(u)\)，而左端经计算只会多出一项 \(x u'\)，于是 \(x\) 与 \(u\) 自然分家.</p>
-<p><span class="stp">第一步：作代换并求导.</span>设 \(x
-eq0\)，令 \(u(x)=\dfrac{y(x)}{x}\)，则 \(y=ux\).由乘积求导法则</p>
+<p><span class="stp">第一步：作代换并求导.</span>设 \(x\neq0\)，令 \(u(x)=\dfrac{y(x)}{x}\)，则 \(y=ux\).由乘积求导法则</p>
 \[\frac{\mathrm{d}y}{\mathrm{d}x}=u+x\frac{\mathrm{d}u}{\mathrm{d}x}.\]
 <p>注意 \(u\) 与 \(y\) 是一一对应的（已知 \(y\) 可定 \(u\)，已知 \(u\) 可定 \(y=ux\)），且 \(y\) 可导当且仅当 \(u\) 可导，故这一代换不会丢解也不会添解.</p>
 <p><span class="stp">第二步：代入化简.</span>把上式与 \(\varphi(y/x)=\varphi(u)\) 一并代入原方程 \(y'=\varphi(y/x)\)，得</p>
 \[u+x\frac{\mathrm{d}u}{\mathrm{d}x}=\varphi(u)\qquad\Longleftrightarrow\qquad x\frac{\mathrm{d}u}{\mathrm{d}x}=\varphi(u)-u .\]
-<p><span class="stp">第三步：说明它可分离变量.</span>上式右端只含 \(u\)，左端的 \(x\) 只以因子形式出现，故当 \(\varphi(u)-u
-eq0\) 时可写成</p>
+<p><span class="stp">第三步：说明它可分离变量.</span>上式右端只含 \(u\)，左端的 \(x\) 只以因子形式出现，故当 \(\varphi(u)-u\neq0\) 时可写成</p>
 \[\frac{\mathrm{d}u}{\varphi(u)-u}=\frac{\mathrm{d}x}{x},\]
 <p>这正是定理 7.2 的可分离变量方程，两端积分得</p>
 \[\int\frac{\mathrm{d}u}{\varphi(u)-u}=\ln|x|+C .\]
@@ -706,8 +704,7 @@ eq0\) 时可写成</p>
 <h3>四、伯努利方程</h3>
 <div class="def"><div class="lab"><span class="n">定理 7.5</span>伯努利方程</div>
   <p>形如</p>
-  \[\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)y=Q(x)\,y^{n}\qquad(n
-eq0,1)\]
+  \[\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)y=Q(x)\,y^{n}\qquad(n\neq0,1)\]
   <p>的方程称为<b>伯努利方程</b>.两端同除 \(y^{n}\)：</p>
   \[y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)\,y^{1-n}=Q(x).\]
   <p>令 \(z=y^{1-n}\)，则 \(\dfrac{\mathrm{d}z}{\mathrm{d}x}=(1-n)y^{-n}\dfrac{\mathrm{d}y}{\mathrm{d}x}\)，方程化为<b>一阶线性方程</b></p>
@@ -716,12 +713,9 @@ eq0,1)\]
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">思路：</span>方程 \(y'+Py=Qy^{n}\) 之所以"非线性"，全怪右端的 \(y^n\).若两端同除 \(y^n\)，非线性项就被压平成常数 \(Q\)，而左端出现 \(y^{-n}y'\) 与 \(y^{1-n}\) 两块.注意 \(\bigl(y^{1-n}\bigr)'=(1-n)y^{-n}y'\)，正好把这两块统一成同一个新未知量 \(z=y^{1-n}\) 及其导数——线性化因此成功.</p>
-<p><span class="stp">第一步：同除 \(y^{n}\).</span>在 \(y
-eq0\) 的区间上，方程两端除以 \(y^{n}\)（\(n
-eq0,1\)）：</p>
+<p><span class="stp">第一步：同除 \(y^{n}\).</span>在 \(y\neq0\) 的区间上，方程两端除以 \(y^{n}\)（\(n\neq0,1\)）：</p>
 \[y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}+P(x)\,y^{1-n}=Q(x).\]
-<p><span class="stp">第二步：作代换.</span>令 \(z=y^{1-n}\).因 \(n
-eq1\)，\(z\) 与 \(y\) 在 \(y\gt0\)（或适当区间）上一一对应.由复合函数求导</p>
+<p><span class="stp">第二步：作代换.</span>令 \(z=y^{1-n}\).因 \(n\neq1\)，\(z\) 与 \(y\) 在 \(y\gt0\)（或适当区间）上一一对应.由复合函数求导</p>
 \[\frac{\mathrm{d}z}{\mathrm{d}x}=(1-n)\,y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}\qquad\Longrightarrow\qquad y^{-n}\frac{\mathrm{d}y}{\mathrm{d}x}=\frac{1}{1-n}\frac{\mathrm{d}z}{\mathrm{d}x}.\]
 <p><span class="stp">第三步：化为线性方程.</span>把上式代入第一步，并两端乘以 \(1-n\)：</p>
 \[\frac{1}{1-n}\frac{\mathrm{d}z}{\mathrm{d}x}+P(x)z=Q(x)\quad\Longrightarrow\quad \frac{\mathrm{d}z}{\mathrm{d}x}+(1-n)P(x)\,z=(1-n)Q(x),\]
@@ -729,16 +723,14 @@ eq1\)，\(z\) 与 \(y\) 在 \(y\gt0\)（或适当区间）上一一对应.由复
 <p><span class="stp">第四步：求解并回代.</span>由定理 7.4，记 \(\tilde P=(1-n)P,\ \tilde Q=(1-n)Q\)，得</p>
 \[z=\mathrm{e}^{-\int \tilde P\mathrm{d}x}\Bigl[\int \tilde Q\,\mathrm{e}^{\int \tilde P\mathrm{d}x}\,\mathrm{d}x+C\Bigr],\]
 <p>再由 \(z=y^{1-n}\) 得 \(y=z^{\frac{1}{1-n}}\)，即为原方程通解.</p>
-<p><span class="stp">第五步：补上 \(y\equiv0\).</span>第一步的除法要求 \(y
-eq0\).当 \(n\gt0\) 时，\(y\equiv0\) 直接满足原方程（两端皆为 \(0\)），它一般不含于上述通解之中，应单独指出.</p>
+<p><span class="stp">第五步：补上 \(y\equiv0\).</span>第一步的除法要求 \(y\neq0\).当 \(n\gt0\) 时，\(y\equiv0\) 直接满足原方程（两端皆为 \(0\)），它一般不含于上述通解之中，应单独指出.</p>
 <p class="qed">证毕</p>
 </div>
 </details>
 </div>
 
 <div class="ex"><div class="lab">例 7.17　考研经典伯努利方程</div>
-  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}+\dfrac yx=a\,(\ln x)\,y^{2}\ (a
-eq0)\) 的通解.</p>
+  <p class="stmt">求 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}+\dfrac yx=a\,(\ln x)\,y^{2}\ (a\neq0)\) 的通解.</p>
   <p class="sol"><span class="mk">解</span>这里 \(n=2\)，令 \(z=y^{1-2}=y^{-1}\).由定理 7.5，方程化为</p>
   \[\frac{\mathrm{d}z}{\mathrm{d}x}+(1-2)\cdot\frac1x\,z=(1-2)\,a\ln x,
    \qquad\text{即}\qquad
@@ -786,8 +778,7 @@ eq0)\) 的通解.</p>
 <p>故右端与 \(x\) 无关，记为 \(\psi(y)\)，取 \(\varphi(y)=\int\psi(y)\mathrm{d}y\) 即可.这样得到的 \(u\) 满足 \(u_x=P,\ u_y=Q\)，即 \(\mathrm{d}u=P\mathrm{d}x+Q\mathrm{d}y\).</p>
 <p><span class="stp">第四步：通解为 \(u(x,y)=C\).</span>设 \(y=y(x)\) 是方程 \(P\mathrm{d}x+Q\mathrm{d}y=0\) 的解，即 \(P+Qy'=0\).考察复合函数 \(x\mapsto u\bigl(x,y(x)\bigr)\)，由链式法则</p>
 \[\frac{\mathrm{d}}{\mathrm{d}x}u\bigl(x,y(x)\bigr)=u_x+u_y\,y'=P+Q\,y'=0 ,\]
-<p>故 \(u\bigl(x,y(x)\bigr)\equiv C\).反之，若 \(y(x)\) 由 \(u(x,y)=C\) 隐式确定且 \(u_y=Q
-eq0\)，对该式求导即得 \(P+Qy'=0\).两方面合起来说明 \(u(x,y)=C\) 恰是方程的通解.</p>
+<p>故 \(u\bigl(x,y(x)\bigr)\equiv C\).反之，若 \(y(x)\) 由 \(u(x,y)=C\) 隐式确定且 \(u_y=Q\neq0\)，对该式求导即得 \(P+Qy'=0\).两方面合起来说明 \(u(x,y)=C\) 恰是方程的通解.</p>
 <p><span class="stp">补注：</span>"单连通"这一条件保证了第二步中的构造在整个区域上无障碍（等价地保证曲线积分 \(\int P\mathrm{d}x+Q\mathrm{d}y\) 与路径无关，可取 \(u(x,y)=\int_{(x_0,y_0)}^{(x,y)}P\mathrm{d}x+Q\mathrm{d}y\)）.区域若有"洞"，\(P_y=Q_x\) 仍可能推不出全局的 \(u\) 存在.</p>
 <p class="qed">证毕</p>
 </div>
@@ -1187,8 +1178,7 @@ eq0\)，对该式求导即得 \(P+Qy'=0\).两方面合起来说明 \(u(x,y)=C\) 
   <p>对两个函数而言，线性无关 \(\Longleftrightarrow\) 比值 \(\dfrac{y_1}{y_2}\) 不恒为常数.</p>
   <p>更一般的判据是<b>朗斯基行列式</b></p>
   \[W(x)=\begin{vmatrix}y_1&y_2\\ y_1'&y_2'\end{vmatrix}=y_1y_2'-y_1'y_2 .\]
-  <p>若 \(y_1,y_2\) 是同一齐次方程的解，则它们线性无关当且仅当 \(W(x)
-eq0\).</p>
+  <p>若 \(y_1,y_2\) 是同一齐次方程的解，则它们线性无关当且仅当 \(W(x)\neq0\).</p>
 </div>
 
 <div class="def"><div class="lab"><span class="n">定理 7.8</span>齐次方程通解的结构</div>
@@ -1200,16 +1190,12 @@ eq0\).</p>
 <p><span class="stp">思路：</span>"通解"的含义是<b>把所有解一网打尽</b>.由定理 7.7 已知 \(Y=C_1y_1+C_2y_2\) 总是解，剩下要证的是"没有漏网之鱼".工具是二阶线性方程的解的唯一性：给定 \(y(x_0),y'(x_0)\) 这两个初始数据，解就被完全钉死.因此只需说明：<b>任意一组初始数据都可以由适当的 \(C_1,C_2\) 配出来</b>.</p>
 <p>以下设 \(y_1,y_2\) 是 \(L[y]=y''+Py'+Qy=0\) 在区间 \(I\) 上的两个线性无关解（即 \(y_2/y_1\) 不是常数），\(P,Q\) 在 \(I\) 上连续，\(x_0\in I\).记朗斯基行列式</p>
 \[W(x)=\begin{vmatrix}y_1(x)&y_2(x)\\ y_1'(x)&y_2'(x)\end{vmatrix}=y_1y_2'-y_1'y_2 .\]
-<p><span class="stp">第一步：证 \(W(x_0)
-eq0\).</span>用反证法.若 \(W(x_0)=0\)，则齐次线性代数方程组</p>
+<p><span class="stp">第一步：证 \(W(x_0)\neq0\).</span>用反证法.若 \(W(x_0)=0\)，则齐次线性代数方程组</p>
 \[\begin{cases}k_1y_1(x_0)+k_2y_2(x_0)=0,\\ k_1y_1'(x_0)+k_2y_2'(x_0)=0\end{cases}\]
-<p>的系数行列式为零，故有非零解 \((k_1,k_2)
-eq(0,0)\).令 \(z(x)=k_1y_1(x)+k_2y_2(x)\).由定理 7.7，\(z\) 是齐次方程的解，且由上式 \(z(x_0)=0,\ z'(x_0)=0\).而零函数 \(z\equiv0\) 显然也是满足这组初值的解，由解的唯一性（定理 7.1 对线性方程的应用）得 \(z\equiv0\)，即 \(k_1y_1+k_2y_2\equiv0\) 而 \((k_1,k_2)\) 不全为零——这与 \(y_1,y_2\) 线性无关矛盾.故 \(W(x_0)
-eq0\).</p>
+<p>的系数行列式为零，故有非零解 \((k_1,k_2)\neq(0,0)\).令 \(z(x)=k_1y_1(x)+k_2y_2(x)\).由定理 7.7，\(z\) 是齐次方程的解，且由上式 \(z(x_0)=0,\ z'(x_0)=0\).而零函数 \(z\equiv0\) 显然也是满足这组初值的解，由解的唯一性（定理 7.1 对线性方程的应用）得 \(z\equiv0\)，即 \(k_1y_1+k_2y_2\equiv0\) 而 \((k_1,k_2)\) 不全为零——这与 \(y_1,y_2\) 线性无关矛盾.故 \(W(x_0)\neq0\).</p>
 <p><span class="stp">第二步：任一解都能表示出来.</span>设 \(y(x)\) 是齐次方程的任意一个解，记 \(a=y(x_0),\ b=y'(x_0)\).考虑关于 \(C_1,C_2\) 的线性方程组</p>
 \[\begin{cases}C_1y_1(x_0)+C_2y_2(x_0)=a,\\ C_1y_1'(x_0)+C_2y_2'(x_0)=b .\end{cases}\]
-<p>其系数行列式恰为 \(W(x_0)
-eq0\)，由克拉默法则存在唯一解 \((C_1,C_2)\).</p>
+<p>其系数行列式恰为 \(W(x_0)\neq0\)，由克拉默法则存在唯一解 \((C_1,C_2)\).</p>
 <p><span class="stp">第三步：用唯一性合拢.</span>取这组 \(C_1,C_2\)，令 \(\tilde y=C_1y_1+C_2y_2\).由定理 7.7 它是解，且 \(\tilde y(x_0)=a=y(x_0),\ \tilde y'(x_0)=b=y'(x_0)\).两个解满足同一组初值，由唯一性定理得 \(y\equiv\tilde y\)，即</p>
 \[y=C_1y_1+C_2y_2 .\]
 <p>综上：\(Y=C_1y_1+C_2y_2\) 既全是解，又含尽了全部解，且含两个独立的任意常数，故为通解.</p>
@@ -1260,14 +1246,12 @@ eq0\)，由克拉默法则存在唯一解 \((C_1,C_2)\).</p>
 <div class="def"><div class="lab"><span class="n">定理 7.11</span>特征方程法</div>
   <p>考虑<b>常系数</b>齐次方程</p>
   \[y''+py'+qy=0\qquad(p,q\ \text{为常数}).\]
-  <p>尝试解 \(y=\mathrm{e}^{rx}\)，代入得 \(\mathrm{e}^{rx}(r^2+pr+q)=0\).因 \(\mathrm{e}^{rx}
-eq0\)，故 \(r\) 必须满足</p>
+  <p>尝试解 \(y=\mathrm{e}^{rx}\)，代入得 \(\mathrm{e}^{rx}(r^2+pr+q)=0\).因 \(\mathrm{e}^{rx}\neq0\)，故 \(r\) 必须满足</p>
   \[r^2+pr+q=0,\]
   <p>称为该方程的<b>特征方程</b>，其根称为<b>特征根</b>.按判别式 \(\Delta=p^2-4q\) 的符号，通解如下表：</p>
   <table class="dt">
     <tr><th>判别式</th><th>特征根情形</th><th>两个线性无关特解</th><th>通解 \(Y\)</th></tr>
-    <tr><td>\(\Delta\gt0\)</td><td>两个不相等实根 \(r_1
-eq r_2\)</td><td>\(\mathrm{e}^{r_1x},\ \mathrm{e}^{r_2x}\)</td><td>\(C_1\mathrm{e}^{r_1x}+C_2\mathrm{e}^{r_2x}\)</td></tr>
+    <tr><td>\(\Delta\gt0\)</td><td>两个不相等实根 \(r_1\neq r_2\)</td><td>\(\mathrm{e}^{r_1x},\ \mathrm{e}^{r_2x}\)</td><td>\(C_1\mathrm{e}^{r_1x}+C_2\mathrm{e}^{r_2x}\)</td></tr>
     <tr><td>\(\Delta=0\)</td><td>二重实根 \(r_1=r_2=r\)</td><td>\(\mathrm{e}^{rx},\ x\mathrm{e}^{rx}\)</td><td>\((C_1+C_2x)\,\mathrm{e}^{rx}\)</td></tr>
     <tr><td>\(\Delta\lt0\)</td><td>共轭复根 \(r_{1,2}=\alpha\pm\beta\mathrm{i}\)</td><td>\(\mathrm{e}^{\alpha x}\cos\beta x,\ \mathrm{e}^{\alpha x}\sin\beta x\)</td><td>\(\mathrm{e}^{\alpha x}\bigl(C_1\cos\beta x+C_2\sin\beta x\bigr)\)</td></tr>
   </table>
@@ -1276,20 +1260,16 @@ eq r_2\)</td><td>\(\mathrm{e}^{r_1x},\ \mathrm{e}^{r_2x}\)</td><td>\(C_1\mathrm{
 <p><span class="stp">思路：</span>方程 \(y''+py'+qy=0\) 的系数是常数，这意味着"求导"不改变函数的"种类"，只改变系数.什么函数求导后还是它自己的常数倍？指数函数 \(\mathrm{e}^{rx}\).所以拿 \(y=\mathrm{e}^{rx}\) 去试，是最自然的一步.</p>
 <p><span class="stp">第一步：导出特征方程.</span>设 \(y=\mathrm{e}^{rx}\)，则 \(y'=r\mathrm{e}^{rx},\ y''=r^2\mathrm{e}^{rx}\)，代入得</p>
 \[\mathrm{e}^{rx}\bigl(r^{2}+pr+q\bigr)=0 .\]
-<p>因 \(\mathrm{e}^{rx}
-eq0\)，故 \(y=\mathrm{e}^{rx}\) 是解 \(\Longleftrightarrow\) \(r^{2}+pr+q=0\).这就是<b>特征方程</b>，其根为特征根.记 \(\Delta=p^{2}-4q\).</p>
-<p><span class="stp">第二步：\(\Delta\gt0\)，两个不等实根 \(r_1
-eq r_2\).</span>由第一步，\(y_1=\mathrm{e}^{r_1x},\ y_2=\mathrm{e}^{r_2x}\) 都是解.它们线性无关，因为</p>
+<p>因 \(\mathrm{e}^{rx}\neq0\)，故 \(y=\mathrm{e}^{rx}\) 是解 \(\Longleftrightarrow\) \(r^{2}+pr+q=0\).这就是<b>特征方程</b>，其根为特征根.记 \(\Delta=p^{2}-4q\).</p>
+<p><span class="stp">第二步：\(\Delta\gt0\)，两个不等实根 \(r_1\neq r_2\).</span>由第一步，\(y_1=\mathrm{e}^{r_1x},\ y_2=\mathrm{e}^{r_2x}\) 都是解.它们线性无关，因为</p>
 \[\frac{y_2}{y_1}=\mathrm{e}^{(r_2-r_1)x}\]
-<p>不是常数（\(r_2-r_1
-eq0\)）.由定理 7.8，通解为 \(Y=C_1\mathrm{e}^{r_1x}+C_2\mathrm{e}^{r_2x}\).</p>
+<p>不是常数（\(r_2-r_1\neq0\)）.由定理 7.8，通解为 \(Y=C_1\mathrm{e}^{r_1x}+C_2\mathrm{e}^{r_2x}\).</p>
 <p><span class="stp">第三步：\(\Delta=0\)，二重实根 \(r=-\dfrac p2\).</span>此时第一步只给出<b>一个</b>解 \(\mathrm{e}^{rx}\)，还缺一个.断言 \(y_2=x\mathrm{e}^{rx}\) 也是解.验证：</p>
 \[y_2'=(1+rx)\mathrm{e}^{rx},\qquad y_2''=\bigl(2r+r^{2}x\bigr)\mathrm{e}^{rx},\]
 <p>代入左端并按 \(x\) 的幂次归并：</p>
 \[y_2''+py_2'+qy_2=\mathrm{e}^{rx}\Bigl[x\bigl(r^{2}+pr+q\bigr)+\bigl(2r+p\bigr)\Bigr].\]
 <p>由 \(r\) 是根知第一个括号为零；由 \(r=-\dfrac p2\) 知 \(2r+p=0\)，第二个括号也为零.故 \(y_2''+py_2'+qy_2=0\).又 \(y_2/y_1=x\) 不是常数，故 \(\mathrm{e}^{rx},x\mathrm{e}^{rx}\) 线性无关，通解为 \(Y=(C_1+C_2x)\mathrm{e}^{rx}\).</p>
-<p><span class="stp">第四步：\(\Delta\lt0\)，共轭复根 \(r_{1,2}=\alpha\pm\beta\mathrm{i}\ (\beta
-eq0)\).</span>形式上仍得两个复值解 \(\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\) 与 \(\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\)，但我们要的是<b>实值</b>解.由欧拉公式</p>
+<p><span class="stp">第四步：\(\Delta\lt0\)，共轭复根 \(r_{1,2}=\alpha\pm\beta\mathrm{i}\ (\beta\neq0)\).</span>形式上仍得两个复值解 \(\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\) 与 \(\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\)，但我们要的是<b>实值</b>解.由欧拉公式</p>
 \[\mathrm{e}^{(\alpha+\beta\mathrm{i})x}=\mathrm{e}^{\alpha x}\bigl(\cos\beta x+\mathrm{i}\sin\beta x\bigr)=u(x)+\mathrm{i}\,v(x),\]
 <p>其中 \(u=\mathrm{e}^{\alpha x}\cos\beta x,\ v=\mathrm{e}^{\alpha x}\sin\beta x\).由于 \(p,q\) 是<b>实数</b>，把 \(y=u+\mathrm{i}v\) 代入方程后，实部与虚部各自成立：</p>
 \[\bigl(u''+pu'+qu\bigr)+\mathrm{i}\bigl(v''+pv'+qv\bigr)=0\ \Longrightarrow\ u''+pu'+qu=0,\quad v''+pv'+qv=0 .\]
@@ -1363,20 +1343,15 @@ eq0)\).</span>形式上仍得两个复值解 \(\mathrm{e}^{(\alpha+\beta\mathrm{
 <p>代入 \(y''+py'+qy=P_m(x)\mathrm{e}^{\lambda x}\)，约去处处非零的 \(\mathrm{e}^{\lambda x}\)，并按 \(u'',u',u\) 归并，得<b>等价方程</b></p>
 \[u''+\bigl(2\lambda+p\bigr)u'+\bigl(\lambda^{2}+p\lambda+q\bigr)u=P_m(x).\qquad(\ast)\]
 <p>注意两个括号的含义：记特征多项式 \(F(r)=r^{2}+pr+q\)，则 \(\lambda^{2}+p\lambda+q=F(\lambda)\)，\(2\lambda+p=F'(\lambda)\).<b>系数是否为零，恰好取决于 \(\lambda\) 是不是特征根、是几重根</b>——这就是分类的根源.</p>
-<p><span class="stp">第二步：\(\lambda\) 不是特征根，即 \(F(\lambda)
-eq0\).</span>此时 \((\ast)\) 中 \(u\) 的系数非零.若设 \(u=Q_m\) 为 \(m\) 次多项式，则 \((\ast)\) 左端最高次项来自 \(F(\lambda)Q_m\)，次数恰为 \(m\)，与右端 \(P_m\) 的次数吻合.逐次比较 \(x^{m},x^{m-1},\dots,x^{0}\) 的系数，得到关于 \(Q_m\) 的 \(m+1\) 个待定系数的线性方程组，其系数矩阵是上三角的、主对角元全为 \(F(\lambda)
-eq0\)，故可唯一解出.于是 \(k=0\)，\(y^{*}=Q_m(x)\mathrm{e}^{\lambda x}\).</p>
-<p><span class="stp">第三步：\(\lambda\) 是单根，即 \(F(\lambda)=0,\ F'(\lambda)=2\lambda+p
-eq0\).</span>此时 \((\ast)\) 退化为</p>
+<p><span class="stp">第二步：\(\lambda\) 不是特征根，即 \(F(\lambda)\neq0\).</span>此时 \((\ast)\) 中 \(u\) 的系数非零.若设 \(u=Q_m\) 为 \(m\) 次多项式，则 \((\ast)\) 左端最高次项来自 \(F(\lambda)Q_m\)，次数恰为 \(m\)，与右端 \(P_m\) 的次数吻合.逐次比较 \(x^{m},x^{m-1},\dots,x^{0}\) 的系数，得到关于 \(Q_m\) 的 \(m+1\) 个待定系数的线性方程组，其系数矩阵是上三角的、主对角元全为 \(F(\lambda)\neq0\)，故可唯一解出.于是 \(k=0\)，\(y^{*}=Q_m(x)\mathrm{e}^{\lambda x}\).</p>
+<p><span class="stp">第三步：\(\lambda\) 是单根，即 \(F(\lambda)=0,\ F'(\lambda)=2\lambda+p\neq0\).</span>此时 \((\ast)\) 退化为</p>
 \[u''+\bigl(2\lambda+p\bigr)u'=P_m(x),\]
-<p>方程中<b>只出现 \(u\) 的导数</b>.若仍取 \(u\) 为 \(m\) 次多项式，则 \(u'\) 只有 \(m-1\) 次，左端次数不足，无法与 \(m\) 次的右端相配.把上式看成关于 \(w=u'\) 的方程 \(w'+(2\lambda+p)w=P_m\)，由第二步的论证（\(w\) 的系数 \(2\lambda+p
-eq0\)）知它有 \(m\) 次多项式解 \(w=Q_m\).再积分一次得 \(u=\int Q_m\mathrm{d}x\)，是 \(m+1\) 次多项式且常数项可取为 \(0\)（常数项对应齐次解 \(\mathrm{e}^{\lambda x}\)，并入通解即可），即 \(u=x\,Q_m(x)\) 的形式.故 \(k=1\).</p>
+<p>方程中<b>只出现 \(u\) 的导数</b>.若仍取 \(u\) 为 \(m\) 次多项式，则 \(u'\) 只有 \(m-1\) 次，左端次数不足，无法与 \(m\) 次的右端相配.把上式看成关于 \(w=u'\) 的方程 \(w'+(2\lambda+p)w=P_m\)，由第二步的论证（\(w\) 的系数 \(2\lambda+p\neq0\)）知它有 \(m\) 次多项式解 \(w=Q_m\).再积分一次得 \(u=\int Q_m\mathrm{d}x\)，是 \(m+1\) 次多项式且常数项可取为 \(0\)（常数项对应齐次解 \(\mathrm{e}^{\lambda x}\)，并入通解即可），即 \(u=x\,Q_m(x)\) 的形式.故 \(k=1\).</p>
 <p><span class="stp">第四步：\(\lambda\) 是二重根，即 \(F(\lambda)=0,\ F'(\lambda)=0\).</span>此时 \((\ast)\) 进一步退化为</p>
 \[u''=P_m(x).\]
 <p>连续积分两次得 \(u\) 为 \(m+2\) 次多项式，其常数项与一次项分别对应齐次解 \(\mathrm{e}^{\lambda x}\) 与 \(x\mathrm{e}^{\lambda x}\)，可取为零，故 \(u=x^{2}Q_m(x)\)，即 \(k=2\).</p>
 <p><span class="stp">第五步：回答"为什么要乘 \(x^{k}\)".</span>症结在于：当 \(\lambda\) 是 \(k\) 重特征根时，\(\mathrm{e}^{\lambda x},x\mathrm{e}^{\lambda x},\dots,x^{k-1}\mathrm{e}^{\lambda x}\) 已经是<b>齐次</b>方程的解，算子 \(L\) 把它们全部"打成零".因此若不乘 \(x^k\)，待定多项式中最低的 \(k\) 项在代入后会全部消失，剩下的方程配不出 \(m\) 次的右端.乘上 \(x^{k}\) 恰好把这 \(k\) 个"失效"的自由度顶掉，使次数重新对齐.由此归纳出统一结论</p>
-\[y^{*}=x^{k}Q_m(x)\mathrm{e}^{\lambda x},\qquad k=\begin{cases}0,&F(\lambda)
-eq0,\\ 1,&\lambda\ \text{为单根},\\ 2,&\lambda\ \text{为二重根}.\end{cases}\]
+\[y^{*}=x^{k}Q_m(x)\mathrm{e}^{\lambda x},\qquad k=\begin{cases}0,&F(\lambda)\neq0,\\ 1,&\lambda\ \text{为单根},\\ 2,&\lambda\ \text{为二重根}.\end{cases}\]
 <p class="qed">证毕</p>
 </div>
 </details>
@@ -1397,8 +1372,7 @@ eq0,\\ 1,&\lambda\ \text{为单根},\\ 2,&\lambda\ \text{为二重根}.\end{case
 \[L[y]=A_m(x)\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\qquad\text{与}\qquad L[y]=\overline{A_m(x)}\,\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\]
 <p>的特解再相加.定理 7.12 的推导（剥离指数因子后比较多项式次数）对复数 \(\lambda\) 逐字成立，故第一个方程有特解</p>
 \[y_1^{*}=x^{k}B_m(x)\,\mathrm{e}^{(\alpha+\beta\mathrm{i})x},\]
-<p>其中 \(B_m\) 为 \(m\) 次复系数多项式，而 \(k\) 由 \(\lambda=\alpha+\beta\mathrm{i}\) 是否为特征根决定.<b>注意 \(\beta
-eq0\) 时，实系数二次特征方程的复根必成共轭对且各为单根</b>，故只可能 \(k=0\) 或 \(k=1\)，这正是定理中 \(k\) 只取两个值的原因.</p>
+<p>其中 \(B_m\) 为 \(m\) 次复系数多项式，而 \(k\) 由 \(\lambda=\alpha+\beta\mathrm{i}\) 是否为特征根决定.<b>注意 \(\beta\neq0\) 时，实系数二次特征方程的复根必成共轭对且各为单根</b>，故只可能 \(k=0\) 或 \(k=1\)，这正是定理中 \(k\) 只取两个值的原因.</p>
 <p><span class="stp">第三步：第二项取共轭即可.</span>由于 \(L\) 的系数 \(p,q\) 是实数，对 \(L[y_1^{*}]=A_m\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\) 两端取共轭得 \(L\bigl[\overline{y_1^{*}}\bigr]=\overline{A_m}\,\mathrm{e}^{(\alpha-\beta\mathrm{i})x}\).故第二个方程的特解可取 \(y_2^{*}=\overline{y_1^{*}}\).</p>
 <p><span class="stp">第四步：相加得实值特解.</span>由叠加原理，\(y^{*}=y_1^{*}+\overline{y_1^{*}}=2\operatorname{Re}y_1^{*}\) 是原方程的特解，且<b>自动是实值的</b>.展开：记 \(B_m(x)=R(x)+\mathrm{i}\,S(x)\)（\(R,S\) 为实系数 \(m\) 次多项式），由欧拉公式</p>
 \[2\operatorname{Re}\Bigl[x^{k}\bigl(R+\mathrm{i}S\bigr)\mathrm{e}^{\alpha x}\bigl(\cos\beta x+\mathrm{i}\sin\beta x\bigr)\Bigr]
@@ -1459,8 +1433,7 @@ eq0\) 时，实系数二次特征方程的复根必成共轭对且各为单根</
   <p class="muted"><b>共振的物理灾难：</b>特解 \(-\dfrac x2\cos x\) 的振幅随 \(x\) <b>线性无界增长</b>.这就是无阻尼系统在固有频率上被激励时的<b>共振</b>现象——1940 年塔科马海峡大桥的坍塌、行军队伍过桥必须便步走，根源都在这个 \(x\) 因子上.真实系统总有阻尼（\(\alpha\lt0\)），振幅有限但仍可能极大，所以任何旋转机械的工作转速都必须避开临界转速.</p>
 </div>
 
-<div class="ex"><div class="lab">例 7.26　考研经典：复数共振（\(\alpha
-eq0\)）</div>
+<div class="ex"><div class="lab">例 7.26　考研经典：复数共振（\(\alpha\neq0\)）</div>
   <p class="stmt">求 \(y''-2y'+5y=\mathrm{e}^{x}\cos2x\) 的一个特解.</p>
   <p class="sol"><span class="mk">解</span>由例 7.22，特征根为 \(1\pm2\mathrm{i}\).而自由项对应 \(\alpha=1,\beta=2\)，即 \(\alpha+\beta\mathrm{i}=1+2\mathrm{i}\) <b>正是特征根</b>，故 \(k=1\)，设</p>
   \[y^{*}=x\,\mathrm{e}^{x}\bigl(A\cos2x+B\sin2x\bigr).\]
@@ -1759,8 +1732,7 @@ eq0\)）</div>
   <p class="stmt">求 \(y\,y''-(y')^2=0\) 的通解.</p>
   <p class="sol"><span class="mk">解</span>方程中不出现 \(x\)，令 \(p=y'\)，\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\)：</p>
   \[y\,p\frac{\mathrm{d}p}{\mathrm{d}y}-p^2=0\;\Longrightarrow\;p\Bigl(y\frac{\mathrm{d}p}{\mathrm{d}y}-p\Bigr)=0 .\]
-  <p>若 \(p=0\)，得 \(y=\)常数，是解（可并入下面的结果）.若 \(p
-eq0\)：</p>
+  <p>若 \(p=0\)，得 \(y=\)常数，是解（可并入下面的结果）.若 \(p\neq0\)：</p>
   \[y\frac{\mathrm{d}p}{\mathrm{d}y}=p\;\Longrightarrow\;\frac{\mathrm{d}p}{p}=\frac{\mathrm{d}y}{y}
    \;\Longrightarrow\;p=C_1y .\]
   <p>再由 \(\dfrac{\mathrm{d}y}{\mathrm{d}x}=C_1y\) 分离变量得</p>
@@ -1816,8 +1788,7 @@ eq0\)：</p>
 \[F(r)=r^{n}+p_1r^{n-1}+\cdots+p_{n-1}r+p_n .\]
 <p><span class="stp">第一步：基本恒等式.</span>由 \(\dfrac{\mathrm{d}^{j}}{\mathrm{d}x^{j}}\mathrm{e}^{rx}=r^{j}\mathrm{e}^{rx}\) 逐项代入得</p>
 \[L\bigl[\mathrm{e}^{rx}\bigr]=F(r)\,\mathrm{e}^{rx}.\qquad(\ast)\]
-<p>因 \(\mathrm{e}^{rx}
-eq0\)，故 \(\mathrm{e}^{rx}\) 是解当且仅当 \(F(r)=0\)，即 \(r\) 是<b>特征根</b>.这就证明了单实根情形对应特解 \(\mathrm{e}^{rx}\).</p>
+<p>因 \(\mathrm{e}^{rx}\neq0\)，故 \(\mathrm{e}^{rx}\) 是解当且仅当 \(F(r)=0\)，即 \(r\) 是<b>特征根</b>.这就证明了单实根情形对应特解 \(\mathrm{e}^{rx}\).</p>
 <p><span class="stp">思路（如何处理重根）：</span>把 \((\ast)\) 中的 \(r\) 看作<b>参数</b>，对它求导.左端 \(L\) 只对 \(x\) 求导，与对 \(r\) 求导可交换次序，而 \(\dfrac{\partial}{\partial r}\mathrm{e}^{rx}=x\mathrm{e}^{rx}\)——每对 \(r\) 求一次导，就在解里"生出一个 \(x\)".这正是重根为什么会带来 \(x^{j}\mathrm{e}^{rx}\) 的根本原因.</p>
 <p><span class="stp">第二步：\(k\) 重实根.</span>对 \((\ast)\) 两端关于 \(r\) 求 \(j\) 阶偏导.左端得 \(L\bigl[x^{j}\mathrm{e}^{rx}\bigr]\)；右端由莱布尼茨公式得</p>
 \[\frac{\partial^{j}}{\partial r^{j}}\bigl[F(r)\mathrm{e}^{rx}\bigr]=\sum_{i=0}^{j}\binom{j}{i}F^{(i)}(r)\,x^{\,j-i}\,\mathrm{e}^{rx}.\]
@@ -1826,8 +1797,7 @@ eq0\)，故 \(\mathrm{e}^{rx}\) 是解当且仅当 \(F(r)=0\)，即 \(r\) 是<b>
 <p>若 \(r\) 是 \(F\) 的 \(k\) 重根，则 \(F(r)=F'(r)=\cdots=F^{(k-1)}(r)=0\).当 \(j\le k-1\) 时，上式右端求和中出现的全是 \(F^{(i)}(r)\ (i\le j\le k-1)\)，故整个和为零，即</p>
 \[L\bigl[x^{j}\mathrm{e}^{rx}\bigr]=0,\qquad j=0,1,\dots,k-1 .\]
 <p>这就严格证明了 \(k\) 重实根 \(r\) 提供 \(k\) 个解 \(\mathrm{e}^{rx},x\mathrm{e}^{rx},\dots,x^{k-1}\mathrm{e}^{rx}\).</p>
-<p><span class="stp">第三步：复根情形.</span>上述推导对复数 \(r\) 同样成立.设 \(\alpha\pm\beta\mathrm{i}\ (\beta
-eq0)\) 是 \(k\) 重共轭复根，则 \(x^{j}\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\ (j\le k-1)\) 是复值解.由欧拉公式</p>
+<p><span class="stp">第三步：复根情形.</span>上述推导对复数 \(r\) 同样成立.设 \(\alpha\pm\beta\mathrm{i}\ (\beta\neq0)\) 是 \(k\) 重共轭复根，则 \(x^{j}\mathrm{e}^{(\alpha+\beta\mathrm{i})x}\ (j\le k-1)\) 是复值解.由欧拉公式</p>
 \[x^{j}\mathrm{e}^{(\alpha+\beta\mathrm{i})x}=x^{j}\mathrm{e}^{\alpha x}\cos\beta x+\mathrm{i}\,x^{j}\mathrm{e}^{\alpha x}\sin\beta x .\]
 <p>因 \(p_1,\dots,p_n\) 为实数，把复值解代入 \(L\) 后实部与虚部各自为零，故</p>
 \[x^{j}\mathrm{e}^{\alpha x}\cos\beta x,\qquad x^{j}\mathrm{e}^{\alpha x}\sin\beta x\qquad(j=0,\dots,k-1)\]
@@ -2136,8 +2106,7 @@ eq0)\) 是 \(k\) 重共轭复根，则 \(x^{j}\mathrm{e}^{(\alpha+\beta\mathrm{i
  \;\Longrightarrow\;y^{2}=x+C_{2}' .\]
 <p>代入 \(y(0)=1\) 得 \(C_{2}'=1\)，故特解为</p>
 \[y=\sqrt{x+1}\qquad(x\gt-1).\]
-<p><b>解法二（标准降阶，用于校验）.</b>令 \(p=y'\)，\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\)，方程成为 \(yp\dfrac{\mathrm{d}p}{\mathrm{d}y}+p^{2}=0\).当 \(p
-eq0\) 时 \(\dfrac{\mathrm{d}p}{p}=-\dfrac{\mathrm{d}y}{y}\)，得 \(p=\dfrac{C_{1}}{y}\)，即 \(yy'=C_{1}\)，与解法一一致.</p>
+<p><b>解法二（标准降阶，用于校验）.</b>令 \(p=y'\)，\(y''=p\dfrac{\mathrm{d}p}{\mathrm{d}y}\)，方程成为 \(yp\dfrac{\mathrm{d}p}{\mathrm{d}y}+p^{2}=0\).当 \(p\neq0\) 时 \(\dfrac{\mathrm{d}p}{p}=-\dfrac{\mathrm{d}y}{y}\)，得 \(p=\dfrac{C_{1}}{y}\)，即 \(yy'=C_{1}\)，与解法一一致.</p>
 <p class="ky-idea"><b>命题意图.</b> 一考可降阶方程的两类换元（缺 \(y\) 用 \(\mathrm{d}p/\mathrm{d}x\)，缺 \(x\) 用 \(p\,\mathrm{d}p/\mathrm{d}y\)，多出的那个因子 \(p\) 是失分重灾区），二考对"完全导数结构"的敏感度.考场上若能一眼看出 \((yy')'\)，可省下三分之二的时间.最后别忘了根据初始条件与根式定义域交代解的存在区间.</p>
 </div>
 
@@ -2265,6 +2234,7 @@ eq0\) 时 \(\dfrac{\mathrm{d}p}{p}=-\dfrac{\mathrm{d}y}{y}\)，得 \(p=\dfrac{C_
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 7, "list": [["s071", "7.1 常微分方程的基本概念"], ["s072", "7.2 一阶微分方程的常见类型及解法"], ["s073", "7.3 二阶线性微分方程"], ["s074", "7.4 高阶微分方程的解法"], ["adv7", "考研选讲"], ["cq7", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -2292,5 +2262,6 @@ eq0\) 时 \(\dfrac{\mathrm{d}p}{p}=-\dfrac{\mathrm{d}y}{y}\)，得 \(p=\dfrac{C_
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

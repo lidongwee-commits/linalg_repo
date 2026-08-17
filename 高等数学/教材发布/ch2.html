@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第2章 · 极限与连续</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第2章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -140,8 +144,7 @@
   <p>若数列 \(\{x_n\}\) 收敛，则它的极限唯一.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p>用<b>反证法</b>.设 \(\lim\limits_{n\to\infty}x_n=a\) 且 \(\lim\limits_{n\to\infty}x_n=b\)，而 \(a
-eq b\).不妨设 \(a\lt b\).</p>
+<p>用<b>反证法</b>.设 \(\lim\limits_{n\to\infty}x_n=a\) 且 \(\lim\limits_{n\to\infty}x_n=b\)，而 \(a\neq b\).不妨设 \(a\lt b\).</p>
 <p><span class="stp">取定 \(\varepsilon\)：</span>令 \(\varepsilon=\dfrac{b-a}{2}\gt0\).</p>
 <p><span class="stp">用定义：</span>由 \(x_n\to a\)，存在 \(N_1\)，当 \(n\gt N_1\) 时 \(|x_n-a|\lt\varepsilon\)，即</p>
 \[x_n\lt a+\varepsilon=a+\frac{b-a}{2}=\frac{a+b}{2}.\]
@@ -207,8 +210,7 @@ eq b\).不妨设 \(a\lt b\).</p>
   <p class="stmt">判断 \(x_n=\cos\dfrac{n\pi}{2}\) 的敛散性.</p>
   <p class="sol"><span class="mk">解</span>逐项写出：\(0,-1,0,1,0,-1,0,1,\dots\)</p>
   <p>取子列 \(n=4k\)：\(x_{4k}=\cos2k\pi=1\to1\)；取子列 \(n=4k+2\)：\(x_{4k+2}=\cos(2k+1)\pi=-1\to-1\).</p>
-  <p>两个子列极限不同（\(1
-eq-1\)），由定理 2.4 知 \(\{x_n\}\) <b>发散</b>.</p>
+  <p>两个子列极限不同（\(1\neq-1\)），由定理 2.4 知 \(\{x_n\}\) <b>发散</b>.</p>
 </div>
 
 <div class="case"><div class="lab">应用探微 · 迭代算法的收敛速度：从 \(\varepsilon\text{-}N\) 到"需要跑多少轮"</div>
@@ -387,9 +389,7 @@ eq-1\)），由定理 2.4 知 \(\{x_n\}\) <b>发散</b>.</p>
 
 <div class="note"><b>\(0\lt|x-x_0|\) 这个"\(0\lt\)"是全部要害.</b>它把 \(x=x_0\) 这一点<b>排除在外</b>：极限只看邻域里的趋势，不看该点本身.因此：<br>
 · \(f(x_0)\) 可以无定义（如 \(\dfrac{\sin x}{x}\) 在 \(0\) 处）；<br>
-· \(f(x_0)\) 可以有定义但不等于 \(A\)（如 \(f(x)=\begin{cases}1,&x
-eq0\\5,&x=0\end{cases}\)，\(\lim\limits_{x\to0}f(x)=1
-eq5=f(0)\)）；<br>
+· \(f(x_0)\) 可以有定义但不等于 \(A\)（如 \(f(x)=\begin{cases}1,&x\neq0\\5,&x=0\end{cases}\)，\(\lim\limits_{x\to0}f(x)=1\neq5=f(0)\)）；<br>
 · \(\delta\) 依赖 \(\varepsilon\)，不要求最大，找到一个可用的即可.</div>
 
 <div class="ex"><div class="lab">例 2.6　用定义证明 \(\lim\limits_{x\to1}(3x-1)=2\)</div>
@@ -403,12 +403,10 @@ eq5=f(0)\)）；<br>
   <p class="sol"><span class="mk">证</span>注意 \(x=2\) 时函数无定义，但极限只考察 \(0\lt|x-2|\lt\delta\)，此时可约分：</p>
   \[\left|\frac{x^{2}-4}{x-2}-4\right|=\left|\frac{(x-2)(x+2)}{x-2}-4\right|=|(x+2)-4|=|x-2|.\]
   <p>任给 \(\varepsilon\gt0\)，取 \(\delta=\varepsilon\)，则当 \(0\lt|x-2|\lt\delta\) 时上式 \(\lt\varepsilon\).证毕.</p>
-  <p class="muted"><b>这个例子把"极限与函数值无关"演示得淋漓尽致：</b>函数在 \(x=2\) 处是个"洞"，但极限照样存在且等于 \(4\).约分之所以合法，正是因为定义里 \(x
-eq x_0\).</p>
+  <p class="muted"><b>这个例子把"极限与函数值无关"演示得淋漓尽致：</b>函数在 \(x=2\) 处是个"洞"，但极限照样存在且等于 \(4\).约分之所以合法，正是因为定义里 \(x\neq x_0\).</p>
 </div>
 
-<div class="ex"><div class="lab">例 2.8　证明 \(\lim\limits_{x\to x_0}x^{2}=x_0^{2}\)（\(x_0
-eq0\)）</div>
+<div class="ex"><div class="lab">例 2.8　证明 \(\lim\limits_{x\to x_0}x^{2}=x_0^{2}\)（\(x_0\neq0\)）</div>
   <p class="sol"><span class="mk">证</span>\(|x^{2}-x_0^{2}|=|x-x_0|\cdot|x+x_0|\).第二个因子含 \(x\)，需先<b>限定范围以控制它</b>.</p>
   <p>先设 \(|x-x_0|\lt1\)，则 \(|x|\lt|x_0|+1\)，于是</p>
   \[|x+x_0|\le|x|+|x_0|\lt2|x_0|+1.\]
@@ -441,8 +439,7 @@ eq0\)）</div>
 <div class="ex"><div class="lab">例 2.9　分段函数的单侧极限</div>
   <p class="stmt">设 \(f(x)=\begin{cases}x-1,&x\lt0,\\0,&x=0,\\x+1,&x\gt0,\end{cases}\) 讨论 \(\lim\limits_{x\to0}f(x)\).</p>
   <p class="sol"><span class="mk">解</span>\(f(0^{-})=\lim\limits_{x\to0^{-}}(x-1)=-1\)，\(f(0^{+})=\lim\limits_{x\to0^{+}}(x+1)=1\).</p>
-  <p>因 \(-1
-eq1\)，由定理 2.5 知 \(\lim\limits_{x\to0}f(x)\) <b>不存在</b>（虽然 \(f(0)=0\) 有定义）.</p>
+  <p>因 \(-1\neq1\)，由定理 2.5 知 \(\lim\limits_{x\to0}f(x)\) <b>不存在</b>（虽然 \(f(0)=0\) 有定义）.</p>
 </div>
 
 <div class="ex"><div class="lab">例 2.10　含 \(\mathrm{e}^{1/x}\) 的经典题</div>
@@ -450,8 +447,7 @@ eq1\)，由定理 2.5 知 \(\lim\limits_{x\to0}f(x)\) <b>不存在</b>（虽然 
   <p class="sol"><span class="mk">解</span>先看 \(\mathrm{e}^{1/x}\)：</p>
   <p>\(x\to0^{+}\) 时 \(\dfrac1x\to+\infty\)，故 \(\mathrm{e}^{1/x}\to+\infty\)；\(x\to0^{-}\) 时 \(\dfrac1x\to-\infty\)，故 \(\mathrm{e}^{1/x}\to0\).左右不等，\(\lim\limits_{x\to0}\mathrm{e}^{1/x}\) <b>不存在</b>.</p>
   <p>再看第二式：\(x\to0^{+}\) 时分母 \(\to+\infty\)，整体 \(\to0\)；\(x\to0^{-}\) 时分母 \(\to1+0=1\)，整体 \(\to1\).</p>
-  <p>左右极限 \(1
-eq0\)，故 \(\lim\limits_{x\to0}\dfrac{1}{1+\mathrm{e}^{1/x}}\) <b>不存在</b>.</p>
+  <p>左右极限 \(1\neq0\)，故 \(\lim\limits_{x\to0}\dfrac{1}{1+\mathrm{e}^{1/x}}\) <b>不存在</b>.</p>
   <p class="muted">这是考研高频陷阱题.<b>凡见 \(\mathrm{e}^{1/x}\) 在 \(x\to0\)，必分左右讨论.</b>类似地 \(\arctan\dfrac1x\) 在 \(x\to0\) 时左右极限为 \(-\dfrac{\pi}{2}\) 与 \(\dfrac{\pi}{2}\).</p>
 </div>
 
@@ -485,20 +481,14 @@ eq0\)，故 \(\lim\limits_{x\to0}\dfrac{1}{1+\mathrm{e}^{1/x}}\) <b>不存在</b
   <p>① <b>唯一性</b>：若极限存在则唯一.</p>
   <p>② <b>局部有界性</b>：若 \(\lim\limits_{x\to x_0}f(x)=A\)，则存在 \(x_0\) 的去心邻域，\(f(x)\) 在其上有界.</p>
   <p>③ <b>局部保号性</b>：若 \(A\gt0\)，则存在去心邻域使 \(f(x)\gt0\)（反之，若邻域内 \(f(x)\ge0\) 则 \(A\ge0\)）.</p>
-  <p>④ <b>函数极限与数列极限的关系（海涅定理）</b>：\(\lim\limits_{x\to x_0}f(x)=A\) 的充要条件是——对任何以 \(x_0\) 为极限的数列 \(\{x_n\}\)（\(x_n
-eq x_0\)），都有 \(\lim\limits_{n\to\infty}f(x_n)=A\).</p>
+  <p>④ <b>函数极限与数列极限的关系（海涅定理）</b>：\(\lim\limits_{x\to x_0}f(x)=A\) 的充要条件是——对任何以 \(x_0\) 为极限的数列 \(\{x_n\}\)（\(x_n\neq x_0\)），都有 \(\lim\limits_{n\to\infty}f(x_n)=A\).</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p><span class="stp">① 唯一性：</span>与数列极限唯一性的反证法完全平行.若 \(\lim\limits_{x\to x_0}f(x)=A\) 且 \(=B\)，\(A
-eq B\)，取 \(\varepsilon=\dfrac{|A-B|}{2}\gt0\)，则 \(A\)、\(B\) 的 \(\delta\)-邻域互不相交，而 \(f(x)\) 在 \(x\to x_0\) 时须同时落入两者，矛盾.故 \(A=B\).</p>
+<p><span class="stp">① 唯一性：</span>与数列极限唯一性的反证法完全平行.若 \(\lim\limits_{x\to x_0}f(x)=A\) 且 \(=B\)，\(A\neq B\)，取 \(\varepsilon=\dfrac{|A-B|}{2}\gt0\)，则 \(A\)、\(B\) 的 \(\delta\)-邻域互不相交，而 \(f(x)\) 在 \(x\to x_0\) 时须同时落入两者，矛盾.故 \(A=B\).</p>
 <p><span class="stp">② 局部有界性：</span>设 \(\lim\limits_{x\to x_0}f(x)=A\).取 \(\varepsilon=1\)，存在 \(\delta\gt0\)，当 \(0\lt|x-x_0|\lt\delta\) 时 \(|f(x)-A|\lt1\)，于是 \(|f(x)|\le|A|+1\).即在去心邻域 \(U^\circ(x_0,\delta)\) 内 \(f(x)\) 有界.</p>
 <p><span class="stp">③ 局部保号性：</span>设 \(A\gt0\)，取 \(\varepsilon=\dfrac{A}{2}\gt0\)，存在 \(\delta\gt0\) 使 \(0\lt|x-x_0|\lt\delta\) 时 \(|f(x)-A|\lt\dfrac{A}{2}\)，从而 \(f(x)\gt\dfrac{A}{2}\gt0\).反之，若在某去心邻域内 \(f(x)\ge0\) 且 \(\lim f=A\)，则由数列极限的保号性推论（对任一趋于 \(x_0\) 的数列取函数值）可得 \(A\ge0\).</p>
-<p><span class="stp">④ 海涅定理：</span>（\(\Rightarrow\)）设 \(\lim\limits_{x\to x_0}f(x)=A\).任取数列 \(x_n\to x_0\) 且 \(x_n
-eq x_0\).对任意 \(\varepsilon\gt0\)，存在 \(\delta\gt0\) 使 \(0\lt|x-x_0|\lt\delta\Rightarrow|f(x)-A|\lt\varepsilon\).因 \(x_n\to x_0\)，存在 \(N\) 使 \(n\gt N\) 时 \(0\lt|x_n-x_0|\lt\delta\)，故 \(|f(x_n)-A|\lt\varepsilon\)，即 \(f(x_n)\to A\).</p>
-<p>（\(\Leftarrow\)）用反证法.若 \(\lim\limits_{x\to x_0}f(x)
-eq A\)（或不存在），则存在某个 \(\varepsilon_0\gt0\)，对任意 \(\delta\gt0\) 都能找到 \(x\) 满足 \(0\lt|x-x_0|\lt\delta\) 但 \(|f(x)-A|\ge\varepsilon_0\).依次取 \(\delta=\dfrac1n\)，得到数列 \(x_n\to x_0\) 且 \(x_n
-eq x_0\)，但 \(|f(x_n)-A|\ge\varepsilon_0\)，即 \(f(x_n)
-ot\to A\)，与已知矛盾.故 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
+<p><span class="stp">④ 海涅定理：</span>（\(\Rightarrow\)）设 \(\lim\limits_{x\to x_0}f(x)=A\).任取数列 \(x_n\to x_0\) 且 \(x_n\neq x_0\).对任意 \(\varepsilon\gt0\)，存在 \(\delta\gt0\) 使 \(0\lt|x-x_0|\lt\delta\Rightarrow|f(x)-A|\lt\varepsilon\).因 \(x_n\to x_0\)，存在 \(N\) 使 \(n\gt N\) 时 \(0\lt|x_n-x_0|\lt\delta\)，故 \(|f(x_n)-A|\lt\varepsilon\)，即 \(f(x_n)\to A\).</p>
+<p>（\(\Leftarrow\)）用反证法.若 \(\lim\limits_{x\to x_0}f(x)\neq A\)（或不存在），则存在某个 \(\varepsilon_0\gt0\)，对任意 \(\delta\gt0\) 都能找到 \(x\) 满足 \(0\lt|x-x_0|\lt\delta\) 但 \(|f(x)-A|\ge\varepsilon_0\).依次取 \(\delta=\dfrac1n\)，得到数列 \(x_n\to x_0\) 且 \(x_n\neq x_0\)，但 \(|f(x_n)-A|\ge\varepsilon_0\)，即 \(f(x_n)\not\to A\)，与已知矛盾.故 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
 <p class="qed">证毕</p>
 </div>
 </details>
@@ -509,8 +499,7 @@ ot\to A\)，与已知矛盾.故 \(\lim\limits_{x\to x_0}f(x)=A\).</p>
   <p class="sol"><span class="mk">证</span>取两个趋于 \(0\) 的数列：</p>
   <p>\(x_n=\dfrac{1}{n\pi}\to0\)，此时 \(f(x_n)=\sin(n\pi)=0\to0\)；</p>
   <p>\(y_n=\dfrac{1}{2n\pi+\frac{\pi}{2}}\to0\)，此时 \(f(y_n)=\sin\left(2n\pi+\dfrac{\pi}{2}\right)=1\to1\).</p>
-  <p>两个数列都趋于 \(0\)，但函数值序列趋于不同的极限 \(0
-eq1\).由海涅定理，\(\lim\limits_{x\to0}\sin\dfrac{1}{x}\) <b>不存在</b>.</p>
+  <p>两个数列都趋于 \(0\)，但函数值序列趋于不同的极限 \(0\neq1\).由海涅定理，\(\lim\limits_{x\to0}\sin\dfrac{1}{x}\) <b>不存在</b>.</p>
   <p class="muted">几何上，\(\sin\dfrac1x\) 在 \(x\to0\) 时以越来越快的频率在 \([-1,1]\) 之间无限振荡，永远"定不下来".对比：\(x\sin\dfrac1x\to0\)（振幅被压缩，见 §2.4 有界量乘无穷小）.</p>
 </div>
 
@@ -664,8 +653,7 @@ eq1\).由海涅定理，\(\lim\limits_{x\to0}\sin\dfrac{1}{x}\) <b>不存在</b>
   <p>设 \(\lim f(x)=A\)，\(\lim g(x)=B\)（这里 \(\lim\) 表示同一自变量变化过程，如 \(x\to x_0\) 或 \(x\to\infty\)），则</p>
   <p>① \(\lim[f(x)\pm g(x)]=A\pm B\)；</p>
   <p>② \(\lim[f(x)\cdot g(x)]=A\cdot B\)，特别地 \(\lim[c\,f(x)]=cA\)；</p>
-  <p>③ 当 \(B
-eq0\) 时，\(\lim\dfrac{f(x)}{g(x)}=\dfrac{A}{B}\)；</p>
+  <p>③ 当 \(B\neq0\) 时，\(\lim\dfrac{f(x)}{g(x)}=\dfrac{A}{B}\)；</p>
   <p>④ \(\lim[f(x)]^{n}=A^{n}\)（\(n\) 为正整数），\(\lim\sqrt[n]{f(x)}=\sqrt[n]{A}\)（\(n\) 为偶数时需 \(A\ge0\)）.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
@@ -675,9 +663,7 @@ eq0\) 时，\(\lim\dfrac{f(x)}{g(x)}=\dfrac{A}{B}\)；</p>
 <p><span class="stp">② 乘积：</span>展开</p>
 \[fg=(A+\alpha)(B+\beta)=AB+\underbrace{(A\beta+B\alpha+\alpha\beta)}_{\textstyle \gamma}.\]
 <p>其中 \(A\beta,\ B\alpha\) 是常数乘无穷小，仍是无穷小；\(\alpha\beta\) 是两个无穷小之积，也是无穷小.故 \(\gamma\to0\)，从而 \(\lim(fg)=AB\).取 \(g\equiv c\) 即得 \(\lim(cf)=cA\).</p>
-<p><span class="stp">③ 商：</span>设 \(B
-eq0\).先证 \(\dfrac1g\to\dfrac1B\).因 \(g\to B
-eq0\)，由保号性，在该过程的某个邻域内 \(|g|\gt\dfrac{|B|}{2}\).于是</p>
+<p><span class="stp">③ 商：</span>设 \(B\neq0\).先证 \(\dfrac1g\to\dfrac1B\).因 \(g\to B\neq0\)，由保号性，在该过程的某个邻域内 \(|g|\gt\dfrac{|B|}{2}\).于是</p>
 \[\left|\frac1g-\frac1B\right|=\frac{|B-g|}{|g||B|}\lt\frac{2}{|B|^{2}}\,|g-B| .\]
 <p>右端是无穷小的常数倍，故 \(\dfrac1g-\dfrac1B\to0\)，即 \(\dfrac1g\to\dfrac1B\).再由②的乘积法则，</p>
 \[\lim\frac{f}{g}=\lim\left(f\cdot\frac1g\right)=A\cdot\frac1B=\frac{A}{B}.\]
@@ -694,19 +680,16 @@ eq0\)，由保号性，在该过程的某个邻域内 \(|g|\gt\dfrac{|B|}{2}\).�
 <h3>二、常用的极限计算方法</h3>
 <div class="ex"><div class="lab">例 2.14　多项式与有理分式（直接代入）</div>
   <p class="sol"><span class="mk">解</span>由法则反复使用可得：<b>若 \(P(x)\) 为多项式，则 \(\lim\limits_{x\to x_0}P(x)=P(x_0)\)</b>.</p>
-  <p>对有理分式 \(\dfrac{P(x)}{Q(x)}\)，若 \(Q(x_0)
-eq0\)，则 \(\lim\limits_{x\to x_0}\dfrac{P(x)}{Q(x)}=\dfrac{P(x_0)}{Q(x_0)}\).</p>
+  <p>对有理分式 \(\dfrac{P(x)}{Q(x)}\)，若 \(Q(x_0)\neq0\)，则 \(\lim\limits_{x\to x_0}\dfrac{P(x)}{Q(x)}=\dfrac{P(x_0)}{Q(x_0)}\).</p>
   <p>例如 \(\lim\limits_{x\to2}\dfrac{x^{2}+3x-1}{x+5}=\dfrac{4+6-1}{7}=\dfrac{9}{7}\).</p>
 </div>
 
 <div class="ex"><div class="lab">例 2.15　\(\dfrac{0}{0}\) 型：因式分解约分</div>
   <p class="stmt">求 \(\lim\limits_{x\to1}\dfrac{x^{3}-1}{x^{2}-3x+2}\).</p>
   <p class="sol"><span class="mk">解</span>直接代入分子分母同为 \(0\)，是 \(\dfrac00\) 型.分解因式：</p>
-  \[\frac{x^{3}-1}{x^{2}-3x+2}=\frac{(x-1)(x^{2}+x+1)}{(x-1)(x-2)}=\frac{x^{2}+x+1}{x-2}\quad(x
-eq1).\]
+  \[\frac{x^{3}-1}{x^{2}-3x+2}=\frac{(x-1)(x^{2}+x+1)}{(x-1)(x-2)}=\frac{x^{2}+x+1}{x-2}\quad(x\neq1).\]
   <p>于是原式 \(=\dfrac{1+1+1}{1-2}=-3\).</p>
-  <p class="muted"><b>\(\dfrac00\) 型的本质是分子分母有公因子</b>.因 \(x\to1\) 时 \(x
-eq1\)，约去 \((x-1)\) 完全合法.</p>
+  <p class="muted"><b>\(\dfrac00\) 型的本质是分子分母有公因子</b>.因 \(x\to1\) 时 \(x\neq1\)，约去 \((x-1)\) 完全合法.</p>
 </div>
 
 <div class="ex"><div class="lab">例 2.16　\(\dfrac{\infty}{\infty}\) 型：同除最高次幂</div>
@@ -732,19 +715,15 @@ eq1\)，约去 \((x-1)\) 完全合法.</p>
 <h3>三、复合函数的极限运算法则</h3>
 <div class="def"><div class="lab"><span class="n">定理 2.8</span>复合函数的极限</div>
   <p>设 \(y=f[g(x)]\) 由 \(y=f(u)\) 与 \(u=g(x)\) 复合而成.若</p>
-  <p>① \(\lim\limits_{x\to x_0}g(x)=u_0\)；② \(\lim\limits_{u\to u_0}f(u)=A\)；③ 在 \(x_0\) 的某去心邻域内 \(g(x)
-eq u_0\)，</p>
+  <p>① \(\lim\limits_{x\to x_0}g(x)=u_0\)；② \(\lim\limits_{u\to u_0}f(u)=A\)；③ 在 \(x_0\) 的某去心邻域内 \(g(x)\neq u_0\)，</p>
   <p>则 \(\lim\limits_{x\to x_0}f[g(x)]=\lim\limits_{u\to u_0}f(u)=A\).</p>
-  <p class="muted">条件 ③ 不可少.反例：\(g(x)\equiv0\)，\(f(u)=\begin{cases}1,&u
-eq0\\0,&u=0\end{cases}\)，则 \(\lim\limits_{u\to0}f(u)=1\) 但 \(f[g(x)]\equiv0\to0\).若 \(f\) 在 \(u_0\) 处连续（§2.6），条件 ③ 可以去掉.</p>
+  <p class="muted">条件 ③ 不可少.反例：\(g(x)\equiv0\)，\(f(u)=\begin{cases}1,&u\neq0\\0,&u=0\end{cases}\)，则 \(\lim\limits_{u\to0}f(u)=1\) 但 \(f[g(x)]\equiv0\to0\).若 \(f\) 在 \(u_0\) 处连续（§2.6），条件 ③ 可以去掉.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p><span class="stp">思路：</span>要证 \(\lim\limits_{x\to x_0}f[g(x)]=A\)，即让 \(g(x)\) 落入 \(f\) 在 \(u_0\) 处的 \(\eta\)-邻域.由于 \(\lim\limits_{u\to u_0}f(u)=A\)，只要 \(g(x)\) 足够接近 \(u_0\) 即可；而 \(g(x)\to u_0\) 正保证这一点.条件③用来保证 \(g(x)
-eq u_0\)，使 \(f\) 的极限定义中的"\(0\lt|u-u_0|\)"成立.</p>
+<p><span class="stp">思路：</span>要证 \(\lim\limits_{x\to x_0}f[g(x)]=A\)，即让 \(g(x)\) 落入 \(f\) 在 \(u_0\) 处的 \(\eta\)-邻域.由于 \(\lim\limits_{u\to u_0}f(u)=A\)，只要 \(g(x)\) 足够接近 \(u_0\) 即可；而 \(g(x)\to u_0\) 正保证这一点.条件③用来保证 \(g(x)\neq u_0\)，使 \(f\) 的极限定义中的"\(0\lt|u-u_0|\)"成立.</p>
 <p><span class="stp">证明：</span>对任意 \(\varepsilon\gt0\)，因 \(\lim\limits_{u\to u_0}f(u)=A\)，存在 \(\eta\gt0\)，当 \(0\lt|u-u_0|\lt\eta\) 时</p>
 \[|f(u)-A|\lt\varepsilon.\]
-<p>又因 \(\lim\limits_{x\to x_0}g(x)=u_0\)，存在 \(\delta_1\gt0\)，当 \(0\lt|x-x_0|\lt\delta_1\) 时 \(|g(x)-u_0|\lt\eta\).再由条件③，存在 \(\delta_2\gt0\)，当 \(0\lt|x-x_0|\lt\delta_2\) 时 \(g(x)
-eq u_0\).令 \(\delta=\min\{\delta_1,\delta_2\}\)，则当 \(0\lt|x-x_0|\lt\delta\) 时，</p>
+<p>又因 \(\lim\limits_{x\to x_0}g(x)=u_0\)，存在 \(\delta_1\gt0\)，当 \(0\lt|x-x_0|\lt\delta_1\) 时 \(|g(x)-u_0|\lt\eta\).再由条件③，存在 \(\delta_2\gt0\)，当 \(0\lt|x-x_0|\lt\delta_2\) 时 \(g(x)\neq u_0\).令 \(\delta=\min\{\delta_1,\delta_2\}\)，则当 \(0\lt|x-x_0|\lt\delta\) 时，</p>
 \[0\lt|g(x)-u_0|\lt\eta,\]
 <p>从而 \(|f[g(x)]-A|\lt\varepsilon\).故 \(\lim\limits_{x\to x_0}f[g(x)]=A\).</p>
 <p class="qed">证毕</p>
@@ -755,8 +734,7 @@ eq u_0\).令 \(\delta=\min\{\delta_1,\delta_2\}\)，则当 \(0\lt|x-x_0|\lt\delt
 
 <div class="ex"><div class="lab">例 2.18　变量代换求极限</div>
   <p class="stmt">求 \(\lim\limits_{x\to4}\dfrac{\sqrt{x}-2}{x-4}\).</p>
-  <p class="sol"><span class="mk">解</span>令 \(t=\sqrt{x}\)，则 \(x=t^{2}\)，\(x\to4\) 时 \(t\to2\)（且 \(t
-eq2\)）.</p>
+  <p class="sol"><span class="mk">解</span>令 \(t=\sqrt{x}\)，则 \(x=t^{2}\)，\(x\to4\) 时 \(t\to2\)（且 \(t\neq2\)）.</p>
   \[\lim_{t\to2}\frac{t-2}{t^{2}-4}=\lim_{t\to2}\frac{t-2}{(t-2)(t+2)}=\lim_{t\to2}\frac{1}{t+2}=\frac{1}{4}.\]
   <p class="muted">也可用有理化：分子分母同乘 \(\sqrt x+2\)，得 \(\dfrac{x-4}{(x-4)(\sqrt x+2)}=\dfrac{1}{\sqrt x+2}\to\dfrac14\).<b>根式极限首选有理化或换元.</b></p>
 </div>
@@ -767,8 +745,7 @@ eq2\)）.</p>
   <p>于是 \(\lim\limits_{x\to1}(x^{2}+ax+b)=1+a+b=0\)，得 \(b=-1-a\).代回：</p>
   \[\frac{x^{2}+ax-1-a}{x-1}=\frac{(x-1)(x+1+a)}{x-1}=x+1+a\to 2+a=3,\]
   <p>故 \(a=1\)，\(b=-2\).</p>
-  <p class="muted"><b>这是"反求参数"的标准套路，务必掌握：</b>若 \(\lim\dfrac{f}{g}=A\)（有限）且 \(g\to0\)，则必有 \(f\to0\)；若 \(\lim\dfrac{f}{g}=A
-eq0\) 且 \(f\to0\)，则必有 \(g\to0\).</p>
+  <p class="muted"><b>这是"反求参数"的标准套路，务必掌握：</b>若 \(\lim\dfrac{f}{g}=A\)（有限）且 \(g\to0\)，则必有 \(f\to0\)；若 \(\lim\dfrac{f}{g}=A\neq0\) 且 \(f\to0\)，则必有 \(g\to0\).</p>
 </div>
 
 <div class="ex"><div class="lab">例 2.20　数列极限：先求和再取极限</div>
@@ -808,8 +785,7 @@ eq0\) 且 \(f\to0\)，则必有 \(g\to0\).</p>
 <details><summary>应用案例 · Amdahl 定律：GPU 堆到无穷多张，加速比能到多少</summary>
 <p><b>场景：</b> 智算中心机房里，GPU 从 256 张加到 1024 张，电费单翻了几番，训练一轮的墙钟时间却几乎没再缩短——钱烧在了哪？设程序中可并行部分占比 \(p\)，串行部分占 \(1-p\)，用 \(n\) 个计算核的加速比为</p>
 \[S(n)=\frac{1}{(1-p)+\dfrac{p}{n}}.\]
-<p>「无限堆卡」的效果就是求 \(\lim\limits_{n\to\infty}S(n)\).由极限的四则运算法则，\(\dfrac{p}{n}\to0\)，且分母极限 \(1-p
-eq0\)，故可直接用商的法则：</p>
+<p>「无限堆卡」的效果就是求 \(\lim\limits_{n\to\infty}S(n)\).由极限的四则运算法则，\(\dfrac{p}{n}\to0\)，且分母极限 \(1-p\neq0\)，故可直接用商的法则：</p>
 \[\lim_{n\to\infty}S(n)=\frac{1}{(1-p)+0}=\frac{1}{1-p}.\]
 <table class="dt">
 <tr><th>核数 \(n\)</th><th>4</th><th>16</th><th>64</th><th>256</th><th>1024</th><th>\(\to\infty\)</th></tr>
@@ -1031,15 +1007,13 @@ eq0\)，故可直接用商的法则：</p>
   <p class="muted">记号 \(\lim f(x)=\infty\) 只是"极限不存在"的一种<b>特定描述方式</b>，并不表示极限存在.若恒有 \(f(x)\gt M\) 则记 \(+\infty\)，恒有 \(f(x)\lt-M\) 则记 \(-\infty\).</p>
 </div>
 <div class="def"><div class="lab"><span class="n">定理 2.11</span>无穷大与无穷小的倒数关系</div>
-  <p>在同一变化过程中：若 \(f(x)\) 为无穷大，则 \(\dfrac{1}{f(x)}\) 为无穷小；若 \(f(x)\) 为无穷小且 \(f(x)
-eq0\)，则 \(\dfrac{1}{f(x)}\) 为无穷大.</p>
+  <p>在同一变化过程中：若 \(f(x)\) 为无穷大，则 \(\dfrac{1}{f(x)}\) 为无穷小；若 \(f(x)\) 为无穷小且 \(f(x)\neq0\)，则 \(\dfrac{1}{f(x)}\) 为无穷大.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p><span class="stp">第一部分：</span>设 \(f(x)\) 为无穷大.即对任意 \(M\gt0\)，当变量进入相应邻域时 \(|f(x)|\gt M\).于是</p>
 \[0\lt\left|\frac{1}{f(x)}\right|\lt\frac{1}{M}.\]
 <p>由 \(M\) 任意大知 \(\dfrac{1}{f(x)}\to0\)，即其为无穷小.</p>
-<p><span class="stp">第二部分：</span>设 \(f(x)\to0\) 且 \(f(x)
-eq0\).对任意 \(M\gt0\)，存在邻域使 \(0\lt|f(x)|\lt\dfrac{1}{M}\)，于是</p>
+<p><span class="stp">第二部分：</span>设 \(f(x)\to0\) 且 \(f(x)\neq0\).对任意 \(M\gt0\)，存在邻域使 \(0\lt|f(x)|\lt\dfrac{1}{M}\)，于是</p>
 \[\left|\frac{1}{f(x)}\right|\gt M.\]
 <p>由 \(M\) 任意大知 \(\dfrac{1}{f(x)}\) 为无穷大.</p>
 <p class="qed">证毕</p>
@@ -1052,17 +1026,14 @@ eq0\).对任意 \(M\gt0\)，存在邻域使 \(0\lt|f(x)|\lt\dfrac{1}{M}\)，于�
 <h3>三、无穷小的比较</h3>
 <p>都趋于零，但"趋零的快慢"可以天差地别.当 \(x\to0\)：\(x^{2}\) 比 \(x\) 快得多，\(\sqrt{x}\) 比 \(x\) 慢.用<b>比值的极限</b>来刻画这种快慢.</p>
 <div class="def"><div class="lab"><span class="n">定义 2.8</span>无穷小的阶</div>
-  <p>设 \(\alpha,\beta\) 是同一过程中的无穷小，且 \(\alpha
-eq0\).</p>
+  <p>设 \(\alpha,\beta\) 是同一过程中的无穷小，且 \(\alpha\neq0\).</p>
   <table class="dt">
     <tr><th>\(\lim\dfrac{\beta}{\alpha}\)</th><th>称谓</th><th>记号</th></tr>
     <tr><td>\(0\)</td><td>\(\beta\) 是比 \(\alpha\) <b>高阶</b>的无穷小</td><td>\(\beta=o(\alpha)\)</td></tr>
     <tr><td>\(\infty\)</td><td>\(\beta\) 是比 \(\alpha\) <b>低阶</b>的无穷小</td><td>——</td></tr>
-    <tr><td>\(c
-eq0\)</td><td>\(\beta\) 与 \(\alpha\) 是<b>同阶</b>无穷小</td><td>\(\beta=O(\alpha)\)</td></tr>
+    <tr><td>\(c\neq0\)</td><td>\(\beta\) 与 \(\alpha\) 是<b>同阶</b>无穷小</td><td>\(\beta=O(\alpha)\)</td></tr>
     <tr><td>\(1\)</td><td>\(\beta\) 与 \(\alpha\) 是<b>等价</b>无穷小</td><td>\(\beta\sim\alpha\)</td></tr>
-    <tr><td>\(c
-eq0\)（对 \(\alpha^{k}\)）</td><td>\(\beta\) 是关于 \(\alpha\) 的 \(k\) <b>阶</b>无穷小</td><td>——</td></tr>
+    <tr><td>\(c\neq0\)（对 \(\alpha^{k}\)）</td><td>\(\beta\) 是关于 \(\alpha\) 的 \(k\) <b>阶</b>无穷小</td><td>——</td></tr>
   </table>
 </div>
 
@@ -1079,8 +1050,7 @@ eq0\)（对 \(\alpha^{k}\)）</td><td>\(\beta\) 是关于 \(\alpha\) 的 \(k\) <
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p>已知 \(\alpha\sim\alpha'\) 即 \(\lim\dfrac{\alpha}{\alpha'}=1\)；\(\beta\sim\beta'\) 即 \(\lim\dfrac{\beta}{\beta'}=1\).且 \(\lim\dfrac{\beta'}{\alpha'}\) 存在.</p>
-<p><span class="stp">分解比值：</span>在 \(\alpha'
-eq0\) 的邻域内有</p>
+<p><span class="stp">分解比值：</span>在 \(\alpha'\neq0\) 的邻域内有</p>
 \[\frac{\beta}{\alpha}=\frac{\beta}{\beta'}\cdot\frac{\beta'}{\alpha'}\cdot\frac{\alpha'}{\alpha}
 =\left(\frac{\beta}{\beta'}\right)\cdot\left(\frac{\beta'}{\alpha'}\right)\cdot\left(\frac{\alpha'}{\alpha}\right).\]
 <p>取极限，前、后两因子分别趋于 \(1\)，中间因子极限存在，故</p>
@@ -1114,8 +1084,7 @@ eq0\) 的邻域内有</p>
 <div class="ex"><div class="lab">例 2.24　求无穷小的阶</div>
   <p class="stmt">当 \(x\to0\) 时，确定 \(\beta=\sqrt[3]{1+x^{2}}-1\) 是关于 \(x\) 的几阶无穷小.</p>
   <p class="sol"><span class="mk">解</span>\(\sqrt[3]{1+x^{2}}-1=(1+x^{2})^{1/3}-1\sim\dfrac{1}{3}x^{2}\).</p>
-  <p>由 \(\lim\limits_{x\to0}\dfrac{\beta}{x^{2}}=\dfrac13
-eq0\)，知 \(\beta\) 是关于 \(x\) 的 <b>2 阶</b>无穷小.</p>
+  <p>由 \(\lim\limits_{x\to0}\dfrac{\beta}{x^{2}}=\dfrac13\neq0\)，知 \(\beta\) 是关于 \(x\) 的 <b>2 阶</b>无穷小.</p>
 </div>
 
 <div class="case"><div class="lab">应用探微 · 浮点数灾难：\(\ln(1+x)\) 与 log1p 函数的诞生</div>
@@ -1393,11 +1362,8 @@ eq0\)，知 \(\beta\) 是关于 \(x\) 的 <b>2 阶</b>无穷小.</p>
       <tr><td>\(T=100\)</td><td>0.3396</td><td>0.3362</td><td>0.3332</td><td>更均匀</td></tr>
     </table>
     <p><b>两端的极限行为：</b></p>
-    <p>① \(T\to0^{+}\)：设 \(z_1\) 严格最大，则对 \(i
-eq1\)，\(\mathrm{e}^{(z_i-z_1)/T}\to0\)（因指数 \(\to-\infty\)），于是</p>
-    \[p_1=\frac{1}{1+\sum_{i
-eq1}\mathrm{e}^{(z_i-z_1)/T}}\to1,\qquad p_i\to0\;(i
-eq1).\]
+    <p>① \(T\to0^{+}\)：设 \(z_1\) 严格最大，则对 \(i\neq1\)，\(\mathrm{e}^{(z_i-z_1)/T}\to0\)（因指数 \(\to-\infty\)），于是</p>
+    \[p_1=\frac{1}{1+\sum_{i\neq1}\mathrm{e}^{(z_i-z_1)/T}}\to1,\qquad p_i\to0\;(i\neq1).\]
     <p>Softmax 退化为 <b>argmax（硬判决）</b>，这正是"温度"这个名字的来源——低温则"冻结"到唯一答案.</p>
     <p>② \(T\to+\infty\)：所有 \(z_i/T\to0\)，故 \(\mathrm{e}^{z_i/T}\to1\)，得 \(p_i\to\dfrac{1}{K}=\dfrac13\)，退化为<b>均匀分布</b>（完全随机猜）.</p>
     <p><b>工程含义：</b>大模型生成文本时的 <code>temperature</code> 参数就是这个 \(T\).调低（如 0.2）输出保守稳定，调高（如 1.5）输出多样有创意.你在调用 API 时拨动的那个滑块，背后是两个极限过程的连续插值.</p>
@@ -1547,8 +1513,7 @@ eq1).\]
 <h2 id="s026"><span class="num">§2.6</span>函数的连续性</h2>
     
 <div class="ex"><div class="lab">引例一　机器人轨迹为什么必须"连续"：一个抖动就是一次撞机</div>
-  <p class="stmt">工业机器人沿规划路径运动，位置由 \(s(t)\) 描述.若某时刻 \(t_0\) 处 \(s(t)\) 有跳跃（\(s(t_0^{-})
-eq s(t_0^{+})\)），意味着机器人要在<b>零时间内瞬移一段距离</b>——物理上不可能，实际表现为伺服电机瞬间过载报警，或机械臂剧烈抖动甚至撞击.</p>
+  <p class="stmt">工业机器人沿规划路径运动，位置由 \(s(t)\) 描述.若某时刻 \(t_0\) 处 \(s(t)\) 有跳跃（\(s(t_0^{-})\neq s(t_0^{+})\)），意味着机器人要在<b>零时间内瞬移一段距离</b>——物理上不可能，实际表现为伺服电机瞬间过载报警，或机械臂剧烈抖动甚至撞击.</p>
   <p>考察两条候选轨迹（单位：mm，时间 s）：</p>
   <table class="dt">
     <tr><th>时刻 \(t\)</th><th>0.99</th><th>0.999</th><th>1.000</th><th>1.001</th><th>1.01</th></tr>
@@ -1600,10 +1565,8 @@ eq s(t_0^{+})\)），意味着机器人要在<b>零时间内瞬移一段距离</
   <p><b>分类（按左右极限是否都存在）：</b></p>
   <table class="dt">
     <tr><th>大类</th><th>小类</th><th>特征</th><th>典型例子</th></tr>
-    <tr><td rowspan="2"><b>第一类</b><br>（左右极限<b>都存在</b>）</td><td><b>可去间断点</b></td><td>\(f(x_0^{-})=f(x_0^{+})
-eq f(x_0)\)，或 \(f(x_0)\) 无定义</td><td>\(\dfrac{\sin x}{x}\) 在 \(x=0\)</td></tr>
-    <tr><td><b>跳跃间断点</b></td><td>\(f(x_0^{-})
-eq f(x_0^{+})\)</td><td>\(\mathrm{sgn}\,x\) 在 \(x=0\)</td></tr>
+    <tr><td rowspan="2"><b>第一类</b><br>（左右极限<b>都存在</b>）</td><td><b>可去间断点</b></td><td>\(f(x_0^{-})=f(x_0^{+})\neq f(x_0)\)，或 \(f(x_0)\) 无定义</td><td>\(\dfrac{\sin x}{x}\) 在 \(x=0\)</td></tr>
+    <tr><td><b>跳跃间断点</b></td><td>\(f(x_0^{-})\neq f(x_0^{+})\)</td><td>\(\mathrm{sgn}\,x\) 在 \(x=0\)</td></tr>
     <tr><td rowspan="2"><b>第二类</b><br>（左右极限<b>至少一个不存在</b>）</td><td><b>无穷间断点</b></td><td>左或右极限为 \(\infty\)</td><td>\(\dfrac1x\) 在 \(x=0\)；\(\tan x\) 在 \(x=\dfrac{\pi}{2}\)</td></tr>
     <tr><td><b>振荡间断点</b></td><td>极限不存在且非无穷（无限振荡）</td><td>\(\sin\dfrac1x\) 在 \(x=0\)</td></tr>
   </table>
@@ -1614,8 +1577,7 @@ eq f(x_0^{+})\)</td><td>\(\mathrm{sgn}\,x\) 在 \(x=0\)</td></tr>
 <div class="ex"><div class="lab">例 2.31　间断点的判定与分类</div>
   <p class="stmt">求 \(f(x)=\dfrac{x^{2}-1}{x^{2}-3x+2}\) 的间断点并分类.</p>
   <p class="sol"><span class="mk">解</span>分母 \(x^{2}-3x+2=(x-1)(x-2)=0\) 得 \(x=1,2\)，这两点函数无定义，是间断点.</p>
-  <p><b>在 \(x=1\)：</b>\(f(x)=\dfrac{(x-1)(x+1)}{(x-1)(x-2)}=\dfrac{x+1}{x-2}\)（\(x
-eq1\)），故</p>
+  <p><b>在 \(x=1\)：</b>\(f(x)=\dfrac{(x-1)(x+1)}{(x-1)(x-2)}=\dfrac{x+1}{x-2}\)（\(x\neq1\)），故</p>
   \[\lim_{x\to1}f(x)=\frac{2}{-1}=-2\ (\text{存在}).\]
   <p>左右极限相等但函数无定义，为<b>可去间断点</b>.补充定义 \(f(1)=-2\) 即可连续.</p>
   <p><b>在 \(x=2\)：</b>\(\lim\limits_{x\to2}\dfrac{x+1}{x-2}=\infty\)，为<b>第二类·无穷间断点</b>.</p>
@@ -1643,8 +1605,7 @@ eq1\)），故</p>
 
 <h3>三、连续函数的运算与初等函数的连续性</h3>
 <div class="def"><div class="lab"><span class="n">定理 2.17</span>连续函数的四则运算</div>
-  <p>若 \(f(x),g(x)\) 在 \(x_0\) 处连续，则 \(f\pm g\)、\(f\cdot g\)、\(\dfrac{f}{g}\)（\(g(x_0)
-eq0\)）都在 \(x_0\) 处连续.</p>
+  <p>若 \(f(x),g(x)\) 在 \(x_0\) 处连续，则 \(f\pm g\)、\(f\cdot g\)、\(\dfrac{f}{g}\)（\(g(x_0)\neq0\)）都在 \(x_0\) 处连续.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p>设 \(f(x),g(x)\) 在 \(x_0\) 处连续，即 \(\lim\limits_{x\to x_0}f(x)=f(x_0)\)，\(\lim\limits_{x\to x_0}g(x)=g(x_0)\).</p>
@@ -1652,12 +1613,9 @@ eq0\)）都在 \(x_0\) 处连续.</p>
 \[\lim_{x\to x_0}(f\pm g)=\lim f\pm\lim g=f(x_0)\pm g(x_0),\]
 \[\lim_{x\to x_0}(fg)=\left(\lim f\right)\left(\lim g\right)=f(x_0)g(x_0).\]
 <p>故 \(f\pm g\)、\(fg\) 在 \(x_0\) 处连续.</p>
-<p><span class="stp">商：</span>当 \(g(x_0)
-eq0\) 时，由定理 2.7 之商的法则，</p>
+<p><span class="stp">商：</span>当 \(g(x_0)\neq0\) 时，由定理 2.7 之商的法则，</p>
 \[\lim_{x\to x_0}\frac{f}{g}=\frac{\lim f}{\lim g}=\frac{f(x_0)}{g(x_0)},\]
-<p>且因 \(g(x_0)
-eq0\)，在 \(x_0\) 附近 \(g(x)
-eq0\)，故 \(\dfrac{f}{g}\) 在 \(x_0\) 处连续.</p>
+<p>且因 \(g(x_0)\neq0\)，在 \(x_0\) 附近 \(g(x)\neq0\)，故 \(\dfrac{f}{g}\) 在 \(x_0\) 处连续.</p>
 <p class="qed">证毕</p>
 </div>
 </details>
@@ -1709,8 +1667,7 @@ eq0\)，故 \(\dfrac{f}{g}\) 在 \(x_0\) 处连续.</p>
   <p class="muted"><b>"闭区间"与"连续"两个条件缺一不可：</b><br>
   · \(f(x)=\dfrac1x\) 在开区间 \((0,1]\) 上连续但无界；<br>
   · \(f(x)=x\) 在开区间 \((0,1)\) 上连续有界，但取不到最值；<br>
-  · 在 \([0,1]\) 上定义 \(f(x)=\dfrac1x\ (x
-eq0),\;f(0)=0\)，闭区间但不连续，无界.</p>
+  · 在 \([0,1]\) 上定义 \(f(x)=\dfrac1x\ (x\neq0),\;f(0)=0\)，闭区间但不连续，无界.</p>
 <details class="prf prf-idea"><summary>证明思路（严格证明需实数完备性，属数学分析内容）</summary>
 <div class="prf-b">
 <p><span class="stp">第一步：先证有界.</span>用<b>反证法 + 致密性定理</b>.若 \(f\) 在 \([a,b]\) 上无界，则对每个 \(n\in\mathbb N\)，可取 \(x_n\in[a,b]\) 使 \(|f(x_n)|\gt n\).数列 \(\{x_n\}\) 有界，由<b>致密性定理（Bolzano–Weierstrass）</b>，存在收敛子列 \(x_{n_k}\to x_0\)；因 \([a,b]\) 是闭区间，极限点 \(x_0\in[a,b]\).由 \(f\) 在 \(x_0\) 连续，得 \(f(x_{n_k})\to f(x_0)\)，说明 \(\{f(x_{n_k})\}\) 有界；但由取法 \(|f(x_{n_k})|\gt n_k\to+\infty\)，矛盾.故 \(f\) 有界.</p>
@@ -1874,8 +1831,7 @@ eq0),\;f(0)=0\)，闭区间但不连续，无界.</p>
 <p><b>② \(x=1\)：</b>令 \(t=x-1\;(t\to0)\)，则分子 \(=(1+t)(-t)(2+t)\to-2t\)，分母 \(\sin(\pi+\pi t)=-\sin(\pi t)\sim-\pi t\)，故</p>
 \[\lim_{x\to1}f(x)=\lim_{t\to0}\frac{-2t}{-\pi t}=\frac{2}{\pi}.\]
 <p>为<b>可去间断点</b>.同理令 \(t=x+1\) 可得 \(\lim\limits_{x\to-1}f(x)=\dfrac{2}{\pi}\)，\(x=-1\) 也是<b>可去间断点</b>.</p>
-<p><b>③ 其余整数 \(x=k\;(|k|\ge2)\)：</b>分子 \(k(1-k^{2})
-eq0\) 为非零常数，分母趋于 \(0\)，由无穷小的倒数关系知 \(f(x)\to\infty\)，故均为<b>第二类·无穷间断点</b>.</p>
+<p><b>③ 其余整数 \(x=k\;(|k|\ge2)\)：</b>分子 \(k(1-k^{2})\neq0\) 为非零常数，分母趋于 \(0\)，由无穷小的倒数关系知 \(f(x)\to\infty\)，故均为<b>第二类·无穷间断点</b>.</p>
 <p class="ky-idea"><b>命题意图.</b> 考查间断点分类的完整流程，重点检验「先看分子分母是否有公共零点」这一关键判断.命题人用 \(\sin(\pi x)\) 制造了无穷多个间断点，迫使考生分类讨论而非逐点蛮算，同时考查换元求极限与等价无穷小在非零点处的正确使用.</p>
 </div>
 
@@ -1887,8 +1843,7 @@ eq0\) 为非零常数，分母趋于 \(0\)，由无穷小的倒数关系知 \(f(
 \[F(0)=f(a)-f(0),\qquad F(a)=f(2a)-f(a)=f(0)-f(a)=-F(0),\]
 <p>这里第二个等号用到了已知条件 \(f(2a)=f(0)\).</p>
 <p><b>情形一：</b>若 \(F(0)=0\)，即 \(f(a)=f(0)\)，取 \(\xi=0\) 即满足 \(f(\xi)=f(\xi+a)\)，结论成立.</p>
-<p><b>情形二：</b>若 \(F(0)
-eq0\)，则</p>
+<p><b>情形二：</b>若 \(F(0)\neq0\)，则</p>
 \[F(0)\cdot F(a)=F(0)\cdot[-F(0)]=-[F(0)]^{2}\lt0,\]
 <p>即 \(F\) 在区间两端异号.由零点定理，存在 \(\xi\in(0,a)\) 使 \(F(\xi)=0\)，即 \(f(\xi)=f(\xi+a)\).</p>
 <p>综合两种情形，必存在 \(\xi\in[0,a]\) 使 \(f(\xi)=f(\xi+a)\).证毕.</p>
@@ -1917,8 +1872,7 @@ eq0\)，则</p>
 
 <div class="case">
 <details><summary>应用案例 · 控制指令的跳跃间断：一次换道抖动的定量分析</summary>
-<p><b>场景：</b> 高速上以 25 m/s 巡航，决策模块在 \(t_0\) 从「直行」切到「换道」，前轮转角指令 \(\delta(t)\) 硬切换（\(\delta=0\) 当 \(t\lt t_0\)，\(\delta=0.01\ \mathrm{rad}\) 当 \(t\ge t_0\)）——车是转过来了，车上每个人却被猛地甩了一下，转向电机跟着报警.\(\delta(t)\) 在 \(t_0\) 处是<b>跳跃间断点</b>：\(\delta(t_0^{-})=0
-eq0.01=\delta(t_0^{+})\).车速 \(v=25\ \mathrm{m/s}\)，轴距 \(L=2.8\ \mathrm{m}\)，由自行车模型侧向加速度</p>
+<p><b>场景：</b> 高速上以 25 m/s 巡航，决策模块在 \(t_0\) 从「直行」切到「换道」，前轮转角指令 \(\delta(t)\) 硬切换（\(\delta=0\) 当 \(t\lt t_0\)，\(\delta=0.01\ \mathrm{rad}\) 当 \(t\ge t_0\)）——车是转过来了，车上每个人却被猛地甩了一下，转向电机跟着报警.\(\delta(t)\) 在 \(t_0\) 处是<b>跳跃间断点</b>：\(\delta(t_0^{-})=0\neq0.01=\delta(t_0^{+})\).车速 \(v=25\ \mathrm{m/s}\)，轴距 \(L=2.8\ \mathrm{m}\)，由自行车模型侧向加速度</p>
 \[a_y=\frac{v^{2}\tan\delta}{L}=\frac{625\times0.01}{2.8}=2.23\ \mathrm{m/s^{2}}.\]
 <p>侧向加加速度（jerk）\(j=\dfrac{\Delta a_y}{T}\)，其中 \(T\) 为指令过渡时间，ISO 舒适阈值约 \(2\ \mathrm{m/s^{3}}\).</p>
 <table class="dt">
@@ -1975,6 +1929,7 @@ eq0.01=\delta(t_0^{+})\).车速 \(v=25\ \mathrm{m/s}\)，轴距 \(L=2.8\ \mathrm
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 2, "list": [["s021", "2.1 数列的极限"], ["s022", "2.2 函数的极限"], ["s023", "2.3 极限的性质与运算法则"], ["s024", "2.4 无穷小与无穷大"], ["s025", "2.5 极限的存在准则与两个重要极限"], ["s026", "2.6 函数的连续性"], ["adv2", "考研选讲"], ["cq2", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -2002,5 +1957,6 @@ eq0.01=\delta(t_0^{+})\).车速 \(v=25\ \mathrm{m/s}\)，轴距 \(L=2.8\ \mathrm
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

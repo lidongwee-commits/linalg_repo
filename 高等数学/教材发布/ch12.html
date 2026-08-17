@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第12章 · 曲面积分</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第12章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -977,9 +981,7 @@
     \oiint_\Sigma \boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0,\]
   \[\oint_\Gamma \boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\frac{\mathrm{d}}{\mathrm{d}t}\iint_S\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S},\qquad
     \oint_\Gamma \boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\mu_0\Bigl(I+\varepsilon_0\frac{\mathrm{d}}{\mathrm{d}t}\iint_S\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}\Bigr).\]
-  <p>前两式是<b>闭曲面上的第二类曲面积分</b>，后两式把<b>闭曲线积分</b>与<b>曲面积分</b>联系起来.本节的高斯公式把第一类关系翻译成 \(
-abla\cdot\boldsymbol{E}=\rho/\varepsilon_0\)，斯托克斯公式把第二类关系翻译成 \(
-abla\times\boldsymbol{B}=\mu_0(\boldsymbol{J}+\varepsilon_0\partial\boldsymbol{E}/\partial t)\).</p>
+  <p>前两式是<b>闭曲面上的第二类曲面积分</b>，后两式把<b>闭曲线积分</b>与<b>曲面积分</b>联系起来.本节的高斯公式把第一类关系翻译成 \(\nabla\cdot\boldsymbol{E}=\rho/\varepsilon_0\)，斯托克斯公式把第二类关系翻译成 \(\nabla\times\boldsymbol{B}=\mu_0(\boldsymbol{J}+\varepsilon_0\partial\boldsymbol{E}/\partial t)\).</p>
   <p><b>具体数值计算（点电荷的电通量）</b>：设一个 MEMS 微电容极板带电 \(q=2.0\times10^{-9}\,\mathrm{C}\)，真空介电常数 \(\varepsilon_0=8.854\times10^{-12}\,\mathrm{F/m}\).以电荷为心作半径 \(r\) 的球面，由库仑定律 \(E=\dfrac{q}{4\pi\varepsilon_0r^{2}}\)，电场处处沿径向，与球面外法向同向，故</p>
   \[\oiint_\Sigma \boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=E\cdot4\pi r^{2}=\frac{q}{4\pi\varepsilon_0r^{2}}\cdot4\pi r^{2}=\frac{q}{\varepsilon_0}.\]
   <table class="dt">
@@ -1045,10 +1047,8 @@ abla\times\boldsymbol{B}=\mu_0(\boldsymbol{J}+\varepsilon_0\partial\boldsymbol{E
   <details open><summary>展开：为什么扫地机器人能估出房间体积</summary>
   <div class="body">
     <p class="stmt">扫地/巡检机器人用深度相机得到物体表面的点云（一张"曲面"）.要估出物体体积，不必真的做三重积分——高斯公式把体积分转为曲面积分：</p>
-    \[\iiint_V (
-abla\cdot\vec F)\,\mathrm dV=\iint_{\partial V}\vec F\cdot\vec n\,\mathrm dS.\]
-    <p>取 \(\vec F=(x,y,z)\)，则散度 \(
-abla\cdot\vec F=3\)，左端 \(=3V\).于是只要求出表面通量即得体积 \(V=	frac13\iint_{\partial V}\vec F\cdot\vec n\,\mathrm dS\).</p>
+    \[\iiint_V (\nabla\cdot\vec F)\,\mathrm dV=\iint_{\partial V}\vec F\cdot\vec n\,\mathrm dS.\]
+    <p>取 \(\vec F=(x,y,z)\)，则散度 \(\nabla\cdot\vec F=3\)，左端 \(=3V\).于是只要求出表面通量即得体积 \(V=	frac13\iint_{\partial V}\vec F\cdot\vec n\,\mathrm dS\).</p>
     <p><b>数值验证（单位球）：</b>球面 \(r=1\)，外法向 \(\vec n=\vec r\)，\(\vec F\cdot\vec n=r=1\)，表面积 \(4\pi\).故</p>
     \[V=	frac13\cdot(1	\times4\pi)=\frac{4\pi}{3}\approx4.19.\]
     <p>机器人对每一帧表面点采样、用上式累加，就能实时估算障碍物的占据体积——这正是高斯公式"把体积变表面"的工程价值.</p>
@@ -1060,8 +1060,7 @@ abla\cdot\vec F=3\)，左端 \(=3V\).于是只要求出表面通量即得体积 
   <p><b>通量：</b>\(\boldsymbol{A}\) 沿有向曲面 \(\Sigma\) 的<b>通量</b>定义为</p>
   \[\varPhi=\iint_\Sigma \boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S=\iint_\Sigma P\,\mathrm{d}y\mathrm{d}z+Q\,\mathrm{d}z\mathrm{d}x+R\,\mathrm{d}x\mathrm{d}y .\]
   <p><b>散度：</b>\(\boldsymbol{A}\) 在点 \(M\) 处的<b>散度</b>定义为</p>
-  \[\operatorname{div}\boldsymbol{A}=\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}=
-abla\cdot\boldsymbol{A}.\]
+  \[\operatorname{div}\boldsymbol{A}=\frac{\partial P}{\partial x}+\frac{\partial Q}{\partial y}+\frac{\partial R}{\partial z}=\nabla\cdot\boldsymbol{A}.\]
   <p>于是高斯公式可写成向量形式</p>
   \[\oiint_\Sigma \boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_\Omega\operatorname{div}\boldsymbol{A}\,\mathrm{d}v .\]
 </div>
@@ -1069,8 +1068,7 @@ abla\cdot\boldsymbol{A}.\]
 \[\operatorname{div}\boldsymbol{A}(M)=\lim_{\rho\to0}\frac{1}{V(\Omega_\rho)}\oiint_{\Sigma_\rho}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S .\]
 · \(\operatorname{div}\boldsymbol{A}(M)\gt0\)：该点是<b>源</b>（如正电荷、热源、水龙头）；<br>
 · \(\operatorname{div}\boldsymbol{A}(M)\lt0\)：该点是<b>汇</b>（如负电荷、散热片、地漏）；<br>
-· \(\operatorname{div}\boldsymbol{A}\equiv0\)：称为<b>无源场</b>（如磁场 \(
-abla\cdot\boldsymbol{B}=0\)，说明磁单极子不存在）.</div>
+· \(\operatorname{div}\boldsymbol{A}\equiv0\)：称为<b>无源场</b>（如磁场 \(\nabla\cdot\boldsymbol{B}=0\)，说明磁单极子不存在）.</div>
 
 <h3>三、用高斯公式计算：补面法与奇点处理</h3>
 
@@ -1109,12 +1107,10 @@ abla\cdot\boldsymbol{B}=0\)，说明磁单极子不存在）.</div>
 <div class="ex"><div class="lab">例 12.18　奇点的处理：挖球法（考研经典）</div>
   <p class="stmt">设 \(\Sigma\) 是不经过原点的分片光滑闭曲面（外侧），计算</p>
   \[I=\oiint_\Sigma\frac{x\,\mathrm{d}y\mathrm{d}z+y\,\mathrm{d}z\mathrm{d}x+z\,\mathrm{d}x\mathrm{d}y}{\bigl(x^{2}+y^{2}+z^{2}\bigr)^{3/2}} .\]
-  <p class="sol"><span class="mk">解</span>记 \(r=\sqrt{x^{2}+y^{2}+z^{2}}\)，\(P=\dfrac{x}{r^{3}}\) 等.在 \(r
-eq0\) 处求导：</p>
+  <p class="sol"><span class="mk">解</span>记 \(r=\sqrt{x^{2}+y^{2}+z^{2}}\)，\(P=\dfrac{x}{r^{3}}\) 等.在 \(r\neq0\) 处求导：</p>
   \[\frac{\partial P}{\partial x}=\frac{r^{3}-x\cdot3r^{2}\cdot\frac{x}{r}}{r^{6}}=\frac{r^{2}-3x^{2}}{r^{5}},\]
   <p>同理另两项，相加得</p>
-  \[\operatorname{div}\boldsymbol{A}=\frac{3r^{2}-3(x^{2}+y^{2}+z^{2})}{r^{5}}=0\qquad(r
-eq0).\]
+  \[\operatorname{div}\boldsymbol{A}=\frac{3r^{2}-3(x^{2}+y^{2}+z^{2})}{r^{5}}=0\qquad(r\neq0).\]
   <p><b>情形一：\(\Sigma\) 不包围原点.</b>此时 \(\Omega\) 内处处有 \(\operatorname{div}\boldsymbol{A}=0\)，由高斯公式 \(I=0\).</p>
   <p><b>情形二：\(\Sigma\) 包围原点.</b>此时被积函数在原点无定义，<b>高斯公式不能直接用</b>.取足够小的 \(\varepsilon\gt0\)，作球面 \(\Sigma_\varepsilon:x^{2}+y^{2}+z^{2}=\varepsilon^{2}\)（取<b>内侧</b>，即朝向原点）.则 \(\Sigma+\Sigma_\varepsilon\) 围成的区域 \(\Omega_\varepsilon\) 中不含原点，散度恒为零，故</p>
   \[\oiint_{\Sigma}+\oiint_{\Sigma_\varepsilon}=0\quad\Longrightarrow\quad I=-\oiint_{\Sigma_\varepsilon}=\oiint_{\Sigma_\varepsilon^{+}} ,\]
@@ -1183,8 +1179,7 @@ eq0).\]
   <p>设 \(\boldsymbol{A}=(P,Q,R)\).</p>
   <p><b>环流量：</b>\(\displaystyle\oint_\Gamma \boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z\).</p>
   <p><b>旋度：</b></p>
-  \[\operatorname{rot}\boldsymbol{A}=
-abla\times\boldsymbol{A}
+  \[\operatorname{rot}\boldsymbol{A}=\nabla\times\boldsymbol{A}
    =\begin{vmatrix}\boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\[2pt]
    \dfrac{\partial}{\partial x}&\dfrac{\partial}{\partial y}&\dfrac{\partial}{\partial z}\\[6pt] P&Q&R\end{vmatrix}
    =\Bigl(\frac{\partial R}{\partial y}-\frac{\partial Q}{\partial z}\Bigr)\boldsymbol{i}
@@ -1195,9 +1190,7 @@ abla\times\boldsymbol{A}
 </div>
 <div class="note"><b>旋度的物理意义：单位面积的环流强度，即"局部打转的能力".</b>把一个微小的桨轮放入流场，桨轮转得最快时其轴的方向就是 \(\operatorname{rot}\boldsymbol{A}\) 的方向，转速正比于 \(|\operatorname{rot}\boldsymbol{A}|\).<br>
 · \(\operatorname{rot}\boldsymbol{A}\equiv\boldsymbol{0}\) 的场称为<b>无旋场</b>（保守场）；<br>
-· 电磁学中 \(
-abla\times\boldsymbol{E}=-\partial\boldsymbol{B}/\partial t\) 说明<b>变化的磁场产生涡旋电场</b>（发电机原理）；\(
-abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial\boldsymbol{E}/\partial t\) 说明<b>电流与变化电场产生涡旋磁场</b>（电磁波由此诞生）.</div>
+· 电磁学中 \(\nabla\times\boldsymbol{E}=-\partial\boldsymbol{B}/\partial t\) 说明<b>变化的磁场产生涡旋电场</b>（发电机原理）；\(\nabla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial\boldsymbol{E}/\partial t\) 说明<b>电流与变化电场产生涡旋磁场</b>（电磁波由此诞生）.</div>
 
 <h3>五、空间曲线积分与路径无关的条件</h3>
 <div class="def"><div class="lab"><span class="n">定理 12.7</span>空间曲线积分与路径无关</div>
@@ -1217,8 +1210,7 @@ abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial\boldsymb
 <p><span class="stp">第二步：\((2)\Rightarrow(1)\).</span>设 \(L_1,L_2\) 是 \(G\) 内从 \(A\) 到 \(B\) 的两条路径，则 \(L_1+(-L_2)\) 是闭曲线，由 (2) 其上积分为零，即 \(\displaystyle\int_{L_1}-\int_{L_2}=0\)，两条路径上的积分相等.</p>
 <p><span class="stp">第三步：\((3)\Rightarrow(2)\).</span>这一步正是斯托克斯公式的用武之地.设 \(\Gamma\) 是 \(G\) 内任一闭曲线.因 \(G\) 是<b>一维单连通</b>区域，\(\Gamma\) 必可张成一张完全含于 \(G\) 内的分片光滑曲面 \(\Sigma\)（这正是"一维单连通"的含义：区域内没有"穿孔的管道"使某些闭曲线无法在区域内收缩）.由定理 12.6，</p>
 \[\oint_\Gamma P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\iint_\Sigma\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S=\iint_\Sigma \boldsymbol{0}\cdot\boldsymbol{n}\,\mathrm{d}S=0 .\]
-<p><span class="stp">第四步：\((2)\Rightarrow(3)\).</span>用反证法.设某点 \(M_0\in G\) 处 \(\operatorname{rot}\boldsymbol{A}(M_0)=\boldsymbol{w}
-eq\boldsymbol{0}\).取以 \(M_0\) 为中心、以 \(\boldsymbol{w}\) 方向为法向、半径为 \(\delta\) 的小圆盘 \(\Sigma_\delta\subset G\)，其单位法向量取 \(\boldsymbol{n}=\dfrac{\boldsymbol{w}}{|\boldsymbol{w}|}\).因 \(P,Q,R\) 有连续偏导数，\(\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\) 连续，且在 \(M_0\) 处取值 \(|\boldsymbol{w}|\gt0\).由连续函数的保号性，当 \(\delta\) 充分小时在整个 \(\Sigma_\delta\) 上</p>
+<p><span class="stp">第四步：\((2)\Rightarrow(3)\).</span>用反证法.设某点 \(M_0\in G\) 处 \(\operatorname{rot}\boldsymbol{A}(M_0)=\boldsymbol{w}\neq\boldsymbol{0}\).取以 \(M_0\) 为中心、以 \(\boldsymbol{w}\) 方向为法向、半径为 \(\delta\) 的小圆盘 \(\Sigma_\delta\subset G\)，其单位法向量取 \(\boldsymbol{n}=\dfrac{\boldsymbol{w}}{|\boldsymbol{w}|}\).因 \(P,Q,R\) 有连续偏导数，\(\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\) 连续，且在 \(M_0\) 处取值 \(|\boldsymbol{w}|\gt0\).由连续函数的保号性，当 \(\delta\) 充分小时在整个 \(\Sigma_\delta\) 上</p>
 \[\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\gt\frac{|\boldsymbol{w}|}{2}\gt0 .\]
 <p>设 \(\Gamma_\delta\) 是 \(\Sigma_\delta\) 的边界（按右手法则定向），由斯托克斯公式与积分的保号性</p>
 \[\oint_{\Gamma_\delta}P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z=\iint_{\Sigma_\delta}\operatorname{rot}\boldsymbol{A}\cdot\boldsymbol{n}\,\mathrm{d}S\ \gt\ \frac{|\boldsymbol{w}|}{2}\cdot\pi\delta^{2}\gt0 ,\]
@@ -1282,45 +1274,28 @@ eq\boldsymbol{0}\).取以 \(M_0\) 为中心、以 \(\boldsymbol{w}\) 方向为�
   \[\operatorname{rot}\boldsymbol{A}=\bigl(0-0,\ 0-0,\ 1-(-1)\bigr)=(0,0,2)=2\boldsymbol{k}.\]
   <p>取 \(\Sigma\) 为圆盘 \(x^{2}+y^{2}\le R^{2},z=0\)，上侧，\(\boldsymbol{n}=\boldsymbol{k}\).故</p>
   \[\oint_\Gamma \boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\iint_\Sigma 2\,\mathrm{d}S=2\pi R^{2}.\]
-  <p>此场描述的是绕 \(z\) 轴的刚体旋转（角速度 1），旋度 \(2\boldsymbol{k}\) 恰为角速度的两倍——<b>这正是"旋度 = 局部角速度的两倍"这一经典结论.</b>由于 \(\operatorname{rot}\boldsymbol{A}
-eq\boldsymbol{0}\)，它<b>不是</b>保守场，环流量不为零也就顺理成章.</p>
+  <p>此场描述的是绕 \(z\) 轴的刚体旋转（角速度 1），旋度 \(2\boldsymbol{k}\) 恰为角速度的两倍——<b>这正是"旋度 = 局部角速度的两倍"这一经典结论.</b>由于 \(\operatorname{rot}\boldsymbol{A}\neq\boldsymbol{0}\)，它<b>不是</b>保守场，环流量不为零也就顺理成章.</p>
 </div>
 
 <div class="case"><div class="lab">应用探微 · 从积分形式到微分形式：麦克斯韦方程组的诞生</div>
   <details><summary>展开查看：两个公式如何把四条实验定律翻译成四个偏微分方程</summary>
   <div class="body">
     <p><b>第一步：电场高斯定律.</b>实验事实是 \(\displaystyle\oiint_\Sigma\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=\dfrac{q}{\varepsilon_0}\).把右端写成电荷密度的积分 \(q=\displaystyle\iiint_\Omega\rho\,\mathrm{d}v\)，左端用高斯公式：</p>
-    \[\iiint_\Omega
-abla\cdot\boldsymbol{E}\,\mathrm{d}v=\iiint_\Omega\frac{\rho}{\varepsilon_0}\,\mathrm{d}v .\]
-    <p>由于 \(\Omega\) <b>任意</b>，两个被积函数必处处相等，得 \(
-abla\cdot\boldsymbol{E}=\dfrac{\rho}{\varepsilon_0}\).</p>
-    <p><b>第二步：磁场高斯定律.</b>实验上从未发现磁单极子，\(\displaystyle\oiint_\Sigma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\) 对一切闭曲面成立，同理得 \(
-abla\cdot\boldsymbol{B}=0\).</p>
+    \[\iiint_\Omega\nabla\cdot\boldsymbol{E}\,\mathrm{d}v=\iiint_\Omega\frac{\rho}{\varepsilon_0}\,\mathrm{d}v .\]
+    <p>由于 \(\Omega\) <b>任意</b>，两个被积函数必处处相等，得 \(\nabla\cdot\boldsymbol{E}=\dfrac{\rho}{\varepsilon_0}\).</p>
+    <p><b>第二步：磁场高斯定律.</b>实验上从未发现磁单极子，\(\displaystyle\oiint_\Sigma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\) 对一切闭曲面成立，同理得 \(\nabla\cdot\boldsymbol{B}=0\).</p>
     <p><b>第三步：法拉第电磁感应定律.</b>\(\displaystyle\oint_\Gamma\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\frac{\mathrm{d}}{\mathrm{d}t}\iint_S\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}\).左端用斯托克斯公式：</p>
-    \[\iint_S(
-abla\times\boldsymbol{E})\cdot\mathrm{d}\boldsymbol{S}=-\iint_S\frac{\partial\boldsymbol{B}}{\partial t}\cdot\mathrm{d}\boldsymbol{S}\ \Longrightarrow\ 
-abla\times\boldsymbol{E}=-\frac{\partial\boldsymbol{B}}{\partial t}.\]
-    <p><b>第四步：安培–麦克斯韦定律.</b>同样用斯托克斯公式得 \(
-abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\dfrac{\partial\boldsymbol{E}}{\partial t}\).式中最后一项"位移电流"是麦克斯韦的天才补笔.</p>
+    \[\iint_S(\nabla\times\boldsymbol{E})\cdot\mathrm{d}\boldsymbol{S}=-\iint_S\frac{\partial\boldsymbol{B}}{\partial t}\cdot\mathrm{d}\boldsymbol{S}\ \Longrightarrow\ \nabla\times\boldsymbol{E}=-\frac{\partial\boldsymbol{B}}{\partial t}.\]
+    <p><b>第四步：安培–麦克斯韦定律.</b>同样用斯托克斯公式得 \(\nabla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\dfrac{\partial\boldsymbol{E}}{\partial t}\).式中最后一项"位移电流"是麦克斯韦的天才补笔.</p>
     <table class="dt">
       <tr><th>定律</th><th>积分形式</th><th>所用公式</th><th>微分形式</th></tr>
-      <tr><td>电高斯</td><td>\(\oiint\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=q/\varepsilon_0\)</td><td>高斯公式</td><td>\(
-abla\cdot\boldsymbol{E}=\rho/\varepsilon_0\)</td></tr>
-      <tr><td>磁高斯</td><td>\(\oiint\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)</td><td>高斯公式</td><td>\(
-abla\cdot\boldsymbol{B}=0\)</td></tr>
-      <tr><td>法拉第</td><td>\(\oint\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\dot\varPhi_B\)</td><td>斯托克斯公式</td><td>\(
-abla\times\boldsymbol{E}=-\partial_t\boldsymbol{B}\)</td></tr>
-      <tr><td>安培–麦克斯韦</td><td>\(\oint\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\mu_0(I+\varepsilon_0\dot\varPhi_E)\)</td><td>斯托克斯公式</td><td>\(
-abla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial_t\boldsymbol{E}\)</td></tr>
+      <tr><td>电高斯</td><td>\(\oiint\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=q/\varepsilon_0\)</td><td>高斯公式</td><td>\(\nabla\cdot\boldsymbol{E}=\rho/\varepsilon_0\)</td></tr>
+      <tr><td>磁高斯</td><td>\(\oiint\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)</td><td>高斯公式</td><td>\(\nabla\cdot\boldsymbol{B}=0\)</td></tr>
+      <tr><td>法拉第</td><td>\(\oint\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{r}=-\dot\varPhi_B\)</td><td>斯托克斯公式</td><td>\(\nabla\times\boldsymbol{E}=-\partial_t\boldsymbol{B}\)</td></tr>
+      <tr><td>安培–麦克斯韦</td><td>\(\oint\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\mu_0(I+\varepsilon_0\dot\varPhi_E)\)</td><td>斯托克斯公式</td><td>\(\nabla\times\boldsymbol{B}=\mu_0\boldsymbol{J}+\mu_0\varepsilon_0\partial_t\boldsymbol{E}\)</td></tr>
     </table>
-    <p><b>压轴一步：预言光速.</b>在真空（\(\rho=0,\boldsymbol{J}=\boldsymbol{0}\)）中对第三式两边取旋度，并用恒等式 \(
-abla\times(
-abla\times\boldsymbol{E})=
-abla(
-abla\cdot\boldsymbol{E})-
-abla^{2}\boldsymbol{E}\)，得波动方程</p>
-    \[
-abla^{2}\boldsymbol{E}=\mu_0\varepsilon_0\frac{\partial^{2}\boldsymbol{E}}{\partial t^{2}} .\]
+    <p><b>压轴一步：预言光速.</b>在真空（\(\rho=0,\boldsymbol{J}=\boldsymbol{0}\)）中对第三式两边取旋度，并用恒等式 \(\nabla\times(\nabla\times\boldsymbol{E})=\nabla(\nabla\cdot\boldsymbol{E})-\nabla^{2}\boldsymbol{E}\)，得波动方程</p>
+    \[\nabla^{2}\boldsymbol{E}=\mu_0\varepsilon_0\frac{\partial^{2}\boldsymbol{E}}{\partial t^{2}} .\]
     <p>波速为</p>
     \[c=\frac{1}{\sqrt{\mu_0\varepsilon_0}}=\frac{1}{\sqrt{4\pi\times10^{-7}\times8.854\times10^{-12}}}=\frac{1}{\sqrt{1.1127\times10^{-17}}}=2.998\times10^{8}\ \mathrm{m/s}.\]
     <p>这个纯粹由两个电磁常数算出的数字，与光速实测值分毫不差.麦克斯韦由此断言"光就是电磁波".<b>而支撑这场人类认知革命的数学工具，就是本节的高斯公式与斯托克斯公式.</b></p>
@@ -1352,9 +1327,7 @@ abla^{2}\boldsymbol{E}=\mu_0\varepsilon_0\frac{\partial^{2}\boldsymbol{E}}{\part
 <p>右端</p>
 \[\frac{Q}{\varepsilon_{0}}=\frac{1.0\times10^{-9}}{8.854\times10^{-12}}=112.94\ \mathrm{V\cdot m}.\]
 <p>左右完全相等，且与 \(r\) 无关.若换 \(r=0.05\ \mathrm{m}\)：\(E\) 变 \(4\) 倍、球面面积变 \(1/4\)，乘积不变.</p>
-<p><b>工程结论：</b> 麦克斯韦「高斯定律」就是高斯公式 \(\oiint_{\Sigma}\boldsymbol{F}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_{V}
-abla\cdot\boldsymbol{F}\,\mathrm{d}V\) 在 \(\boldsymbol{F}=\boldsymbol{E}\)、\(
-abla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\) 时的特例.<b>「穿过闭曲面的净通量只取决于被包围的总源强，与曲面形状、大小无关」</b>——这是静电屏蔽、高斯定理法求场分布、以及商用电磁仿真「线积分/面积分校验」的共同理论根基.</p>
+<p><b>工程结论：</b> 麦克斯韦「高斯定律」就是高斯公式 \(\oiint_{\Sigma}\boldsymbol{F}\cdot\boldsymbol{n}\,\mathrm{d}S=\iiint_{V}\nabla\cdot\boldsymbol{F}\,\mathrm{d}V\) 在 \(\boldsymbol{F}=\boldsymbol{E}\)、\(\nabla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\) 时的特例.<b>「穿过闭曲面的净通量只取决于被包围的总源强，与曲面形状、大小无关」</b>——这是静电屏蔽、高斯定理法求场分布、以及商用电磁仿真「线积分/面积分校验」的共同理论根基.</p>
 
 <div style="margin:14px 0 6px 0;text-align:center">
 <canvas id="ch12-gauss" width="720" height="400" style="width:100%;height:auto;display:block;border-radius:10px;background:#fafcfd;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)"></canvas>
@@ -1415,8 +1388,7 @@ abla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\) 时的特例.<b>「穿过闭曲�
 
 <div class="case">
 <details><summary>应用案例 · 动力电池：热失控的散度分析与散热判据</summary>
-<p><b>场景：</b> 锂离子电池热失控时，内部产热率（单位体积）记为 \(q'''\)（\(\mathrm{W/m^{3}}\)）.由能量守恒与高斯公式：内部总产热等于穿出电池表面的净热流通量，即 \(\iiint_{V}q'''\,\mathrm{d}V=\oiint_{\Sigma}(-\boldsymbol{
-abla}T)\cdot\boldsymbol{n}\,k\,\mathrm{d}S\).把电芯近似为圆柱（半径 \(R=0.01\ \mathrm{m}\)、高 \(L=0.065\ \mathrm{m}\)），由触发功率反推产热强度，进而得到表面平均法向热流，作为散热设计判据.</p>
+<p><b>场景：</b> 锂离子电池热失控时，内部产热率（单位体积）记为 \(q'''\)（\(\mathrm{W/m^{3}}\)）.由能量守恒与高斯公式：内部总产热等于穿出电池表面的净热流通量，即 \(\iiint_{V}q'''\,\mathrm{d}V=\oiint_{\Sigma}(-\boldsymbol{\nabla}T)\cdot\boldsymbol{n}\,k\,\mathrm{d}S\).把电芯近似为圆柱（半径 \(R=0.01\ \mathrm{m}\)、高 \(L=0.065\ \mathrm{m}\)），由触发功率反推产热强度，进而得到表面平均法向热流，作为散热设计判据.</p>
 <table class="dt">
 <tr><th>参数</th><th>符号</th><th>取值</th></tr>
 <tr><td>电芯半径</td><td>\(R\)</td><td>\(0.01\ \mathrm{m}\)</td></tr>
@@ -1427,14 +1399,12 @@ abla}T)\cdot\boldsymbol{n}\,k\,\mathrm{d}S\).把电芯近似为圆柱（半径 \
 \[V=\pi R^{2}L=\pi\times(0.01)^{2}\times0.065=2.04\times10^{-5}\ \mathrm{m^{3}}.\]
 <p>均匀产热时体产热率</p>
 \[q'''=\frac{Q}{V}=\frac{2.0}{2.04\times10^{-5}}=9.8\times10^{4}\ \mathrm{W/m^{3}}.\]
-<p>稳态下散度 \(
-abla\cdot\boldsymbol{q}=q'''\)（高斯公式的微分形式）.表面积</p>
+<p>稳态下散度 \(\nabla\cdot\boldsymbol{q}=q'''\)（高斯公式的微分形式）.表面积</p>
 \[A_{s}=2\pi RL+2\pi R^{2}=2\pi\times0.01\times0.065+2\pi\times10^{-4}
  =4.084\times10^{-3}+6.283\times10^{-4}=4.712\times10^{-3}\ \mathrm{m^{2}}.\]
 <p>表面平均法向热流</p>
 \[q_{n,\mathrm{avg}}=\frac{Q}{A_{s}}=\frac{2.0}{4.712\times10^{-3}}=424.4\ \mathrm{W/m^{2}}.\]
-<p><b>工程结论：</b> 热失控判据可写成<b>「内部散度（产热）能否被表面通量（散热）抵消」</b>：由高斯公式，只有当 \(\oiint_{\Sigma}(-k
-abla T)\cdot\boldsymbol{n}\,\mathrm{d}S\ge\iiint_{V}q'''\,\mathrm{d}V\) 时温度才不发散.本例表面需排掉 \(424\ \mathrm{W/m^{2}}\)，若液冷板对电芯侧壁的换热不足此值，热量将在内部累积、触发链式副反应.BMS（电池管理系统）的热模型本质就是逐电芯做这个「散度–通量」平衡.</p>
+<p><b>工程结论：</b> 热失控判据可写成<b>「内部散度（产热）能否被表面通量（散热）抵消」</b>：由高斯公式，只有当 \(\oiint_{\Sigma}(-k\nabla T)\cdot\boldsymbol{n}\,\mathrm{d}S\ge\iiint_{V}q'''\,\mathrm{d}V\) 时温度才不发散.本例表面需排掉 \(424\ \mathrm{W/m^{2}}\)，若液冷板对电芯侧壁的换热不足此值，热量将在内部累积、触发链式副反应.BMS（电池管理系统）的热模型本质就是逐电芯做这个「散度–通量」平衡.</p>
 </details>
 </div>
 <!--MODEND-->
@@ -1501,8 +1471,7 @@ abla T)\cdot\boldsymbol{n}\,\mathrm{d}S\ge\iiint_{V}q'''\,\mathrm{d}V\) 时温�
 <p><span class="stp">第三步：合并为一个三重积分.</span>把守恒律 \(-\dfrac{\mathrm{d}}{\mathrm{d}t}\displaystyle\iiint_\Omega\rho\,\mathrm{d}v=\oiint_\Sigma \boldsymbol{J}\cdot\boldsymbol{n}\,\mathrm{d}S\) 中两端分别代以第一、二步的结果，移项得</p>
 \[\iiint_\Omega\Bigl(\frac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}\Bigr)\mathrm{d}v=0 .\]
 <p>关键在于：<b>这个等式对任意一个闭区域 \(\Omega\) 都成立</b>.</p>
-<p><span class="stp">第四步：由区域任意性推出被积函数为零.</span>记 \(F(x,y,z,t)=\dfrac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}\)，由假设 \(F\) 连续.用反证法：若在某点 \(M_0\) 及某时刻 \(t_0\) 有 \(F(M_0,t_0)
-eq0\)，不妨设 \(F(M_0,t_0)=a\gt0\).由连续函数的保号性，存在以 \(M_0\) 为心、半径 \(\delta\gt0\) 的闭球 \(B_\delta\)，使在 \(B_\delta\) 上</p>
+<p><span class="stp">第四步：由区域任意性推出被积函数为零.</span>记 \(F(x,y,z,t)=\dfrac{\partial\rho}{\partial t}+\operatorname{div}\boldsymbol{J}\)，由假设 \(F\) 连续.用反证法：若在某点 \(M_0\) 及某时刻 \(t_0\) 有 \(F(M_0,t_0)\neq0\)，不妨设 \(F(M_0,t_0)=a\gt0\).由连续函数的保号性，存在以 \(M_0\) 为心、半径 \(\delta\gt0\) 的闭球 \(B_\delta\)，使在 \(B_\delta\) 上</p>
 \[F(x,y,z,t_0)\gt\frac{a}{2}\gt0 .\]
 <p>取 \(\Omega=B_\delta\)，由三重积分的保号性</p>
 \[\iiint_{B_\delta}F\,\mathrm{d}v\ \gt\ \frac{a}{2}\cdot\frac{4}{3}\pi\delta^{3}\ \gt\ 0 ,\]
@@ -1579,8 +1548,7 @@ eq0\)，不妨设 \(F(M_0,t_0)=a\gt0\).由连续函数的保号性，存在以 \
   <p class="sol"><span class="mk">解</span>取以导线为轴、半径 \(r\) 的圆周 \(\Gamma\).由对称性 \(\boldsymbol{B}\) 沿圆周切向且大小恒定，故</p>
   \[\oint_\Gamma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=B\cdot2\pi r=\mu_0 I\ \Longrightarrow\ B=\frac{\mu_0I}{2\pi r}=\frac{2\times10^{-7}\times10}{0.02}=1.0\times10^{-4}\ \mathrm{T}.\]
   <p><b>与斯托克斯公式的关系：</b>取以 \(\Gamma\) 为边界的任一曲面 \(S\)，由斯托克斯公式</p>
-  \[\oint_\Gamma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\iint_S(
-abla\times\boldsymbol{B})\cdot\mathrm{d}\boldsymbol{S}=\mu_0\iint_S\boldsymbol{J}\cdot\mathrm{d}\boldsymbol{S}=\mu_0 I .\]
+  \[\oint_\Gamma\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{r}=\iint_S(\nabla\times\boldsymbol{B})\cdot\mathrm{d}\boldsymbol{S}=\mu_0\iint_S\boldsymbol{J}\cdot\mathrm{d}\boldsymbol{S}=\mu_0 I .\]
   <p>即"环流量 = 旋度的通量 = \(\mu_0\times\) 穿过的电流".<b>这解释了为什么环流量与路径形状无关</b>——只要闭曲线套住同一根导线，穿过它的电流就是同一个 \(I\).</p>
 </div>
 
@@ -1630,9 +1598,7 @@ abla\times\boldsymbol{B})\cdot\mathrm{d}\boldsymbol{S}=\mu_0\iint_S\boldsymbol{J
 <details class="rd-details" open>
 <summary class="rd-hd">拓展阅读 · 麦克斯韦方程组：四行公式如何统一电与磁</summary>
 
-<p>1865 年，詹姆斯·克拉克·麦克斯韦（James Clerk Maxwell）在《电磁场的动力学理论》里，用区区四个方程把电、磁、光统一在同一套数学之下.其中与本章最亲近的是高斯定律 \(\oiint_{\Sigma}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=Q/\varepsilon_{0}\) 与高斯磁定律 \(\oiint_{\Sigma}\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)——两者都是<b>高斯公式</b>在不同矢量场上的特例：前者散度 \(
-abla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\)（有源），后者 \(
-abla\cdot\boldsymbol{B}=0\)（无磁单极，无源）.教材 §12.3 证明的「闭曲面积分 = 散度的体积分」，正是这两条定律的积分形式来源.</p>
+<p>1865 年，詹姆斯·克拉克·麦克斯韦（James Clerk Maxwell）在《电磁场的动力学理论》里，用区区四个方程把电、磁、光统一在同一套数学之下.其中与本章最亲近的是高斯定律 \(\oiint_{\Sigma}\boldsymbol{E}\cdot\mathrm{d}\boldsymbol{S}=Q/\varepsilon_{0}\) 与高斯磁定律 \(\oiint_{\Sigma}\boldsymbol{B}\cdot\mathrm{d}\boldsymbol{S}=0\)——两者都是<b>高斯公式</b>在不同矢量场上的特例：前者散度 \(\nabla\cdot\boldsymbol{E}=\rho/\varepsilon_{0}\)（有源），后者 \(\nabla\cdot\boldsymbol{B}=0\)（无磁单极，无源）.教材 §12.3 证明的「闭曲面积分 = 散度的体积分」，正是这两条定律的积分形式来源.</p>
 <p>麦克斯韦的天才之处在于他补上了「位移电流」一项，使安培环路定律在高斯公式的「边界–内部」框架下自洽，并由此预言电磁波存在、且波速 \(c=1/\sqrt{\mu_{0}\varepsilon_{0}}\) 恰等于已测得的光速——从而把光也纳入电磁家族.后人（尤其奥利弗·亥维赛）把方程组改写成今天的微分形式，可是一个世纪的工程实践（天线、波导、电磁兼容）仍反复回到积分形式：因为<b>积分形式直接对应「在闭合曲面上实测通量、反推内部电荷/磁源」的可操作过程</b>，这正是高斯公式的实用灵魂.</p>
 <p>换句话说，当你在 §12.2 算一片散热片上的热流通量、在 §12.3 用高斯公式验证点电荷电场时，你用的数学结构和麦克斯韦 1865 年的那四行公式是同一个.一百六十年后，5G 基站、核磁共振、无线充电无一不在求解这组方程；而它们的封闭边界条件，永远写着 \(\oiint\) 与 \(\iiint\) 的等号.数学的统一力，在这里显出了最宏伟的形状.</p>
 <p class="rd-src">出处：本教材编写组撰稿.参考文献：[1] J. C. Maxwell, A Dynamical Theory of the Electromagnetic Field, 1865. [2] M. Kline《古今数学思想》第四册，上海科学技术出版社，1980. [3] Wikipedia 词条 “Maxwell's equations”“Gauss's law”.</p>
@@ -1673,11 +1639,9 @@ abla\cdot\boldsymbol{B}=0\)（无磁单极，无源）.教材 §12.3 证明的�
 
 <div class="ky-q">
 <p class="stmt"><b>【题 3】</b>（考研典型题（数学一常考））设 \(\Sigma\) 为球面 \(x^{2}+y^{2}+z^{2}=R^{2}\) 上半部分的上侧，\(L\) 为其边界圆 \(x^{2}+y^{2}=R^{2},\ z=0\)（逆时针方向）.用斯托克斯公式求 \(\oint_{L}(y^{2}-z^{2})\,\mathrm{d}x+(z^{2}-x^{2})\,\mathrm{d}y+(x^{2}-y^{2})\,\mathrm{d}z\).</p>
-<p class="ky-hint"><b>思路点拨.</b> 这是<b>斯托克斯公式化环量为曲面积分</b>：\(\oint_{L}\boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\iint_{\Sigma}(
-abla\times\boldsymbol{A})\cdot\boldsymbol{n}\,\mathrm{d}S\).先算旋度（用行列式或分量公式），再在球冠上积分.为简化，可把曲面换成同边界的平面圆盘（斯托克斯允许「以任一以 \(L\) 为边界的曲面」代替），投影到 \(xy\) 面更省事.</p>
+<p class="ky-hint"><b>思路点拨.</b> 这是<b>斯托克斯公式化环量为曲面积分</b>：\(\oint_{L}\boldsymbol{A}\cdot\mathrm{d}\boldsymbol{r}=\iint_{\Sigma}(\nabla\times\boldsymbol{A})\cdot\boldsymbol{n}\,\mathrm{d}S\).先算旋度（用行列式或分量公式），再在球冠上积分.为简化，可把曲面换成同边界的平面圆盘（斯托克斯允许「以任一以 \(L\) 为边界的曲面」代替），投影到 \(xy\) 面更省事.</p>
 <p class="sol"><span class="mk">解</span> \(\boldsymbol{A}=(y^{2}-z^{2},\ z^{2}-x^{2},\ x^{2}-y^{2})\)，旋度</p>
-\[
-abla\times\boldsymbol{A}=
+\[\nabla\times\boldsymbol{A}=
 \begin{vmatrix}
 \boldsymbol{i}&\boldsymbol{j}&\boldsymbol{k}\\
 \partial_{x}&\partial_{y}&\partial_{z}\\
@@ -1692,10 +1656,8 @@ y^{2}-z^{2}&z^{2}-x^{2}&x^{2}-y^{2}
 
 <div class="ky-q">
 <p class="stmt"><b>【题 4】</b>（考研典型题（数学一常考））设 \(\boldsymbol{F}=(x-z,\ y,\ z)\)，求穿过锥面 \(z=\sqrt{x^{2}+y^{2}}\ (0\le z\le1)\) 侧面（取外侧）的通量 \(\Phi=\iint_{\Sigma}\boldsymbol{F}\cdot\boldsymbol{n}\,\mathrm{d}S\).</p>
-<p class="ky-hint"><b>思路点拨.</b> 锥面不封闭，可用<b>高斯公式补底法</b>：补上顶面圆盘 \(z=1,\ x^{2}+y^{2}\le1\)（上侧），使成封闭曲面，高斯公式算总通量，再减去顶面.或直接用散度 \(
-abla\cdot\boldsymbol{F}=1+1+1=3\) 在锥体体积分.注意补底后整体法向朝外.</p>
-<p class="sol"><span class="mk">解</span> \(
-abla\cdot\boldsymbol{F}=1+1+1=3\).锥体 \(\Omega\) 体积 \(V=\frac13\pi\cdot1^{2}\cdot1=\frac{\pi}{3}\).由高斯公式</p>
+<p class="ky-hint"><b>思路点拨.</b> 锥面不封闭，可用<b>高斯公式补底法</b>：补上顶面圆盘 \(z=1,\ x^{2}+y^{2}\le1\)（上侧），使成封闭曲面，高斯公式算总通量，再减去顶面.或直接用散度 \(\nabla\cdot\boldsymbol{F}=1+1+1=3\) 在锥体体积分.注意补底后整体法向朝外.</p>
+<p class="sol"><span class="mk">解</span> \(\nabla\cdot\boldsymbol{F}=1+1+1=3\).锥体 \(\Omega\) 体积 \(V=\frac13\pi\cdot1^{2}\cdot1=\frac{\pi}{3}\).由高斯公式</p>
 \[\oiint_{\Sigma+\Sigma_{\text{顶}}}= \iiint_{\Omega}3\,\mathrm{d}V=3\cdot\frac{\pi}{3}=\pi.\]
 <p>顶面 \(\Sigma_{\text{顶}}:z=1,\ x^{2}+y^{2}\le1\)，法向 \(\boldsymbol{k}\)，\(\boldsymbol{F}\cdot\boldsymbol{n}=z=1\)，故</p>
 \[\iint_{\Sigma_{\text{顶}}}1\,\mathrm{d}x\,\mathrm{d}y=\pi\cdot1^{2}=\pi.\]
@@ -1852,6 +1814,7 @@ abla\cdot\boldsymbol{F}=1+1+1=3\).锥体 \(\Omega\) 体积 \(V=\frac13\pi\cdot1^
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 12, "list": [["s121", "12.1 对面积的曲面积分"], ["s122", "12.2 对坐标的曲面积分"], ["s123", "12.3 高斯公式与斯托克斯公式"], ["s124", "12.4 曲面积分的应用"], ["adv12", "考研选讲"], ["cq12", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -1879,5 +1842,6 @@ abla\cdot\boldsymbol{F}=1+1+1=3\).锥体 \(\Omega\) 体积 \(V=\frac13\pi\cdot1^
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>

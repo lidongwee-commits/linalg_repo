@@ -4,17 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>第13章 · 无穷级数</title>
+<style>html{opacity:0;transition:opacity .18s ease}html.wb-ready{opacity:1}</style>
+<script>(function(){var de=document.documentElement;function r(){de.classList.add('wb-ready');}var inApp=false;try{inApp=sessionStorage.getItem('hfut_in_app')==='1'||sessionStorage.getItem('hfut_no_fouc')==='1';sessionStorage.removeItem('hfut_no_fouc');if(inApp)sessionStorage.setItem('hfut_in_app','1');}catch(e){}if(inApp){r();return;}if(document.readyState==='complete'){r();}else{window.addEventListener('load',r);setTimeout(r,1500);}})();</script>
 <link rel="stylesheet" href="katex/katex.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="energy_bar.css">
 <link rel="stylesheet" href="night.css">
 <link rel="stylesheet" href="tower.css">
+<link rel="stylesheet" href="chapter-fog.css">
 <script>try{if(localStorage.getItem('hfut-theme')==='night')document.documentElement.classList.add('night')}catch(e){}</script>
 <script src="katex/katex.min.js"></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="theme.js" defer></script>
 <script src="katex/auto-render.min.js"></script>
 <script src="mist-enter.js"></script>
+<link rel="stylesheet" href="fluo.css">
 </head>
 <body><div class="topbar"><button class="nav-toggle" type="button" aria-label="打开目录" aria-expanded="false">☰</button><b>高等数学 · 数字教材</b><span>第13章</span><div id="eb-slot-m"></div></div>
 <div class="layout">
@@ -107,8 +111,7 @@
     <tr><td>50</td><td>0.0995</td><td>11.6417</td></tr>
   </table>
   <p>当 \(\rho=0.9\lt1\) 时，</p>
-  \[S_\infty=
-abla L\,\frac{1-\rho^{L}}{1-\rho}=0.01\cdot\frac{1-0.9^{50}}{0.1}\approx0.0995,\]
+  \[S_\infty=\nabla L\,\frac{1-\rho^{L}}{1-\rho}=0.01\cdot\frac{1-0.9^{50}}{0.1}\approx0.0995,\]
 
 
 <h3>一、常数项级数的基本概念</h3>
@@ -176,8 +179,7 @@ abla L\,\frac{1-\rho^{L}}{1-\rho}=0.01\cdot\frac{1-0.9^{50}}{0.1}\approx0.0995,\
 </details>
 </div>
 <div class="def"><div class="lab"><span class="n">性质 13.4</span>收敛的必要条件</div>
-  <p>若 \(\sum u_n\) 收敛，则 \(\lim\limits_{n\to\infty}u_n=0\).等价地，若 \(\lim u_n
-eq0\) 或极限不存在，则级数必发散.注意：\(\lim u_n=0\) 只是<b>必要非充分</b>条件.</p>
+  <p>若 \(\sum u_n\) 收敛，则 \(\lim\limits_{n\to\infty}u_n=0\).等价地，若 \(\lim u_n\neq0\) 或极限不存在，则级数必发散.注意：\(\lim u_n=0\) 只是<b>必要非充分</b>条件.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
 <p>设 \(\sum u_n\) 收敛于 \(S\)，部分和为 \(S_n\)，则 \(S_n\to S\) 且 \(S_{n-1}\to S\).</p>
@@ -230,8 +232,7 @@ eq0\) 或极限不存在，则级数必发散.注意：\(\lim u_n=0\) 只是<b>�
 
 <div class="ex"><div class="lab">例 13.2　用必要条件判定发散</div>
   <p class="stmt">判定 \(\displaystyle\sum_{n=1}^{\infty}\frac{n}{2n+1}\) 的敛散性.</p>
-  <p class="sol"><span class="mk">解</span>通项 \(u_n=\dfrac{n}{2n+1}\to\dfrac12
-eq0\)，不满足收敛必要条件，故级数<b>发散</b>.</p>
+  <p class="sol"><span class="mk">解</span>通项 \(u_n=\dfrac{n}{2n+1}\to\dfrac12\neq0\)，不满足收敛必要条件，故级数<b>发散</b>.</p>
 </div>
 
 <div class="ex"><div class="lab">例 13.3　裂项相消求和</div>
@@ -283,7 +284,7 @@ eq0\)，不满足收敛必要条件，故级数<b>发散</b>.</p>
     <!-- ============ §13.2 ============ -->
 <div class="labx">
   <div class="lab">数项级数 · 部分和</div>
-  <div class="desc">拖动 (\(n\)) 观察部分和 (\((S_n)=\sum_{k=1}^{n}\dfrac{1}{k^{2}}(收敛到 )\pi^{2}/6pprox1.645.</div>
+  <div class="desc">拖动 \(n\) 观察部分和 \(S_n=\sum_{k=1}^{n}\dfrac{1}{k^{2}}\)（收敛到）\(\dfrac{\pi^{2}}{6}\approx1.645.\)</div>
   <canvas id="cv_p132" width="720" height="320"></canvas>
   <div class="ctrl"><label>项数 n = <span id="vo_p132">20</span></label>
   <input type="range" id="rg_p132" min="1" max="60" step="1" value="20"></div>
@@ -603,8 +604,7 @@ eq0\)，不满足收敛必要条件，故级数<b>发散</b>.</p>
 \[2^k a_{2^k}=2^k\cdot\frac{1}{(2^k)^p}=2^{k(1-p)}=\bigl(2^{1-p}\bigr)^k.\]
 <p><span class="stp">第二步（等比级数判敛）：</span>\(\sum\limits_{k=1}^{\infty}\bigl(2^{1-p}\bigr)^k\) 是公比为 \(q=2^{1-p}\) 的几何级数，收敛当且仅当 \(|q|\lt1\)，即</p>
 \[2^{1-p}\lt1\quad\Longleftrightarrow\quad1-p\lt0\quad\Longleftrightarrow\quad p\gt1.\]
-<p><span class="stp">第三步：</span>故 \(p\gt1\) 时原级数收敛；\(0\lt p\le1\) 时凝聚级数发散，原级数也发散.当 \(p\le0\) 时通项 \(\dfrac1{n^p}
-ot\to0\)，显然发散.</p>
+<p><span class="stp">第三步：</span>故 \(p\gt1\) 时原级数收敛；\(0\lt p\le1\) 时凝聚级数发散，原级数也发散.当 \(p\le0\) 时通项 \(\dfrac1{n^p}\not\to0\)，显然发散.</p>
 <p>综上，\(\sum\dfrac1{n^p}\) 当 \(p\gt1\) 收敛，当 \(p\le1\) 发散.它是对比判别法最重要的"标杆级数".</p>
 <p class="qed">证毕</p>
 </div>
@@ -627,8 +627,7 @@ ot\to0\)，显然发散.</p>
 <p>于是递推得</p>
 \[u_{N+1}\lt r u_N,\quad u_{N+2}\lt r u_{N+1}\lt r^2 u_N,\quad \cdots\quad u_{N+k}\lt r^k u_N.\]
 <p>即 \(n\ge N\) 时 \(u_n\lt u_N r^{\,n-N}\).等比级数 \(\sum u_N r^{\,n-N}\) 因 \(0\lt r\lt1\) 而收敛，由比较判别法 \(\sum u_n\) 收敛.</p>
-<p><span class="stp">(2) 当 \(\rho\gt1\)（含 \(+\infty\)）：</span>取 \(r\) 使 \(1\lt r\lt\rho\)（\(\rho=+\infty\) 时直接取 \(r\gt1\)）.存在 \(N\)，当 \(n\ge N\) 时 \(\dfrac{u_{n+1}}{u_n}\gt r\gt1\)，故 \(u_{n+1}\gt u_n\)，即 \(\{u_n\}\) 从某项起严格递增，从而 \(u_n
-ot\to0\).由性质 13.4（收敛必要条件）知级数发散.</p>
+<p><span class="stp">(2) 当 \(\rho\gt1\)（含 \(+\infty\)）：</span>取 \(r\) 使 \(1\lt r\lt\rho\)（\(\rho=+\infty\) 时直接取 \(r\gt1\)）.存在 \(N\)，当 \(n\ge N\) 时 \(\dfrac{u_{n+1}}{u_n}\gt r\gt1\)，故 \(u_{n+1}\gt u_n\)，即 \(\{u_n\}\) 从某项起严格递增，从而 \(u_n\not\to0\).由性质 13.4（收敛必要条件）知级数发散.</p>
 <p><span class="stp">(3) 当 \(\rho=1\)：</span>判别法失效.例如 \(\sum\dfrac1n\) 与 \(\sum\dfrac1{n^2}\) 的比值极限都是 \(1\)，但前者发散、后者收敛，故无法判定.</p>
 <p class="qed">证毕</p>
 </div>
@@ -643,8 +642,7 @@ ot\to0\).由性质 13.4（收敛必要条件）知级数发散.</p>
 <p><span class="stp">(1) 当 \(\rho\lt1\)：</span>取 \(r\) 使 \(\rho\lt r\lt1\).存在 \(N\)，当 \(n\ge N\) 时</p>
 \[\sqrt[n]{u_n}\lt r\quad\Longrightarrow\quad u_n\lt r^n.\]
 <p>等比级数 \(\sum r^n\)（\(0\lt r\lt1\)）收敛，由比较判别法 \(\sum u_n\) 收敛.</p>
-<p><span class="stp">(2) 当 \(\rho\gt1\)（含 \(+\infty\)）：</span>存在 \(N\)，当 \(n\ge N\) 时 \(\sqrt[n]{u_n}\gt1\)，即 \(u_n\gt1\)，从而 \(u_n
-ot\to0\)，由性质 13.4 知级数发散.</p>
+<p><span class="stp">(2) 当 \(\rho\gt1\)（含 \(+\infty\)）：</span>存在 \(N\)，当 \(n\ge N\) 时 \(\sqrt[n]{u_n}\gt1\)，即 \(u_n\gt1\)，从而 \(u_n\not\to0\)，由性质 13.4 知级数发散.</p>
 <p><span class="stp">(3) 当 \(\rho=1\)：</span>同样失效：\(\sum\dfrac1n\) 与 \(\sum\dfrac1{n^2}\) 的 \(n\) 次根极限均为 \(1\)，却一散一敛.</p>
 <p class="qed">证毕</p>
 </div>
@@ -1054,14 +1052,12 @@ ot\to0\)，由性质 13.4 知级数发散.</p>
 
 <h3>二、阿贝尔定理与收敛半径公式</h3>
 <div class="def"><div class="lab"><span class="n">定理 13.12</span>阿贝尔定理（Abel）</div>
-  <p><b>(1)</b> 若幂级数在 \(x=x_1\,(x_1
-eq x_0)\) 处收敛，则对满足 \(|x-x_0|\lt|x_1-x_0|\) 的一切 \(x\)，级数<b>绝对收敛</b>；</p>
+  <p><b>(1)</b> 若幂级数在 \(x=x_1\,(x_1\neq x_0)\) 处收敛，则对满足 \(|x-x_0|\lt|x_1-x_0|\) 的一切 \(x\)，级数<b>绝对收敛</b>；</p>
   <p><b>(2)</b> 若幂级数在 \(x=x_2\) 处发散，则对满足 \(|x-x_0|\gt|x_2-x_0|\) 的一切 \(x\)，级数也<b>发散</b>.</p>
   <p>这说明收敛点集必是一个以 \(x_0\) 为中心的区间（可能退化为一点或全空间）.</p>
 <details class="prf"><summary>证明</summary>
 <div class="prf-b">
-<p>为记号简明，把幂级数写作 \(\sum a_n(x-x_0)^n\)；设它在 \(x=x_1\ (x_1
-eq x_0)\) 处收敛.</p>
+<p>为记号简明，把幂级数写作 \(\sum a_n(x-x_0)^n\)；设它在 \(x=x_1\ (x_1\neq x_0)\) 处收敛.</p>
 <p><span class="stp">第一步（收敛 ⇒ 通项有界）：</span>因级数 \(\sum a_n(x_1-x_0)^n\) 收敛，由性质 13.4（收敛必要条件），其通项趋于 \(0\)，故数列 \(\{a_n(x_1-x_0)^n\}\) 有界：存在 \(M\gt0\)，对一切 \(n\) 有</p>
 \[|a_n(x_1-x_0)^n|\le M.\]
 <p><span class="stp">第二步（与等比级数比较）：</span>任取 \(x\) 满足 \(|x-x_0|\lt|x_1-x_0|\)，令</p>
@@ -1844,9 +1840,7 @@ eq x_0)\) 处收敛.</p>
 <p class="ky-hint"><b>思路点拨.</b> 用<b>比值法求收敛半径</b> \(R=1/\rho\)；端点 \(x=\pm1\) 处通项不趋于 0，发散.和函数靠「几何级数求导」：由 \(\sum x^{n}=x/(1-x)\) 两边对 \(x\) 求导得 \(\sum n x^{n-1}=1/(1-x)^{2}\)，再乘 \(x\).</p>
 <p class="sol"><span class="mk">解</span> 收敛半径：</p>
 \[\rho=\lim_{n\to\infty}\left|\frac{(n+1)x^{n+1}}{n x^{n}}\right|=|x|,\]
-<p>故 \(|x|\lt1\) 收敛，\(R=1\).端点 \(x=1\) 通项为 \(n
-ot\to0\)、\(x=-1\) 通项为 \((-1)^{n}n
-ot\to0\)，均发散，收敛域 \((-1,1)\).和函数：</p>
+<p>故 \(|x|\lt1\) 收敛，\(R=1\).端点 \(x=1\) 通项为 \(n\not\to0\)、\(x=-1\) 通项为 \((-1)^{n}n\not\to0\)，均发散，收敛域 \((-1,1)\).和函数：</p>
 \[\sum_{n=0}^{\infty}x^{n}=\frac{1}{1-x}\ \Longrightarrow\ \sum_{n=1}^{\infty}n x^{n-1}=\frac{1}{(1-x)^{2}},\]
 <p>乘 \(x\) 得</p>
 \[S(x)=\sum_{n=1}^{\infty}n x^{n}=\frac{x}{(1-x)^{2}},\qquad x\in(-1,1).\]
@@ -1891,13 +1885,11 @@ ot\to0\)，均发散，收敛域 \((-1,1)\).和函数：</p>
 <tr><td>符号时长</td><td>\(T\)</td><td>\(1/\Delta f\approx66.67\ \mu\mathrm{s}\)</td></tr>
 <tr><td>FFT 点数</td><td>\(N\)</td><td>\(2048\)</td></tr>
 </table>
-<p class="sol"> 正交性积分（\(m
-eq n\)）：</p>
+<p class="sol"> 正交性积分（\(m\neq n\)）：</p>
 \[\int_{0}^{T}\mathrm{e}^{\mathrm{j}2\pi f_{m}t}\mathrm{e}^{-\mathrm{j}2\pi f_{n}t}\,\mathrm{d}t
  =\int_{0}^{T}\mathrm{e}^{\mathrm{j}2\pi(m-n)\Delta f\,t}\,\mathrm{d}t.\]
 <p>因 \(\Delta f\cdot T=1\)，指数项积分为</p>
-\[\frac{\mathrm{e}^{\mathrm{j}2\pi(m-n)}-1}{\mathrm{j}2\pi(m-n)}=0\qquad(m
-eq n).\]
+\[\frac{\mathrm{e}^{\mathrm{j}2\pi(m-n)}-1}{\mathrm{j}2\pi(m-n)}=0\qquad(m\neq n).\]
 <p>即不同子载波互不串扰.总带宽约</p>
 \[B\approx N\Delta f=2048\times15\ \mathrm{kHz}=30.72\ \mathrm{MHz}\]
 <p>（实际激活 \(1200\) 子载波，对应 \(18\ \mathrm{MHz}\) 左右）.</p>
@@ -2033,6 +2025,7 @@ eq n).\]
   <script>window.TOWER_BOOK='gdsx';</script>
   <script>window.TOWER_SECS={"ch": 13, "list": [["s131", "13.1 常数项级数的概念与性质"], ["s132", "13.2 正项级数及其审敛法"], ["s133", "13.3 级数的绝对收敛与条件收敛"], ["s134", "13.4 幂级数"], ["s135", "13.5 函数的幂级数展开式"], ["s136", "13.6 幂级数的应用"], ["s137", "13.7 傅里叶级数"], ["adv13", "考研选讲"], ["cq13", "本章测试"]]};</script>
   <script src="tower.js" defer></script>
+  <script src="chapter-fog.js" defer></script>
   <script src="lastread.js"></script>
   <script>
   (function(){
@@ -2060,5 +2053,6 @@ eq n).\]
   </script>
   <script>if(window.initMsgBoard){ window.initMsgBoard(); }</script>
   <script src="ux-enhancer.js"></script>
+<script src="fluo.js"></script>
 </body>
 </html>
